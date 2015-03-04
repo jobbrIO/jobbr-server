@@ -1,4 +1,4 @@
-# jobbr
+# Jobbr
 Jobbr is a .NET JobServer. Unless other JobServer-Frameworks Jobbr explicitly solves the following problems
 * Isolation of Jobs on process-level
 * Restful API to trigger Jobs and watch the execition state
@@ -9,7 +9,7 @@ Jobbr is a .NET JobServer. Unless other JobServer-Frameworks Jobbr explicitly so
 * ASP.NET WebAPI (OWIN)
 * Dapper
 * CommandLineParser
-* JSON
+* JSON.NET
 
 # Authors
 * Michael Schnyder
