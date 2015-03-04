@@ -12,7 +12,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Runtime", "..\source\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Server", "..\source\Jobbr.Server\Jobbr.Server.csproj", "{A45F729D-8629-4C7A-96B8-29EAA8D52919}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Server.Dapper", "..source\Jobbr.Server.Dapper\Jobbr.Server.Dapper.csproj", "{E697272B-D92E-4F8A-BB5A-178FB1E33BF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Server.Dapper", "..\source\Jobbr.Server.Dapper\Jobbr.Server.Dapper.csproj", "{E697272B-D92E-4F8A-BB5A-178FB1E33BF7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{B162B4E4-7B5F-4A3D-8C3F-B16AADF360DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.JobServer", "Demo.JobServer\Demo.JobServer.csproj", "{344C608D-CDE6-4E13-973E-B517EB66596B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.JobRunner", "Demo.JobRunner\Demo.JobRunner.csproj", "{41B720F3-A119-41BF-AE09-C248BA525B83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,8 +38,21 @@ Global
 		{E697272B-D92E-4F8A-BB5A-178FB1E33BF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E697272B-D92E-4F8A-BB5A-178FB1E33BF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E697272B-D92E-4F8A-BB5A-178FB1E33BF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{344C608D-CDE6-4E13-973E-B517EB66596B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{344C608D-CDE6-4E13-973E-B517EB66596B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{344C608D-CDE6-4E13-973E-B517EB66596B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{344C608D-CDE6-4E13-973E-B517EB66596B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41B720F3-A119-41BF-AE09-C248BA525B83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41B720F3-A119-41BF-AE09-C248BA525B83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41B720F3-A119-41BF-AE09-C248BA525B83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41B720F3-A119-41BF-AE09-C248BA525B83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FC503F89-61B7-4E2F-A950-6DA216C830E1} = {B162B4E4-7B5F-4A3D-8C3F-B16AADF360DD}
+		{A45F729D-8629-4C7A-96B8-29EAA8D52919} = {B162B4E4-7B5F-4A3D-8C3F-B16AADF360DD}
+		{E697272B-D92E-4F8A-BB5A-178FB1E33BF7} = {B162B4E4-7B5F-4A3D-8C3F-B16AADF360DD}
 	EndGlobalSection
 EndGlobal
