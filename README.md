@@ -6,7 +6,10 @@ Jobbr is a .NET JobServer. Unless other JobServer-Frameworks Jobbr explicitly so
  
 # Based On
 * nrcron
-* ...
+* ASP.NET WebAPI (OWIN)
+* Dapper
+* CommandLineParser
+* JSON
 
 # Authors
 * Michael Schnyder
