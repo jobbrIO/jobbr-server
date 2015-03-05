@@ -2,11 +2,11 @@
 
 namespace Jobbr.Server
 {
-    public class JobbrConfiguration
+    public class JobbrConfiguration : IJobbrConfiguration
     {
-        public IJobQueueProvider JobQueueProvider;
+        public IJobQueueProvider JobQueueProvider { get; set; }
 
-        public IJobRepositoryProvider JobRepositoryProvider;
+        public IJobRepositoryProvider JobRepositoryProvider { get; set; }
 
         public Func<string> JobRunnerExeResolver { get; set; }
 
