@@ -27,12 +27,15 @@ namespace Demo.JobServer
                                  JobRunnerExeResolver = () => "Demo.JobRunner.exe"
                              };
 
-            using (var jobserver = new JobbrServer(config))
+            using (var jobbrServer = new JobbrServer(config))
             {
-                jobserver.Start();
+                jobbrServer.Start();
 
-                Console.Write("JobServer has started on {0}. Press enter to exit", config.BackendAddress);
+                Console.Write("JobServer has started on {0}. Press enter to quit", config.BackendAddress);
                 Console.ReadLine();
+
+                Console.Write("Shutting down. Please wait...");
+                jobbrServer.Stop();
             }
         }
     }

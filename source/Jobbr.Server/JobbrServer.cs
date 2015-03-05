@@ -1,13 +1,10 @@
 ﻿using System;
 
-using Jobbr.Common;
 using Jobbr.Server.Common;
 using Jobbr.Server.Core;
 using Jobbr.Server.Web;
 
-using Microsoft.Owin.Hosting;
 using Microsoft.Owin.Hosting.Services;
-using Microsoft.Owin.Hosting.Starter;
 
 namespace Jobbr.Server
 {
@@ -19,12 +16,22 @@ namespace Jobbr.Server
         /// <summary>
         /// The configuration.
         /// </summary>
-        private readonly JobbrConfiguration configuration;
+        private readonly IJobbrConfiguration configuration;
 
         /// <summary>
-        /// The web.
+        /// The scheduler.
         /// </summary>
-        private IDisposable web;
+        private readonly DefaultScheduler scheduler;
+
+        /// <summary>
+        /// The starter.
+        /// </summary>
+        private readonly IJobStarter starter;
+
+        /// <summary>
+        /// The web host.
+        /// </summary>
+        private readonly WebHost webHost;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
@@ -32,9 +39,14 @@ namespace Jobbr.Server
         /// <param name="configuration">
         /// The configuration.
         /// </param>
-        public JobbrServer(JobbrConfiguration configuration)
+        public JobbrServer(IJobbrConfiguration configuration)
         {
             this.configuration = configuration;
+            var kernel = new DefaultKernel(this.configuration);
+
+            this.webHost = kernel.GetService<WebHost>();
+            this.scheduler = kernel.GetService<DefaultScheduler>();
+            this.starter = kernel.GetService<IJobStarter>();
         }
 
         /// <summary>
@@ -42,10 +54,9 @@ namespace Jobbr.Server
         /// </summary>
         public void Start()
         {
-            var kernel = new DefaultKernel(this.configuration);
-
-            this.StartWebHost(kernel);
-            this.StartScheduler(kernel);
+            this.webHost.Start();
+            this.scheduler.Start();
+            this.starter.Start();
         }
 
         /// <summary>
@@ -53,7 +64,9 @@ namespace Jobbr.Server
         /// </summary>
         public void Stop()
         {
-            this.web.Dispose();
+            this.webHost.Stop();
+            this.scheduler.Stop();
+            this.starter.Stop();
         }
 
         /// <summary>
@@ -62,32 +75,6 @@ namespace Jobbr.Server
         public void Dispose()
         {
             this.Stop();
-
-            this.web = null;
-        }
-
-        private void StartWebHost(DefaultKernel kernel)
-        {
-            var dependencyResolver = new JobbrDependencyResolver(kernel);
-
-            var services = (ServiceProvider)ServicesFactory.Create();
-            var options = new StartOptions()
-            {
-                Urls = { this.configuration.BackendAddress },
-                AppStartup = typeof(Startup).FullName
-            };
-
-            services.Add(typeof(IJobbrDependencyResolver), () => dependencyResolver);
-
-            var starter = services.GetService<IHostingStarter>();
-            this.web = starter.Start(options); // constructs Startup instance internally
-        }
-
-        private void StartScheduler(DefaultKernel kernel)
-        {
-            var scheduler = kernel.GetService<DefaultScheduler>();
-
-            scheduler.Start();
         }
     }
 }

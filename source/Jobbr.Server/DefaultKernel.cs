@@ -1,4 +1,5 @@
-﻿using Jobbr.Server.Common;
+﻿using Jobbr.Common;
+using Jobbr.Server.Common;
 using Jobbr.Server.Core;
 
 using Ninject;
@@ -16,9 +17,10 @@ namespace Jobbr.Server
         /// <param name="configuration">
         /// The configuration.
         /// </param>
-        public DefaultKernel(JobbrConfiguration configuration)
+        public DefaultKernel(IJobbrConfiguration configuration)
         {
             this.Bind<IJobbrConfiguration>().ToConstant(configuration);
+            this.Bind<IJobbrDependencyResolver>().ToConstant(new JobbrDependencyResolver(this));
             this.Bind<IJobbrStorageProvider>().ToConstant(configuration.StorageProvider);
 
             this.Bind<IJobService>().To<JobService>().InSingletonScope();

@@ -74,7 +74,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
     <Compile Include="Core\IJobService.cs" />
     <Compile Include="Core\JobEventArgs.cs" />
     <Compile Include="Core\JobProcessStarter.cs" />
@@ -87,6 +86,7 @@
     <Compile Include="Core\DefaultScheduler.cs" />
     <Compile Include="IJobStarter.cs" />
     <Compile Include="Model\JobRunState.cs" />
+    <Compile Include="Web\WebHost.cs" />
     <Compile Include="Web\Api\DefaultController.cs" />
     <Compile Include="Web\Api\JobController.cs" />
     <Compile Include="Web\Startup.cs" />
