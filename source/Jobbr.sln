@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Server", "Jobbr.Serve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Server.Dapper", "Jobbr.Server.Dapper\Jobbr.Server.Dapper.csproj", "{E697272B-D92E-4F8A-BB5A-178FB1E33BF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Common", "Jobbr.Common\Jobbr.Common.csproj", "{37E22E5D-F8B2-4336-B509-53C94B170E4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{E697272B-D92E-4F8A-BB5A-178FB1E33BF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E697272B-D92E-4F8A-BB5A-178FB1E33BF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E697272B-D92E-4F8A-BB5A-178FB1E33BF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37E22E5D-F8B2-4336-B509-53C94B170E4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37E22E5D-F8B2-4336-B509-53C94B170E4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37E22E5D-F8B2-4336-B509-53C94B170E4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37E22E5D-F8B2-4336-B509-53C94B170E4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

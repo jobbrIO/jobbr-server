@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.JobServer", "Demo.JobS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.JobRunner", "Demo.JobRunner\Demo.JobRunner.csproj", "{41B720F3-A119-41BF-AE09-C248BA525B83}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Common", "..\source\Jobbr.Common\Jobbr.Common.csproj", "{37E22E5D-F8B2-4336-B509-53C94B170E4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{41B720F3-A119-41BF-AE09-C248BA525B83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41B720F3-A119-41BF-AE09-C248BA525B83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41B720F3-A119-41BF-AE09-C248BA525B83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37E22E5D-F8B2-4336-B509-53C94B170E4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37E22E5D-F8B2-4336-B509-53C94B170E4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37E22E5D-F8B2-4336-B509-53C94B170E4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37E22E5D-F8B2-4336-B509-53C94B170E4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,5 +60,6 @@ Global
 		{FC503F89-61B7-4E2F-A950-6DA216C830E1} = {B162B4E4-7B5F-4A3D-8C3F-B16AADF360DD}
 		{A45F729D-8629-4C7A-96B8-29EAA8D52919} = {B162B4E4-7B5F-4A3D-8C3F-B16AADF360DD}
 		{E697272B-D92E-4F8A-BB5A-178FB1E33BF7} = {B162B4E4-7B5F-4A3D-8C3F-B16AADF360DD}
+		{37E22E5D-F8B2-4336-B509-53C94B170E4C} = {B162B4E4-7B5F-4A3D-8C3F-B16AADF360DD}
 	EndGlobalSection
 EndGlobal
