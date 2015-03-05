@@ -1,6 +1,8 @@
 ﻿using System;
 
 using Jobbr.Common;
+using Jobbr.Server.Common;
+using Jobbr.Server.Core;
 using Jobbr.Server.Web;
 
 using Microsoft.Owin.Hosting;
@@ -42,19 +44,8 @@ namespace Jobbr.Server
         {
             var kernel = new DefaultKernel(this.configuration);
 
-            var dependencyResolver = new JobbrDependencyResolver(kernel);
-            
-            var services = (ServiceProvider)ServicesFactory.Create();
-            var options = new StartOptions()
-                              {
-                                  Urls = { this.configuration.BackendAddress }, 
-                                  AppStartup = typeof(Startup).FullName
-                              };
-
-            services.Add(typeof(IJobbrDependencyResolver), () => dependencyResolver);
-
-            var starter = services.GetService<IHostingStarter>();
-            this.web = starter.Start(options); // constructs Startup instance internally
+            this.StartWebHost(kernel);
+            this.StartScheduler(kernel);
         }
 
         /// <summary>
@@ -73,6 +64,30 @@ namespace Jobbr.Server
             this.Stop();
 
             this.web = null;
+        }
+
+        private void StartWebHost(DefaultKernel kernel)
+        {
+            var dependencyResolver = new JobbrDependencyResolver(kernel);
+
+            var services = (ServiceProvider)ServicesFactory.Create();
+            var options = new StartOptions()
+            {
+                Urls = { this.configuration.BackendAddress },
+                AppStartup = typeof(Startup).FullName
+            };
+
+            services.Add(typeof(IJobbrDependencyResolver), () => dependencyResolver);
+
+            var starter = services.GetService<IHostingStarter>();
+            this.web = starter.Start(options); // constructs Startup instance internally
+        }
+
+        private void StartScheduler(DefaultKernel kernel)
+        {
+            var scheduler = kernel.GetService<DefaultScheduler>();
+
+            scheduler.Start();
         }
     }
 }

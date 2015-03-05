@@ -1,12 +1,10 @@
 ﻿using System;
 
-namespace Jobbr.Server
+namespace Jobbr.Server.Common
 {
     public class JobbrConfiguration : IJobbrConfiguration
     {
-        public IJobQueueProvider JobQueueProvider { get; set; }
-
-        public IJobRepositoryProvider JobRepositoryProvider { get; set; }
+        public IJobbrStorageProvider StorageProvider { get; set; }
 
         public Func<string> JobRunnerExeResolver { get; set; }
 

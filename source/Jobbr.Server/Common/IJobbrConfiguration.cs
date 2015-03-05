@@ -1,7 +1,7 @@
-namespace Jobbr.Server
-{
-    using System;
+using System;
 
+namespace Jobbr.Server.Common
+{
     /// <summary>
     /// The JobbrConfiguration interface.
     /// </summary>
@@ -10,7 +10,7 @@ namespace Jobbr.Server
         /// <summary>
         /// Gets or sets the job repository provider.
         /// </summary>
-        IJobRepositoryProvider JobRepositoryProvider { get; set; }
+        IJobbrStorageProvider StorageProvider { get; set; }
 
         /// <summary>
         /// Gets or sets the job runner exe resolver.

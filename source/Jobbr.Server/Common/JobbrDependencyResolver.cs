@@ -1,12 +1,12 @@
-namespace Jobbr.Server
+using System;
+using System.Collections.Generic;
+
+using Jobbr.Common;
+
+using Ninject;
+
+namespace Jobbr.Server.Common
 {
-    using System;
-    using System.Collections.Generic;
-
-    using Jobbr.Common;
-
-    using Ninject;
-
     /// <summary>
     /// The jobbr dependency resolver.
     /// </summary>

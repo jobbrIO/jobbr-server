@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Jobbr.Server;
+using Jobbr.Server.Common;
 using Jobbr.Server.Dapper;
 
 namespace Demo.JobServer
@@ -18,12 +19,11 @@ namespace Demo.JobServer
         /// </param>
         public static void Main(string[] args)
         {
-            var dapperProvider = new JobbrDapperProvider(@"Data Source=.\SQLEXPRESS;Initial Catalog=JobbrDemo;Integrated Security=True");
+            var storageProvider = new DapperStorageProvider(@"Data Source=.\SQLEXPRESS;Initial Catalog=JobbrDemo;Integrated Security=True");
 
             var config = new JobbrConfiguration
                              {
-                                 JobQueueProvider = dapperProvider, 
-                                 JobRepositoryProvider = dapperProvider,
+                                 StorageProvider = storageProvider,
                                  JobRunnerExeResolver = () => "Demo.JobRunner.exe"
                              };
 
@@ -31,7 +31,7 @@ namespace Demo.JobServer
             {
                 jobserver.Start();
 
-                Console.Write("JobServer has started. Press enter to exit");
+                Console.Write("JobServer has started on {0}. Press enter to exit", config.BackendAddress);
                 Console.ReadLine();
             }
         }

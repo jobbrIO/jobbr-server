@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Jobbr.Server
+namespace Jobbr.Server.Model
 {
     public class Job
     {

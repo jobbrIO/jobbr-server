@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 
+using Jobbr.Server.Common;
 using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Web.Api
@@ -9,25 +10,25 @@ namespace Jobbr.Server.Web.Api
     /// </summary>
     public class JobController : ApiController
     {
-        private readonly IJobRepositoryProvider jobRepository;
+        private readonly IJobbrStorageProvider storageProvider;
 
-        public JobController(IJobRepositoryProvider jobRepository)
+        public JobController(IJobbrStorageProvider storageProvider)
         {
-            this.jobRepository = jobRepository;
+            this.storageProvider = storageProvider;
         }
 
         [HttpGet]
         [Route("api/jobs")]
         public IHttpActionResult AllJobs()
         {
-            return this.Ok(this.jobRepository.GetJobs());
+            return this.Ok(this.storageProvider.GetJobs());
         }
 
         [HttpGet]
         [Route("api/jobs/{jobId}/trigger")]
         public IHttpActionResult GetTriggersForJob(long jobId)
         {
-            return this.Ok(this.jobRepository.GetTriggers(jobId));
+            return this.Ok(this.storageProvider.GetTriggers(jobId));
         }
 
         [HttpPost]

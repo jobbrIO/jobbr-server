@@ -23,13 +23,11 @@ namespace Jobbr.Server.Model
 
         public bool IsActive { get; set; }
 
-        public string ParametersRaw { get; set; }
+        public object Parameters { get; set; }
 
         public string Comment { get; set; }
 
         public long? UserId { get; set; }
-
-        public Guid? UserGuid { get; set; }
 
         public string UserName { get; set; }
 
@@ -41,9 +39,9 @@ namespace Jobbr.Server.Model
         public string Definition { get; set; }
     }
 
-    public class DateTimeUtcTrigger : JobTriggerBase
+    public class StartDateTimeUtcTrigger : JobTriggerBase
     {
-        public DateTime DateTime { get; set; }
+        public DateTime DateTimeUtc { get; set; }
     }
 
     public class InstantTrigger : JobTriggerBase

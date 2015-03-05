@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using Jobbr.Server.Common;
+using Jobbr.Server.Core;
 
 using Ninject;
 
@@ -19,7 +19,11 @@ namespace Jobbr.Server
         public DefaultKernel(JobbrConfiguration configuration)
         {
             this.Bind<IJobbrConfiguration>().ToConstant(configuration);
-            this.Bind<IJobRepositoryProvider>().ToConstant(configuration.JobRepositoryProvider);
+            this.Bind<IJobbrStorageProvider>().ToConstant(configuration.StorageProvider);
+
+            this.Bind<IJobService>().To<JobService>().InSingletonScope();
+            this.Bind<DefaultScheduler>().To<DefaultScheduler>();
+            this.Bind<IJobStarter>().To<JobProcessStarter>();
         }
     }
 }

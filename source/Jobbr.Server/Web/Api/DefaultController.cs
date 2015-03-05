@@ -1,5 +1,7 @@
 ﻿using System.Web.Http;
 
+using Jobbr.Server.Common;
+
 namespace Jobbr.Server.Web.Api
 {
     /// <summary>
