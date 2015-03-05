@@ -42,15 +42,15 @@ namespace Jobbr.Server.Core
 
         public long AddJob(Job job)
         {
-            throw new NotImplementedException();
+            return this.storageProvider.AddJob(job);
         }
 
-        public List<Job> GetJobAllRuns()
+        public List<JobRun> GetJobAllRuns()
         {
             throw new NotImplementedException();
         }
 
-        public Job GetJobRun(long id)
+        public JobRun GetJobRun(long id)
         {
             throw new NotImplementedException();
         }
@@ -64,7 +64,7 @@ namespace Jobbr.Server.Core
         {
             if (trigger.JobId == 0)
             {
-                throw new ArgumentException("JobIdis required", "trigger.JobId");
+                throw new ArgumentException("JobId is required", "trigger.JobId");
             }
 
             trigger.Id = this.storageProvider.AddTrigger(trigger);
@@ -77,7 +77,7 @@ namespace Jobbr.Server.Core
         {
             if (trigger.JobId == 0)
             {
-                throw new ArgumentException("JobIdis required", "trigger.JobId");
+                throw new ArgumentException("JobId is required", "trigger.JobId");
             }
 
             trigger.Id = this.storageProvider.AddTrigger(trigger);
@@ -90,7 +90,7 @@ namespace Jobbr.Server.Core
         {
             if (trigger.JobId == 0)
             {
-                throw new ArgumentException("JobIdis required", "trigger.JobId");
+                throw new ArgumentException("JobId is required", "trigger.JobId");
             }
 
             trigger.Id = this.storageProvider.AddTrigger(trigger);
@@ -101,17 +101,44 @@ namespace Jobbr.Server.Core
 
         public bool DisableTrigger(long triggerId)
         {
-            throw new NotImplementedException();
+            var trigger = this.storageProvider.GetTriggerById(triggerId);
+
+            if (!trigger.IsActive)
+            {
+                return false;
+            }
+
+            this.storageProvider.DisableTrigger(triggerId);
+
+            this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = trigger });
+
+            return true;
         }
 
         public bool EnableTrigger(long triggerId)
         {
-            throw new NotImplementedException();
+            var trigger = this.storageProvider.GetTriggerById(triggerId);
+
+            if (trigger.IsActive)
+            {
+                return false;
+            }
+
+            this.storageProvider.EnableTrigger(triggerId);
+
+            this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = trigger });
+
+            return true;
         }
 
         public List<JobTriggerBase> GetActiveTriggers()
         {
             return this.storageProvider.GetActiveTriggers();
+        }
+
+        public JobRun GetLastJobRunByTriggerId(long triggerId)
+        {
+            return this.storageProvider.GetLastJobRunByTriggerId(triggerId);
         }
 
         protected virtual void OnTriggerUpdate(JobTriggerEventArgs e)

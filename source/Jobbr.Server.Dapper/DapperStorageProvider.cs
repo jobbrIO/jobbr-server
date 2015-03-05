@@ -46,9 +46,16 @@ namespace Jobbr.Server.Dapper
 
             this.SelectTriggersForJobQuery =
                 string.Format(
-                    @"SELECT * FROM {0}.Triggers where TriggerType = 'Instant' AND JobId = @id
-                      SELECT * FROM {0}.Triggers where TriggerType = 'Cron' AND JobId = @id
-                      SELECT * FROM {0}.Triggers where TriggerType = 'DateTime' AND JobId = @id",
+                    @"SELECT * FROM {0}.Triggers where TriggerType = 'Instant' AND JobId = @JobId
+                      SELECT * FROM {0}.Triggers where TriggerType = 'Cron' AND JobId = @JobId
+                      SELECT * FROM {0}.Triggers where TriggerType = 'DateTime' AND JobId = @JobId",
+                    this.schemaName);
+
+            this.SelectTriggerByIdQuery =
+                string.Format(
+                    @"SELECT * FROM {0}.Triggers where TriggerType = 'Instant' AND Id = @Id
+                      SELECT * FROM {0}.Triggers where TriggerType = 'Cron' AND Id = @Id
+                      SELECT * FROM {0}.Triggers where TriggerType = 'DateTime' AND Id = @Id",
                     this.schemaName);
 
             this.SelectActiveTriggersQuery =
@@ -68,9 +75,15 @@ namespace Jobbr.Server.Dapper
             this.AddJobQuery = string.Format("INSERT INTO {0}.Contacts([Name],[Type],[CreatedDateTimeUtc]) VALUES (@Name,@Type,@UtcNow)", this.schemaName);
 
             this.UpdateTriggerQuery = string.Format("UPDATE {0}.Contacts SET [IsActive] = @IsActive WHERE [JobId] = @JobId", this.schemaName);
+
+            this.LastJobRunByTriggerQuery = string.Format("SELECT TOP 1 * FROM {0}.JobRuns WHERE [TriggerId] = @TriggerId ORDER BY [PlannedStartDateTimeUtc] DESC", this.schemaName);
         }
 
+        private string SelectTriggerByIdQuery;
+
         private string SelectActiveTriggersQuery;
+
+        private string LastJobRunByTriggerQuery;
 
         public List<Job> GetJobs()
         {
@@ -94,7 +107,7 @@ namespace Jobbr.Server.Dapper
         {
             using (var connection = new SqlConnection(this.connectionString))
             {
-                using (var multi = connection.QueryMultiple(this.SelectTriggersForJobQuery, new { id = jobId }))
+                using (var multi = connection.QueryMultiple(this.SelectTriggersForJobQuery, new { JobId = jobId }))
                 {
                     var instantTriggers = multi.Read<InstantTrigger>().ToList();
                     var cronTriggers = multi.Read<CronTrigger>().ToList();
@@ -108,6 +121,37 @@ namespace Jobbr.Server.Dapper
 
                     return result.OrderBy(t => t.Id).ToList();
                 }
+            }
+        }
+
+        public JobTriggerBase GetTriggerById(long triggerId)
+        {
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                using (var multi = connection.QueryMultiple(this.SelectTriggersForJobQuery, new { Id = triggerId }))
+                {
+                    var instantTriggers = multi.Read<InstantTrigger>().ToList();
+                    var cronTriggers = multi.Read<CronTrigger>().ToList();
+                    var dateTimeTriggers = multi.Read<StartDateTimeUtcTrigger>().ToList();
+
+                    var result = new List<JobTriggerBase>();
+
+                    result.AddRange(instantTriggers);
+                    result.AddRange(cronTriggers);
+                    result.AddRange(dateTimeTriggers);
+
+                    return result.FirstOrDefault();
+                }
+            }
+        }
+
+        public JobRun GetLastJobRunByTriggerId(long triggerId)
+        {
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                var jobRuns = connection.Query<JobRun>(this.LastJobRunByTriggerQuery, new { TriggerId = triggerId }).ToList();
+
+                return jobRuns.Any() ? jobRuns.FirstOrDefault() : null;
             }
         }
 

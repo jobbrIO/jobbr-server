@@ -36,6 +36,8 @@ namespace Jobbr.Server.Model
 
     public class CronTrigger : JobTriggerBase
     {
+        public DateTime? DateTimeUtc { get; set; }
+
         public string Definition { get; set; }
     }
 

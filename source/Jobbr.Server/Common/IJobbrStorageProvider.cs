@@ -23,5 +23,9 @@ namespace Jobbr.Server.Common
         bool EnableTrigger(long triggerId);
 
         List<JobTriggerBase> GetActiveTriggers();
+
+        JobTriggerBase GetTriggerById(long triggerId);
+
+        JobRun GetLastJobRunByTriggerId(long triggerId);
     }
 }

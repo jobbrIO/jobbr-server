@@ -20,5 +20,19 @@ namespace Jobbr.Server.Model
         public int Progress { get; set; }
 
         public JobRunState State { get; set; }
+
+        public DateTime PlannedStartDateTimeUtc { get; set; }
+
+        public DateTime ActualStartDateTimeUtc { get; set; }
+
+        public DateTime EstimatedEndDateTimeUtc { get; set; }
+
+        public DateTime ActualEndDateTimeUtc { get; set; }
+
+        public int Pid { get; set; }
+
+        public string WorkingDir { get; set; }
+
+        public string TempDir { get; set; }
     }
 }

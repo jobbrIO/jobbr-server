@@ -26,9 +26,9 @@ namespace Jobbr.Server.Core
 
         long AddJob(Job job);
 
-        List<Job> GetJobAllRuns();
+        List<JobRun> GetJobAllRuns();
 
-        Job GetJobRun(long id);
+        JobRun GetJobRun(long id);
 
         List<JobTriggerBase> GetTriggers(long jobId);
 
@@ -43,5 +43,7 @@ namespace Jobbr.Server.Core
         bool EnableTrigger(long triggerId);
 
         List<JobTriggerBase> GetActiveTriggers();
+
+        JobRun GetLastJobRunByTriggerId(long triggerId);
     }
 }
