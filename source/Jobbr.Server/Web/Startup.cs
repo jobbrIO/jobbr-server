@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Http;
+
+using Jobbr.Common;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -13,6 +16,18 @@ namespace Jobbr.Server.Web
     /// </summary>
     public class Startup
     {
+        private readonly IJobbrDependencyResolver dependencyResolver;
+
+        public Startup(IJobbrDependencyResolver dependencyResolver)
+        {
+            if (dependencyResolver == null)
+            {
+                throw new ArgumentException("Please provide a dependency resolver. See http://servercoredump.com/question/27246240/inject-current-user-owin-host-web-api-service for details", "dependencyResolver");
+            }
+
+            this.dependencyResolver = dependencyResolver;
+        }
+
         /// <summary>
         /// The configuration.
         /// </summary>
@@ -30,6 +45,8 @@ namespace Jobbr.Server.Web
             // Remove XML
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
+
+            config.DependencyResolver = new DependencyResolverAdapter(this.dependencyResolver);
 
             app.UseWebApi(config);
         }

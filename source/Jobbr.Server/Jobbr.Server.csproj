@@ -43,6 +43,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\demo\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\..\demo\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="Owin">
       <HintPath>..\..\demo\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -68,22 +71,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Web\Api\JobController.cs" />
-    <Compile Include="Web\Startup.cs" />
+    <Compile Include="DefaultKernel.cs" />
+    <Compile Include="IJobbrConfiguration.cs" />
     <Compile Include="IJobQueueProvider.cs" />
     <Compile Include="IJobRepositoryProvider.cs" />
+    <Compile Include="JobbrDependencyResolver.cs" />
+    <Compile Include="Web\Api\DefaultController.cs" />
+    <Compile Include="Web\Api\JobController.cs" />
+    <Compile Include="Web\Startup.cs" />
     <Compile Include="Model\Job.cs" />
     <Compile Include="JobbrConfiguration.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Model\JobRun.cs" />
     <Compile Include="Model\JobTriggerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\DependencyResolverAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Jobbr.Common\Jobbr.Common.csproj">
+      <Project>{37E22E5D-F8B2-4336-B509-53C94B170E4C}</Project>
+      <Name>Jobbr.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
