@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 
 using Jobbr.Common;
@@ -70,6 +72,20 @@ namespace Jobbr.Server.Web.Client
             if (dto.State != JobRunState.Null)
             {
                 this.jobService.UpdateJobRunState(jobRun, dto.State);
+            }
+
+            return this.StatusCode(HttpStatusCode.Accepted);
+        }
+
+        [HttpPost]
+        [Route("client/jobrun/{jobRunId}/artefacts")]
+        public IHttpActionResult AddArtefacts(long jobRunId)
+        {
+            IEnumerable<HttpContent> parts = this.Request.Content.ReadAsMultipartAsync().Result.Contents;
+
+            foreach (var part in parts)
+            {
+                var result = part.ReadAsStringAsync().Result;
             }
 
             return this.StatusCode(HttpStatusCode.Accepted);
