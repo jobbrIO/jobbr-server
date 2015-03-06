@@ -1,8 +1,9 @@
 ﻿using System;
+using System.IO;
 
 namespace Jobbr.Server.Common
 {
-    public class JobbrConfiguration : IJobbrConfiguration
+    public class DefaultJobbrConfiguration : IJobbrConfiguration
     {
         public IJobbrStorageProvider StorageProvider { get; set; }
 
@@ -12,9 +13,15 @@ namespace Jobbr.Server.Common
 
         public int AllowChangesBeforeStartInSec { get; set; }
 
-        public JobbrConfiguration()
+        public int MaxConcurrentJobs { get; set; }
+
+        public string JobRunDirectory  { get; set; }
+
+        public DefaultJobbrConfiguration()
         {
             this.BackendAddress = "http://localhost:80/jobbr";
+            this.MaxConcurrentJobs = 4;
+            this.JobRunDirectory = Path.GetTempPath();
         }
     }
 }

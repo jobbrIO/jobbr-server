@@ -26,5 +26,12 @@ namespace Jobbr.Server.Common
         /// Gets or sets the allow changes before start in sec.
         /// </summary>
         int AllowChangesBeforeStartInSec { get; set; }
+
+        /// <summary>
+        /// Gets the max concurrent jobs.
+        /// </summary>
+        int MaxConcurrentJobs { get; }
+
+        string JobRunDirectory { get; }
     }
 }
