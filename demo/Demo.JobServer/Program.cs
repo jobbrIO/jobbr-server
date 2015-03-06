@@ -24,6 +24,7 @@ namespace Demo.JobServer
             var config = new DefaultJobbrConfiguration
                              {
                                  JobStorageProvider = storageProvider,
+                                 ArtefactStorageProvider = new FileSystemArtefactsStorageProvider("data"),
                                  JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
                                  BeChatty = true,
                              };
