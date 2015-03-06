@@ -19,9 +19,9 @@ namespace Jobbr.Server.Model
 
         public string UniqueId { get; set; }
 
-        public object JobParameters { get; set; }
+        public string JobParameters { get; set; }
 
-        public object InstanceParameters { get; set; }
+        public string InstanceParameters { get; set; }
 
         public int? Progress { get; set; }
 

@@ -23,7 +23,7 @@ namespace Jobbr.Server.Model
 
         public bool IsActive { get; set; }
 
-        public object Parameters { get; set; }
+        public string Parameters { get; set; }
 
         public string Comment { get; set; }
 
