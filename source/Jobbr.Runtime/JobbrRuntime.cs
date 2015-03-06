@@ -15,7 +15,7 @@ namespace Jobbr.Runtime
         /// </param>
         public void Run(params string[] args)
         {
-            Console.Write("This is the runner started at " + DateTime.UtcNow + " (UTC) with arguments " + args);
+            Console.Write("This is the runner started at " + DateTime.UtcNow + " (UTC) with arguments " + string.Join(" ", args));
             Console.ReadKey();
         }
     }
