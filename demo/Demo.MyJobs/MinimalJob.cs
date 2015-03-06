@@ -12,7 +12,9 @@ namespace Demo.MyJobs
         /// </summary>
         public void Run()
         {
-            File.WriteAllText("content.txt", "This is the content");
+            File.WriteAllText("firstfile.txt", "This is the first content");
+
+            File.WriteAllText("secondfile.txt", "This is the second content");
         }
     }
 }
