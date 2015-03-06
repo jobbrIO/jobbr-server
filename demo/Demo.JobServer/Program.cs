@@ -21,10 +21,10 @@ namespace Demo.JobServer
         {
             var storageProvider = new DapperStorageProvider(@"Data Source=.\SQLEXPRESS;Initial Catalog=JobbrDemo;Integrated Security=True");
 
-            var config = new JobbrConfiguration
+            var config = new DefaultJobbrConfiguration
                              {
                                  StorageProvider = storageProvider,
-                                 JobRunnerExeResolver = () => "Demo.JobRunner.exe"
+                                 JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe"
                              };
 
             using (var jobbrServer = new JobbrServer(config))
