@@ -95,9 +95,11 @@ namespace Jobbr.Server.Web.Client
 
             foreach (var part in parts)
             {
-                var result = part.ReadAsStringAsync().Result;
+                var contentDisposition = part.Headers.ContentDisposition;
 
-                this.artefactsStorageProvider.Save(jobRun.UniqueId, "blupp", null);
+                var result = part.ReadAsStreamAsync().Result;
+
+                this.artefactsStorageProvider.Save(jobRun.UniqueId, contentDisposition.FileName, result);
             }
 
             return this.StatusCode(HttpStatusCode.Accepted);
