@@ -90,8 +90,8 @@ namespace Jobbr.Server.Web.Api
                 return this.NotFound();
             }
 
-            var jobParameter = JsonConvert.SerializeObject(jobRun.JobParameters);
-            var instanceParameter = JsonConvert.SerializeObject(jobRun.InstanceParameters);
+            var jobParameter = jobRun.JobParameters != null ? JsonConvert.DeserializeObject(jobRun.JobParameters) : null;
+            var instanceParameter = jobRun.InstanceParameters != null ? JsonConvert.DeserializeObject(jobRun.InstanceParameters) : null;
 
             var files = this.artefactsStorageProvider.GetFiles(jobRun.UniqueId);
             var filesList = new List<JobRunArtefactDto>();
