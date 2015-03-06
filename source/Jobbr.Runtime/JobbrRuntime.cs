@@ -1,4 +1,6 @@
-﻿namespace Jobbr.Runtime
+﻿using System;
+
+namespace Jobbr.Runtime
 {
     /// <summary>
     /// The jobbr runtime.
@@ -13,7 +15,8 @@
         /// </param>
         public void Run(params string[] args)
         {
-            
+            Console.Write("This is the runner started at " + DateTime.UtcNow + " (UTC) with arguments " + args);
+            Console.ReadKey();
         }
     }
 }
