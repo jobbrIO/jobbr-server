@@ -29,8 +29,6 @@ namespace Jobbr.Server.Dapper
 
         public List<Job> GetJobs()
         {
-            // TODO: Deserialize Json Params
-
             var sql = string.Format("SELECT * FROM {0}.Jobs", this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
@@ -117,17 +115,14 @@ namespace Jobbr.Server.Dapper
 
             using (var connection = new SqlConnection(this.connectionString))
             {
-                string jobParameter = JsonConvert.SerializeObject(jobRun.JobParameters);
-                string instanceParameter = JsonConvert.SerializeObject(jobRun.InstanceParameters);
-
                 var jobRunObject =
                     new
                         {
                             jobRun.JobId,
                             jobRun.TriggerId,
                             jobRun.UniqueId,
-                            JobParameters = jobParameter,
-                            InstanceParameters = instanceParameter,
+                            jobRun.JobParameters,
+                            jobRun.InstanceParameters,
                             jobRun.PlannedStartDateTimeUtc,
                             State = jobRun.State.ToString()
                         };
@@ -140,8 +135,6 @@ namespace Jobbr.Server.Dapper
 
         public List<JobRun> GetJobRuns()
         {
-            // TODO: Deserialize Json Params
-
             var sql = string.Format("SELECT * FROM {0}.JobRuns", this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
@@ -177,14 +170,11 @@ namespace Jobbr.Server.Dapper
 
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var jobParameters = JsonConvert.SerializeObject(jobRun.JobParameters);
-                var instanceParameters = JsonConvert.SerializeObject(jobRun.InstanceParameters);
-
                 connection.Execute(sql, new
                                             {
                                                 jobRun.Id,
-                                                JobParameters = jobParameters,
-                                                InstanceParameters = instanceParameters,
+                                                jobRun.JobParameters,
+                                                jobRun.InstanceParameters,
                                                 jobRun.PlannedStartDateTimeUtc,
                                                 jobRun.ActualStartDateTimeUtc,
                                                 jobRun.EstimatedEndDateTimeUtc,
