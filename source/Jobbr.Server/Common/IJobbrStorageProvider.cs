@@ -27,5 +27,9 @@ namespace Jobbr.Server.Common
         JobTriggerBase GetTriggerById(long triggerId);
 
         JobRun GetLastJobRunByTriggerId(long triggerId);
+
+        JobRun GetFutureJobRunsByTriggerId(long triggerId);
+
+        int AddJobRun(JobRun jobRun);
     }
 }

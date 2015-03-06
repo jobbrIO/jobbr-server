@@ -59,28 +59,44 @@ namespace Jobbr.Server.Core
         private void CreateSchedule(JobTriggerBase trigger)
         {
             var job = this.jobService.GetJob(trigger.JobId);
-            DateTime? nextTriggerDateTimeUtc = null;
+            DateTime? calculatedNextRun = null;
+
+            // Get the next occurence from database
+            var nextScheduledJobRun = this.jobService.GetNextJobRunByTriggerId(trigger.Id);
 
             // Calculate the next occurance for the trigger
-            nextTriggerDateTimeUtc = nextTriggerDateTimeUtc ?? this.GetNextTriggerDateTime(trigger as CronTrigger);
-            nextTriggerDateTimeUtc = nextTriggerDateTimeUtc ?? this.GetNextTriggerDateTime(trigger as InstantTrigger);
-            nextTriggerDateTimeUtc = nextTriggerDateTimeUtc ?? this.GetNextTriggerDateTime(trigger as StartDateTimeUtcTrigger);
+            calculatedNextRun = calculatedNextRun ?? this.GetNextTriggerDateTime(trigger as CronTrigger);
+            calculatedNextRun = calculatedNextRun ?? this.GetNextTriggerDateTime(trigger as InstantTrigger);
+            calculatedNextRun = calculatedNextRun ?? this.GetNextTriggerDateTime(trigger as StartDateTimeUtcTrigger);
 
-            if (nextTriggerDateTimeUtc != null)
+            if (calculatedNextRun != null)
             {
-                // Is this value in sync with the schedule table?
+                if (nextScheduledJobRun == null)
+                {
+                    this.jobService.CreateJobRun(job, trigger, calculatedNextRun.Value);
+                }
+                else
+                {
+                    if (nextScheduledJobRun.PlannedStartDateTimeUtc == calculatedNextRun)
+                    {
+                        // Ok, all in sync --> Nothing to do
+                    }
+                    else if (nextScheduledJobRun.PlannedStartDateTimeUtc.AddSeconds(10) < calculatedNextRun)
+                    {
+                        // TODO: Change the trigger
+                    }
+                    else
+                    {
+                        // TODO: Its too late --> Log
+                    }
+                    
+                    // Is this value in sync with the schedule table?
+                }
             }
             else
             {
-                // TODO: What happens now?
+                // TODO: What happens now? --> Log that no valid future execution data was found
             }
-
-            //// Validate if there is already a corresponding JobRun in the future
-            /// Case a) Yes and the StartDate is equal to the current calculation -> Nothing Todo
-            /// Case b) Yes but the StartDate is not equal and job has not been started yet 
-            ///             - and will not start in 10s -> Remove
-            ///             - will start or has already started -> ignore
-            /// Case c) No -> Create
         }
 
         private DateTime? GetNextTriggerDateTime(StartDateTimeUtcTrigger startDateTimeUtcTrigger)

@@ -12,7 +12,7 @@ namespace Jobbr.Server.Model
 
         public string Type { get; set; }
 
-        public string ParametersRaw { get; set; }
+        public object Parameters { get; set; }
 
         public DateTime CreatedDateTimeUtc { get; set; }
 

@@ -45,5 +45,9 @@ namespace Jobbr.Server.Core
         List<JobTriggerBase> GetActiveTriggers();
 
         JobRun GetLastJobRunByTriggerId(long triggerId);
+
+        JobRun GetNextJobRunByTriggerId(long triggerId);
+
+        int CreateJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc);
     }
 }

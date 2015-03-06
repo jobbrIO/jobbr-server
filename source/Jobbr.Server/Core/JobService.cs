@@ -141,6 +141,27 @@ namespace Jobbr.Server.Core
             return this.storageProvider.GetLastJobRunByTriggerId(triggerId);
         }
 
+        public JobRun GetNextJobRunByTriggerId(long triggerId)
+        {
+            return this.storageProvider.GetFutureJobRunsByTriggerId(triggerId);
+        }
+
+        public int CreateJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc)
+        {
+            var jobRun = new JobRun()
+            {
+                JobId = job.Id,
+                TriggerId = trigger.Id,
+                JobParameters = job.Parameters,
+                InstanceParameters = trigger.Parameters,
+                Guid = Guid.NewGuid(),
+                State = JobRunState.Scheduled,
+                PlannedStartDateTimeUtc = startDateTimeUtc
+            };
+
+            return this.storageProvider.AddJobRun(jobRun);
+        }
+
         protected virtual void OnTriggerUpdate(JobTriggerEventArgs e)
         {
             var handler = this.TriggerUpdate;

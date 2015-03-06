@@ -17,6 +17,10 @@ namespace Jobbr.Server.Model
 
         public Guid Guid { get; set; }
 
+        public object JobParameters { get; set; }
+
+        public object InstanceParameters { get; set; }
+
         public int Progress { get; set; }
 
         public JobRunState State { get; set; }
