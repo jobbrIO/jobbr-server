@@ -13,7 +13,7 @@ namespace Jobbr.Server.Core
     /// <summary>
     /// Responsible for Starting extenal processes with the job inside
     /// </summary>
-    public class ProcessJobExecutor : IJobExecutor
+    public class DefaultJobExecutor : IJobExecutor
     {
         private IJobService jobService;
 
@@ -23,11 +23,11 @@ namespace Jobbr.Server.Core
 
         private IList<JobRun> queue;
 
-        private IList<RunnerProcess> running = new List<RunnerProcess>();
+        private IList<JobRunContext> running = new List<JobRunContext>();
 
         private object syncRoot = new object();
 
-        public ProcessJobExecutor(IJobService jobService, IJobbrConfiguration configuration)
+        public DefaultJobExecutor(IJobService jobService, IJobbrConfiguration configuration)
         {
             this.jobService = jobService;
             this.configuration = configuration;
@@ -48,7 +48,7 @@ namespace Jobbr.Server.Core
                     this.jobService.UpdateJobRunState(jobRun, JobRunState.Preparing);
                     this.queue.Remove(jobRun);
 
-                    var process = new RunnerProcess(this.jobService, this.configuration);
+                    var process = new JobRunContext(this.jobService, this.configuration);
 
                     var run = jobRun;
                     new TaskFactory().StartNew(() => process.Start(run));

@@ -80,7 +80,7 @@
     <Compile Include="Core\JobRunModificationEventArgs.cs" />
     <Compile Include="Core\JobService.cs" />
     <Compile Include="Core\JobTriggerEventArgs.cs" />
-    <Compile Include="Core\RunnerProcess.cs" />
+    <Compile Include="Core\JobRunContext.cs" />
     <Compile Include="DefaultKernel.cs" />
     <Compile Include="Common\IJobbrConfiguration.cs" />
     <Compile Include="Common\IJobbrStorageProvider.cs" />

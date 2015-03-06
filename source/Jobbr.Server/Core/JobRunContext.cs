@@ -1,7 +1,7 @@
-using System.ComponentModel;
-using System.Data.Common;
+using System.Diagnostics;
 using System.IO;
 
+using Jobbr.Common;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
 
@@ -10,20 +10,44 @@ namespace Jobbr.Server.Core
     /// <summary>
     /// The runner process.
     /// </summary>
-    internal class RunnerProcess
+    internal class JobRunContext
     {
+        /// <summary>
+        /// The job service.
+        /// </summary>
         private readonly IJobService jobService;
 
+        /// <summary>
+        /// The configuration.
+        /// </summary>
         private readonly IJobbrConfiguration configuration;
 
+        /// <summary>
+        /// The job run.
+        /// </summary>
         private JobRun jobRun;
 
-        public RunnerProcess(IJobService jobService, IJobbrConfiguration configuration)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JobRunContext"/> class.
+        /// </summary>
+        /// <param name="jobService">
+        /// The job service.
+        /// </param>
+        /// <param name="configuration">
+        /// The configuration.
+        /// </param>
+        public JobRunContext(IJobService jobService, IJobbrConfiguration configuration)
         {
             this.jobService = jobService;
             this.configuration = configuration;
         }
 
+        /// <summary>
+        /// The start.
+        /// </summary>
+        /// <param name="jobRun">
+        /// The job run.
+        /// </param>
         public void Start(JobRun jobRun)
         {
             this.jobRun = jobRun;
@@ -41,14 +65,21 @@ namespace Jobbr.Server.Core
 
             var runnerFileExe = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
 
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            Process proc = new Process();
             proc.EnableRaisingEvents = true;
             proc.StartInfo.FileName = runnerFileExe;
-#if DEBUG            
-            proc.StartInfo.Arguments = "--debug --jobRunId " + jobRun.Id;
-#else
-            proc.StartInfo.Arguments = "--jobRunId " + jobRun.Id;
-#endif            
+
+            var arguments = string.Format("--jobRunId {0} --server {1}", jobRun.Id, this.configuration.BackendAddress);
+
+            if (this.configuration.BeChatty)
+            {
+                arguments += " --chatty";
+            }
+
+#if DEBUG
+            arguments += " --debug";
+#endif
+            proc.StartInfo.Arguments = arguments;
             proc.StartInfo.WorkingDirectory = workDir;
 
             this.jobService.UpdateJobRunState(jobRun, JobRunState.Starting);

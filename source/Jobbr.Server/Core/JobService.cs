@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Jobbr.Common;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
 
@@ -61,6 +62,8 @@ namespace Jobbr.Server.Core
             jobRun.State = state;
 
             this.storageProvider.Update(jobRun);
+
+            this.OnJobRunModification(new JobRunModificationEventArgs() { JobRun = jobRun });
         }
 
         public void UpdateJobRunDirectories(JobRun jobRun, string workDir, string tempDir)
