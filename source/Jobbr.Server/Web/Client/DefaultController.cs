@@ -19,12 +19,15 @@ namespace Jobbr.Server.Web.Client
     {
         private readonly IJobService jobService;
 
-        private readonly IJobbrStorageProvider storageProvider;
+        private readonly IJobStorageProvider jobStorageProvider;
 
-        public JobRunController(IJobService jobService, IJobbrStorageProvider storageProvider)
+        private readonly IArtefactsStorageProvider artefactsStorageProvider;
+
+        public JobRunController(IJobService jobService, IJobStorageProvider jobStorageProvider, IArtefactsStorageProvider artefactsStorageProvider)
         {
             this.jobService = jobService;
-            this.storageProvider = storageProvider;
+            this.jobStorageProvider = jobStorageProvider;
+            this.artefactsStorageProvider = artefactsStorageProvider;
         }
 
         [HttpGet]
@@ -38,8 +41,8 @@ namespace Jobbr.Server.Web.Client
                 return this.NotFound();
             }
 
-            var trigger = this.storageProvider.GetTriggerById(jobRun.TriggerId);
-            var job = this.storageProvider.GetJobById(jobRun.JobId);
+            var trigger = this.jobStorageProvider.GetTriggerById(jobRun.TriggerId);
+            var job = this.jobStorageProvider.GetJobById(jobRun.JobId);
 
             var infoDto = new JobRunInfoDto()
                               {
@@ -81,11 +84,20 @@ namespace Jobbr.Server.Web.Client
         [Route("client/jobrun/{jobRunId}/artefacts")]
         public IHttpActionResult AddArtefacts(long jobRunId)
         {
+            var jobRun = this.jobService.GetJobRun(jobRunId);
+
+            if (jobRun == null)
+            {
+                return this.NotFound();
+            }
+
             IEnumerable<HttpContent> parts = this.Request.Content.ReadAsMultipartAsync().Result.Contents;
 
             foreach (var part in parts)
             {
                 var result = part.ReadAsStringAsync().Result;
+
+                this.artefactsStorageProvider.Save(jobRun.UniqueId, "blupp", null);
             }
 
             return this.StatusCode(HttpStatusCode.Accepted);

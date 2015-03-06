@@ -10,9 +10,9 @@ namespace Jobbr.Server.Web.Api
     /// </summary>
     public class JobController : ApiController
     {
-        private readonly IJobbrStorageProvider storageProvider;
+        private readonly IJobStorageProvider storageProvider;
 
-        public JobController(IJobbrStorageProvider storageProvider)
+        public JobController(IJobStorageProvider storageProvider)
         {
             this.storageProvider = storageProvider;
         }
