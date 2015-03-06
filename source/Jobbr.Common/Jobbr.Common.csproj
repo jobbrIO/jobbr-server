@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IJobbrDependencyResolver.cs" />
+    <Compile Include="JobRunInfoDto.cs" />
     <Compile Include="JobRunState.cs" />
     <Compile Include="JobRunUpdateDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
