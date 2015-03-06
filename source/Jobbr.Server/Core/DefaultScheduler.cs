@@ -77,13 +77,13 @@ namespace Jobbr.Server.Core
                 }
                 else
                 {
+                    // Is this value in sync with the schedule table?
                     if (nextScheduledJobRun.PlannedStartDateTimeUtc == calculatedNextRun)
                     {
                         // Ok, all in sync --> Nothing to do
                     }
                     else
                     {
-
                         if (nextScheduledJobRun.PlannedStartDateTimeUtc.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) < calculatedNextRun)
                         {
                             // TODO: Change the trigger
@@ -93,8 +93,6 @@ namespace Jobbr.Server.Core
                             // TODO: Its too late --> Log
                         }
                     }
-
-                    // Is this value in sync with the schedule table?
                 }
             }
             else
@@ -147,9 +145,6 @@ namespace Jobbr.Server.Core
         private void JobServiceOnTriggerUpdate(object sender, JobTriggerEventArgs args)
         {
             Console.WriteLine("Got an update for the job " + args.Trigger.Id);
-
-            // Handle IsActive == false --> Remove Schedules
-            // Handle IsActive == true --> Add New ones
 
             if (args.Trigger.IsActive)
             {
