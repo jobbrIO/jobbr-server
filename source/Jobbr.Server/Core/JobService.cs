@@ -24,6 +24,8 @@ namespace Jobbr.Server.Core
         /// </summary>
         public event EventHandler<JobEventArgs> JobAdded;
 
+        public event EventHandler<JobRunModificationEventArgs> JobRunModification; 
+
         public JobService(IJobbrStorageProvider storageProvider)
         {
             this.storageProvider = storageProvider;
@@ -47,12 +49,16 @@ namespace Jobbr.Server.Core
 
         public List<JobRun> GetJobAllRuns()
         {
-            throw new NotImplementedException();
+            // TODO: Imnplement
+
+            return null;
         }
 
         public JobRun GetJobRun(long id)
         {
-            throw new NotImplementedException();
+            // TODO: Imnplement
+
+            return null;
         }
 
         public List<JobTriggerBase> GetTriggers(long jobId)
@@ -159,12 +165,28 @@ namespace Jobbr.Server.Core
                 PlannedStartDateTimeUtc = startDateTimeUtc
             };
 
+            this.OnJobRunModification(new JobRunModificationEventArgs
+                                          {
+                                              Job = job,
+                                              Trigger = trigger,
+                                              JobRun = jobRun
+                                          });
+
             return this.storageProvider.AddJobRun(jobRun);
         }
 
         protected virtual void OnTriggerUpdate(JobTriggerEventArgs e)
         {
             var handler = this.TriggerUpdate;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnJobRunModification(JobRunModificationEventArgs e)
+        {
+            var handler = this.JobRunModification;
             if (handler != null)
             {
                 handler(this, e);

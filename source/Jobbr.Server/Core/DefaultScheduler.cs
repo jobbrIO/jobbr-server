@@ -81,15 +81,19 @@ namespace Jobbr.Server.Core
                     {
                         // Ok, all in sync --> Nothing to do
                     }
-                    else if (nextScheduledJobRun.PlannedStartDateTimeUtc.AddSeconds(10) < calculatedNextRun)
-                    {
-                        // TODO: Change the trigger
-                    }
                     else
                     {
-                        // TODO: Its too late --> Log
+
+                        if (nextScheduledJobRun.PlannedStartDateTimeUtc.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) < calculatedNextRun)
+                        {
+                            // TODO: Change the trigger
+                        }
+                        else
+                        {
+                            // TODO: Its too late --> Log
+                        }
                     }
-                    
+
                     // Is this value in sync with the schedule table?
                 }
             }
@@ -101,11 +105,13 @@ namespace Jobbr.Server.Core
 
         private DateTime? GetNextTriggerDateTime(StartDateTimeUtcTrigger startDateTimeUtcTrigger)
         {
+            // TODO: Implement
             return null;
         }
 
         private DateTime? GetNextTriggerDateTime(InstantTrigger instantTrigger)
         {
+            // TODO: Implement deactivate the the trigger
             return null;
         }
 
