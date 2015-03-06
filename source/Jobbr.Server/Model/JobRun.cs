@@ -15,23 +15,23 @@ namespace Jobbr.Server.Model
 
         public long TriggerId { get; set; }
 
-        public Guid Guid { get; set; }
+        public string UniqueId { get; set; }
 
         public object JobParameters { get; set; }
 
         public object InstanceParameters { get; set; }
 
-        public int Progress { get; set; }
+        public int? Progress { get; set; }
 
         public JobRunState State { get; set; }
 
         public DateTime PlannedStartDateTimeUtc { get; set; }
 
-        public DateTime ActualStartDateTimeUtc { get; set; }
+        public DateTime? ActualStartDateTimeUtc { get; set; }
 
-        public DateTime EstimatedEndDateTimeUtc { get; set; }
+        public DateTime? EstimatedEndDateTimeUtc { get; set; }
 
-        public DateTime ActualEndDateTimeUtc { get; set; }
+        public DateTime? ActualEndDateTimeUtc { get; set; }
 
         public int Pid { get; set; }
 
