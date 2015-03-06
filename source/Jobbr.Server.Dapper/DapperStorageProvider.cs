@@ -43,11 +43,14 @@ namespace Jobbr.Server.Dapper
 
         public long AddJob(Job job)
         {
-            var sql = string.Format("INSERT INTO {0}.Contacts([Name],[Type],[CreatedDateTimeUtc]) VALUES (@Name, @Type, @UtcNow)", this.schemaName);
+            var sql = string.Format(
+                        @"INSERT INTO {0}.Job ([Name],[Type],[CreatedDateTimeUtc]) VALUES (@Name, @Type, @UtcNow)
+                          SELECT CAST(SCOPE_IDENTITY() as int)", 
+                        this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
             {
-                return connection.Execute(sql, new { job.Name, job.Type, DateTime.UtcNow, });
+                return connection.Query<int>(sql, new { job.Name, job.Type, DateTime.UtcNow, }).Single();
             }
         }
 
@@ -108,7 +111,8 @@ namespace Jobbr.Server.Dapper
         {
             var sql = string.Format(
                         @"INSERT INTO {0}.JobRuns ([JobId],[TriggerId],[UniqueId],[JobParameters],[InstanceParameters],[PlannedStartDateTimeUtc],[State])
-                          VALUES (@JobId,@TriggerId,@UniqueId,@JobParameters,@InstanceParameters,@PlannedStartDateTimeUtc,@State)",
+                          VALUES (@JobId,@TriggerId,@UniqueId,@JobParameters,@InstanceParameters,@PlannedStartDateTimeUtc,@State)
+                          SELECT CAST(SCOPE_IDENTITY() as int)",
                         this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
@@ -128,7 +132,9 @@ namespace Jobbr.Server.Dapper
                             State = jobRun.State.ToString()
                         };
 
-                return connection.Execute(sql, jobRunObject);
+                var id = connection.Query<int>(sql, jobRunObject).Single();
+
+                return id;
             }
         }
 
@@ -297,7 +303,8 @@ namespace Jobbr.Server.Dapper
         {
             var sql = string.Format(
                 @"INSERT INTO {0}.Trigger([JobId],[TriggerType],[Definition],[StartDateTimeUtc],[DelayInMinutes],[IsActive],[UserId],[UserName],[UserDisplayName],[Parameter],[Comment],[CreatedDateTimeUtc])
-                  VALUES (@JobId,@TriggerType,@Definition,@StartDateTimeUtc,@DelayInMinutes,1,@UserId,@UserName,@UserDisplayName,@Parameter,@Comment,@UtcNowd)",
+                  VALUES (@JobId,@TriggerType,@Definition,@StartDateTimeUtc,@DelayInMinutes,1,@UserId,@UserName,@UserDisplayName,@Parameter,@Comment,@UtcNowd)
+                  SELECT CAST(SCOPE_IDENTITY() as int)",
                 this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
@@ -322,7 +329,7 @@ namespace Jobbr.Server.Dapper
                         DateTime.UtcNow
                     };
 
-                return connection.Execute(sql, triggerObject);
+                return connection.Query<int>(sql, triggerObject).Single();
             }
         }
     }
