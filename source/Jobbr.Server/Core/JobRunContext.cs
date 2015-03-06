@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 
@@ -21,6 +22,8 @@ namespace Jobbr.Server.Core
         /// The configuration.
         /// </summary>
         private readonly IJobbrConfiguration configuration;
+
+        public event EventHandler<JobRunEndedEventArgs> Ended;
 
         /// <summary>
         /// The job run.
@@ -85,10 +88,20 @@ namespace Jobbr.Server.Core
             this.jobService.UpdateJobRunState(jobRun, JobRunState.Starting);
 
             proc.Start();
-
+            proc.Exited += (o, args) => this.OnEnded(new JobRunEndedEventArgs() { ExitCode = proc.ExitCode, JobRun = jobRun });
+            
             this.jobService.SetPidForJobRun(jobRun, proc.Id);
 
             this.jobService.UpdateJobRunState(jobRun, JobRunState.Started);
+        }
+
+        protected virtual void OnEnded(JobRunEndedEventArgs e)
+        {
+            var handler = this.Ended;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
     }
 }
