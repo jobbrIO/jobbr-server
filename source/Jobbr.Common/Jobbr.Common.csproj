@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="IJobbrDependencyResolver.cs" />
     <Compile Include="JobRunState.cs" />
+    <Compile Include="JobRunUpdateDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
