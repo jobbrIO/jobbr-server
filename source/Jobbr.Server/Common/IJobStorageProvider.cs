@@ -4,7 +4,7 @@ using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Common
 {
-    public interface IJobbrStorageProvider
+    public interface IJobStorageProvider
     {
         List<Job> GetJobs();
 

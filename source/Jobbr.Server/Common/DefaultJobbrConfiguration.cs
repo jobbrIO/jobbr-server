@@ -5,7 +5,7 @@ namespace Jobbr.Server.Common
 {
     public class DefaultJobbrConfiguration : IJobbrConfiguration
     {
-        public IJobbrStorageProvider StorageProvider { get; set; }
+        public IJobStorageProvider JobStorageProvider { get; set; }
 
         public Func<string> JobRunnerExeResolver { get; set; }
 
@@ -18,6 +18,8 @@ namespace Jobbr.Server.Common
         public string JobRunDirectory  { get; set; }
 
         public bool BeChatty { get; set; }
+
+        public IArtefactsStorageProvider ArtefactStorageProvider { get; set; }
 
         public DefaultJobbrConfiguration()
         {

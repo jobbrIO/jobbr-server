@@ -74,6 +74,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\FileSystemArtefactsStorageProvider.cs" />
+    <Compile Include="Common\IArtefactsStorageProvider.cs" />
     <Compile Include="Core\IJobService.cs" />
     <Compile Include="Core\JobEventArgs.cs" />
     <Compile Include="Core\DefaultJobExecutor.cs" />
@@ -83,7 +85,7 @@
     <Compile Include="Core\JobRunContext.cs" />
     <Compile Include="DefaultKernel.cs" />
     <Compile Include="Common\IJobbrConfiguration.cs" />
-    <Compile Include="Common\IJobbrStorageProvider.cs" />
+    <Compile Include="Common\IJobStorageProvider.cs" />
     <Compile Include="Common\JobbrDependencyResolver.cs" />
     <Compile Include="Core\DefaultScheduler.cs" />
     <Compile Include="IJobExecutor.cs" />

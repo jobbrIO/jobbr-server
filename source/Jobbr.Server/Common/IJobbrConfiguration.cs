@@ -10,7 +10,7 @@ namespace Jobbr.Server.Common
         /// <summary>
         /// Gets or sets the job repository provider.
         /// </summary>
-        IJobbrStorageProvider StorageProvider { get; set; }
+        IJobStorageProvider JobStorageProvider { get; set; }
 
         /// <summary>
         /// Gets or sets the job runner exe resolver.
@@ -35,5 +35,7 @@ namespace Jobbr.Server.Common
         string JobRunDirectory { get; }
 
         bool BeChatty { get; set; }
+
+        IArtefactsStorageProvider ArtefactStorageProvider { get; }
     }
 }

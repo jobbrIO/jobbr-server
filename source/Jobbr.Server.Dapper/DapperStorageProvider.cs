@@ -15,7 +15,7 @@ namespace Jobbr.Server.Dapper
     /// <summary>
     /// The jobbr dapper provider to store jobserver repository, queue and status information
     /// </summary>
-    public class DapperStorageProvider : IJobbrStorageProvider
+    public class DapperStorageProvider : IJobStorageProvider
     {
         private string connectionString;
 

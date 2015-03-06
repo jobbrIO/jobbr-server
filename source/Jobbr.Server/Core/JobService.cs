@@ -13,9 +13,9 @@ namespace Jobbr.Server.Core
     /// </summary>
     public class JobService : IJobService
     {
-        private readonly IJobbrStorageProvider storageProvider;
+        private readonly IJobStorageProvider storageProvider;
 
-        public JobService(IJobbrStorageProvider storageProvider)
+        public JobService(IJobStorageProvider storageProvider)
         {
             this.storageProvider = storageProvider;
         }
