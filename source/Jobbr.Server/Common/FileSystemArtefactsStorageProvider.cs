@@ -12,17 +12,16 @@ namespace Jobbr.Server.Common
         public FileSystemArtefactsStorageProvider(string dataDirectory)
         {
             this.dataDirectory = dataDirectory;
-
-            Directory.CreateDirectory(this.dataDirectory);
         }
 
         public void Save(string key, string fileName, Stream content)
         {
-            
+            var dir = Directory.CreateDirectory(Path.Combine(this.dataDirectory, key));
         }
 
         public Stream Load(string key, string fileName)
         {
+            var dir = Directory.CreateDirectory(Path.Combine(this.dataDirectory, key));
             return null;
         }
     }

@@ -70,6 +70,16 @@ namespace Jobbr.Server
             {
                 throw new Exception(string.Format("The RunnerExecutable '{0}' cannot be found!", executableFullPath));
             }
+
+            if (this.configuration.JobStorageProvider == null)
+            {
+                throw new Exception("Please provide a storage provider for Jobs!");
+            }
+
+            if (this.configuration.ArtefactStorageProvider == null)
+            {
+                throw new Exception("Please provide a storage provider for artefacts!");
+            }
         }
 
         /// <summary>
