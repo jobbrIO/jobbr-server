@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 using Jobbr.Runtime;
 
@@ -17,7 +18,9 @@ namespace Demo.JobRunner
         /// </param>
         public static void Main(string[] args)
         {
-            new JobbrRuntime().Run(args);
+            var jobbrRuntime = new JobbrRuntime(typeof(MyJobs.MinimalJob).Assembly);
+            
+            jobbrRuntime.Run(args);
         }
     }
 }
