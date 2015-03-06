@@ -14,6 +14,8 @@ namespace Jobbr.Runtime
     {
         private JobbrRuntimeClient client;
 
+        private CommandlineOptions commandlineOptions;
+
         /// <summary>
         /// The run.
         /// </summary>
@@ -22,20 +24,25 @@ namespace Jobbr.Runtime
         /// </param>
         public void Run(string[] args)
         {
-            var options = new CommandlineOptions();
-            CommandLine.Parser.Default.ParseArguments(args, options);
+            this.ParseArguments(args);
 
-            if (options.IsChatty)
-            {
-                Console.Write("This is the runner started at " + DateTime.UtcNow + " (UTC) with arguments " + string.Join(" ", args));
+            this.InitializeClient();
 
-                Console.WriteLine();
-                Console.WriteLine("JobRunId:  " + options.JobRunId);
-                Console.WriteLine("JobServer: " + options.JobServer);
-                Console.WriteLine("IsDebug:   " + options.IsDebug);
-            }
+            this.DisplayWelcomeBannerIfEnabled(args);
 
-            if (options.IsDebug)
+            this.WaitForDebuggerIfEnabled();
+
+        }
+
+        private void InitializeClient()
+        {
+            this.client = new JobbrRuntimeClient(this.commandlineOptions.JobServer, this.commandlineOptions.JobRunId);
+            this.client.PublishState(JobRunState.Initializing);
+        }
+
+        private void WaitForDebuggerIfEnabled()
+        {
+            if (this.commandlineOptions.IsDebug)
             {
                 var beginWaitForDebugger = DateTime.Now;
                 var endWaitForDebugger = beginWaitForDebugger.AddSeconds(10);
@@ -59,9 +66,26 @@ namespace Jobbr.Runtime
             }
 
             Debugger.Break();
+        }
 
-            this.client = new JobbrRuntimeClient(options.JobServer, options.JobRunId);
-            this.client.PublishState(JobRunState.Initializing);
+        private void DisplayWelcomeBannerIfEnabled(string[] args)
+        {
+            if (this.commandlineOptions.IsChatty)
+            {
+                Console.Write(
+                    "This is the runner started at " + DateTime.UtcNow + " (UTC) with arguments " + string.Join(" ", args));
+
+                Console.WriteLine();
+                Console.WriteLine("JobRunId:  " + this.commandlineOptions.JobRunId);
+                Console.WriteLine("JobServer: " + this.commandlineOptions.JobServer);
+                Console.WriteLine("IsDebug:   " + this.commandlineOptions.IsDebug);
+            }
+        }
+
+        private void ParseArguments(string[] args)
+        {
+            this.commandlineOptions = new CommandlineOptions();
+            CommandLine.Parser.Default.ParseArguments(args, this.commandlineOptions);
         }
     }
 }
