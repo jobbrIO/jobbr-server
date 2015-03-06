@@ -49,7 +49,12 @@ namespace Jobbr.Common
         /// The external code was run
         /// </summary>
         Finishing,
-        
+
+        /// <summary>
+        /// Collecting the files
+        /// </summary>
+        Collecting,
+
         /// <summary>
         /// The job as executed sucessfully and the executer has cleaned up and terminated
         /// </summary>
