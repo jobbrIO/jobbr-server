@@ -48,6 +48,17 @@ namespace Jobbr.Server.Core
 
         JobRun GetNextJobRunByTriggerId(long triggerId);
 
-        int CreateJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc);
+        long CreateJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc);
+
+        /// <summary>
+        /// The job run modification.
+        /// </summary>
+        event EventHandler<JobRunModificationEventArgs> JobRunModification;
+
+        List<JobRun> GetJobRuns(JobRunState state);
+
+        void UpdateJobRunState(JobRun jobRun, JobRunState state);
+
+        void UpdateJobRunDirectories(JobRun jobRun, string workDir, string tempDir);
     }
 }

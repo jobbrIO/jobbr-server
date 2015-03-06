@@ -14,6 +14,11 @@ namespace Jobbr.Server.Core
     {
         private readonly IJobbrStorageProvider storageProvider;
 
+        public JobService(IJobbrStorageProvider storageProvider)
+        {
+            this.storageProvider = storageProvider;
+        }
+
         /// <summary>
         /// The trigger updated.
         /// </summary>
@@ -24,12 +29,10 @@ namespace Jobbr.Server.Core
         /// </summary>
         public event EventHandler<JobEventArgs> JobAdded;
 
-        public event EventHandler<JobRunModificationEventArgs> JobRunModification; 
-
-        public JobService(IJobbrStorageProvider storageProvider)
-        {
-            this.storageProvider = storageProvider;
-        }
+        /// <summary>
+        /// The job run modification.
+        /// </summary>
+        public event EventHandler<JobRunModificationEventArgs> JobRunModification;
 
         public List<Job> GetAllJobs()
         {
@@ -47,18 +50,37 @@ namespace Jobbr.Server.Core
             return this.storageProvider.AddJob(job);
         }
 
+        public List<JobRun> GetJobRuns(JobRunState state)
+        {
+            // TODO: Performance
+            return this.storageProvider.GetJobRuns().Where(jr => jr.State == state).ToList();
+        }
+
+        public void UpdateJobRunState(JobRun jobRun, JobRunState state)
+        {
+            jobRun.State = state;
+
+            this.storageProvider.Update(jobRun);
+        }
+
+        public void UpdateJobRunDirectories(JobRun jobRun, string workDir, string tempDir)
+        {
+            jobRun.WorkingDir = workDir;
+            jobRun.TempDir = tempDir;
+
+            this.storageProvider.Update(jobRun);
+        }
+
         public List<JobRun> GetJobAllRuns()
         {
-            // TODO: Imnplement
-
-            return null;
+            // TODO: Performance
+            return this.storageProvider.GetJobRuns();
         }
 
         public JobRun GetJobRun(long id)
         {
-            // TODO: Imnplement
-
-            return null;
+            // TODO: Performance
+            return this.storageProvider.GetJobRuns().FirstOrDefault(jr => jr.Id == id);
         }
 
         public List<JobTriggerBase> GetTriggers(long jobId)
@@ -152,7 +174,7 @@ namespace Jobbr.Server.Core
             return this.storageProvider.GetFutureJobRunsByTriggerId(triggerId);
         }
 
-        public int CreateJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc)
+        public long CreateJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc)
         {
             var jobRun = new JobRun()
             {
@@ -160,19 +182,20 @@ namespace Jobbr.Server.Core
                 TriggerId = trigger.Id,
                 JobParameters = job.Parameters,
                 InstanceParameters = trigger.Parameters,
-                Guid = Guid.NewGuid(),
+                UniqueId = Guid.NewGuid().ToString(),
                 State = JobRunState.Scheduled,
                 PlannedStartDateTimeUtc = startDateTimeUtc
             };
-
+            
+            jobRun.Id = this.storageProvider.AddJobRun(jobRun);
+            
             this.OnJobRunModification(new JobRunModificationEventArgs
                                           {
                                               Job = job,
                                               Trigger = trigger,
                                               JobRun = jobRun
                                           });
-
-            return this.storageProvider.AddJobRun(jobRun);
+            return jobRun.Id;
         }
 
         protected virtual void OnTriggerUpdate(JobTriggerEventArgs e)
