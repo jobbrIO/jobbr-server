@@ -31,5 +31,15 @@ namespace Jobbr.Server.Common
         JobRun GetFutureJobRunsByTriggerId(long triggerId);
 
         int AddJobRun(JobRun jobRun);
+
+        List<JobRun> GetJobRuns();
+
+        /// <summary>
+        /// The update.
+        /// </summary>
+        /// <param name="jobRun">
+        ///     The job run.
+        /// </param>
+        bool Update(JobRun jobRun);
     }
 }

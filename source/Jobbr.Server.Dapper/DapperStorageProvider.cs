@@ -29,6 +29,8 @@ namespace Jobbr.Server.Dapper
 
         public List<Job> GetJobs()
         {
+            // TODO: Deserialize Json Params
+
             var sql = string.Format("SELECT * FROM {0}.Jobs", this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
@@ -78,6 +80,7 @@ namespace Jobbr.Server.Dapper
 
         public JobRun GetLastJobRunByTriggerId(long triggerId)
         {
+            // TODO: Deserialize Json Params
             var sql = string.Format("SELECT TOP 1 * FROM {0}.JobRuns WHERE [TriggerId] = @TriggerId ORDER BY [PlannedStartDateTimeUtc] DESC", this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
@@ -90,6 +93,7 @@ namespace Jobbr.Server.Dapper
 
         public JobRun GetFutureJobRunsByTriggerId(long triggerId)
         {
+            // TODO: Deserialize Json Params
             var sql = string.Format("SELECT * FROM {0}.JobRuns WHERE [TriggerId] = @TriggerId AND PlannedStartDateTimeUtc >= @DateTimeNowUtc ORDER BY [PlannedStartDateTimeUtc] ASC", this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
@@ -117,7 +121,7 @@ namespace Jobbr.Server.Dapper
                         {
                             jobRun.JobId,
                             jobRun.TriggerId,
-                            UniqueId = jobRun.Guid,
+                            jobRun.UniqueId,
                             JobParameters = jobParameter,
                             InstanceParameters = instanceParameter,
                             jobRun.PlannedStartDateTimeUtc,
@@ -125,6 +129,68 @@ namespace Jobbr.Server.Dapper
                         };
 
                 return connection.Execute(sql, jobRunObject);
+            }
+        }
+
+        public List<JobRun> GetJobRuns()
+        {
+            // TODO: Deserialize Json Params
+
+            var sql = string.Format("SELECT * FROM {0}.JobRuns", this.schemaName);
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                return connection.Query<JobRun>(sql).ToList();
+            }
+        }
+
+        public bool Update(JobRun jobRun)
+        {
+            var fromDb = this.GetJobRuns().FirstOrDefault(jr => jr.Id == jobRun.Id);
+            
+            if (fromDb == null)
+            {
+                return false;
+            }
+
+            var sql = string.Format(
+                                    @"UPDATE {0}.{1} SET
+                                        [JobParameters] = @JobParameters,
+                                        [InstanceParameters] = @InstanceParameters,
+                                        [PlannedStartDateTimeUtc] = @PlannedStartDateTimeUtc,
+                                        [ActualStartDateTimeUtc] = @ActualStartDateTimeUtc,
+                                        [EstimatedEndDateTimeUtc] = @EstimatedEndDateTimeUtc,
+                                        [ActualEndDateTimeUtc] = @ActualEndDateTimeUtc,
+                                        [Progress] = @Progress,
+                                        [State] = @State,
+                                        [Pid] = @Pid,
+                                        [WorkingDir] = @WorkingDir,
+                                        [TempDir] = @TempDir
+                                    WHERE [Id] = @Id",
+                                    this.schemaName, "JobRuns");
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                var jobParameters = JsonConvert.SerializeObject(jobRun.JobParameters);
+                var instanceParameters = JsonConvert.SerializeObject(jobRun.InstanceParameters);
+
+                connection.Execute(sql, new
+                                            {
+                                                jobRun.Id,
+                                                JobParameters = jobParameters,
+                                                InstanceParameters = instanceParameters,
+                                                jobRun.PlannedStartDateTimeUtc,
+                                                jobRun.ActualStartDateTimeUtc,
+                                                jobRun.EstimatedEndDateTimeUtc,
+                                                jobRun.ActualEndDateTimeUtc,
+                                                jobRun.Progress,
+                                                State = jobRun.State.ToString(),
+                                                jobRun.Pid,
+                                                jobRun.WorkingDir,
+                                                jobRun.TempDir,
+                                            });
+
+                return true;
             }
         }
 
@@ -145,7 +211,7 @@ namespace Jobbr.Server.Dapper
 
         public bool DisableTrigger(long triggerId)
         {
-            var sql = string.Format("UPDATE {0}.Contacts SET [IsActive] = @IsActive WHERE [JobId] = @JobId", this.schemaName);
+            var sql = string.Format("UPDATE {0}.Triggers SET [IsActive] = @IsActive WHERE [TriggerId] = @TriggerId", this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
             {
