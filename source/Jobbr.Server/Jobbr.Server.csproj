@@ -76,23 +76,24 @@
   <ItemGroup>
     <Compile Include="Core\IJobService.cs" />
     <Compile Include="Core\JobEventArgs.cs" />
-    <Compile Include="Core\JobProcessStarter.cs" />
+    <Compile Include="Core\ProcessJobExecutor.cs" />
     <Compile Include="Core\JobRunModificationEventArgs.cs" />
     <Compile Include="Core\JobService.cs" />
     <Compile Include="Core\JobTriggerEventArgs.cs" />
+    <Compile Include="Core\RunnerProcess.cs" />
     <Compile Include="DefaultKernel.cs" />
     <Compile Include="Common\IJobbrConfiguration.cs" />
     <Compile Include="Common\IJobbrStorageProvider.cs" />
     <Compile Include="Common\JobbrDependencyResolver.cs" />
     <Compile Include="Core\DefaultScheduler.cs" />
-    <Compile Include="IJobStarter.cs" />
+    <Compile Include="IJobExecutor.cs" />
     <Compile Include="Model\JobRunState.cs" />
     <Compile Include="Web\WebHost.cs" />
     <Compile Include="Web\Api\DefaultController.cs" />
     <Compile Include="Web\Api\JobController.cs" />
     <Compile Include="Web\Startup.cs" />
     <Compile Include="Model\Job.cs" />
-    <Compile Include="Common\JobbrConfiguration.cs" />
+    <Compile Include="Common\DefaultJobbrConfiguration.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Model\JobRun.cs" />
     <Compile Include="Model\JobTriggerBase.cs" />

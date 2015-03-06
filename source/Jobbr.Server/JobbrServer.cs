@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 using Jobbr.Server.Common;
 using Jobbr.Server.Core;
@@ -24,9 +25,9 @@ namespace Jobbr.Server
         private readonly DefaultScheduler scheduler;
 
         /// <summary>
-        /// The starter.
+        /// The executor.
         /// </summary>
-        private readonly IJobStarter starter;
+        private readonly IJobExecutor executor;
 
         /// <summary>
         /// The web host.
@@ -46,7 +47,7 @@ namespace Jobbr.Server
 
             this.webHost = kernel.GetService<WebHost>();
             this.scheduler = kernel.GetService<DefaultScheduler>();
-            this.starter = kernel.GetService<IJobStarter>();
+            this.executor = kernel.GetService<IJobExecutor>();
         }
 
         /// <summary>
@@ -54,9 +55,21 @@ namespace Jobbr.Server
         /// </summary>
         public void Start()
         {
+            this.ValidateConfiguration();
+
             this.webHost.Start();
             this.scheduler.Start();
-            this.starter.Start();
+            this.executor.Start();
+        }
+
+        private void ValidateConfiguration()
+        {
+            var executableFullPath = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
+
+            if (!File.Exists(executableFullPath))
+            {
+                throw new Exception(string.Format("The RunnerExecutable '{0}' cannot be found!", executableFullPath));
+            }
         }
 
         /// <summary>
@@ -66,7 +79,7 @@ namespace Jobbr.Server
         {
             this.webHost.Stop();
             this.scheduler.Stop();
-            this.starter.Stop();
+            this.executor.Stop();
         }
 
         /// <summary>

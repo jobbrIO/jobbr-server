@@ -25,7 +25,7 @@ namespace Jobbr.Server
 
             this.Bind<IJobService>().To<JobService>().InSingletonScope();
             this.Bind<DefaultScheduler>().To<DefaultScheduler>();
-            this.Bind<IJobStarter>().To<JobProcessStarter>();
+            this.Bind<IJobExecutor>().To<ProcessJobExecutor>();
         }
     }
 }
