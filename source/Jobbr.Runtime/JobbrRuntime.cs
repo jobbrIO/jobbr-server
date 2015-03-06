@@ -73,7 +73,7 @@ namespace Jobbr.Runtime
             }
             catch (Exception e)
             {
-                this.client.PublishState(JobRunState.Failed);
+                Environment.ExitCode = 1;
             }
 
             this.End();

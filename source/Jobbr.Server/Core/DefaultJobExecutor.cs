@@ -64,6 +64,11 @@ namespace Jobbr.Server.Core
             var jobRunContext = sender as JobRunContext;
             jobRunContext.Ended -= this.ContextOnEnded;
 
+            if (jobRunEndedEventArgs.ExitCode != 0)
+            {
+                this.jobService.UpdateJobRunState(jobRunEndedEventArgs.JobRun, JobRunState.Failed);
+            }
+
             this.running.Remove(jobRunContext);
         }
 
@@ -90,18 +95,20 @@ namespace Jobbr.Server.Core
             {
                 // a) TODO: Remove from queue
 
-                if (args.JobRun.State == JobRunState.Scheduled)
+                if (this.queue.All(jr => jr.Id != args.JobRun.Id))
                 {
-                    if (this.queue.All(jr => jr.Id != args.JobRun.Id))
+                    // Only add scheduled jobruns
+                    if (args.JobRun.State == JobRunState.Scheduled)
                     {
                         // b) Add to queue
                         this.queue.Add(args.JobRun);
                     }
-                    else
-                    {
-                        // c) TODO: Change information
-                    }
                 }
+                else
+                {
+                    // c) TODO: Change information
+                }
+
             }
         }
 
