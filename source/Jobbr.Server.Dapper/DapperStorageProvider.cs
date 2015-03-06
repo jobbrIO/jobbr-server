@@ -190,6 +190,17 @@ namespace Jobbr.Server.Dapper
             }
         }
 
+        public Job GetJobById(long id)
+        {
+            var sql = string.Format("SELECT TOP 1 * FROM {0}.Jobs WHERE [Id] = @Id", this.schemaName);
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                return connection.Query<Job>(sql, new { Id = id }).FirstOrDefault();
+            }
+        }
+
+
         public long AddTrigger(CronTrigger trigger)
         {
             return this.InsertTrigger(trigger, "Cron", trigger.Definition);

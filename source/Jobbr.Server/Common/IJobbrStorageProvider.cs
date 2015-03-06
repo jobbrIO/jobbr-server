@@ -41,5 +41,7 @@ namespace Jobbr.Server.Common
         ///     The job run.
         /// </param>
         bool Update(JobRun jobRun);
+
+        Job GetJobById(long id);
     }
 }
