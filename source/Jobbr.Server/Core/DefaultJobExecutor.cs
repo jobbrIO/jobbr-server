@@ -47,7 +47,7 @@ namespace Jobbr.Server.Core
                 {
                     this.jobService.UpdateJobRunState(jobRun, JobRunState.Preparing);
                     this.queue.Remove(jobRun);
-
+                    
                     var process = new JobRunContext(this.jobService, this.configuration);
 
                     var run = jobRun;
@@ -66,6 +66,7 @@ namespace Jobbr.Server.Core
             var futureRuns  = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc >= DateTime.UtcNow).OrderBy(jr => jr.PlannedStartDateTimeUtc));
 
             // TODO: Recover still running jobs
+            // TODO: Trigger past scheduled jobs with no runs?
 
             this.queue = new List<JobRun>(futureRuns);
 
@@ -80,13 +81,18 @@ namespace Jobbr.Server.Core
             {
                 // a) TODO: Remove from queue
 
-                if (this.queue.All(jr => jr.Id != args.JobRun.Id))
+                if (args.JobRun.State == JobRunState.Scheduled)
                 {
-                    // b) Add to queue
-                    this.queue.Add(args.JobRun);
+                    if (this.queue.All(jr => jr.Id != args.JobRun.Id))
+                    {
+                        // b) Add to queue
+                        this.queue.Add(args.JobRun);
+                    }
+                    else
+                    {
+                        // c) TODO: Change information
+                    }
                 }
-
-                // c) TODO: Change information
             }
         }
 

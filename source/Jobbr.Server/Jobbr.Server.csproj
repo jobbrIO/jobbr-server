@@ -76,7 +76,7 @@
   <ItemGroup>
     <Compile Include="Core\IJobService.cs" />
     <Compile Include="Core\JobEventArgs.cs" />
-    <Compile Include="Core\ProcessJobExecutor.cs" />
+    <Compile Include="Core\DefaultJobExecutor.cs" />
     <Compile Include="Core\JobRunModificationEventArgs.cs" />
     <Compile Include="Core\JobService.cs" />
     <Compile Include="Core\JobTriggerEventArgs.cs" />
