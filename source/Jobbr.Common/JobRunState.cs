@@ -43,7 +43,7 @@ namespace Jobbr.Common
         /// <summary>
         /// The logic has started to run
         /// </summary>
-        Running,
+        Processing,
 
         /// <summary>
         /// The external code was run

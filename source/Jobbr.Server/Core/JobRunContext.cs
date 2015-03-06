@@ -88,7 +88,7 @@ namespace Jobbr.Server.Core
 
             this.jobService.SetPidForJobRun(jobRun, proc.Id);
 
-            this.jobService.UpdateJobRunState(jobRun, JobRunState.Running);
+            this.jobService.UpdateJobRunState(jobRun, JobRunState.Started);
         }
     }
 }
