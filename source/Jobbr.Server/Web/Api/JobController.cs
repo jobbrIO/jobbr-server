@@ -10,25 +10,25 @@ namespace Jobbr.Server.Web.Api
     /// </summary>
     public class JobController : ApiController
     {
-        private readonly IJobStorageProvider storageProvider;
+        private readonly IJobStorageProvider jobStorageProvider;
 
-        public JobController(IJobStorageProvider storageProvider)
+        public JobController(IJobStorageProvider jobStorageProvider)
         {
-            this.storageProvider = storageProvider;
+            this.jobStorageProvider = jobStorageProvider;
         }
 
         [HttpGet]
         [Route("api/jobs")]
         public IHttpActionResult AllJobs()
         {
-            return this.Ok(this.storageProvider.GetJobs());
+            return this.Ok(this.jobStorageProvider.GetJobs());
         }
 
         [HttpGet]
         [Route("api/jobs/{jobId}/trigger")]
         public IHttpActionResult GetTriggersForJob(long jobId)
         {
-            return this.Ok(this.storageProvider.GetTriggers(jobId));
+            return this.Ok(this.jobStorageProvider.GetTriggers(jobId));
         }
 
         [HttpPost]
