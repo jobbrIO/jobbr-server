@@ -5,6 +5,9 @@ namespace Jobbr.Common
     /// </summary>
     public enum JobRunState
     {
+        /// <summary>
+        /// The null :)
+        /// </summary>
         Null,
 
         /// <summary>
@@ -28,7 +31,7 @@ namespace Jobbr.Common
         Started,
 
         /// <summary>
-        /// The Executable has started and connected to the jobserver
+        /// The Executable is running and connected to the jobserver
         /// </summary>
         Initializing,
 
