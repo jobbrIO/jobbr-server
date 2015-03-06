@@ -11,9 +11,14 @@ namespace Jobbr.Server.Model
         Scheduled,
 
         /// <summary>
-        /// The JobStarted has created a enviornment for the Job and copies a related files/data to the working directory
+        /// The JobStarter has created a enviornment for the Job and copies a related files/data to the working directory
         /// </summary>
         Preparing,
+
+        /// <summary>
+        /// The JobStarted has started a new executable 
+        /// </summary>
+        Starting,
 
         /// <summary>
         /// The JobStarted has created a new environment and the executable has been started
