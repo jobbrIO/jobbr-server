@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Jobbr.Common;
+
 namespace Jobbr.Runtime
 {
     /// <summary>
@@ -10,6 +12,8 @@ namespace Jobbr.Runtime
     /// </summary>
     public class JobbrRuntime
     {
+        private JobbrRuntimeClient client;
+
         /// <summary>
         /// The run.
         /// </summary>
@@ -38,7 +42,8 @@ namespace Jobbr.Runtime
                 var pressedEnter = false;
 
                 Console.WriteLine(string.Empty);
-                Console.WriteLine(">>> DEBUG-Mode is enabled. You have 10s to attach a Debugger\\n     or press enter to continue. Counting...");
+                Console.WriteLine(">>> DEBUG-Mode is enabled. You have 10s to attach a Debugger");
+                Console.Write("    or press enter to continue. Counting...");
 
                 new TaskFactory().StartNew(
                     () =>
@@ -47,11 +52,16 @@ namespace Jobbr.Runtime
                             pressedEnter = true;
                         });
 
-                while (!pressedEnter || (!Debugger.IsAttached && endWaitForDebugger < DateTime.Now))
+                while (!(pressedEnter || Debugger.IsAttached || endWaitForDebugger < DateTime.Now))
                 {
                     Thread.Sleep(500);
                 }
             }
+
+            Debugger.Break();
+
+            this.client = new JobbrRuntimeClient(options.JobServer, options.JobRunId);
+            this.client.PublishState(JobRunState.Initializing);
         }
     }
 }

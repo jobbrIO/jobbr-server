@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 
 using Jobbr.Common;
 
@@ -31,15 +33,18 @@ namespace Jobbr.Runtime
             this.jobRunId = jobRunId;
 
             this.httpClient = new HttpClient();
-            this.httpClient.BaseAddress = new Uri(jobServer + (jobServer.EndsWith("/") ? "" : "/") + "client");
+            this.httpClient.BaseAddress = new Uri(jobServer + (jobServer.EndsWith("/") ? string.Empty : "/") + "client/");
         }
 
-        public void PublishState(JobRunState state)
+        public bool PublishState(JobRunState state)
         {
-            var url = string.Format("/jobRun/{0}", this.jobRunId);
+            var url = string.Format("jobRun/{0}", this.jobRunId);
             var content = new JobRunUpdateDto { State = state };
 
-            this.httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(content)));
+            var request = this.httpClient.PutAsync(url, new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json"));
+            var result = request.Result;
+
+            return result.StatusCode == HttpStatusCode.Accepted;
         }
     }
 }
