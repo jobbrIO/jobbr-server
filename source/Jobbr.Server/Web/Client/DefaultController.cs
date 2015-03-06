@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System.Net;
+using System.Web.Http;
 
 using Jobbr.Common;
 using Jobbr.Server.Core;
@@ -28,12 +29,12 @@ namespace Jobbr.Server.Web.Client
                 return this.NotFound();
             }
 
-            if (dto.State != null)
+            if (dto.State != JobRunState.Null)
             {
                 this.jobService.UpdateJobRunState(jobRun, dto.State);
             }
 
-            return this.Ok();
+            return this.StatusCode(HttpStatusCode.Accepted);
         }
     }
 }
