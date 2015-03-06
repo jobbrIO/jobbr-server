@@ -50,6 +50,7 @@
     <Compile Include="JobbrRuntime.cs" />
     <Compile Include="CommandlineOptions.cs" />
     <Compile Include="JobbrRuntimeClient.cs" />
+    <Compile Include="NoDependencyResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
