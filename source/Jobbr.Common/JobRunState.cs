@@ -31,6 +31,11 @@ namespace Jobbr.Common
         Started,
 
         /// <summary>
+        /// The Executable itself has connected to the jobServer
+        /// </summary>
+        Connected,
+
+        /// <summary>
         /// The Executable is running and connected to the jobserver
         /// </summary>
         Initializing,

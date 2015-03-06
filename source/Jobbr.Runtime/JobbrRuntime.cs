@@ -27,6 +27,7 @@ namespace Jobbr.Runtime
             this.ParseArguments(args);
 
             this.InitializeClient();
+            this.client.PublishState(JobRunState.Initializing);
 
             this.DisplayWelcomeBannerIfEnabled(args);
 
@@ -37,7 +38,6 @@ namespace Jobbr.Runtime
         private void InitializeClient()
         {
             this.client = new JobbrRuntimeClient(this.commandlineOptions.JobServer, this.commandlineOptions.JobRunId);
-            this.client.PublishState(JobRunState.Initializing);
         }
 
         private void WaitForDebuggerIfEnabled()
