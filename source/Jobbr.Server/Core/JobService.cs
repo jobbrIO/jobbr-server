@@ -71,6 +71,13 @@ namespace Jobbr.Server.Core
             this.storageProvider.Update(jobRun);
         }
 
+        public void SetPidForJobRun(JobRun jobRun, int id)
+        {
+            jobRun.Pid = id;
+
+            this.storageProvider.Update(jobRun);
+        }
+
         public List<JobRun> GetJobAllRuns()
         {
             // TODO: Performance

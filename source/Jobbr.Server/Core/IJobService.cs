@@ -60,5 +60,7 @@ namespace Jobbr.Server.Core
         void UpdateJobRunState(JobRun jobRun, JobRunState state);
 
         void UpdateJobRunDirectories(JobRun jobRun, string workDir, string tempDir);
+
+        void SetPidForJobRun(JobRun jobRun, int id);
     }
 }

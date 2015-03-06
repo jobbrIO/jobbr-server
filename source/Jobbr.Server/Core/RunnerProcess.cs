@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Data.Common;
 using System.IO;
 
 using Jobbr.Server.Common;
@@ -53,6 +54,9 @@ namespace Jobbr.Server.Core
             this.jobService.UpdateJobRunState(jobRun, JobRunState.Starting);
 
             proc.Start();
+
+            this.jobService.SetPidForJobRun(jobRun, proc.Id);
+
         }
     }
 }
