@@ -53,6 +53,10 @@
       <Project>{fc503f89-61b7-4e2f-a950-6da216c830e1}</Project>
       <Name>Jobbr.Runtime</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Demo.MyJobs\Demo.MyJobs.csproj">
+      <Project>{f1c2e1e1-815d-4d07-91a2-fd8bee8c4240}</Project>
+      <Name>Demo.MyJobs</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
