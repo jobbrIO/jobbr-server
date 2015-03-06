@@ -17,6 +17,8 @@ namespace Jobbr.Server.Common
 
         public string JobRunDirectory  { get; set; }
 
+        public bool BeChatty { get; set; }
+
         public DefaultJobbrConfiguration()
         {
             this.BackendAddress = "http://localhost:80/jobbr";

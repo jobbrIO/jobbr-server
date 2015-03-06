@@ -33,5 +33,7 @@ namespace Jobbr.Server.Common
         int MaxConcurrentJobs { get; }
 
         string JobRunDirectory { get; }
+
+        bool BeChatty { get; set; }
     }
 }

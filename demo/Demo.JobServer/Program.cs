@@ -24,7 +24,8 @@ namespace Demo.JobServer
             var config = new DefaultJobbrConfiguration
                              {
                                  StorageProvider = storageProvider,
-                                 JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe"
+                                 JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
+                                 BeChatty = true,
                              };
 
             using (var jobbrServer = new JobbrServer(config))
