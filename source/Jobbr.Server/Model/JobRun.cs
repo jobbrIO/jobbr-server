@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
+using Jobbr.Common;
+
 namespace Jobbr.Server.Model
 {
     /// <summary>

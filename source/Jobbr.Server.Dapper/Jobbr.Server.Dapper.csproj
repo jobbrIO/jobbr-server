@@ -51,6 +51,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Jobbr.Common\Jobbr.Common.csproj">
+      <Project>{37E22E5D-F8B2-4336-B509-53C94B170E4C}</Project>
+      <Name>Jobbr.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jobbr.Server\Jobbr.Server.csproj">
       <Project>{A45F729D-8629-4C7A-96B8-29EAA8D52919}</Project>
       <Name>Jobbr.Server</Name>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Jobbr.Common;
 using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Core

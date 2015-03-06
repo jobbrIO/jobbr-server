@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Jobbr.Common;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
 

@@ -87,7 +87,7 @@
     <Compile Include="Common\JobbrDependencyResolver.cs" />
     <Compile Include="Core\DefaultScheduler.cs" />
     <Compile Include="IJobExecutor.cs" />
-    <Compile Include="Model\JobRunState.cs" />
+    <Compile Include="Web\Client\DefaultController.cs" />
     <Compile Include="Web\WebHost.cs" />
     <Compile Include="Web\Api\DefaultController.cs" />
     <Compile Include="Web\Api\JobController.cs" />

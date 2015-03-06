@@ -1,10 +1,12 @@
-namespace Jobbr.Server.Model
+namespace Jobbr.Common
 {
     /// <summary>
     /// The job run state.
     /// </summary>
     public enum JobRunState
     {
+        Null,
+
         /// <summary>
         /// The JoBRun is queued unless a JobStarter starts a new executable
         /// </summary>
