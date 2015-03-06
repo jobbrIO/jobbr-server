@@ -10,6 +10,8 @@ namespace Jobbr.Server.Common
 
         public string BackendAddress { get; set; }
 
+        public int AllowChangesBeforeStartInSec { get; set; }
+
         public JobbrConfiguration()
         {
             this.BackendAddress = "http://localhost:80/jobbr";

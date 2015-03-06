@@ -21,5 +21,10 @@ namespace Jobbr.Server.Common
         /// Gets or sets the backend address.
         /// </summary>
         string BackendAddress { get; set; }
+
+        /// <summary>
+        /// Gets or sets the allow changes before start in sec.
+        /// </summary>
+        int AllowChangesBeforeStartInSec { get; set; }
     }
 }
