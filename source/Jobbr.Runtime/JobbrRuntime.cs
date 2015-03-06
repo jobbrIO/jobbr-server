@@ -125,7 +125,7 @@ namespace Jobbr.Runtime
 
                 this.jobRunTask = new Task(() => theRightOne.Invoke(this.jobInstance, null), this.cancellationTokenSource.Token);
                 this.jobRunTask.Start();
-                this.client.PublishState(JobRunState.Running);
+                this.client.PublishState(JobRunState.Processing);
             }
             else
             {
@@ -138,9 +138,14 @@ namespace Jobbr.Runtime
             this.client.PublishState(JobRunState.Initializing);
             this.jobInfo = this.client.GetJobRunInfo();
 
-            var typeName = jobInfo.JobType;
+            if (this.jobInfo == null)
+            {
+                
+            }
 
-            var type = ResolveType(typeName);
+            var typeName = this.jobInfo.JobType;
+
+            var type = this.ResolveType(typeName);
 
             if (type == null)
             {
@@ -231,7 +236,10 @@ namespace Jobbr.Runtime
                 }
             }
 
-            Debugger.Break();
+            if (Debugger.IsAttached)
+            {
+                Debugger.Break();
+            }
         }
 
         private void DisplayWelcomeBannerIfEnabled(string[] args)
