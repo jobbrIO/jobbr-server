@@ -12,11 +12,11 @@ namespace Jobbr.Server.Common
 
         List<JobTriggerBase> GetTriggers(long jobId);
 
-        long AddTrigger(CronTrigger trigger);
+        long AddTrigger(RecurringTrigger trigger);
 
         long AddTrigger(InstantTrigger trigger);
 
-        long AddTrigger(StartDateTimeUtcTrigger trigger);
+        long AddTrigger(ScheduledTrigger trigger);
 
         bool DisableTrigger(long triggerId);
 
@@ -43,5 +43,7 @@ namespace Jobbr.Server.Common
         bool Update(JobRun jobRun);
 
         Job GetJobById(long id);
+
+        JobRun GetJobRunById(long id);
     }
 }
