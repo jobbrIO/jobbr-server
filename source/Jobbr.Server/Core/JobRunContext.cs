@@ -1,10 +1,12 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 using Jobbr.Common;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
+using Jobbr.Server.ServiceMessaging;
 
 namespace Jobbr.Server.Core
 {
@@ -22,6 +24,8 @@ namespace Jobbr.Server.Core
         /// The configuration.
         /// </summary>
         private readonly IJobbrConfiguration configuration;
+
+        private readonly ServiceMessageParser serviceMessageParser;
 
         public event EventHandler<JobRunEndedEventArgs> Ended;
 
@@ -43,6 +47,7 @@ namespace Jobbr.Server.Core
         {
             this.jobService = jobService;
             this.configuration = configuration;
+            this.serviceMessageParser = new ServiceMessageParser();
         }
 
         /// <summary>
@@ -84,23 +89,58 @@ namespace Jobbr.Server.Core
 #endif
             proc.StartInfo.Arguments = arguments;
             proc.StartInfo.WorkingDirectory = workDir;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.CreateNoWindow = true;
+
+            proc.OutputDataReceived += ProcOnOutputDataReceived;
 
             this.jobService.UpdateJobRunState(jobRun, JobRunState.Starting);
 
             proc.Exited += (o, args) => this.OnEnded(new JobRunEndedEventArgs() { ExitCode = proc.ExitCode, JobRun = jobRun });
 
             proc.Start();
-            
+            proc.BeginOutputReadLine();
+
             this.jobService.SetPidForJobRun(jobRun, proc.Id);
             this.jobService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
 
             this.jobService.UpdateJobRunState(jobRun, JobRunState.Started);
         }
 
+        private void ProcOnOutputDataReceived(object sender, DataReceivedEventArgs dataReceivedEventArgs)
+        {
+            string data = dataReceivedEventArgs.Data;
+
+            if (data == null)
+            {
+                return;
+            }
+
+            var lines = data.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var line in lines)
+            {
+                // Detect ServiceMessage
+                if (line.StartsWith("##jobbr"))
+                {
+                    var message = this.serviceMessageParser.Parse(line);
+
+                    this.HandleMessage(message as dynamic);
+
+                    // TODO: Log
+                }
+            }
+        }
+
+        private void HandleMessage(ProgressServiceMessage message)
+        {
+            this.jobRun.Progress = message.Percent;
+            this.jobService.UpdateJobRunProgress(this.jobRun, message.Percent);
+        }
+
         protected virtual void OnEnded(JobRunEndedEventArgs e)
         {
-            this.jobService.SetJobRunEndTime(this.jobRun, DateTime.UtcNow);
-
             var handler = this.Ended;
             if (handler != null)
             {

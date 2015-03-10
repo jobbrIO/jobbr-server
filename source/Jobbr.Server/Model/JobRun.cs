@@ -23,7 +23,7 @@ namespace Jobbr.Server.Model
 
         public string InstanceParameters { get; set; }
 
-        public int? Progress { get; set; }
+        public double? Progress { get; set; }
 
         public JobRunState State { get; set; }
 

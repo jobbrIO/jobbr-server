@@ -88,6 +88,14 @@ namespace Jobbr.Server.Core
             this.storageProvider.Update(fromDb);
         }
 
+        public void UpdateJobRunProgress(JobRun jobRun, double percent)
+        {
+            var fromDb = this.storageProvider.GetJobRunById(jobRun.Id);
+
+            fromDb.Progress = percent;
+            this.storageProvider.Update(fromDb);
+        }
+
         public void SetPidForJobRun(JobRun jobRun, int id)
         {
             jobRun.Pid = id;
