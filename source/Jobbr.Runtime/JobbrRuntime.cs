@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -76,6 +77,14 @@ namespace Jobbr.Runtime
             catch (Exception e)
             {
                 Environment.ExitCode = 1;
+
+                try
+                {
+                    this.Collect();
+                }
+                catch (Exception)
+                {
+                }
             }
 
             this.End();
@@ -86,7 +95,15 @@ namespace Jobbr.Runtime
             if (this.jobRunTask != null)
             {
                 this.jobRunTask.Wait(this.cancellationTokenSource.Token);
-                this.client.PublishState(JobRunState.Finishing);
+
+                if (this.jobRunTask.IsFaulted)
+                {
+                    this.client.PublishState(JobRunState.Failed);
+                }
+                else
+                {
+                    this.client.PublishState(JobRunState.Finishing);
+                }
             }
         }
 
