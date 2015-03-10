@@ -24,7 +24,7 @@ namespace Jobbr.Server.Web.Dto
 
         public string State { get; set; }
 
-        public int? Progress { get; set; }
+        public double? Progress { get; set; }
 
         public DateTime PlannedStartUtc { get; set; }
 
