@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 using Jobbr.Common;
 
+using Newtonsoft.Json;
+
 namespace Jobbr.Runtime
 {
     /// <summary>
@@ -117,15 +119,44 @@ namespace Jobbr.Runtime
 
             var runMethods = this.jobInstance.GetType().GetMethods().Where(m => m.Name == "Run" && m.IsPublic).ToList();
 
+            this.cancellationTokenSource = new CancellationTokenSource();
+
             if (runMethods.Any())
             {
-                var theRightOne = runMethods.First();
-                
-                // TODO: Send Parameters if requested
+                // Try to use the method with 2 concrete parameters
+                var specificMethod = runMethods.FirstOrDefault(m => m.GetParameters().Count() == 2);
+                if (specificMethod != null)
+                {
+                    // TODO: Log
+                    var allParams = specificMethod.GetParameters().OrderBy(p => p.Position).ToList();
 
-                this.cancellationTokenSource = new CancellationTokenSource();
+                    var param1Type = allParams[0].ParameterType;
+                    var param2Type = allParams[1].ParameterType;
 
-                this.jobRunTask = new Task(() => theRightOne.Invoke(this.jobInstance, null), this.cancellationTokenSource.Token);
+                    object param1Value = this.jobInfo.JobParameter;
+                    object param2Value = this.jobInfo.InstanceParameter;
+
+                    // Try to cast them to specific types
+                    if (param1Type != typeof(object))
+                    {
+                        param1Value = JsonConvert.DeserializeObject(param1Value.ToString(), param1Type);
+                    }
+
+                    if (param2Type != typeof(object))
+                    {
+                        param2Value = JsonConvert.DeserializeObject(param2Value.ToString(), param2Type);
+                    }
+
+                    this.jobRunTask = new Task(() => { specificMethod.Invoke(this.jobInstance, new[] { param1Value, param2Value }); }, this.cancellationTokenSource.Token);
+                }
+                else
+                {
+                    var theRightOne = runMethods.First();
+
+                    this.jobRunTask = new Task(() => theRightOne.Invoke(this.jobInstance, null), this.cancellationTokenSource.Token);
+                }
+
+
                 this.jobRunTask.Start();
                 this.client.PublishState(JobRunState.Processing);
             }
