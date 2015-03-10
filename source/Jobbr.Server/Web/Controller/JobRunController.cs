@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 
 using Jobbr.Server.Common;
+using Jobbr.Server.Model;
 using Jobbr.Server.Web.Dto;
 
 using Newtonsoft.Json;
@@ -38,33 +39,32 @@ namespace Jobbr.Server.Web.Controller
                 return this.NotFound();
             }
 
-            var jobParameter = jobRun.JobParameters != null ? JsonConvert.DeserializeObject(jobRun.JobParameters) : null;
-            var instanceParameter = jobRun.InstanceParameters != null ? JsonConvert.DeserializeObject(jobRun.InstanceParameters) : null;
-
-            var files = this.artefactsStorageProvider.GetFiles(jobRun.UniqueId);
-            var filesList = files.Select(fileInfo => new JobRunArtefactDto() { Filename = fileInfo.Name, Size = fileInfo.Length, }).ToList();
-
-            var job = this.jobStorageProvider.GetJobById(jobRun.JobId);
-
-            var dto = new JobRunDto()
-            {
-                JobRunId = jobRun.Id,
-                JobId = jobRun.JobId,
-                JobName = job.Name,
-                TriggerId = jobRun.TriggerId,
-                UniqueId = new Guid(jobRun.UniqueId),
-                JobParameter = jobParameter,
-                InstanceParameter = instanceParameter,
-                State = jobRun.State.ToString(),
-                Progress = jobRun.Progress,
-                PlannedStartUtc = jobRun.PlannedStartDateTimeUtc,
-                AuctualStartUtc = jobRun.ActualStartDateTimeUtc,
-                EstimatedEndtUtc = jobRun.EstimatedEndDateTimeUtc,
-                AuctualEndUtc = jobRun.ActualEndDateTimeUtc,
-                Artefacts = filesList.Any() ? filesList : null
-            };
+            var dto = this.ConvertToDto(jobRun);
 
             return this.Ok(dto);
+        }
+
+        [HttpGet]
+        [Route("api/jobRuns/")]
+        public IHttpActionResult GetJonRunsByUserId(long userId)
+        {
+            var jobRuns = this.jobStorageProvider.GetJobRunsForUserId(userId).OrderByDescending(r => r.Id);
+
+            var jobRunDtos = jobRuns.Select(this.ConvertToDto);
+
+            return this.Ok(jobRunDtos);
+        }
+
+
+        [HttpGet]
+        [Route("api/jobRuns/")]
+        public IHttpActionResult GetJonRunsByUserName(string userName)
+        {
+            var jobRuns = this.jobStorageProvider.GetJobRunsForUserName(userName).OrderByDescending(r => r.Id);
+
+            var jobRunDtos = jobRuns.Select(this.ConvertToDto);
+
+            return this.Ok(jobRunDtos);
         }
 
         [HttpGet]
@@ -88,5 +88,34 @@ namespace Jobbr.Server.Web.Controller
             return this.ResponseMessage(result);
         }
     
+        private JobRunDto ConvertToDto(JobRun jobRun)
+        {
+            var jobParameter = jobRun.JobParameters != null ? JsonConvert.DeserializeObject(jobRun.JobParameters) : null;
+            var instanceParameter = jobRun.InstanceParameters != null ? JsonConvert.DeserializeObject(jobRun.InstanceParameters) : null;
+
+            var files = this.artefactsStorageProvider.GetFiles(jobRun.UniqueId);
+            var filesList = files.Select(fileInfo => new JobRunArtefactDto() { Filename = fileInfo.Name, Size = fileInfo.Length, }).ToList();
+
+            var job = this.jobStorageProvider.GetJobById(jobRun.JobId);
+
+            var dto = new JobRunDto()
+                          {
+                              JobRunId = jobRun.Id,
+                              JobId = jobRun.JobId,
+                              JobName = job.Name,
+                              TriggerId = jobRun.TriggerId,
+                              UniqueId = new Guid(jobRun.UniqueId),
+                              JobParameter = jobParameter,
+                              InstanceParameter = instanceParameter,
+                              State = jobRun.State.ToString(),
+                              Progress = jobRun.Progress,
+                              PlannedStartUtc = jobRun.PlannedStartDateTimeUtc,
+                              AuctualStartUtc = jobRun.ActualStartDateTimeUtc,
+                              EstimatedEndtUtc = jobRun.EstimatedEndDateTimeUtc,
+                              AuctualEndUtc = jobRun.ActualEndDateTimeUtc,
+                              Artefacts = filesList.Any() ? filesList : null
+                          };
+            return dto;
+        }
     }
 }

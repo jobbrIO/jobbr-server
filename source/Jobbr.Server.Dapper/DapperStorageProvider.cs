@@ -210,6 +210,26 @@ namespace Jobbr.Server.Dapper
             }
         }
 
+        public List<JobRun> GetJobRunsForUserId(long userId)
+        {
+            var sql = string.Format("SELECT jr.* FROM {0}.JobRuns AS jr LEFT JOIN {0}.Triggers AS tr ON tr.Id = jr.TriggerId WHERE tr.UserId = @Id", this.schemaName);
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                return connection.Query<JobRun>(sql, new { Id = userId }).ToList();
+            }
+        }
+
+        public List<JobRun> GetJobRunsForUserName(string userName)
+        {
+            var sql = string.Format("SELECT jr.* FROM {0}.JobRuns AS jr LEFT JOIN {0}.Triggers AS tr ON tr.Id = jr.TriggerId WHERE tr.UserName = @UserName", this.schemaName);
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                return connection.Query<JobRun>(sql, new { UserName = userName }).ToList();
+            }
+        }
+
         public long AddTrigger(RecurringTrigger trigger)
         {
             return this.InsertTrigger(trigger, RecurringTrigger.TypeName, trigger.Definition);
