@@ -33,13 +33,13 @@ namespace Jobbr.Server.Core
 
         List<JobTriggerBase> GetTriggers(long jobId);
 
-        long AddTrigger(CronTrigger trigger);
+        long AddTrigger(RecurringTrigger trigger);
 
-        long AddTrigger(StartDateTimeUtcTrigger trigger);
+        long AddTrigger(ScheduledTrigger trigger);
 
         long AddTrigger(InstantTrigger trigger);
 
-        bool DisableTrigger(long triggerId);
+        bool DisableTrigger(long triggerId, bool enableNotification);
 
         bool EnableTrigger(long triggerId);
 

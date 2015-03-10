@@ -82,8 +82,10 @@ namespace Jobbr.Server.Core
 
         public void SetJobRunEndTime(JobRun jobRun, DateTime endDateTimeUtc)
         {
-            jobRun.ActualEndDateTimeUtc = endDateTimeUtc;
-            this.storageProvider.Update(jobRun);
+            var fromDb = this.storageProvider.GetJobRunById(jobRun.Id);
+
+            fromDb.ActualEndDateTimeUtc = endDateTimeUtc;
+            this.storageProvider.Update(fromDb);
         }
 
         public void SetPidForJobRun(JobRun jobRun, int id)
@@ -110,7 +112,7 @@ namespace Jobbr.Server.Core
             return this.storageProvider.GetTriggers(jobId);
         }
 
-        public long AddTrigger(CronTrigger trigger)
+        public long AddTrigger(RecurringTrigger trigger)
         {
             if (trigger.JobId == 0)
             {
@@ -123,7 +125,7 @@ namespace Jobbr.Server.Core
             return trigger.Id;
         }
 
-        public long AddTrigger(StartDateTimeUtcTrigger trigger)
+        public long AddTrigger(ScheduledTrigger trigger)
         {
             if (trigger.JobId == 0)
             {
@@ -149,7 +151,7 @@ namespace Jobbr.Server.Core
             return trigger.Id;
         }
 
-        public bool DisableTrigger(long triggerId)
+        public bool DisableTrigger(long triggerId, bool enableNotification = true)
         {
             var trigger = this.storageProvider.GetTriggerById(triggerId);
 
@@ -160,7 +162,10 @@ namespace Jobbr.Server.Core
 
             this.storageProvider.DisableTrigger(triggerId);
 
-            this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = trigger });
+            if (enableNotification)
+            {
+                this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = trigger });
+            }
 
             return true;
         }
