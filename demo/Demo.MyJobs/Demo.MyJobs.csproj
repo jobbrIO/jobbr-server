@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="ParameterizedlJob.cs" />
     <Compile Include="MinimalJob.cs" />
+    <Compile Include="ProgressJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
