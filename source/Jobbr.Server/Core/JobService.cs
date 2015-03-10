@@ -74,6 +74,18 @@ namespace Jobbr.Server.Core
             this.storageProvider.Update(jobRun);
         }
 
+        public void SetJobRunStartTime(JobRun jobRun, DateTime startDateTimeUtc)
+        {
+            jobRun.ActualStartDateTimeUtc = startDateTimeUtc;
+            this.storageProvider.Update(jobRun);
+        }
+
+        public void SetJobRunEndTime(JobRun jobRun, DateTime endDateTimeUtc)
+        {
+            jobRun.ActualEndDateTimeUtc = endDateTimeUtc;
+            this.storageProvider.Update(jobRun);
+        }
+
         public void SetPidForJobRun(JobRun jobRun, int id)
         {
             jobRun.Pid = id;

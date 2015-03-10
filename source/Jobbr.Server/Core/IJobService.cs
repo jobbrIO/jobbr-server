@@ -63,5 +63,9 @@ namespace Jobbr.Server.Core
         void UpdateJobRunDirectories(JobRun jobRun, string workDir, string tempDir);
 
         void SetPidForJobRun(JobRun jobRun, int id);
+
+        void SetJobRunStartTime(JobRun jobRun, DateTime startDateTimeUtc);
+
+        void SetJobRunEndTime(JobRun jobRun, DateTime endDateTimeUtc);
     }
 }

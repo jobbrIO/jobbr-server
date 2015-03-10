@@ -87,16 +87,20 @@ namespace Jobbr.Server.Core
 
             this.jobService.UpdateJobRunState(jobRun, JobRunState.Starting);
 
-            proc.Start();
             proc.Exited += (o, args) => this.OnEnded(new JobRunEndedEventArgs() { ExitCode = proc.ExitCode, JobRun = jobRun });
+
+            proc.Start();
             
             this.jobService.SetPidForJobRun(jobRun, proc.Id);
+            this.jobService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
 
             this.jobService.UpdateJobRunState(jobRun, JobRunState.Started);
         }
 
         protected virtual void OnEnded(JobRunEndedEventArgs e)
         {
+            this.jobService.SetJobRunEndTime(this.jobRun, DateTime.UtcNow);
+
             var handler = this.Ended;
             if (handler != null)
             {
