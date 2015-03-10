@@ -120,13 +120,7 @@ namespace Jobbr.Server.Core
                 DateTime lastTime;
 
                 // Calculate the next occurance
-                var lastJobRun = this.jobService.GetLastJobRunByTriggerId(cronTrigger.Id);
-
-                if (lastJobRun != null)
-                {
-                    lastTime = lastJobRun.PlannedStartDateTimeUtc;
-                }
-                else if (cronTrigger.DateTimeUtc.HasValue)
+                if (cronTrigger.DateTimeUtc.HasValue && cronTrigger.DateTimeUtc.Value > DateTime.UtcNow)
                 {
                     lastTime = cronTrigger.DateTimeUtc.Value;
                 }
