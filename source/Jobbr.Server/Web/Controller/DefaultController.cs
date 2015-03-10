@@ -2,7 +2,7 @@
 
 using Jobbr.Server.Common;
 
-namespace Jobbr.Server.Web.Api
+namespace Jobbr.Server.Web.Controller
 {
     /// <summary>
     /// The default controller.

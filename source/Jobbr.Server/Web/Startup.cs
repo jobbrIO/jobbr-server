@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
 using Jobbr.Common;
+using Jobbr.Server.Model;
+using Jobbr.Server.Web.Dto;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -16,8 +19,19 @@ namespace Jobbr.Server.Web
     /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// The dependency resolver.
+        /// </summary>
         private readonly IJobbrDependencyResolver dependencyResolver;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="dependencyResolver">
+        /// The dependency resolver.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// </exception>
         public Startup(IJobbrDependencyResolver dependencyResolver)
         {
             if (dependencyResolver == null)
@@ -40,7 +54,11 @@ namespace Jobbr.Server.Web
             HttpConfiguration config = new HttpConfiguration();
 
             config.MapHttpAttributeRoutes();
-            config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
+            var jsonSerializerSettings = new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
+
+            jsonSerializerSettings.Converters.Add(new JsonTypeConverter<JobTriggerDtoBase>("TriggerType", this.JobTriggerTypeResolver));
+
+            config.Formatters.JsonFormatter.SerializerSettings = jsonSerializerSettings;
 
             // Remove XML
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
@@ -49,6 +67,26 @@ namespace Jobbr.Server.Web
             config.DependencyResolver = new DependencyResolverAdapter(this.dependencyResolver);
 
             app.UseWebApi(config);
+        }
+
+        private Type JobTriggerTypeResolver(List<Type> types, string typeValue)
+        {
+            if (typeValue.ToLowerInvariant() == RecurringTriggerDto.TypeName.ToLowerInvariant())
+            {
+                return typeof(RecurringTriggerDto);
+            }
+
+            if (typeValue.ToLowerInvariant() == ScheduledTriggerDto.TypeName.ToLowerInvariant())
+            {
+                return typeof(ScheduledTriggerDto);
+            }
+
+            if (typeValue.ToLowerInvariant() == InstantTriggerDto.TypeName.ToLowerInvariant())
+            {
+                return typeof(InstantTriggerDto);
+            }
+
+            return null;
         }
     }
 }

@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web.Http;
 
-using Jobbr.Common;
 using Jobbr.Server.Common;
+using Jobbr.Server.Core;
 using Jobbr.Server.Model;
 using Jobbr.Server.Web.Dto;
 
 using Newtonsoft.Json;
 
-namespace Jobbr.Server.Web.Api
+namespace Jobbr.Server.Web.Controller
 {
     /// <summary>
     /// The job controller.
@@ -23,11 +22,14 @@ namespace Jobbr.Server.Web.Api
     {
         private readonly IJobStorageProvider jobStorageProvider;
 
+        private readonly IJobService jobService;
+
         private readonly IArtefactsStorageProvider artefactsStorageProvider;
 
-        public JobController(IJobStorageProvider jobStorageProvider, IArtefactsStorageProvider artefactsStorageProvider)
+        public JobController(IJobStorageProvider jobStorageProvider, IJobService jobService, IArtefactsStorageProvider artefactsStorageProvider)
         {
             this.jobStorageProvider = jobStorageProvider;
+            this.jobService = jobService;
             this.artefactsStorageProvider = artefactsStorageProvider;
         }
 
@@ -36,20 +38,6 @@ namespace Jobbr.Server.Web.Api
         public IHttpActionResult AllJobs()
         {
             return this.Ok(this.jobStorageProvider.GetJobs());
-        }
-
-        [HttpGet]
-        [Route("api/jobs/{jobId}/trigger")]
-        public IHttpActionResult GetTriggersForJob(long jobId)
-        {
-            return this.Ok(this.jobStorageProvider.GetTriggers(jobId));
-        }
-
-        [HttpPost]
-        [Route("api/jobs/{jobId}/trigger")]
-        public IHttpActionResult AddTrigger(long jobId, [FromBody] JobTriggerBase trigger)
-        {
-            return this.Ok();
         }
 
         [HttpGet]
@@ -127,7 +115,7 @@ namespace Jobbr.Server.Web.Api
         }
 
         [HttpGet]
-        [Route("api/jobRuns/{jobRunId}/{filename}")]
+        [Route("api/jobRuns/{jobRunId}/artefacts/{filename}")]
         public IHttpActionResult GetArtefact(long jobRunId, string filename)
         {
             var jobRun = this.jobStorageProvider.GetJobRuns().FirstOrDefault(jr => jr.Id == jobRunId);
@@ -146,6 +134,5 @@ namespace Jobbr.Server.Web.Api
 
             return this.ResponseMessage(result);
         }
-
     }
 }

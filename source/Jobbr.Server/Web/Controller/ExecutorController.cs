@@ -10,12 +10,12 @@ using Jobbr.Server.Core;
 
 using Newtonsoft.Json;
 
-namespace Jobbr.Server.Web.Client
+namespace Jobbr.Server.Web.Controller
 {
     /// <summary>
     /// The job run controller.
     /// </summary>
-    public class JobRunController : ApiController
+    public class ExecutorController : ApiController
     {
         private readonly IJobService jobService;
 
@@ -23,7 +23,7 @@ namespace Jobbr.Server.Web.Client
 
         private readonly IArtefactsStorageProvider artefactsStorageProvider;
 
-        public JobRunController(IJobService jobService, IJobStorageProvider jobStorageProvider, IArtefactsStorageProvider artefactsStorageProvider)
+        public ExecutorController(IJobService jobService, IJobStorageProvider jobStorageProvider, IArtefactsStorageProvider artefactsStorageProvider)
         {
             this.jobService = jobService;
             this.jobStorageProvider = jobStorageProvider;
