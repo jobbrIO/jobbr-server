@@ -49,27 +49,39 @@ namespace Jobbr.Server.Core
                     this.queue.Remove(jobRun);
                     
                     var context = new JobRunContext(this.jobService, this.configuration);
+                    context.Ended += this.ContextOnEnded;
+
                     this.running.Add(context);
 
                     var run = jobRun;
                     new TaskFactory().StartNew(() => context.Start(run));
-
-                    context.Ended += this.ContextOnEnded;
                 }
             }
         }
 
-        private void ContextOnEnded(object sender, JobRunEndedEventArgs jobRunEndedEventArgs)
+        private void ContextOnEnded(object sender, JobRunEndedEventArgs args)
         {
-            var jobRunContext = sender as JobRunContext;
-            jobRunContext.Ended -= this.ContextOnEnded;
-
-            if (jobRunEndedEventArgs.ExitCode != 0)
+            lock (this.syncRoot)
             {
-                this.jobService.UpdateJobRunState(jobRunEndedEventArgs.JobRun, JobRunState.Failed);
-            }
+                var jobRunContext = sender as JobRunContext;
+                jobRunContext.Ended -= this.ContextOnEnded;
 
-            this.running.Remove(jobRunContext);
+                this.jobService.SetJobRunEndTime(args.JobRun, DateTime.UtcNow);
+
+                if (args.ExitCode != 0)
+                {
+                    this.jobService.UpdateJobRunState(args.JobRun, JobRunState.Failed);
+                }
+                else
+                {
+                    if (args.JobRun.Progress > 0)
+                    {
+                        this.jobService.UpdateJobRunProgress(args.JobRun, 100);
+                    }
+                }
+
+                this.running.Remove(jobRunContext);
+            }
         }
 
         public void Start()
