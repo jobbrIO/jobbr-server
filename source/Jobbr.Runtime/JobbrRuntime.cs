@@ -120,6 +120,8 @@ namespace Jobbr.Runtime
             if (runMethods.Any())
             {
                 var theRightOne = runMethods.First();
+                
+                // TODO: Send Parameters if requested
 
                 this.cancellationTokenSource = new CancellationTokenSource();
 
@@ -129,6 +131,7 @@ namespace Jobbr.Runtime
             }
             else
             {
+                // TODO: Logging
                 this.client.PublishState(JobRunState.Failed);
             }
         }
