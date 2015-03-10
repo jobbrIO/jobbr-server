@@ -77,6 +77,7 @@
     <Compile Include="Common\FileSystemArtefactsStorageProvider.cs" />
     <Compile Include="Common\IArtefactsStorageProvider.cs" />
     <Compile Include="Core\IJobService.cs" />
+    <Compile Include="ServiceMessaging\ServiceMessageParser.cs" />
     <Compile Include="Core\JobEventArgs.cs" />
     <Compile Include="Core\DefaultJobExecutor.cs" />
     <Compile Include="Core\JobRunEndedEventArgs.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Core\JobService.cs" />
     <Compile Include="Core\JobTriggerEventArgs.cs" />
     <Compile Include="Core\JobRunContext.cs" />
+    <Compile Include="ServiceMessaging\ServiceMessage.cs" />
     <Compile Include="DefaultKernel.cs" />
     <Compile Include="Common\IJobbrConfiguration.cs" />
     <Compile Include="Common\IJobStorageProvider.cs" />
