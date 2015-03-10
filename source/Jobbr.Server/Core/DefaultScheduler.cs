@@ -65,9 +65,7 @@ namespace Jobbr.Server.Core
             var nextScheduledJobRun = this.jobService.GetNextJobRunByTriggerId(trigger.Id);
 
             // Calculate the next occurance for the trigger
-            calculatedNextRun = calculatedNextRun ?? this.GetNextTriggerDateTime(trigger as CronTrigger);
-            calculatedNextRun = calculatedNextRun ?? this.GetNextTriggerDateTime(trigger as InstantTrigger);
-            calculatedNextRun = calculatedNextRun ?? this.GetNextTriggerDateTime(trigger as StartDateTimeUtcTrigger);
+            calculatedNextRun = this.GetNextTriggerDateTime(trigger as dynamic);
 
             if (calculatedNextRun != null)
             {
@@ -101,7 +99,7 @@ namespace Jobbr.Server.Core
             }
         }
 
-        private DateTime? GetNextTriggerDateTime(StartDateTimeUtcTrigger startDateTimeUtcTrigger)
+        private DateTime? GetNextTriggerDateTime(ScheduledTrigger scheduledTrigger)
         {
             // TODO: Implement
             return null;
@@ -109,27 +107,32 @@ namespace Jobbr.Server.Core
 
         private DateTime? GetNextTriggerDateTime(InstantTrigger instantTrigger)
         {
-            // TODO: Implement deactivate the the trigger
-            return null;
+            var baseDateTimeUtc = instantTrigger.CreateDateTimeUtc;
+
+            var startDate = baseDateTimeUtc.AddMinutes(instantTrigger.DelayedMinutes);
+
+            this.jobService.DisableTrigger(instantTrigger.Id, false);
+
+            return startDate;
         }
 
-        private DateTime? GetNextTriggerDateTime(CronTrigger cronTrigger)
+        private DateTime? GetNextTriggerDateTime(RecurringTrigger recurringTrigger)
         {
-            if (cronTrigger != null)
+            if (recurringTrigger != null)
             {
                 DateTime lastTime;
 
                 // Calculate the next occurance
-                if (cronTrigger.DateTimeUtc.HasValue && cronTrigger.DateTimeUtc.Value > DateTime.UtcNow)
+                if (recurringTrigger.StartDateTimeUtc.HasValue && recurringTrigger.StartDateTimeUtc.Value > DateTime.UtcNow)
                 {
-                    lastTime = cronTrigger.DateTimeUtc.Value;
+                    lastTime = recurringTrigger.StartDateTimeUtc.Value;
                 }
                 else
                 {
                     lastTime = DateTime.UtcNow;
                 }
 
-                var schedule = CrontabSchedule.Parse(cronTrigger.Definition);
+                var schedule = CrontabSchedule.Parse(recurringTrigger.Definition);
                 return schedule.GetNextOccurrence(lastTime);
             }
 

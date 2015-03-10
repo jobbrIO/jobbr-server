@@ -32,22 +32,32 @@ namespace Jobbr.Server.Model
         public string UserName { get; set; }
 
         public string UserDisplayName { get; set; }
+
+        public DateTime CreateDateTimeUtc { get; set; }
     }
 
-    public class CronTrigger : JobTriggerBase
+    public class RecurringTrigger : JobTriggerBase
     {
-        public DateTime? DateTimeUtc { get; set; }
+        public const string TypeName = "Recurring";
+
+        public DateTime? StartDateTimeUtc { get; set; }
+
+        public DateTime? EndDateTimeUtc { get; set; }
 
         public string Definition { get; set; }
     }
 
-    public class StartDateTimeUtcTrigger : JobTriggerBase
+    public class ScheduledTrigger : JobTriggerBase
     {
+        public const string TypeName = "Scheduled";
+
         public DateTime DateTimeUtc { get; set; }
     }
 
     public class InstantTrigger : JobTriggerBase
     {
+        public const string TypeName = "Instant";
+
         public int DelayedMinutes { get; set; }
     }
 }
