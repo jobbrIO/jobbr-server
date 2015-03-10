@@ -7,7 +7,7 @@ namespace Jobbr.Server.Web.Controller
     /// <summary>
     /// The default controller.
     /// </summary>
-    public class DefaultController: ApiController
+    public class DefaultController : ApiController
     {
         private readonly IJobbrConfiguration configuration;
 
