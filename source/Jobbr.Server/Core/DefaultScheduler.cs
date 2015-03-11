@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 using Jobbr.Server.Common;
@@ -66,47 +67,87 @@ namespace Jobbr.Server.Core
             DateTime? calculatedNextRun = null;
 
             // Get the next occurence from database
-            var nextScheduledJobRun = this.jobService.GetNextJobRunByTriggerId(trigger.Id);
+            var plannedNextRun = this.jobService.GetNextJobRunByTriggerId(trigger.Id);
 
             // Calculate the next occurance for the trigger
             calculatedNextRun = this.GetNextTriggerDateTime(trigger as dynamic);
 
-            if (calculatedNextRun != null)
+            if (calculatedNextRun < DateTime.UtcNow)
             {
-                if (nextScheduledJobRun == null)
+                Logger.WarnFormat("Disabling trigger for startdate '{0}', because historical startdate is not supported.  Id '{1}' (Type: '{2}', userId: '{3}', userName: '{4}')", calculatedNextRun, trigger.Id, trigger.TriggerType, trigger.UserId, trigger.UserName);
+            }
+            else if (calculatedNextRun != null)
+            {
+                if (plannedNextRun == null)
                 {
+                    Logger.InfoFormat(
+                        "Planning new JobRun for Job '{0}' (JobId: {1}) to start @ '{2}'. Caused by trigger with id '{3}' (Type: '{4}', userId: '{5}', userName: '{6}')",
+                        job.Name,
+                        job.Id,
+                        calculatedNextRun.Value,
+                        trigger.Id,
+                        trigger.TriggerType,
+                        trigger.UserId,
+                        trigger.UserName);
+
                     this.jobService.CreateJobRun(job, trigger, calculatedNextRun.Value);
                 }
                 else
                 {
                     // Is this value in sync with the schedule table?
-                    if (nextScheduledJobRun.PlannedStartDateTimeUtc == calculatedNextRun)
+                    if (plannedNextRun.PlannedStartDateTimeUtc == calculatedNextRun)
                     {
-                        // Ok, all in sync --> Nothing to do
+                        Logger.DebugFormat(
+                            "The planned startdate '{0}' is still correct for JobRun (id: {1}) triggered by trigger with id '{2}' (Type: '{3}', userId: '{4}', userName: '{5}')",
+                            calculatedNextRun.Value,
+                            plannedNextRun.Id,
+                            trigger.Id,
+                            trigger.TriggerType,
+                            trigger.UserId,
+                            trigger.UserName);
                     }
                     else
                     {
-                        if (nextScheduledJobRun.PlannedStartDateTimeUtc.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) < calculatedNextRun)
+                        if (plannedNextRun.PlannedStartDateTimeUtc.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) < calculatedNextRun)
                         {
-                            // TODO: Change the trigger
+                            Logger.WarnFormat(
+                                "The planned startdate '{0}' has changed to '{1}'. This trigger should be updated in database and the DefaultJobExecutor should be notified",
+                                plannedNextRun.PlannedStartDateTimeUtc,
+                                calculatedNextRun.Value);
+
+                            // TODO: Change the trigger and make shure thath the schedule and queue of the jobexecutor is adjusted accordingly.
                         }
                         else
                         {
-                            // TODO: Its too late --> Log
+                            Logger.WarnFormat(
+                                "The planned startdate '{0}' has changed to '{1}'. This change was done too close (less than {2} seconds) to the next planned run and cannnot be reflected",
+                                plannedNextRun.PlannedStartDateTimeUtc,
+                                calculatedNextRun.Value,
+                                this.configuration.AllowChangesBeforeStartInSec);
                         }
                     }
                 }
             }
             else
             {
-                // TODO: What happens now? --> Log that no valid future execution data was found
+                Logger.WarnFormat(
+                    "Cannot calculate next run for Job '{0}' (JobId: {1}). Caused by trigger with id '{2}' (Type: '{3}', userId: '{4}', userName: '{5}')",
+                    job.Name,
+                    job.Id,
+                    trigger.Id,
+                    trigger.TriggerType,
+                    trigger.UserId,
+                    trigger.UserName);
             }
         }
 
         private DateTime? GetNextTriggerDateTime(ScheduledTrigger scheduledTrigger)
         {
-            // TODO: Implement
-            return null;
+            var startDate = scheduledTrigger.DateTimeUtc;
+
+            this.jobService.DisableTrigger(scheduledTrigger.Id, false);
+
+            return startDate;
         }
 
         private DateTime? GetNextTriggerDateTime(InstantTrigger instantTrigger)
@@ -145,14 +186,12 @@ namespace Jobbr.Server.Core
 
         private void JobServiceOnTriggerUpdate(object sender, JobTriggerEventArgs args)
         {
-            Console.WriteLine("Got an update for the job " + args.Trigger.Id);
-
             Logger.Log(
                 LogLevel.Info,
                 () =>
                     {
                         var job = this.jobService.GetJob(args.Trigger.JobId);
-                        return string.Format("Got new or updated trigger (id: '{0}', userId: '{1}', userName: '{2}' for job '{3}' (jobId: {4})", args.Trigger.Id, args.Trigger.UserId, args.Trigger.UserName, job.Name, job.Id);
+                        return string.Format("Got new or updated trigger (Type: '{0}'. Id: '{1}', UserId: '{2}', UserName: '{3}' for job '{4}' (JobId: {5})", args.Trigger.TriggerType, args.Trigger.Id, args.Trigger.UserId, args.Trigger.UserName, job.Name, job.Id);
                     });
 
             if (args.Trigger.IsActive)
