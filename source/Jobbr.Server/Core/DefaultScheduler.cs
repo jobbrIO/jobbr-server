@@ -72,9 +72,10 @@ namespace Jobbr.Server.Core
             // Calculate the next occurance for the trigger
             calculatedNextRun = this.GetNextTriggerDateTime(trigger as dynamic);
 
-            if (calculatedNextRun < DateTime.UtcNow)
+            if (calculatedNextRun < DateTime.UtcNow && trigger.IsActive)
             {
-                Logger.WarnFormat("Disabling trigger for startdate '{0}', because historical startdate is not supported.  Id '{1}' (Type: '{2}', userId: '{3}', userName: '{4}')", calculatedNextRun, trigger.Id, trigger.TriggerType, trigger.UserId, trigger.UserName);
+                Logger.WarnFormat("Active Disabling trigger for startdate '{0}', because historical startdate is not supported.  Id '{1}' (Type: '{2}', userId: '{3}', userName: '{4}')", calculatedNextRun, trigger.Id, trigger.TriggerType, trigger.UserId, trigger.UserName);
+                this.jobService.DisableTrigger(trigger.Id, false);
             }
             else if (calculatedNextRun != null)
             {
@@ -145,19 +146,17 @@ namespace Jobbr.Server.Core
         {
             var startDate = scheduledTrigger.DateTimeUtc;
 
-            this.jobService.DisableTrigger(scheduledTrigger.Id, false);
-
             return startDate;
         }
 
         private DateTime? GetNextTriggerDateTime(InstantTrigger instantTrigger)
         {
             var baseDateTimeUtc = instantTrigger.CreateDateTimeUtc;
-
             var startDate = baseDateTimeUtc.AddMinutes(instantTrigger.DelayedMinutes);
 
             this.jobService.DisableTrigger(instantTrigger.Id, false);
-
+            instantTrigger.IsActive = false;
+            
             return startDate;
         }
 
