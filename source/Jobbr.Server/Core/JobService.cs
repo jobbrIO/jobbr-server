@@ -32,11 +32,6 @@ namespace Jobbr.Server.Core
         public event EventHandler<JobTriggerEventArgs> TriggerUpdate;
 
         /// <summary>
-        /// The job added.
-        /// </summary>
-        public event EventHandler<JobEventArgs> JobAdded;
-
-        /// <summary>
         /// The job run modification.
         /// </summary>
         public event EventHandler<JobRunModificationEventArgs> JobRunModification;

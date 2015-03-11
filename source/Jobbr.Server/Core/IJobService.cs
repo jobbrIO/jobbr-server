@@ -16,11 +16,6 @@ namespace Jobbr.Server.Core
         /// </summary>
         event EventHandler<JobTriggerEventArgs> TriggerUpdate;
 
-        /// <summary>
-        /// The job added.
-        /// </summary>
-        event EventHandler<JobEventArgs> JobAdded;
-
         List<Job> GetAllJobs();
 
         Job GetJob(long id);
