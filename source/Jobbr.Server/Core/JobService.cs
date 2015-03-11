@@ -8,16 +8,22 @@ using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Core
 {
+    using Jobbr.Server.Logging;
+
     /// <summary>
     /// The job repository.
     /// </summary>
     public class JobService : IJobService
     {
+        private static readonly ILog Logger = LogProvider.For<JobService>();
+        
         private readonly IJobStorageProvider storageProvider;
 
         public JobService(IJobStorageProvider storageProvider)
         {
             this.storageProvider = storageProvider;
+
+            Logger.Log(LogLevel.Debug, () => "New instance of a JobService has been created.");
         }
 
         /// <summary>
@@ -111,8 +117,7 @@ namespace Jobbr.Server.Core
 
         public JobRun GetJobRun(long id)
         {
-            // TODO: Performance
-            return this.storageProvider.GetJobRuns().FirstOrDefault(jr => jr.Id == id);
+            return this.storageProvider.GetJobRunById(id);
         }
 
         public List<JobTriggerBase> GetTriggers(long jobId)
