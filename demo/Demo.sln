@@ -24,7 +24,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Common", "..\source\J
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.MyJobs", "Demo.MyJobs\Demo.MyJobs.csproj", "{F1C2E1E1-815D-4D07-91A2-FD8BEE8C4240}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Tests", "Jobbr.Tests\Jobbr.Tests.csproj", "{304D07A5-D6D1-4F48-819E-5D28ED8755AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Tests", "..\source\Jobbr.Tests\Jobbr.Tests.csproj", "{304D07A5-D6D1-4F48-819E-5D28ED8755AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
