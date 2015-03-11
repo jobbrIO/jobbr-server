@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Jobbr.Common;
 using Jobbr.Server.Common;
+using Jobbr.Server.Logging;
 using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Core
@@ -15,6 +16,11 @@ namespace Jobbr.Server.Core
     /// </summary>
     public class DefaultJobExecutor : IJobExecutor
     {
+        /// <summary>
+        /// The logger.
+        /// </summary>
+        private static readonly ILog Logger = LogProvider.For<DefaultJobExecutor>();
+
         private IJobService jobService;
 
         private IJobbrConfiguration configuration;
@@ -86,16 +92,34 @@ namespace Jobbr.Server.Core
 
         public void Start()
         {
-            // Load all existing Schedules into the local memory
+            var dateTime = DateTime.UtcNow;
+
             var scheduledRuns = this.jobService.GetJobRuns(JobRunState.Scheduled);
+            var processingRuns = this.jobService.GetJobRuns(JobRunState.Processing);
 
-            var futureRuns  = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc >= DateTime.UtcNow).OrderBy(jr => jr.PlannedStartDateTimeUtc));
+            var pastScheduledRuns = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc > dateTime).OrderBy(jr => jr.PlannedStartDateTimeUtc));
+            var futureScheduledRuns = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc >= dateTime).OrderBy(jr => jr.PlannedStartDateTimeUtc));
 
-            // TODO: Recover still running jobs
-            // TODO: Trigger past scheduled jobs with no runs?
+            // Handle current running Jobs
+            if (processingRuns.Any())
+            {
+                // TODO: Recover still running jobs
+            }
+            
+            // Expire Scheduled Runs from the past
+            if (pastScheduledRuns.Any())
+            {
+                // TODO: Trigger past scheduled jobs with no runs?
+                
+            }
+            
+            // Load all existing Schedules into the local memory
+            if (futureScheduledRuns.Any())
+            {
+                this.queue = new List<JobRun>(futureScheduledRuns);
+            }
 
-            this.queue = new List<JobRun>(futureRuns);
-
+            // Wire Events
             this.jobService.JobRunModification += this.JobServiceOnJobRunModification;
 
             this.timer.Change(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
@@ -105,22 +129,22 @@ namespace Jobbr.Server.Core
         {
             lock (this.syncRoot)
             {
-                // a) TODO: Remove from queue
+                // a) TODO: Remove from queue if trigger was removed
 
+                // b) Add to queue
                 if (this.queue.All(jr => jr.Id != args.JobRun.Id))
                 {
                     // Only add scheduled jobruns
                     if (args.JobRun.State == JobRunState.Scheduled)
                     {
-                        // b) Add to queue
                         this.queue.Add(args.JobRun);
                     }
                 }
                 else
                 {
+
                     // c) TODO: Change information
                 }
-
             }
         }
 
