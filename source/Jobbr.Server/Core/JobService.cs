@@ -48,8 +48,7 @@ namespace Jobbr.Server.Core
 
         public Job GetJob(long id)
         {
-            // TODO: Performance
-            return this.storageProvider.GetJobs().FirstOrDefault(j => j.Id == id);
+            return this.storageProvider.GetJobById(id);
         }
 
         public long AddJob(Job job)
