@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Microsoft.SqlServer.Server;
-
 namespace Jobbr.Server.Common
 {
     /// <summary>
@@ -16,6 +14,11 @@ namespace Jobbr.Server.Common
         public FileSystemArtefactsStorageProvider(string dataDirectory)
         {
             this.dataDirectory = dataDirectory;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("[{0}, DataDirectory: '{1}']", this.GetType().Name, Path.GetFullPath(this.dataDirectory));
         }
 
         public void Save(string container, string fileName, Stream content)

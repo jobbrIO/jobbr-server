@@ -8,8 +8,6 @@ using Dapper;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
 
-using Newtonsoft.Json;
-
 namespace Jobbr.Server.Dapper
 {
     /// <summary>
@@ -25,6 +23,11 @@ namespace Jobbr.Server.Dapper
         {
             this.connectionString = connectionString;
             this.schemaName = schemaName;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("[{0}, Schema: '{1}', Connection: '{2}']", this.GetType().Name, this.schemaName, this.connectionString);
         }
 
         public List<Job> GetJobs()
