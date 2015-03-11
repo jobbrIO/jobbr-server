@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Jobbr.Common;
+using Jobbr.Runtime.Logging;
 
 using Newtonsoft.Json;
 
@@ -20,6 +21,8 @@ namespace Jobbr.Runtime
     /// </summary>
     public class JobbrRuntime
     {
+        private static readonly ILog Logger = LogProvider.For<JobbrRuntime>();
+        
         private readonly Assembly defaultAssembly;
 
         private readonly IJobbrDependencyResolver dependencyResolver;
@@ -56,6 +59,8 @@ namespace Jobbr.Runtime
         /// </param>
         public void Run(string[] args)
         {
+            Logger.InfoFormat("JobbrRuntime is now running with the following parameters: '{0}'", string.Join(" ", args));
+
             this.ParseArguments(args);
 
             this.InitializeClient();

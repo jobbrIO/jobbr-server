@@ -8,11 +8,15 @@ using NCrontab;
 
 namespace Jobbr.Server.Core
 {
+    using Jobbr.Server.Logging;
+
     /// <summary>
     /// The Scheduler creates new scheduled Jobs in the JobRun Table based on the triggers
     /// </summary>
     public class DefaultScheduler : IDisposable
     {
+        private static readonly ILog Logger = LogProvider.For<DefaultScheduler>();
+
         private readonly IJobService jobService;
 
         private readonly IJobbrConfiguration configuration;
@@ -142,6 +146,14 @@ namespace Jobbr.Server.Core
         private void JobServiceOnTriggerUpdate(object sender, JobTriggerEventArgs args)
         {
             Console.WriteLine("Got an update for the job " + args.Trigger.Id);
+
+            Logger.Log(
+                LogLevel.Info,
+                () =>
+                    {
+                        var job = this.jobService.GetJob(args.Trigger.JobId);
+                        return string.Format("Got new or updated trigger (id: '{0}', userId: '{1}', userName: '{2}' for job '{3}' (jobId: {4})", args.Trigger.Id, args.Trigger.UserId, args.Trigger.UserName, job.Name, job.Id);
+                    });
 
             if (args.Trigger.IsActive)
             {

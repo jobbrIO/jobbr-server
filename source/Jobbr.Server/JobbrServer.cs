@@ -3,6 +3,7 @@ using System.IO;
 
 using Jobbr.Server.Common;
 using Jobbr.Server.Core;
+using Jobbr.Server.Logging;
 using Jobbr.Server.Web;
 
 using Microsoft.Owin.Hosting.Services;
@@ -14,6 +15,8 @@ namespace Jobbr.Server
     /// </summary>
     public class JobbrServer : IDisposable
     {
+        private static readonly ILog Logger = LogProvider.For<JobbrServer>();
+
         /// <summary>
         /// The configuration.
         /// </summary>
@@ -34,6 +37,8 @@ namespace Jobbr.Server
         /// </summary>
         private readonly WebHost webHost;
 
+        private bool isRunning;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
@@ -42,12 +47,27 @@ namespace Jobbr.Server
         /// </param>
         public JobbrServer(IJobbrConfiguration configuration)
         {
+            Logger.Log(LogLevel.Debug, () => "A new instance of a a JobbrServer has been created.");
+
             this.configuration = configuration;
+
+            Logger.Log(LogLevel.Debug, () => "Creating DI-Container.");
             var kernel = new DefaultKernel(this.configuration);
 
-            this.webHost = kernel.GetService<WebHost>();
-            this.scheduler = kernel.GetService<DefaultScheduler>();
-            this.executor = kernel.GetService<IJobExecutor>();
+            Logger.Log(LogLevel.Debug, () => "Resolving Services...");
+
+            try
+            {
+                this.webHost = kernel.GetService<WebHost>();
+                this.scheduler = kernel.GetService<DefaultScheduler>();
+                this.executor = kernel.GetService<IJobExecutor>();
+
+                Logger.Log(LogLevel.Debug, () => "Done");
+            }
+            catch (Exception e)
+            {
+                Logger.FatalException("Cannot resolve components. See the exception for details.", e);
+            }
         }
 
         /// <summary>
@@ -55,11 +75,49 @@ namespace Jobbr.Server
         /// </summary>
         public void Start()
         {
-            this.ValidateConfiguration();
+            Logger.InfoFormat(
+                "JobbrServer is now starting with the following configuration: BackendUrl='{0}', MaxConcurrentJobs='{1}', JobRunDirectory='{2}', JobRunnerExeutable='{3}', JobStorageProvider='{4}' ArtefactsStorageProvider='{5}'", 
+                this.configuration.BackendAddress,
+                this.configuration.MaxConcurrentJobs,
+                this.configuration.JobRunDirectory,
+                this.configuration.JobRunnerExeResolver != null ? Path.GetFullPath(this.configuration.JobRunnerExeResolver()) : "none",
+                this.configuration.JobStorageProvider, 
+                this.configuration.ArtefactStorageProvider);
 
-            this.webHost.Start();
-            this.scheduler.Start();
-            this.executor.Start();
+            try
+            {
+                Logger.Debug("Validating the configuration...");
+                
+                this.ValidateConfiguration();
+                
+                Logger.Info("The configuration was validated and seems ok.");
+            }
+            catch (Exception e)
+            {
+                Logger.ErrorException("A least one configuration setting has failed. Please see the exception for details.", e);
+
+                return;
+            }
+
+            try
+            {
+                Logger.DebugFormat("Starting WebHost ({0})...", this.webHost.GetType().Name);
+                this.webHost.Start();
+
+                Logger.DebugFormat("Starting Scheduler ({0})...", this.scheduler.GetType().Name);
+                this.scheduler.Start();
+
+                Logger.DebugFormat("Starting Executor ({0})...", this.executor.GetType().Name);
+                this.executor.Start();
+
+                Logger.Info("All services (WebHost, Scheduler, Executor) have been started sucessfully.");
+            }
+            catch (Exception e)
+            {
+                Logger.FatalException("A least one service couldn't be started. Please see the exception for details.", e);
+            }
+
+            this.isRunning = true;
         }
 
         private void ValidateConfiguration()
@@ -87,9 +145,13 @@ namespace Jobbr.Server
         /// </summary>
         public void Stop()
         {
+            Logger.Info("Attempt to shut down JobbrServer...");
+
             this.webHost.Stop();
             this.scheduler.Stop();
             this.executor.Stop();
+
+            Logger.Info("All services (WebHost, Scheduler, Executor) have been stopped.");
         }
 
         /// <summary>
@@ -97,7 +159,8 @@ namespace Jobbr.Server
         /// </summary>
         public void Dispose()
         {
-            this.Stop();
+            if (this.isRunning)
+                this.Stop();
         }
     }
 }
