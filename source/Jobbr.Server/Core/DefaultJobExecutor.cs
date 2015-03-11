@@ -40,7 +40,7 @@ namespace Jobbr.Server.Core
             this.jobService = jobService;
             this.configuration = configuration;
 
-            this.timer = new Timer(this.Callback, null, Timeout.Infinite, Timeout.Infinite);
+            this.timer = new Timer(this.StartReadyJobsFromQueue, null, Timeout.Infinite, Timeout.Infinite);
         }
 
         public void Start()
@@ -80,14 +80,46 @@ namespace Jobbr.Server.Core
             // Wire Events
             this.jobService.JobRunModification += this.JobServiceOnJobRunModification;
 
-
             Logger.InfoFormat("Enabling periodic check for JobRuns to start every {0}s", this.StartNewJobsEverySeconds);
             this.timer.Change(TimeSpan.FromSeconds(this.StartNewJobsEverySeconds), TimeSpan.FromSeconds(this.StartNewJobsEverySeconds));
 
             Logger.InfoFormat("The DefaultJobExecutor has been started at {0} with a queue size of '{1}'", dateTime, this.queue.Count);
         }
 
-        private void Callback(object state)
+        public void Stop()
+        {
+            this.timer.Change(Timeout.Infinite, Timeout.Infinite);
+
+            this.jobService.JobRunModification -= this.JobServiceOnJobRunModification;
+        }
+
+        private void JobServiceOnJobRunModification(object sender, JobRunModificationEventArgs args)
+        {
+            lock (this.syncRoot)
+            {
+                // a) TODO: Remove from queue if trigger was removed --> Not yet detected.
+
+                // b) Add to queue
+                if (this.queue.All(jr => jr.Id != args.JobRun.Id))
+                {
+                    // Only add scheduled jobruns
+                    if (args.JobRun.State == JobRunState.Scheduled)
+                    {
+                        var job = args.Job;
+
+                        Logger.InfoFormat("Adding JobRun for Job '{0}' (Id: {1}, Type: '{2}') with JobRunId {3} to the queue", job.Name, job.Id, job.Type, args.JobRun.Id);
+                        this.queue.Add(args.JobRun);
+                    }
+                }
+                else
+                {
+                    // c) TODO: Change information
+                    Logger.WarnFormat("An already queued jobrun was updated. Plase add functionality here.");
+                }
+            }
+        }
+
+        private void StartReadyJobsFromQueue(object state)
         {
             lock (this.syncRoot)
             {
@@ -153,35 +185,6 @@ namespace Jobbr.Server.Core
 
                 this.activeContexts.Remove(jobRunContext);
             }
-        }
-
-        private void JobServiceOnJobRunModification(object sender, JobRunModificationEventArgs args)
-        {
-            lock (this.syncRoot)
-            {
-                // a) TODO: Remove from queue if trigger was removed
-
-                // b) Add to queue
-                if (this.queue.All(jr => jr.Id != args.JobRun.Id))
-                {
-                    // Only add scheduled jobruns
-                    if (args.JobRun.State == JobRunState.Scheduled)
-                    {
-                        this.queue.Add(args.JobRun);
-                    }
-                }
-                else
-                {
-                    // c) TODO: Change information
-                }
-            }
-        }
-
-        public void Stop()
-        {
-            this.timer.Change(Timeout.Infinite, Timeout.Infinite);
-
-            this.jobService.JobRunModification += JobServiceOnJobRunModification;
         }
     }
 }

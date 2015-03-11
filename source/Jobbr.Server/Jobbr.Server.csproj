@@ -79,7 +79,6 @@
     <Compile Include="Common\IArtefactsStorageProvider.cs" />
     <Compile Include="Core\IJobService.cs" />
     <Compile Include="ServiceMessaging\ServiceMessageParser.cs" />
-    <Compile Include="Core\JobEventArgs.cs" />
     <Compile Include="Core\DefaultJobExecutor.cs" />
     <Compile Include="Core\JobRunEndedEventArgs.cs" />
     <Compile Include="Core\JobRunModificationEventArgs.cs" />
