@@ -15,6 +15,9 @@ namespace Jobbr.Server
     /// </summary>
     public class JobbrServer : IDisposable
     {
+        /// <summary>
+        /// The logger.
+        /// </summary>
         private static readonly ILog Logger = LogProvider.For<JobbrServer>();
 
         /// <summary>
