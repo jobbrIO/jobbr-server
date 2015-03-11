@@ -12,7 +12,7 @@ using Jobbr.Server.Model;
 namespace Jobbr.Server.Core
 {
     /// <summary>
-    /// Responsible for Starting extenal processes with the job inside
+    /// Responsible for creating and starting a "virtual" context where the running job is managed within
     /// </summary>
     public class DefaultJobExecutor : IJobExecutor
     {
@@ -27,11 +27,13 @@ namespace Jobbr.Server.Core
 
         private Timer timer;
 
-        private IList<JobRun> queue;
+        private List<JobRun> queue = new List<JobRun>();
 
-        private IList<JobRunContext> running = new List<JobRunContext>();
+        private List<JobRunContext> activeContexts = new List<JobRunContext>();
 
         private object syncRoot = new object();
+
+        private int StartNewJobsEverySeconds = 1;
 
         public DefaultJobExecutor(IJobService jobService, IJobbrConfiguration configuration)
         {
@@ -39,55 +41,6 @@ namespace Jobbr.Server.Core
             this.configuration = configuration;
 
             this.timer = new Timer(this.Callback, null, Timeout.Infinite, Timeout.Infinite);
-        }
-
-        private void Callback(object state)
-        {
-            var jobsToStart = new List<JobRun>();
-
-            lock (this.syncRoot)
-            {
-                jobsToStart = this.queue.Where(jr => jr.PlannedStartDateTimeUtc <= DateTime.UtcNow).OrderBy(jr => jr.PlannedStartDateTimeUtc).Take(this.configuration.MaxConcurrentJobs - this.running.Count).ToList();
-
-                foreach (var jobRun in jobsToStart)
-                {
-                    this.jobService.UpdateJobRunState(jobRun, JobRunState.Preparing);
-                    this.queue.Remove(jobRun);
-                    
-                    var context = new JobRunContext(this.jobService, this.configuration);
-                    context.Ended += this.ContextOnEnded;
-
-                    this.running.Add(context);
-
-                    var run = jobRun;
-                    new TaskFactory().StartNew(() => context.Start(run));
-                }
-            }
-        }
-
-        private void ContextOnEnded(object sender, JobRunEndedEventArgs args)
-        {
-            lock (this.syncRoot)
-            {
-                var jobRunContext = sender as JobRunContext;
-                jobRunContext.Ended -= this.ContextOnEnded;
-
-                this.jobService.SetJobRunEndTime(args.JobRun, DateTime.UtcNow);
-
-                if (args.ExitCode != 0)
-                {
-                    this.jobService.UpdateJobRunState(args.JobRun, JobRunState.Failed);
-                }
-                else
-                {
-                    if (args.JobRun.Progress > 0)
-                    {
-                        this.jobService.UpdateJobRunProgress(args.JobRun, 100);
-                    }
-                }
-
-                this.running.Remove(jobRunContext);
-            }
         }
 
         public void Start()
@@ -100,29 +53,106 @@ namespace Jobbr.Server.Core
             var pastScheduledRuns = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc > dateTime).OrderBy(jr => jr.PlannedStartDateTimeUtc));
             var futureScheduledRuns = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc >= dateTime).OrderBy(jr => jr.PlannedStartDateTimeUtc));
 
-            // Handle current running Jobs
+            // Handle current activeContexts Jobs
             if (processingRuns.Any())
             {
-                // TODO: Recover still running jobs
+                Logger.WarnFormat("There are {0} JobRuns which in Processing-State. Trying to reestablish a JobRunContext and capturing their process.", processingRuns.Count);
+                
+                // TODO: Recover still activeContexts jobs
+                Logger.Error("Recovering of running jobs after server restart is not implemented!");
             }
             
             // Expire Scheduled Runs from the past
             if (pastScheduledRuns.Any())
             {
-                // TODO: Trigger past scheduled jobs with no runs?
+                Logger.WarnFormat("There are {0} scheduled JobRuns with a startdate in the past. They all get expired, because Is unlikely that JobRuns get relevant in the near future.", pastScheduledRuns.Count);
                 
+                // TODO: Trigger past scheduled jobs with no runs?
             }
             
             // Load all existing Schedules into the local memory
             if (futureScheduledRuns.Any())
             {
-                this.queue = new List<JobRun>(futureScheduledRuns);
+                Logger.InfoFormat("Adding {0} scheduled JobRuns with an upcoming startdate", processingRuns.Count);
+                this.queue.AddRange(futureScheduledRuns);
             }
-
+            
             // Wire Events
             this.jobService.JobRunModification += this.JobServiceOnJobRunModification;
 
-            this.timer.Change(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+
+            Logger.InfoFormat("Enabling periodic check for JobRuns to start every {0}s", this.StartNewJobsEverySeconds);
+            this.timer.Change(TimeSpan.FromSeconds(this.StartNewJobsEverySeconds), TimeSpan.FromSeconds(this.StartNewJobsEverySeconds));
+
+            Logger.InfoFormat("The DefaultJobExecutor has been started at {0} with a queue size of '{1}'", dateTime, this.queue.Count);
+        }
+
+        private void Callback(object state)
+        {
+            lock (this.syncRoot)
+            {
+                var possibleJobsToStart = this.configuration.MaxConcurrentJobs - this.activeContexts.Count;
+                var readyJobs = this.queue.Where(jr => jr.PlannedStartDateTimeUtc <= DateTime.UtcNow).OrderBy(jr => jr.PlannedStartDateTimeUtc).ToList();
+
+                var jobsToStart = readyJobs.Take(possibleJobsToStart).ToList();
+
+                var queueCannotStartAll = readyJobs.Count > possibleJobsToStart;
+                var showStatusInformationNow = (DateTime.Now.Second % 5) == 0;
+                var canStartAllReadyJobs = jobsToStart.Count > 0 && jobsToStart.Count <= possibleJobsToStart;
+
+                if ((queueCannotStartAll && showStatusInformationNow) || canStartAllReadyJobs)
+                {
+                    Logger.InfoFormat("There are {0} ready jobs in the queue and currently {1} running jobs. Number of possible jobs to start: {2}", readyJobs.Count, this.activeContexts.Count, possibleJobsToStart);
+                }
+
+                foreach (var jobRun in jobsToStart)
+                {
+                    var run = jobRun;
+
+                    Logger.InfoFormat("Creating new context for JobRun with Id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId);
+
+                    this.jobService.UpdateJobRunState(jobRun, JobRunState.Preparing);
+                    this.queue.Remove(jobRun);
+
+                    var context = new JobRunContext(this.jobService, this.configuration);
+                    context.Ended += this.ContextOnEnded;
+
+                    this.activeContexts.Add(context);
+
+                    Logger.InfoFormat("Starting JobRun with Id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId);
+                    new TaskFactory().StartNew(() => context.Start(run));
+                }
+            }
+        }
+
+        private void ContextOnEnded(object sender, JobRunEndedEventArgs args)
+        {
+            lock (this.syncRoot)
+            {
+                var jobRunContext = sender as JobRunContext;
+                var run = args.JobRun;
+
+                jobRunContext.Ended -= this.ContextOnEnded;
+
+                this.jobService.SetJobRunEndTime(args.JobRun, DateTime.UtcNow);
+
+                if (args.ExitCode != 0)
+                {
+                    Logger.WarnFormat("The process within the context JobRun has exited with a non-zero exit code. JobRunId: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId);
+                    this.jobService.UpdateJobRunState(args.JobRun, JobRunState.Failed);
+                }
+                else
+                {
+                    if (args.JobRun.Progress > 0)
+                    {
+                        this.jobService.UpdateJobRunProgress(args.JobRun, 100);
+                    }
+                }
+
+                Logger.InfoFormat("Removing context for JobRun with Id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId);
+
+                this.activeContexts.Remove(jobRunContext);
+            }
         }
 
         private void JobServiceOnJobRunModification(object sender, JobRunModificationEventArgs args)
@@ -142,7 +172,6 @@ namespace Jobbr.Server.Core
                 }
                 else
                 {
-
                     // c) TODO: Change information
                 }
             }
