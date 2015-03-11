@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
     <Compile Include="Common\FileSystemArtefactsStorageProvider.cs" />
     <Compile Include="Common\IArtefactsStorageProvider.cs" />
     <Compile Include="Core\IJobService.cs" />
