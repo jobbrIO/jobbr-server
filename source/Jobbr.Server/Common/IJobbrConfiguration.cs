@@ -36,6 +36,9 @@ namespace Jobbr.Server.Common
 
         bool BeChatty { get; set; }
 
+        /// <summary>
+        /// Gets the artefact storage provider.
+        /// </summary>
         IArtefactsStorageProvider ArtefactStorageProvider { get; }
     }
 }
