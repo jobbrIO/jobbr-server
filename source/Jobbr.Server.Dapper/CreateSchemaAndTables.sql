@@ -1,6 +1,6 @@
 ﻿USE [master]
 GO
-/****** Object:  Database [JobbrDemo]    Script Date: 06.03.2015 20:17:44 ******/
+/****** Object:  Database [JobbrDemo]    Script Date: 11.03.2015 14:17:37 ******/
 CREATE DATABASE [JobbrDemo]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -75,10 +75,10 @@ ALTER DATABASE [JobbrDemo] SET DELAYED_DURABILITY = DISABLED
 GO
 USE [JobbrDemo]
 GO
-/****** Object:  Schema [Jobbr]    Script Date: 06.03.2015 20:17:44 ******/
+/****** Object:  Schema [Jobbr]    Script Date: 11.03.2015 14:17:37 ******/
 CREATE SCHEMA [Jobbr]
 GO
-/****** Object:  Table [Jobbr].[JobRuns]    Script Date: 06.03.2015 20:17:44 ******/
+/****** Object:  Table [Jobbr].[JobRuns]    Script Date: 11.03.2015 14:17:37 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -92,11 +92,12 @@ CREATE TABLE [Jobbr].[JobRuns](
 	[UniqueId] [char](36) NOT NULL,
 	[JobParameters] [varchar](max) NULL,
 	[InstanceParameters] [varchar](max) NULL,
+	[Name] [varchar](50) NULL,
 	[PlannedStartDateTimeUtc] [datetime2](7) NOT NULL,
 	[ActualStartDateTimeUtc] [datetime2](7) NULL,
 	[EstimatedEndDateTimeUtc] [datetime2](7) NULL,
-	[ActualEndDateTimeUtc] [nchar](10) NULL,
-	[Progress] [int] NULL,
+	[ActualEndDateTimeUtc] [datetime2](7) NULL,
+	[Progress] [float] NULL,
 	[State] [varchar](15) NOT NULL,
 	[Pid] [int] NULL,
 	[WorkingDir] [varchar](300) NULL,
@@ -110,7 +111,7 @@ CREATE TABLE [Jobbr].[JobRuns](
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [Jobbr].[Jobs]    Script Date: 06.03.2015 20:17:44 ******/
+/****** Object:  Table [Jobbr].[Jobs]    Script Date: 11.03.2015 14:17:37 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -121,18 +122,19 @@ CREATE TABLE [Jobbr].[Jobs](
 	[Id] [bigint] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](50) NOT NULL,
 	[Type] [varchar](50) NOT NULL,
+	[Parameters] [varchar](max) NULL,
 	[CreatedDateTimeUtc] [datetime2](7) NOT NULL,
 	[UpdatedDateTimeUtc] [datetime2](7) NULL,
  CONSTRAINT [PK_Jobs] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [Jobbr].[Triggers]    Script Date: 06.03.2015 20:17:44 ******/
+/****** Object:  Table [Jobbr].[Triggers]    Script Date: 11.03.2015 14:17:37 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -145,6 +147,7 @@ CREATE TABLE [Jobbr].[Triggers](
 	[TriggerType] [varchar](10) NOT NULL,
 	[Definition] [varchar](20) NULL,
 	[StartDateTimeUtc] [datetime2](7) NULL,
+	[EndDateTimeUtc] [datetime2](7) NULL,
 	[DelayedInMinutes] [int] NULL,
 	[IsActive] [bit] NOT NULL,
 	[UserId] [bigint] NULL,
@@ -152,6 +155,7 @@ CREATE TABLE [Jobbr].[Triggers](
 	[UserDisplayName] [varchar](100) NULL,
 	[Parameters] [varchar](max) NULL,
 	[Comment] [varchar](max) NULL,
+	[CreatedDateTimeUtc] [datetime2](7) NOT NULL,
  CONSTRAINT [PK_Triggers] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
