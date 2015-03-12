@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Jobbr.Runtime</RootNamespace>
-    <AssemblyName>Jobbr.Executable</AssemblyName>
+    <AssemblyName>Jobbr.Runtime</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
