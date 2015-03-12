@@ -108,7 +108,7 @@ A definition is a cron definition as specified here:  http://en.wikipedia.org/wi
 ### List JobRuns By User
 A jobrun is triggered by a trigger. To get jobruns for a specific used, it required to provide at least a UserId or UserName for the trigger.
 
-	GET http://localhost/jobbr/api/jobrunss/?userId=1234
+	GET http://localhost/jobbr/api/jobruns/?userId=1234
 
 Or 
 
