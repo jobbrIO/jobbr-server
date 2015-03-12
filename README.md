@@ -21,12 +21,12 @@ To Host a JobbrServer simply define a Storage Provider for Jobs and JobArtefacts
 	var artefactStorageProvider = new FileSystemArtefactsStorageProvider("C:\jobdata");
 
     var config = new DefaultJobbrConfiguration
-         {
-             JobStorageProvider = jobStorageProvider,
-             ArtefactStorageProvider = artefactStorageProvider,
-             JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
-             BeChatty = true, // Verbose output on the RunnerExecutable
-         };
+    {
+        JobStorageProvider = jobStorageProvider,
+        ArtefactStorageProvider = artefactStorageProvider,
+        JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
+        BeChatty = true, // Verbose output on the RunnerExecutable
+    };
 
     using (var jobbrServer = new JobbrServer(config))
     {
