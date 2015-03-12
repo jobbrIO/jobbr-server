@@ -39,7 +39,13 @@ using (var jobbrServer = new JobbrServer(config))
     jobbrServer.Stop();
 }
 ```
+### Configuration.
+There is a default configuration included with the following settings
+* BackendAddress: "http://localhost:80/jobbr"
+* MaxConcurrentJobs: 4
+* JobRunDirectory: Path.GetTempPath()
 
+### Packages for OWIN
 The JobbrServer has an embedded OWIN-Selfhost for WebApi, to please add the corresponding NuGet-Package to the project where the JobbrServer is included.
 
 	PM> Install-Package Microsoft.Owin.Host.HttpListener
