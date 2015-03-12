@@ -16,5 +16,4 @@ namespace Jobbr.Server.Web.Dto
 
         public DateTime? UpdatedDateTimeUtc { get; set; }
     }
-
 }
