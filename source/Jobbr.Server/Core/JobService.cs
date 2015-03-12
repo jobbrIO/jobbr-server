@@ -46,9 +46,13 @@ namespace Jobbr.Server.Core
             return this.storageProvider.GetJobById(id);
         }
 
-        public long AddJob(Job job)
+        public Job AddJob(Job job)
         {
-            return this.storageProvider.AddJob(job);
+            var id = this.storageProvider.AddJob(job);
+
+            job.Id = id;
+
+            return job;
         }
 
         public List<JobRun> GetJobRuns(JobRunState state)

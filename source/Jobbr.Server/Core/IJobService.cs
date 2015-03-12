@@ -20,7 +20,7 @@ namespace Jobbr.Server.Core
 
         Job GetJob(long id);
 
-        long AddJob(Job job);
+        Job AddJob(Job job);
 
         List<JobRun> GetJobAllRuns();
 

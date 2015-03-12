@@ -45,13 +45,13 @@ namespace Jobbr.Server.Dapper
         public long AddJob(Job job)
         {
             var sql = string.Format(
-                        @"INSERT INTO {0}.Job ([Name],[Type],[CreatedDateTimeUtc]) VALUES (@Name, @Type, @UtcNow)
+                        @"INSERT INTO {0}.Jobs ([Name],[Type],[Parameters],[CreatedDateTimeUtc]) VALUES (@Name, @Type, @Parameters, @UtcNow)
                           SELECT CAST(SCOPE_IDENTITY() as int)", 
                         this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
             {
-                return connection.Query<int>(sql, new { job.Name, job.Type, DateTime.UtcNow, }).Single();
+                return connection.Query<int>(sql, new { job.Name, job.Type, job.Parameters, DateTime.UtcNow, }).Single();
             }
         }
 

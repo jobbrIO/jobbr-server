@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Web.Http;
 
 using Jobbr.Server.Common;
+using Jobbr.Server.Core;
 using Jobbr.Server.Model;
 using Jobbr.Server.Web.Dto;
 
@@ -19,10 +17,13 @@ namespace Jobbr.Server.Web.Controller
     /// </summary>
     public class JobController : ApiController
     {
+        private readonly IJobService service;
+
         private readonly IJobStorageProvider jobStorageProvider;
 
-        public JobController(IJobStorageProvider jobStorageProvider)
+        public JobController(IJobService service, IJobStorageProvider jobStorageProvider)
         {
+            this.service = service;
             this.jobStorageProvider = jobStorageProvider;
         }
 
@@ -30,7 +31,18 @@ namespace Jobbr.Server.Web.Controller
         [Route("api/jobs")]
         public IHttpActionResult AllJobs()
         {
-            return this.Ok(this.jobStorageProvider.GetJobs());
+            return this.Ok(this.jobStorageProvider.GetJobs().Select(this.Map));
+        }
+
+        [HttpPost]
+        [Route("api/jobs")]
+        public IHttpActionResult AddJob([FromBody] JobDto dto)
+        {
+            var job = new Job() { Name = dto.Name, Type = dto.Type, Parameters = JsonConvert.SerializeObject(dto.Parameters), };
+
+            var returnJob = this.service.AddJob(job);
+
+            return this.Ok(this.Map(returnJob));
         }
 
         [HttpGet]
@@ -58,6 +70,19 @@ namespace Jobbr.Server.Web.Controller
             }
 
             return this.Ok(list);
+        }
+
+        private JobDto Map(Job job)
+        {
+            return new JobDto()
+                       {
+                           Id = job.Id,
+                           Name = job.Name,
+                           Parameters = JsonConvert.DeserializeObject(job.Parameters),
+                           Type = job.Type,
+                           UpdatedDateTimeUtc = job.UpdatedDateTimeUtc,
+                           CreatedDateTimeUtc = job.CreatedDateTimeUtc
+                       };
         }
     }
 }

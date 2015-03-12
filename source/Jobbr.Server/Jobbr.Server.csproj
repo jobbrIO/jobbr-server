@@ -96,6 +96,7 @@
     <Compile Include="Web\Controller\ExecutorController.cs" />
     <Compile Include="Web\Controller\JobRunController.cs" />
     <Compile Include="Web\Controller\TriggerController.cs" />
+    <Compile Include="Web\Dto\JobDto.cs" />
     <Compile Include="Web\Dto\JobRunArtefactDto.cs" />
     <Compile Include="Web\Dto\JobRunDto.cs" />
     <Compile Include="Web\Dto\JobTriggerDtoBase.cs" />
