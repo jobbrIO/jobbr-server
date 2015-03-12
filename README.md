@@ -4,8 +4,9 @@ Jobbr is a .NET JobServer. Unless other JobServer-Frameworks Jobbr explicitly so
 * Restful API to trigger Jobs and watch the execition state
 * Artefacts-store for both job parameters and job results
 * Embeddable in your Environment (JobServer and Runner)
-* DI-Resolution in Server and Runner for your Jobs
-* No Dependency to the Jobbr-Assemblies needed from your Jobs
+* DI-Resolution in Runner for your Jobs
+* **NO** Dependency to the Jobbr-Assemblies needed from your Jobs
+* **NO** Dependency to any existing Logging-Framework
 
 # QuickStart
 There is a demo-solution with a ready to run application.
@@ -37,6 +38,11 @@ To Host a JobbrServer simply define a Storage Provider for Jobs and JobArtefacts
         Console.WriteLine("Shutting down. Please wait...");
         jobbrServer.Stop();
     }
+
+
+The JobbrServer has an embedded OWIN-Selfhost for WebApi, to please add the corresponding NuGet-Package to the project where the JobbrServer is included.
+
+	PM> Install-Package Microsoft.Owin.Host.HttpListener
 
 
 ## Hosting a Runner
@@ -180,15 +186,18 @@ With a sample return value
 # Credits
  
 ## Based On
-* nrcron
-* ASP.NET WebAPI (OWIN)
-* Dapper
 * CommandLineParser
-* JSON.NET
+* Dapper
 * LibLog
+* Microsoft ASP.NET WebAPI
+* Microsoft OWIN
+* nrcrontab
+* Newtonsoft JSON.NET
+* Ninject
 
 ## Authors
 * Michael Schnyder
+* Peter Gfader
 
 # Licence
 This software cannot be licenced.
