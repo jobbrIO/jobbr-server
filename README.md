@@ -16,29 +16,29 @@ Simply create a database (or use any existing) by executing the CreateSchemaAndT
 
 ## Hosting a JobbrServer
 To Host a JobbrServer simply define a Storage Provider for Jobs and JobArtefacts and initialize the JobServer:
+```c#
+var jobStorageProvider = new DapperStorageProvider(@"YourConnectionString");
+var artefactStorageProvider = new FileSystemArtefactsStorageProvider("C:\jobdata");
 
-    var jobStorageProvider = new DapperStorageProvider(@"YourConnectionString");
-	var artefactStorageProvider = new FileSystemArtefactsStorageProvider("C:\jobdata");
+var config = new DefaultJobbrConfiguration
+{
+    JobStorageProvider = jobStorageProvider,
+    ArtefactStorageProvider = artefactStorageProvider,
+    JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
+    BeChatty = true, // Verbose output on the RunnerExecutable
+}};
 
-    var config = new DefaultJobbrConfiguration
-    {
-        JobStorageProvider = jobStorageProvider,
-        ArtefactStorageProvider = artefactStorageProvider,
-        JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
-        BeChatty = true, // Verbose output on the RunnerExecutable
-    };
+using (var jobbrServer = new JobbrServer(config))
+{
+    jobbrServer.Start();
 
-    using (var jobbrServer = new JobbrServer(config))
-    {
-        jobbrServer.Start();
+    Console.WriteLine("JobServer has started . Press enter to quit")
+    Console.ReadLine();
 
-        Console.WriteLine("JobServer has started . Press enter to quit")
-        Console.ReadLine();
-
-        Console.WriteLine("Shutting down. Please wait...");
-        jobbrServer.Stop();
-    }
-
+    Console.WriteLine("Shutting down. Please wait...");
+    jobbrServer.Stop();
+}
+```
 
 The JobbrServer has an embedded OWIN-Selfhost for WebApi, to please add the corresponding NuGet-Package to the project where the JobbrServer is included.
 
@@ -46,13 +46,17 @@ The JobbrServer has an embedded OWIN-Selfhost for WebApi, to please add the corr
 
 
 ## Hosting a Runner
-Hosting a runner in the separate Runner-Executable is even easier.
+Hosting a runner in the separate Runner-Executable is even easier. JobbrServer starts this executable in a unique working directory. If you would like to return some output-files to the JobbrServer, just place the files in the working directory
 
-    public static void Main(string[] args)
-    {
-	    var jobbrRuntime = new JobbrRuntime(typeof(MyJobs.MinimalJob).Assembly);
-	    jobbrRuntime.Run(args);
-	}
+```c#
+public static void Main(string[] args)
+{
+    var jobbrRuntime = new JobbrRuntime(typeof(MyJobs.MinimalJob).Assembly);
+    jobbrRuntime.Run(args);
+}
+```
+### Logging in Working Directory
+If you would like to collect the logs by the Runtime, make sure the logfiles are stored in the CurrentWorking-Directory. In case of log4net, you will have to define a property with that value if you would like to configugre the path in the xml.
 
 ## API
 The JobbrServer exposes a RestFul-Api to define Jobs, Triggers and watch the status for running Jobs. Please see the section WebAPI for a complete reference
