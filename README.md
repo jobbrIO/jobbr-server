@@ -56,16 +56,17 @@ Take the following Endpoint
 
 	GET http://localhost/jobbr/api/jobs
 
-### Trigger a Job to run
+### Trigger a Job to run (JobRun)
 A job can be triggered in three different modes using the following Endpoint:
 
 	POST http://localhost/jobbr/api/jobs/{JobId}/trigger
 
 Please note that
 * DateTime Values are always UTC
-* UserId, UserName or UserDisplayName
+* UserId, UserName or UserDisplayName are optional
+* Parameters are an object
 
-Instant
+####Instant
 
 	{
         "triggerType": "instant",
@@ -74,35 +75,75 @@ Instant
 		"parameters": { "Param1": "test", "Param2" : 42 }
 	}
 
-Scheduled
+####Scheduled
 
 	{
         "triggerType": "scheduled",
-		"dateTime": "2015-03-12 11:00"
+		"dateTimeUtc": "2015-03-12 11:00"
         "isActive": true,
 		"userName": "test"
 		"parameters": { "Param1": "test", "Param2" : 42 }
 	}
 
-Recurring
+####Recurring
 
-### List Jobs By User
+	{
+        "triggerType": "recurring",
+		"startDateTimeUtc": "2015-03-12 11:00
+		"endDateTimeUtc": "2015-03-19 18:00"
+		"definition: "* * * * *",
+	    "isActive": true,
+		"userName": "test"
+		"parameters": { "Param1": "test", "Param2" : 42 }
+	}
 
+A definition is a cron definition as specified here:  http://en.wikipedia.org/wiki/Cron 
+
+### List JobRuns By User
+A jobrun is triggered by a trigger. To get jobruns for a specific used, it required to provide at least a UserId or UserName for the trigger.
+
+	GET http://localhost/jobbr/api/jobrunss/?userId=1234
+
+Or 
+
+	GET http://localhost/jobbr/api/jobruns/?userName=name
 
 ### Watch the Run-Status
+To get a detailed view for a jobrun you have to know the JobRunId
+
+	GET http://localhost/jobbr/api/jobruns/{JobRunId}
+
+Sample Response
+
+	{
+		"jobId": 7,
+		"triggerId": 446,
+		"jobRunId": 446,
+		"uniqueId": "95e9e93e-062c-4b00-8708-df5ca1270c2e",
+		"instanceParameter": {
+			"Param1": "test",
+			"Param2": 42
+		},
+		"jobName": "Thir Job",
+		"state": "Completed",
+		"progress": 100,
+		"plannedStartUtc": "2015-03-11T11:23:15.74",
+		"auctualStartUtc": "2015-03-11T11:23:16.52",
+		"auctualEndUtc": "2015-03-11T11:23:34.48"
+	}
 
 ### Getting Artefacts
+If there are any artefacts for a specific run, they are available under.
 
+	GET http://localhost/jobbr/api/jobruns/446/artefaacts/{filename}
 
+#Features
 
-## Features Explained
-
-# Logging
+## Logging
 Jobbr uses the LobLog library to detect your Logging-Framework of the Hosting Process. When using Jobbr, you don't introduce a new dependency to an existing Logging-Framework. See https://github.com/damianh/LibLog for details
 
-# RestFul Api Reference
+## RestFul Api Reference
 
-## Jobs
 ### Get all Jobs
 Take the following Endpoint
 
