@@ -135,14 +135,14 @@ Sample Response
 ### Getting Artefacts
 If there are any artefacts for a specific run, they are available under.
 
-	GET http://localhost/jobbr/api/jobruns/446/artefaacts/{filename}
+	GET http://localhost/jobbr/api/jobruns/446/artefacts/{filename}
 
 #Features
 
 ## Logging
 Jobbr uses the LobLog library to detect your Logging-Framework of the Hosting Process. When using Jobbr, you don't introduce a new dependency to an existing Logging-Framework. See https://github.com/damianh/LibLog for details
 
-## RestFul Api Reference
+## Restful API Reference
 
 ### Get all Jobs
 Take the following Endpoint
@@ -173,6 +173,9 @@ With a sample return value
 			"createdDateTimeUtc": "2015-03-10T00:00:00"
 		}
 	]
+
+### More
+...
 
 # Credits
  

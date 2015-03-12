@@ -33,10 +33,8 @@ namespace Demo.JobServer
             {
                 jobbrServer.Start();
 
-                Console.Write("JobServer has started on {0}. Press enter to quit", config.BackendAddress);
                 Console.ReadLine();
 
-                Console.Write("Shutting down. Please wait...");
                 jobbrServer.Stop();
             }
         }
