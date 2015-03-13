@@ -56,6 +56,8 @@ namespace Jobbr.Runtime
         /// </param>
         public void Run(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+
             Logger.InfoFormat("JobbrRuntime is now running with the following parameters: '{0}'", string.Join(" ", args));
 
             this.ParseArguments(args);
@@ -78,6 +80,7 @@ namespace Jobbr.Runtime
             }
             catch (Exception e)
             {
+                Logger.FatalException("Exception in the Jobbr-Runtime. Please see details: ", e);
                 Environment.ExitCode = 1;
 
                 try
@@ -92,6 +95,11 @@ namespace Jobbr.Runtime
             this.End();
         }
 
+        private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
+        {
+            Logger.FatalException("Unhandled Infrastructure Exception in Jobbr-Runtime. Please contact the developers!", (Exception)unhandledExceptionEventArgs.ExceptionObject);
+        }
+
         private void WaitForCompletion()
         {
             if (this.jobRunTask != null)
@@ -100,6 +108,7 @@ namespace Jobbr.Runtime
 
                 if (this.jobRunTask.IsFaulted)
                 {
+                    Logger.ErrorException("The execution of the job has faulted. See Exception for details.", this.jobRunTask.Exception);
                     this.client.PublishState(JobRunState.Failed);
                 }
                 else
@@ -111,7 +120,11 @@ namespace Jobbr.Runtime
 
         private void End()
         {
-            if (this.jobRunTask != null)
+            if (this.jobRunTask == null || this.jobRunTask.IsFaulted)
+            {
+                this.client.PublishState(JobRunState.Failed);
+            }
+            else
             {
                 this.client.PublishState(JobRunState.Completed);
             }
@@ -181,7 +194,7 @@ namespace Jobbr.Runtime
             }
             else
             {
-                // TODO: Logging
+                Logger.Error("Unable to find an entrypoint to call your job. Is there at least a public Run()-Method?");
                 this.client.PublishState(JobRunState.Failed);
             }
         }
@@ -191,31 +204,39 @@ namespace Jobbr.Runtime
             this.client.PublishState(JobRunState.Initializing);
             this.jobInfo = this.client.GetJobRunInfo();
 
-            if (this.jobInfo == null)
-            {
-                
-            }
-
             var typeName = this.jobInfo.JobType;
 
+            Logger.DebugFormat("Trying to resolve the specified type '{0}'...", this.jobInfo.JobType);
+            
             var type = this.ResolveType(typeName);
 
             if (type == null)
             {
+                Logger.ErrorFormat("Unable to resolve the type '{0}'!", this.jobInfo.JobType);
+
                 this.client.PublishState(JobRunState.Failed);
             }
             else
             {
-                this.jobInstance = this.dependencyResolver.GetService(type);
+                try
+                {
+                    this.jobInstance = this.dependencyResolver.GetService(type);
+                }
+                catch (Exception exception)
+                {
+                    Logger.ErrorException("Failed while activating type '{0}'. See Exception for details!", exception);
+                }
             }
         }
 
         private Type ResolveType(string typeName)
         {
+            Logger.DebugFormat("Resolve type using '{0}' like a full qualified CLR-Name", typeName);
             var type = Type.GetType(typeName);
 
             if (type == null && this.defaultAssembly != null)
             {
+                Logger.DebugFormat("Trying to resolve '{0}' by the assembly '{1}'", typeName, this.defaultAssembly.FullName);
                 type = this.defaultAssembly.GetType(typeName);
             }
 
@@ -223,6 +244,8 @@ namespace Jobbr.Runtime
             {
                 // Search in all Assemblies
                 var allReferenced = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+
+                Logger.DebugFormat("Trying to resolve type by asking all referenced assemblies ('{0}')", string.Join(", ", allReferenced.Select(a => a.Name)));
 
                 foreach (var assemblyName in allReferenced)
                 {
@@ -239,6 +262,8 @@ namespace Jobbr.Runtime
 
             if (type == null)
             {
+                Logger.DebugFormat("Still no lock finding '{0}' somewhere. Iterating through all types and comparing class-names. Please hold on", typeName);
+
                 // Absolutely no clue
                 var matchingTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => x.Name == typeName && x.IsClass && !x.IsAbstract).ToList();
 
@@ -248,13 +273,14 @@ namespace Jobbr.Runtime
                 }
                 else if (matchingTypes.Count() > 1)
                 {
-                    // TODO: Log
+                    Logger.WarnFormat("More than one matching type found for '{0}'. Matches: ", typeName, string.Join(", ", matchingTypes.Select(t => t.FullName)));
                 }
                 else
                 {
-                    // TODO: Log
+                    Logger.WarnFormat("No matching type found for '{0}'.", typeName);
                 }
             }
+
             return type;
         }
 
