@@ -28,7 +28,7 @@ namespace Jobbr.Server.Web.Controller
         }
 
         [HttpGet]
-        [Route("api/jobs/{jobId}/trigger")]
+        [Route("api/jobs/{jobId:long}/trigger")]
         public IHttpActionResult GetTriggersForJob(long jobId)
         {
             var job = this.jobStorageProvider.GetJobById(jobId);
@@ -41,9 +41,23 @@ namespace Jobbr.Server.Web.Controller
             return this.Ok(this.jobStorageProvider.GetTriggers(jobId));
         }
 
+        [HttpGet]
+        [Route("api/jobs/{uniqueName}/trigger")]
+        public IHttpActionResult GetTriggersForJob(string uniqueName)
+        {
+            var job = this.jobStorageProvider.GetJobByUniqueName(uniqueName);
+
+            if (job == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.Ok(this.jobStorageProvider.GetTriggers(job.Id));
+        }
+
         [HttpPost]
-        [Route("api/jobs/{jobId}/trigger")]
-        public IHttpActionResult AddTrigger(long jobId, [FromBody] JobTriggerDtoBase triggerDto)
+        [Route("api/jobs/{jobId:long}/trigger")]
+        public IHttpActionResult AddTriggerForJobId(long jobId, [FromBody] JobTriggerDtoBase triggerDto)
         {
             var job = this.jobStorageProvider.GetJobById(jobId);
 
@@ -59,6 +73,29 @@ namespace Jobbr.Server.Web.Controller
 
             var trigger = this.ConvertToTrigger(triggerDto as dynamic);
             ((JobTriggerBase)trigger).JobId = jobId;
+
+            this.jobService.AddTrigger(trigger);
+
+            return this.Ok();
+        }
+
+        [Route("api/jobs/{uniqueName}/trigger")]
+        public IHttpActionResult AddTriggerForJobUniqueName(string uniqueName, [FromBody] JobTriggerDtoBase triggerDto)
+        {
+            var job = this.jobStorageProvider.GetJobByUniqueName(uniqueName);
+
+            if (job == null)
+            {
+                return this.NotFound();
+            }
+
+            if (triggerDto == null)
+            {
+                return this.StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var trigger = this.ConvertToTrigger(triggerDto as dynamic);
+            ((JobTriggerBase)trigger).JobId = job.Id;
 
             this.jobService.AddTrigger(trigger);
 
