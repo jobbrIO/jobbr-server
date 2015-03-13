@@ -64,8 +64,9 @@ namespace Jobbr.Server.Core
         public void UpdateJobRunState(JobRun jobRun, JobRunState state)
         {
             jobRun.State = state;
-
             this.storageProvider.Update(jobRun);
+
+            Logger.InfoFormat("[{0}] The JobRun with id: {1} has switched to the '{2}'-State", jobRun.UniqueId, jobRun.Id, state);
 
             this.OnJobRunModification(new JobRunModificationEventArgs() { JobRun = jobRun });
         }

@@ -66,7 +66,7 @@ namespace Jobbr.Server.Core
             this.jobRun = jobRun;
 
             // Create the WorkingDir and TempDir for the execution
-            var jobRunPath = Path.Combine(this.configuration.JobRunDirectory, jobRun.UniqueId);
+            var jobRunPath = Path.Combine(this.configuration.JobRunDirectory, "jobbr-" + jobRun.UniqueId);
 
             Logger.InfoFormat("[{0}] Preparing filesytem directories in '{1}'", jobRun.UniqueId, this.configuration.JobRunDirectory);
 
@@ -74,7 +74,7 @@ namespace Jobbr.Server.Core
             var workDir = Path.Combine(jobRunPath, "work");
 
             Directory.CreateDirectory(tempDir);
-            Logger.InfoFormat("[{0}] Created Temp-Directory '{1}'", tempDir);
+            Logger.InfoFormat("[{0}] Created Temp-Directory '{1}'", jobRun.UniqueId, tempDir);
 
             Directory.CreateDirectory(workDir);
             Logger.InfoFormat("[{0}] Created Working-Directory '{1}'", jobRun.UniqueId, workDir);
@@ -111,7 +111,7 @@ namespace Jobbr.Server.Core
             this.jobService.UpdateJobRunState(jobRun, JobRunState.Starting);
 
 
-            Logger.InfoFormat("[{0}] Statring '{1} {2}' in '{3}'", jobRun.UniqueId, runnerFileExe, arguments, workDir);
+            Logger.InfoFormat("[{0}] Starting '{1} {2}' in '{3}'", jobRun.UniqueId, runnerFileExe, arguments, workDir);
             proc.Start();
 
             Logger.InfoFormat("[{0}] Started Runner with ProcessId '{1}' at '{2}'", jobRun.UniqueId, proc.Id, proc.StartTime);
