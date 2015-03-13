@@ -1,5 +1,5 @@
 using System;
-using System.Runtime.CompilerServices;
+
 using System.Threading;
 
 using Jobbr.Server.Common;
@@ -116,7 +116,7 @@ namespace Jobbr.Server.Core
                                 plannedNextRun.PlannedStartDateTimeUtc,
                                 calculatedNextRun.Value);
 
-                            // TODO: Change the trigger and make shure thath the schedule and queue of the jobexecutor is adjusted accordingly.
+                            // TODO: Change the trigger and make sure thath the schedule and queue of the jobexecutor is adjusted accordingly.
                         }
                         else
                         {
