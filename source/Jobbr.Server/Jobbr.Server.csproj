@@ -101,6 +101,7 @@
     <Compile Include="Web\Dto\JobRunDto.cs" />
     <Compile Include="Web\Dto\JobTriggerDtoBase.cs" />
     <Compile Include="Web\JsonTypeConverter.cs" />
+    <Compile Include="Web\TraceSourceExceptionLogger.cs" />
     <Compile Include="Web\WebHost.cs" />
     <Compile Include="Web\Controller\DefaultController.cs" />
     <Compile Include="Web\Controller\JobController.cs" />

@@ -2,6 +2,7 @@ using System;
 
 using Jobbr.Common;
 using Jobbr.Server.Common;
+using Jobbr.Server.Logging;
 
 using Microsoft.Owin.Hosting;
 using Microsoft.Owin.Hosting.Services;
@@ -14,6 +15,11 @@ namespace Jobbr.Server.Web
     /// </summary>
     public class WebHost
     {
+        /// <summary>
+        /// The logger.
+        /// </summary>
+        private static readonly ILog Logger = LogProvider.For<WebHost>();
+
         /// <summary>
         /// The dependency resolver.
         /// </summary>
@@ -50,9 +56,7 @@ namespace Jobbr.Server.Web
             var services = (ServiceProvider)ServicesFactory.Create();
             var options = new StartOptions()
                               {
-                                  Urls = {
-                                            this.configuration.BackendAddress 
-                                         }, 
+                                  Urls = { this.configuration.BackendAddress }, 
                                   AppStartup = typeof(Startup).FullName
                               };
 
@@ -60,6 +64,8 @@ namespace Jobbr.Server.Web
 
             var hostingStarter = services.GetService<IHostingStarter>();
             this.web = hostingStarter.Start(options); // constructs Startup instance internally
+
+            Logger.InfoFormat("Started OWIN-Host (WebEndpoint) with for '{0}' at '{1}'", options.AppStartup, this.configuration.BackendAddress);
         }
 
         /// <summary>
@@ -67,6 +73,8 @@ namespace Jobbr.Server.Web
         /// </summary>
         public void Stop()
         {
+            Logger.InfoFormat("Stopping OWIN-Host for Web-Endpoints'");
+
             if (this.web != null)
             {
                 this.web.Dispose();

@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web.Http;
 
 using Jobbr.Server.Common;
 
@@ -36,5 +37,11 @@ namespace Jobbr.Server.Web.Controller
             return this.Ok(this.configuration);
         }
 
+        [HttpGet]
+        [Route("api/fail")]
+        public IHttpActionResult Fail()
+        {
+            throw new Exception("This has failed!");
+        }
     }
 }

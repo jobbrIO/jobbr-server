@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.ExceptionHandling;
 
 using Jobbr.Common;
-using Jobbr.Server.Model;
+using Jobbr.Server.Logging;
 using Jobbr.Server.Web.Dto;
 
 using Newtonsoft.Json;
@@ -15,10 +17,12 @@ using Owin;
 namespace Jobbr.Server.Web
 {
     /// <summary>
-    /// The api startup.
+    /// The OWIN startup class.
     /// </summary>
     public class Startup
     {
+        private static readonly ILog Logger = LogProvider.For<WebHost>();
+
         /// <summary>
         /// The dependency resolver.
         /// </summary>
@@ -30,8 +34,6 @@ namespace Jobbr.Server.Web
         /// <param name="dependencyResolver">
         /// The dependency resolver.
         /// </param>
-        /// <exception cref="ArgumentException">
-        /// </exception>
         public Startup(IJobbrDependencyResolver dependencyResolver)
         {
             if (dependencyResolver == null)
@@ -60,11 +62,13 @@ namespace Jobbr.Server.Web
 
             config.Formatters.JsonFormatter.SerializerSettings = jsonSerializerSettings;
 
-            // Remove XML
+            // Remove XML Responses
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
 
             config.DependencyResolver = new DependencyResolverAdapter(this.dependencyResolver);
+
+            config.Services.Add(typeof(IExceptionLogger), new TraceSourceExceptionLogger(Logger));
 
             app.UseWebApi(config);
         }
