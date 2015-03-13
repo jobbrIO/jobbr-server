@@ -5,7 +5,7 @@ Jobbr is a .NET JobServer. Unless other JobServer-Frameworks Jobbr explicitly so
 * Artefacts-store for both job parameters and job results (RestApi)
 * Embeddable in your own C# application (JobServer and Runner)
 * DI-Resolution in Runner for your Jobs
-* Progress tracking by Console.WriteLine("[#jobbr");
+* Progress tracking via stdout (`Console.WriteLine()`)
 * **NO** Dependency to the Jobbr-Assemblies needed from your Jobs
 * **NO** Dependency to any existing Logging-Framework
 
@@ -54,6 +54,16 @@ Hosting a runner in the separate Runner-Executable is even easier.
 	    var jobbrRuntime = new JobbrRuntime(typeof(MyJobs.MinimalJob).Assembly);
 	    jobbrRuntime.Run(args);
 	}
+
+
+## Make your Jobs Jobbr compatible
+Good news! All your C#-Code is compatible with jobbr. If you want to log, just log with the logframework of your choice. 
+You have long running jobs an would like to show the progress somewhere in your application? Simply drop a service-message to the `Console`. Sample
+
+	var progress = (double)(i + 1) / iterations * 100;
+
+    Console.WriteLine("##jobbr[progress percent='{0:0.00}']", progress);
+ 
 
 ## API
 The JobbrServer exposes a RestFul-Api to define Jobs, Triggers and watch the status for running Jobs. Please see the section WebAPI for a complete reference
