@@ -55,6 +55,16 @@ namespace Jobbr.Server.Web.Controller
             return this.Ok(jobRunDtos);
         }
 
+        [HttpGet]
+        [Route("api/jobRuns/")]
+        public IHttpActionResult GetJonRunsByTriggerId(long triggerId)
+        {
+            var jobRun = this.jobStorageProvider.GetFutureJobRunsByTriggerId(triggerId);
+
+            var jobRunDto = this.ConvertToDto(jobRun);
+
+            return this.Ok(jobRunDto);
+        }
 
         [HttpGet]
         [Route("api/jobRuns/")]
