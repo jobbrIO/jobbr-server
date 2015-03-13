@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+
 using System.Web.Http;
 
 using Jobbr.Server.Common;
@@ -112,7 +111,8 @@ namespace Jobbr.Server.Web.Controller
                           {
                               JobRunId = jobRun.Id,
                               JobId = jobRun.JobId,
-                              JobName = job.Name,
+                              JobName = job.UniqueName,
+                              JobTitle = job.UniqueName,
                               TriggerId = jobRun.TriggerId,
                               UniqueId = new Guid(jobRun.UniqueId),
                               JobParameter = jobParameter,

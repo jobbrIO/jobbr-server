@@ -35,5 +35,7 @@ namespace Jobbr.Server.Web.Dto
         public DateTime? AuctualEndUtc { get; set; }
 
         public List<JobRunArtefactDto> Artefacts { get; set; }
+
+        public string JobTitle { get; set; }
     }
 }

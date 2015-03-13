@@ -49,7 +49,7 @@ namespace Jobbr.Server.Web.Controller
                                   JobId = job.Id,
                                   TriggerId = trigger.Id,
                                   JobRunId = jobRunId,
-                                  JobName = job.Name,
+                                  JobName = job.UniqueName,
                                   JobType = job.Type,
                                   TempDir = jobRun.TempDir,
                                   WorkingDir = jobRun.WorkingDir,

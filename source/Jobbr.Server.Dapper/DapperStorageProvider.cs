@@ -45,13 +45,13 @@ namespace Jobbr.Server.Dapper
         public long AddJob(Job job)
         {
             var sql = string.Format(
-                        @"INSERT INTO {0}.Jobs ([Name],[Type],[Parameters],[CreatedDateTimeUtc]) VALUES (@Name, @Type, @Parameters, @UtcNow)
+                        @"INSERT INTO {0}.Jobs ([UniqueName],[Title],[Type],[Parameters],[CreatedDateTimeUtc]) VALUES (@UniqueName, @Title, @Type, @Parameters, @UtcNow)
                           SELECT CAST(SCOPE_IDENTITY() as int)", 
                         this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
             {
-                return connection.Query<int>(sql, new { job.Name, job.Type, job.Parameters, DateTime.UtcNow, }).Single();
+                return connection.Query<int>(sql, new { job.UniqueName, job.Title, job.Type, job.Parameters, DateTime.UtcNow, }).Single();
             }
         }
 
@@ -84,7 +84,6 @@ namespace Jobbr.Server.Dapper
 
         public JobRun GetLastJobRunByTriggerId(long triggerId)
         {
-            // TODO: Deserialize Json Params
             var sql = string.Format("SELECT TOP 1 * FROM {0}.JobRuns WHERE [TriggerId] = @TriggerId ORDER BY [PlannedStartDateTimeUtc] DESC", this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
@@ -97,7 +96,6 @@ namespace Jobbr.Server.Dapper
 
         public JobRun GetFutureJobRunsByTriggerId(long triggerId)
         {
-            // TODO: Deserialize Json Params
             var sql = string.Format("SELECT * FROM {0}.JobRuns WHERE [TriggerId] = @TriggerId AND PlannedStartDateTimeUtc >= @DateTimeNowUtc ORDER BY [PlannedStartDateTimeUtc] ASC", this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
@@ -200,6 +198,16 @@ namespace Jobbr.Server.Dapper
             using (var connection = new SqlConnection(this.connectionString))
             {
                 return connection.Query<Job>(sql, new { Id = id }).FirstOrDefault();
+            }
+        }
+
+        public Job GetJobByUniqueName(string identifier)
+        {
+            var sql = string.Format("SELECT TOP 1 * FROM {0}.Jobs WHERE [UniqueName] = @UniqueName", this.schemaName);
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                return connection.Query<Job>(sql, new { UniqueName = identifier }).FirstOrDefault();
             }
         }
 

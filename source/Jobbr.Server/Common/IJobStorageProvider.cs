@@ -44,6 +44,8 @@ namespace Jobbr.Server.Common
 
         Job GetJobById(long id);
 
+        Job GetJobByUniqueName(string identifier);
+
         JobRun GetJobRunById(long id);
 
         List<JobRun> GetJobRunsForUserId(long userId);

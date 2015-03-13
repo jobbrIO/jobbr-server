@@ -83,7 +83,7 @@ namespace Jobbr.Server.Core
                 {
                     Logger.InfoFormat(
                         "Planning new JobRun for Job '{0}' (JobId: {1}) to start @ '{2}'. Caused by trigger with id '{3}' (Type: '{4}', userId: '{5}', userName: '{6}')",
-                        job.Name,
+                        job.UniqueName,
                         job.Id,
                         calculatedNextRun.Value,
                         trigger.Id,
@@ -133,7 +133,7 @@ namespace Jobbr.Server.Core
             {
                 Logger.WarnFormat(
                     "Cannot calculate next run for Job '{0}' (JobId: {1}). Caused by trigger with id '{2}' (Type: '{3}', userId: '{4}', userName: '{5}')",
-                    job.Name,
+                    job.UniqueName,
                     job.Id,
                     trigger.Id,
                     trigger.TriggerType,
@@ -190,7 +190,7 @@ namespace Jobbr.Server.Core
                 () =>
                     {
                         var job = this.jobService.GetJob(args.Trigger.JobId);
-                        return string.Format("Got new or updated trigger (Type: '{0}'. Id: '{1}', UserId: '{2}', UserName: '{3}' for job '{4}' (JobId: {5})", args.Trigger.TriggerType, args.Trigger.Id, args.Trigger.UserId, args.Trigger.UserName, job.Name, job.Id);
+                        return string.Format("Got new or updated trigger (Type: '{0}'. Id: '{1}', UserId: '{2}', UserName: '{3}' for job '{4}' (JobId: {5})", args.Trigger.TriggerType, args.Trigger.Id, args.Trigger.UserId, args.Trigger.UserName, job.UniqueName, job.Id);
                     });
 
             if (args.Trigger.IsActive)

@@ -45,8 +45,9 @@ SET ANSI_PADDING ON
 GO
 CREATE TABLE [Jobbr].[Jobs](
 	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[Name] [varchar](50) NOT NULL,
-	[Type] [varchar](50) NOT NULL,
+	[UniqueName] [varchar](50) NOT NULL,
+	[Title] [varchar](80) NOT NULL,
+	[Type] [varchar](150) NOT NULL,
 	[Parameters] [varchar](max) NULL,
 	[CreatedDateTimeUtc] [datetime2](7) NOT NULL,
 	[UpdatedDateTimeUtc] [datetime2](7) NULL,

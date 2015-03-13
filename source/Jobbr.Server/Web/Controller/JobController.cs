@@ -77,7 +77,8 @@ namespace Jobbr.Server.Web.Controller
             return new JobDto()
                        {
                            Id = job.Id,
-                           Name = job.Name,
+                           UniqueName = job.UniqueName,
+                           Title = job.Title,
                            Parameters = JsonConvert.DeserializeObject(job.Parameters),
                            Type = job.Type,
                            UpdatedDateTimeUtc = job.UpdatedDateTimeUtc,

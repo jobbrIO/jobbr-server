@@ -107,7 +107,7 @@ namespace Jobbr.Server.Core
                     {
                         var job = args.Job;
 
-                        Logger.InfoFormat("Adding JobRun for Job '{0}' (Id: {1}, Type: '{2}') with JobRunId {3} to the queue", job.Name, job.Id, job.Type, args.JobRun.Id);
+                        Logger.InfoFormat("Adding JobRun for Job '{0}' (Id: {1}, Type: '{2}') with JobRunId {3} to the queue", job.UniqueName, job.Id, job.Type, args.JobRun.Id);
                         this.queue.Add(args.JobRun);
                     }
                 }
