@@ -16,53 +16,43 @@ Simply create a database (or use any existing) by executing the CreateSchemaAndT
 
 ## Hosting a JobbrServer
 To Host a JobbrServer simply define a Storage Provider for Jobs and JobArtefacts and initialize the JobServer:
-```c#
-var jobStorageProvider = new DapperStorageProvider(@"YourConnectionString");
-var artefactStorageProvider = new FileSystemArtefactsStorageProvider("C:\jobdata");
 
-var config = new DefaultJobbrConfiguration
-{
-    JobStorageProvider = jobStorageProvider,
-    ArtefactStorageProvider = artefactStorageProvider,
-    JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
-    BeChatty = true, // Verbose output on the RunnerExecutable
-}};
+    var jobStorageProvider = new DapperStorageProvider(@"YourConnectionString");
+	var artefactStorageProvider = new FileSystemArtefactsStorageProvider("C:\jobdata");
 
-using (var jobbrServer = new JobbrServer(config))
-{
-    jobbrServer.Start();
+    var config = new DefaultJobbrConfiguration
+    {
+        JobStorageProvider = jobStorageProvider,
+        ArtefactStorageProvider = artefactStorageProvider,
+        JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
+        BeChatty = true, // Verbose output on the RunnerExecutable
+    };
 
-    Console.WriteLine("JobServer has started . Press enter to quit")
-    Console.ReadLine();
+    using (var jobbrServer = new JobbrServer(config))
+    {
+        jobbrServer.Start();
 
-    Console.WriteLine("Shutting down. Please wait...");
-    jobbrServer.Stop();
-}
-```
-### Configuration.
-There is a default configuration included with the following settings
-* BackendAddress: "http://localhost:80/jobbr"
-* MaxConcurrentJobs: 4
-* JobRunDirectory: Path.GetTempPath()
+        Console.WriteLine("JobServer has started . Press enter to quit")
+        Console.ReadLine();
 
-### Packages for OWIN
+        Console.WriteLine("Shutting down. Please wait...");
+        jobbrServer.Stop();
+    }
+
+
 The JobbrServer has an embedded OWIN-Selfhost for WebApi, to please add the corresponding NuGet-Package to the project where the JobbrServer is included.
 
 	PM> Install-Package Microsoft.Owin.Host.HttpListener
 
 
 ## Hosting a Runner
-Hosting a runner in the separate Runner-Executable is even easier. JobbrServer starts this executable in a unique working directory. If you would like to return some output-files to the JobbrServer, just place the files in the working directory
+Hosting a runner in the separate Runner-Executable is even easier.
 
-```c#
-public static void Main(string[] args)
-{
-    var jobbrRuntime = new JobbrRuntime(typeof(MyJobs.MinimalJob).Assembly);
-    jobbrRuntime.Run(args);
-}
-```
-### Logging in Working Directory
-If you would like to collect the logs by the Runtime, make sure the logfiles are stored in the CurrentWorking-Directory. In case of log4net, you will have to define a property with that value if you would like to configugre the path in the xml.
+    public static void Main(string[] args)
+    {
+	    var jobbrRuntime = new JobbrRuntime(typeof(MyJobs.MinimalJob).Assembly);
+	    jobbrRuntime.Run(args);
+	}
 
 ## API
 The JobbrServer exposes a RestFul-Api to define Jobs, Triggers and watch the status for running Jobs. Please see the section WebAPI for a complete reference
@@ -73,9 +63,11 @@ Take the following Endpoint
 	GET http://localhost/jobbr/api/jobs
 
 ### Trigger a Job to run (JobRun)
-A job can be triggered in three different modes using the following Endpoint:
+A job can be triggered in three different modes using the following Endpoint (JobId or UniqueId is required)
 
 	POST http://localhost/jobbr/api/jobs/{JobId}/trigger
+	POST http://localhost/jobbr/api/jobs/{UniqueId}/trigger
+
 
 Please note that
 * DateTime Values are always UTC
@@ -118,7 +110,7 @@ A definition is a cron definition as specified here:  http://en.wikipedia.org/wi
 ### List JobRuns By User
 A jobrun is triggered by a trigger. To get jobruns for a specific used, it required to provide at least a UserId or UserName for the trigger.
 
-	GET http://localhost/jobbr/api/jobruns/?userId=1234
+	GET http://localhost/jobbr/api/jobrunss/?userId=1234
 
 Or 
 
@@ -140,7 +132,8 @@ Sample Response
 			"Param1": "test",
 			"Param2": 42
 		},
-		"jobName": "Thir Job",
+		"jobName": "ThirdJob",
+		"jobTitle": "This a sample Job",
 		"state": "Completed",
 		"progress": 100,
 		"plannedStartUtc": "2015-03-11T11:23:15.74",
@@ -170,21 +163,24 @@ With a sample return value
 	[
 		{
 			"id": 1,
-			"name": "My First Job",
+			"uniquename": "MyJob1",
+			"title": "My First Job",
 			"type": "MinimalJob",
 			"parameters": "{ \"param1\" : \"test\" }",
 			"createdDateTimeUtc": "2015-03-04T17:40:00"
 		},
 		{
 			"id": 3,
-			"name": "Second Job",
+			"uniquename": "MyJob2",
+			"title": "Second Job",
 			"type": "ParameterizedlJob",
 			"parameters": "{ \"param1\" : \"test\" }",
 			"createdDateTimeUtc": "2015-03-10T00:00:00"
 		},
 		{
 			"id": 7,
-			"name": "Thir Job",
+			"uniquename": "MyJob3",
+			"title": "Third Job",
 			"type": "ProgressJob",
 			"createdDateTimeUtc": "2015-03-10T00:00:00"
 		}
