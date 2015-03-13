@@ -234,5 +234,5 @@ With a sample return value
 * Michael Schnyder
 * Peter Gfader
 
-# Licence
+# License
 This software cannot be licenced.
