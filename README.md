@@ -13,33 +13,34 @@ Jobbr is a .NET JobServer. Unless other JobServer-Frameworks Jobbr explicitly so
 There is a demo-solution with a ready to run application.
 
 ## Installation
-Simply create a database (or use any existing) by executing the CreateSchemaAndTables.sql-File, located in source\Jobbr.Server.Dapper. The JobStorageProvider is Dapper-based and has been tested agains SQL Server 2012.
+Simply create a database (or use any existing) by executing the CreateSchemaAndTables.sql-File, located in source\Jobbr.Server.Dapper. The JobStorageProvider is Dapper-based and has been tested against SQL Server 2012.
 
 ## Hosting a JobbrServer
 To Host a JobbrServer simply define a Storage Provider for Jobs and JobArtefacts and initialize the JobServer:
 
-    var jobStorageProvider = new DapperStorageProvider(@"YourConnectionString");
-	var artefactStorageProvider = new FileSystemArtefactsStorageProvider("C:\jobdata");
+```c#
+var jobStorageProvider = new DapperStorageProvider(@"YourConnectionString");
+var artefactStorageProvider = new FileSystemArtefactsStorageProvider("C:\jobdata");
 
-    var config = new DefaultJobbrConfiguration
-    {
-        JobStorageProvider = jobStorageProvider,
-        ArtefactStorageProvider = artefactStorageProvider,
-        JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
-        BeChatty = true, // Verbose output on the RunnerExecutable
-    };
+var config = new DefaultJobbrConfiguration
+{
+    JobStorageProvider = jobStorageProvider,
+    ArtefactStorageProvider = artefactStorageProvider,
+    JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
+    BeChatty = true, // Verbose output on the RunnerExecutable
+};
 
-    using (var jobbrServer = new JobbrServer(config))
-    {
-        jobbrServer.Start();
+using (var jobbrServer = new JobbrServer(config))
+{
+    jobbrServer.Start();
 
-        Console.WriteLine("JobServer has started . Press enter to quit")
-        Console.ReadLine();
+    Console.WriteLine("JobServer has started . Press enter to quit")
+    Console.ReadLine();
 
-        Console.WriteLine("Shutting down. Please wait...");
-        jobbrServer.Stop();
-    }
-
+    Console.WriteLine("Shutting down. Please wait...");
+    jobbrServer.Stop();
+}
+```
 
 The JobbrServer has an embedded OWIN-Selfhost for WebApi, to please add the corresponding NuGet-Package to the project where the JobbrServer is included.
 
@@ -49,21 +50,26 @@ The JobbrServer has an embedded OWIN-Selfhost for WebApi, to please add the corr
 ## Hosting a Runner
 Hosting a runner in the separate Runner-Executable is even easier.
 
-    public static void Main(string[] args)
-    {
-	    var jobbrRuntime = new JobbrRuntime(typeof(MyJobs.MinimalJob).Assembly);
-	    jobbrRuntime.Run(args);
-	}
 
+```c#
+public static void Main(string[] args)
+{
+    var jobbrRuntime = new JobbrRuntime(typeof(MyJobs.MinimalJob).Assembly);
+    jobbrRuntime.Run(args);
+}
+```
 
 ## Make your Jobs Jobbr compatible
-Good news! All your C#-Code is compatible with jobbr. If you want to log, just log with the logframework of your choice. 
+Good news! All your C#-Code is compatible with jobbr as long as the CLR-type can be instantiated and has at least a `public Run()`- Method.
+
+ If you want to log, just log with the logframework of your choice. 
 You have long running jobs an would like to show the progress somewhere in your application? Simply drop a service-message to the `Console`. Sample
 
+```c#
 	var progress = (double)(i + 1) / iterations * 100;
 
     Console.WriteLine("##jobbr[progress percent='{0:0.00}']", progress);
- 
+``` 
 
 ## API
 The JobbrServer exposes a RestFul-Api to define Jobs, Triggers and watch the status for running Jobs. Please see the section WebAPI for a complete reference
@@ -160,7 +166,19 @@ If there are any artefacts for a specific run, they are available under.
 #Features
 
 ## Logging
-Jobbr uses the LobLog library to detect your Logging-Framework of the Hosting Process. When using Jobbr, you don't introduce a new dependency to an existing Logging-Framework. See https://github.com/damianh/LibLog for details
+Jobbr uses the LobLog library to detect your Logging-Framework of the Hosting Process. When using Jobbr, you don't introduce a new dependency to an existing Logging-Framework. See https://github.com/damianh/LibLog for details.
+
+## Parameters
+Write about jobParameters and runParameters. Serialization to concrete types, etc.
+
+## Dependency Injection
+Resolve your own Dependency Resolver which activates the clr-type of your JobRun-Class
+
+## Artefacts
+Everything you store in the Working-Directory is automatically collected and pushed to the Jobbr-Server 
+
+## Service Messages
+At the moment, only progress is supported.
 
 ## Restful API Reference
 
