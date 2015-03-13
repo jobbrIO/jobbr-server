@@ -1,10 +1,11 @@
 # Jobbr
 Jobbr is a .NET JobServer. Unless other JobServer-Frameworks Jobbr explicitly solves the following problems
 * Isolation of Jobs on process-level (JobRunner)
-* Restful API to trigger Jobs and watch the execition state
-* Artefacts-store for both job parameters and job results
-* Embeddable in your Environment (JobServer and Runner)
+* Restful API to manage and trigger Jobs and watch the execution state
+* Artefacts-store for both job parameters and job results (RestApi)
+* Embeddable in your own C# application (JobServer and Runner)
 * DI-Resolution in Runner for your Jobs
+* Progress tracking by Console.WriteLine("[#jobbr");
 * **NO** Dependency to the Jobbr-Assemblies needed from your Jobs
 * **NO** Dependency to any existing Logging-Framework
 
