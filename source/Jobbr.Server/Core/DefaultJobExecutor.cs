@@ -73,7 +73,7 @@ namespace Jobbr.Server.Core
             // Load all existing Schedules into the local memory
             if (futureScheduledRuns.Any())
             {
-                Logger.InfoFormat("Adding {0} scheduled JobRuns with an upcoming startdate", processingRuns.Count);
+                Logger.InfoFormat("Adding {0} scheduled JobRuns with an upcoming startdate", futureScheduledRuns.Count);
                 this.queue.AddRange(futureScheduledRuns);
             }
             
