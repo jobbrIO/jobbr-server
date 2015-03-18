@@ -51,5 +51,7 @@ namespace Jobbr.Server.Common
         List<JobRun> GetJobRunsForUserId(long userId);
 
         List<JobRun> GetJobRunsForUserName(string userName);
+
+        bool Update(Job job);
     }
 }
