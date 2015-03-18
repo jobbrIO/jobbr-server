@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 using System.Web.Http;
 
 using Jobbr.Server.Common;
@@ -25,6 +20,20 @@ namespace Jobbr.Server.Web.Controller
         {
             this.jobStorageProvider = jobStorageProvider;
             this.jobService = jobService;
+        }
+
+        [HttpGet]
+        [Route("api/triggers/{triggerId}")]
+        public IHttpActionResult GetTriggerById(long triggerId)
+        {
+            var trigger = this.jobStorageProvider.GetTriggerById(triggerId);
+
+            if (trigger == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.Ok(this.ConvertToDto((dynamic)trigger));
         }
 
         [HttpGet]
@@ -66,17 +75,7 @@ namespace Jobbr.Server.Web.Controller
                 return this.NotFound();
             }
 
-            if (triggerDto == null)
-            {
-                return this.StatusCode(HttpStatusCode.BadRequest);
-            }
-
-            var trigger = this.ConvertToTrigger(triggerDto as dynamic);
-            ((JobTriggerBase)trigger).JobId = jobId;
-
-            this.jobService.AddTrigger(trigger);
-
-            return this.Ok();
+            return this.AddTrigger(triggerDto, job);
         }
 
         [Route("api/jobs/{uniqueName}/trigger")]
@@ -89,6 +88,11 @@ namespace Jobbr.Server.Web.Controller
                 return this.NotFound();
             }
 
+            return this.AddTrigger(triggerDto, job);
+        }
+
+        private IHttpActionResult AddTrigger(JobTriggerDtoBase triggerDto, Job job)
+        {
             if (triggerDto == null)
             {
                 return this.StatusCode(HttpStatusCode.BadRequest);
@@ -97,22 +101,27 @@ namespace Jobbr.Server.Web.Controller
             var trigger = this.ConvertToTrigger(triggerDto as dynamic);
             ((JobTriggerBase)trigger).JobId = job.Id;
 
-            this.jobService.AddTrigger(trigger);
+            var triggerId = this.jobService.AddTrigger(trigger);
 
-            return this.Ok();
+            return this.Created(string.Format("api/trigger/{0}", triggerId), this.ConvertToDto(trigger));
         }
 
-        private JobTriggerBase AddBaseInfos(JobTriggerDtoBase dto, JobTriggerBase trigger)
+        private ScheduledTriggerDto ConvertToDto(ScheduledTrigger trigger)
         {
-            trigger.Comment = dto.Comment;
-            trigger.IsActive = dto.IsActive;
-            trigger.Parameters = JsonConvert.SerializeObject(dto.Parameters);
-            trigger.TriggerType = dto.TriggerType;
-            trigger.UserDisplayName = dto.UserDisplayName;
-            trigger.UserId = dto.UserId;
-            trigger.UserName = dto.UserName;
+            var dto = new ScheduledTriggerDto { StartDateTimeUtc = trigger.StartDateTimeUtc};
+            return (ScheduledTriggerDto)this.AddBaseInfos(trigger, dto);
+        }
 
-            return trigger;
+        private InstantTriggerDto ConvertToDto(InstantTrigger trigger)
+        {
+            var dto = new InstantTriggerDto { DelayedMinutes = trigger.DelayedMinutes };
+            return (InstantTriggerDto)this.AddBaseInfos(trigger, dto);
+        }
+
+        private RecurringTriggerDto ConvertToDto(RecurringTrigger trigger)
+        {
+            var dto = new RecurringTriggerDto { StartDateTimeUtc = trigger.StartDateTimeUtc, EndDateTimeUtc = trigger.EndDateTimeUtc, Definition = trigger.Definition, };
+            return (RecurringTriggerDto)this.AddBaseInfos(trigger, dto);
         }
 
         private RecurringTrigger ConvertToTrigger(RecurringTriggerDto dto)
@@ -131,6 +140,33 @@ namespace Jobbr.Server.Web.Controller
         {
             var trigger = new InstantTrigger() { TriggerType = InstantTrigger.TypeName, DelayedMinutes = dto.DelayedMinutes };
             return (InstantTrigger)this.AddBaseInfos(dto, trigger);
+        }
+
+        private JobTriggerDtoBase AddBaseInfos(JobTriggerBase trigger, JobTriggerDtoBase dto)
+        {
+            dto.Id = trigger.Id;
+            dto.Comment = trigger.Comment;
+            dto.IsActive = trigger.IsActive;
+            dto.Parameters = JsonConvert.DeserializeObject(trigger.Parameters);
+            dto.TriggerType = trigger.TriggerType;
+            dto.UserDisplayName = trigger.UserDisplayName;
+            dto.UserId = trigger.UserId;
+            dto.UserName = trigger.UserName;
+
+            return dto;
+        }
+
+        private JobTriggerBase AddBaseInfos(JobTriggerDtoBase dto, JobTriggerBase trigger)
+        {
+            trigger.Comment = dto.Comment;
+            trigger.IsActive = dto.IsActive;
+            trigger.Parameters = JsonConvert.SerializeObject(dto.Parameters);
+            trigger.TriggerType = dto.TriggerType;
+            trigger.UserDisplayName = dto.UserDisplayName;
+            trigger.UserId = dto.UserId;
+            trigger.UserName = dto.UserName;
+
+            return trigger;
         }
     }
 }

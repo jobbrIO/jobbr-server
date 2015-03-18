@@ -7,6 +7,8 @@ namespace Jobbr.Server.Web.Dto
     /// </summary>
     public abstract class JobTriggerDtoBase
     {
+        public long Id { get; set; }
+
         public string TriggerType { get; set; }
 
         public bool IsActive { get; set; }
