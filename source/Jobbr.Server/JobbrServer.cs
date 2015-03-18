@@ -2,6 +2,7 @@
 using System.IO;
 
 using Jobbr.Server.Common;
+using Jobbr.Server.Configuration;
 using Jobbr.Server.Core;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Web;
@@ -104,6 +105,20 @@ namespace Jobbr.Server
 
             try
             {
+                Logger.Info("Registering Jobs from configuration");
+
+                var numberOfChanges = this.RegisterJobs();
+                var numberOfJobs = this.configuration.JobStorageProvider.GetJobs().Count;
+
+                Logger.InfoFormat("There were {0} changes for the JobRegistry which contains {1} jobs right now.", numberOfChanges, numberOfJobs);
+            }
+            catch (Exception e)
+            {
+                Logger.FatalException("Cannot register Jobs on startup. See Execption for details", e);
+            }
+
+            try
+            {
                 Logger.DebugFormat("Starting WebHost ({0})...", this.webHost.GetType().Name);
                 this.webHost.Start();
 
@@ -121,26 +136,6 @@ namespace Jobbr.Server
             }
 
             this.isRunning = true;
-        }
-
-        private void ValidateConfiguration()
-        {
-            var executableFullPath = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
-
-            if (!File.Exists(executableFullPath))
-            {
-                throw new Exception(string.Format("The RunnerExecutable '{0}' cannot be found!", executableFullPath));
-            }
-
-            if (this.configuration.JobStorageProvider == null)
-            {
-                throw new Exception("Please provide a storage provider for Jobs!");
-            }
-
-            if (this.configuration.ArtefactStorageProvider == null)
-            {
-                throw new Exception("Please provide a storage provider for artefacts!");
-            }
         }
 
         /// <summary>
@@ -163,7 +158,48 @@ namespace Jobbr.Server
         public void Dispose()
         {
             if (this.isRunning)
+            {
                 this.Stop();
+            }
+        }
+
+        private int RegisterJobs()
+        {
+            var model = new RepositoryBuilder();
+
+            this.configuration.OnRepositoryCreating(model);
+
+            return model.Apply(this.configuration.JobStorageProvider);
+        }
+
+        private void ValidateConfiguration()
+        {
+            var executableFullPath = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
+
+            if (!File.Exists(executableFullPath))
+            {
+                throw new Exception(string.Format("The RunnerExecutable '{0}' cannot be found!", executableFullPath));
+            }
+
+            if (string.IsNullOrEmpty(this.configuration.BackendAddress))
+            {
+                throw new Exception("Please provide a backend address!");
+            }
+
+            if (string.IsNullOrEmpty(this.configuration.JobRunDirectory))
+            {
+                throw new Exception("Please provide a JobRunDirectory!");
+            }
+
+            if (this.configuration.JobStorageProvider == null)
+            {
+                throw new Exception("Please provide a storage provider for Jobs!");
+            }
+
+            if (this.configuration.ArtefactStorageProvider == null)
+            {
+                throw new Exception("Please provide a storage provider for artefacts!");
+            }
         }
     }
 }

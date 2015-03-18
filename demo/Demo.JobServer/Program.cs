@@ -1,8 +1,6 @@
 ﻿using System;
 
 using Jobbr.Server;
-using Jobbr.Server.Common;
-using Jobbr.Server.Dapper;
 
 namespace Demo.JobServer
 {
@@ -19,15 +17,7 @@ namespace Demo.JobServer
         /// </param>
         public static void Main(string[] args)
         {
-            var storageProvider = new DapperStorageProvider(@"Data Source=.\SQLEXPRESS;Initial Catalog=JobbrDemo;Integrated Security=True");
-
-            var config = new DefaultJobbrConfiguration
-                             {
-                                 JobStorageProvider = storageProvider,
-                                 ArtefactStorageProvider = new FileSystemArtefactsStorageProvider("data"),
-                                 JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
-                                 BeChatty = true,
-                             };
+            var config = new MyJobbrConfiguration();
 
             using (var jobbrServer = new JobbrServer(config))
             {

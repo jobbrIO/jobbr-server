@@ -71,6 +71,34 @@ You have long running jobs an would like to show the progress somewhere in your 
     Console.WriteLine("##jobbr[progress percent='{0:0.00}']", progress);
 ``` 
 
+## Define Jobs
+Adding Jobs can be done via Database, RestAPI (see below) or via the FluentApi. A job consists at least of an ``UniqueName`` and a ``Type`` (which is basically the CLR-Type of the JobClass). To register Jobs on Startup, implement your own ``JobbrContiguration`` and override the ``OnRepositoryCreating``-Method.
+
+> **Note**
+> - There is no functionality to remove existing jobs
+> - Not specified triggers automatically get deactivated
+
+**Sample:**
+```c#
+    public class MyJobbrConfiguration : DefaultJobbrConfiguration
+    {
+        public MyJobbrConfiguration()
+        {
+            /* ... */
+        }
+
+        public override void OnRepositoryCreating(RepositoryBuilder repositoryBuilder)
+        {
+            base.OnRepositoryCreating(repositoryBuilder);
+
+            repositoryBuilder.Define("MinimalJobId", "Demo.MyJobs.MinimalJob")
+                .WithTrigger(new DateTime(2015, 3, 20, 12, 00, 00))
+                .WithTrigger("* 15 * * *");
+        }
+    }
+
+``` 
+
 ## API
 The JobbrServer exposes a RestFul-Api to define Jobs, Triggers and watch the status for running Jobs. Please see the section WebAPI for a complete reference
 
@@ -214,6 +242,19 @@ With a sample return value
 			"createdDateTimeUtc": "2015-03-10T00:00:00"
 		}
 	]
+
+### Add Job
+Only the ``UniqueName`` and ``Type`` are required.
+
+	POST http://localhost/jobbr/api/jobs
+
+	{
+		"uniquename": "MyJob1",
+		"title": "My First Job",
+		"type": "MinimalJob",
+		"parameters": "{ \"param1\" : \"test\" }",
+		"createdDateTimeUtc": "2015-03-04T17:40:00"
+	}
 
 ### More
 ...

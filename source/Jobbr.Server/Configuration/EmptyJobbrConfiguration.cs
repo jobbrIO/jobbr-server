@@ -1,9 +1,10 @@
 ﻿using System;
-using System.IO;
 
-namespace Jobbr.Server.Common
+using Jobbr.Server.Common;
+
+namespace Jobbr.Server.Configuration
 {
-    public class DefaultJobbrConfiguration : IJobbrConfiguration
+    public abstract class EmptyJobbrConfiguration : IJobbrConfiguration
     {
         public IJobStorageProvider JobStorageProvider { get; set; }
 
@@ -15,17 +16,14 @@ namespace Jobbr.Server.Common
 
         public int MaxConcurrentJobs { get; set; }
 
-        public string JobRunDirectory  { get; set; }
+        public string JobRunDirectory { get; set; }
 
         public bool BeChatty { get; set; }
 
         public IArtefactsStorageProvider ArtefactStorageProvider { get; set; }
 
-        public DefaultJobbrConfiguration()
+        public virtual void OnRepositoryCreating(RepositoryBuilder repositoryBuilder)
         {
-            this.BackendAddress = "http://localhost:80/jobbr";
-            this.MaxConcurrentJobs = 4;
-            this.JobRunDirectory = Path.GetTempPath();
         }
     }
 }

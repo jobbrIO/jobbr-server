@@ -78,6 +78,9 @@
     <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
     <Compile Include="Common\FileSystemArtefactsStorageProvider.cs" />
     <Compile Include="Common\IArtefactsStorageProvider.cs" />
+    <Compile Include="Configuration\EmptyJobbrConfiguration.cs" />
+    <Compile Include="Configuration\JobDefinition.cs" />
+    <Compile Include="Configuration\RepositoryBuilder.cs" />
     <Compile Include="Core\IJobService.cs" />
     <Compile Include="ServiceMessaging\ServiceMessageParser.cs" />
     <Compile Include="Core\DefaultJobExecutor.cs" />
@@ -107,7 +110,7 @@
     <Compile Include="Web\Controller\JobController.cs" />
     <Compile Include="Web\Startup.cs" />
     <Compile Include="Model\Job.cs" />
-    <Compile Include="Common\DefaultJobbrConfiguration.cs" />
+    <Compile Include="Configuration\DefaultJobbrConfiguration.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Model\JobRun.cs" />
     <Compile Include="Model\JobTriggerBase.cs" />

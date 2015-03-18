@@ -1,5 +1,7 @@
 using System;
 
+using Jobbr.Server.Configuration;
+
 namespace Jobbr.Server.Common
 {
     /// <summary>
@@ -40,5 +42,7 @@ namespace Jobbr.Server.Common
         /// Gets the artefact storage provider.
         /// </summary>
         IArtefactsStorageProvider ArtefactStorageProvider { get; }
+
+        void OnRepositoryCreating(RepositoryBuilder repositoryBuilder);
     }
 }
