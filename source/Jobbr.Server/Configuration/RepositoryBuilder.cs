@@ -137,7 +137,7 @@ namespace Jobbr.Server.Configuration
             trigger.IsActive = true;
             trigger.JobId = jobId;
 
-            Logger.InfoFormat("Adding trigger (Clr-type: '{0}' to job '{1}' (JobId: '{2}')", trigger.GetType().Name, jobDef.UniqueName, jobId);
+            Logger.InfoFormat("Adding trigger (type: '{0}' to job '{1}' (JobId: '{2}')", trigger.GetType().Name, jobDef.UniqueName, jobId);
 
             if (trigger is ScheduledTrigger)
             {
