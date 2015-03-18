@@ -66,9 +66,9 @@ Good news! All your C#-Code is compatible with jobbr as long as the CLR-type can
 You have long running jobs an would like to show the progress somewhere in your application? Simply drop a service-message to the `Console`. Sample
 
 ```c#
-	var progress = (double)(i + 1) / iterations * 100;
+var progress = (double)(i + 1) / iterations * 100;
 
-    Console.WriteLine("##jobbr[progress percent='{0:0.00}']", progress);
+Console.WriteLine("##jobbr[progress percent='{0:0.00}']", progress);
 ``` 
 
 ## Define Jobs
@@ -80,22 +80,22 @@ Adding Jobs can be done via Database, RestAPI (see below) or via the FluentApi. 
 
 **Sample:**
 ```c#
-    public class MyJobbrConfiguration : DefaultJobbrConfiguration
+public class MyJobbrConfiguration : DefaultJobbrConfiguration
+{
+    public MyJobbrConfiguration()
     {
-        public MyJobbrConfiguration()
-        {
-            /* ... */
-        }
-
-        public override void OnRepositoryCreating(RepositoryBuilder repositoryBuilder)
-        {
-            base.OnRepositoryCreating(repositoryBuilder);
-
-            repositoryBuilder.Define("MinimalJobId", "Demo.MyJobs.MinimalJob")
-                .WithTrigger(new DateTime(2015, 3, 20, 12, 00, 00))
-                .WithTrigger("* 15 * * *");
-        }
+        /* ... */
     }
+
+    public override void OnRepositoryCreating(RepositoryBuilder repositoryBuilder)
+    {
+        base.OnRepositoryCreating(repositoryBuilder);
+
+        repositoryBuilder.Define("MinimalJobId", "Demo.MyJobs.MinimalJob")
+            .WithTrigger(new DateTime(2015, 3, 20, 12, 00, 00))
+            .WithTrigger("* 15 * * *");
+    }
+}
 
 ``` 
 
