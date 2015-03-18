@@ -58,11 +58,11 @@ namespace Jobbr.Server.Web.Controller
         [Route("api/jobRuns/")]
         public IHttpActionResult GetJonRunsByTriggerId(long triggerId)
         {
-            var jobRun = this.jobStorageProvider.GetFutureJobRunsByTriggerId(triggerId);
+            var jobRuns = this.jobStorageProvider.GetJobRunsByTriggerId(triggerId);
 
-            var jobRunDto = this.ConvertToDto(jobRun);
+            var jobRunDtos = jobRuns.Select(this.ConvertToDto);
 
-            return this.Ok(jobRunDto);
+            return this.Ok(jobRunDtos);
         }
 
         [HttpGet]

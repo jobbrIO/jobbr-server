@@ -34,12 +34,6 @@ namespace Jobbr.Server.Common
 
         List<JobRun> GetJobRuns();
 
-        /// <summary>
-        /// The update.
-        /// </summary>
-        /// <param name="jobRun">
-        ///     The job run.
-        /// </param>
         bool Update(JobRun jobRun);
 
         Job GetJobById(long id);
@@ -53,5 +47,7 @@ namespace Jobbr.Server.Common
         List<JobRun> GetJobRunsForUserName(string userName);
 
         bool Update(Job job);
+
+        List<JobRun> GetJobRunsByTriggerId(long triggerId);
     }
 }

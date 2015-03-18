@@ -253,6 +253,16 @@ namespace Jobbr.Server.Dapper
             }
         }
 
+        public List<JobRun> GetJobRunsByTriggerId(long triggerId)
+        {
+            var sql = string.Format("SELECT * FROM {0}.JobRuns WHERE [TriggerId] = @TriggerId", this.schemaName);
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                return connection.Query<JobRun>(sql, new { TriggerId = triggerId }).ToList();
+            }
+        }
+
         public long AddTrigger(RecurringTrigger trigger)
         {
             return this.InsertTrigger(trigger, RecurringTrigger.TypeName, trigger.Definition);
