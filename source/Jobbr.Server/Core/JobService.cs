@@ -121,7 +121,7 @@ namespace Jobbr.Server.Core
 
         public List<JobTriggerBase> GetTriggers(long jobId)
         {
-            return this.storageProvider.GetTriggers(jobId);
+            return this.storageProvider.GetTriggersByJobId(jobId);
         }
 
         public long AddTrigger(RecurringTrigger trigger)

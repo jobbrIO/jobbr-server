@@ -144,14 +144,14 @@ namespace Jobbr.Server.Core
 
         private DateTime? GetNextTriggerDateTime(ScheduledTrigger scheduledTrigger)
         {
-            var startDate = scheduledTrigger.DateTimeUtc;
+            var startDate = scheduledTrigger.StartDateTimeUtc;
 
             return startDate;
         }
 
         private DateTime? GetNextTriggerDateTime(InstantTrigger instantTrigger)
         {
-            var baseDateTimeUtc = instantTrigger.CreateDateTimeUtc;
+            var baseDateTimeUtc = instantTrigger.CreatedDateTimeUtc;
             var startDate = baseDateTimeUtc.AddMinutes(instantTrigger.DelayedMinutes);
 
             this.jobService.DisableTrigger(instantTrigger.Id, false);

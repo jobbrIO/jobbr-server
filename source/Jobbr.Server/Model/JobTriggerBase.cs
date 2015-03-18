@@ -33,7 +33,7 @@ namespace Jobbr.Server.Model
 
         public string UserDisplayName { get; set; }
 
-        public DateTime CreateDateTimeUtc { get; set; }
+        public DateTime CreatedDateTimeUtc { get; set; }
     }
 
     public class RecurringTrigger : JobTriggerBase
@@ -51,7 +51,7 @@ namespace Jobbr.Server.Model
     {
         public const string TypeName = "Scheduled";
 
-        public DateTime DateTimeUtc { get; set; }
+        public DateTime StartDateTimeUtc { get; set; }
     }
 
     public class InstantTrigger : JobTriggerBase

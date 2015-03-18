@@ -10,7 +10,7 @@ namespace Jobbr.Server.Common
 
         long AddJob(Job job);
 
-        List<JobTriggerBase> GetTriggers(long jobId);
+        List<JobTriggerBase> GetTriggersByJobId(long jobId);
 
         long AddTrigger(RecurringTrigger trigger);
 

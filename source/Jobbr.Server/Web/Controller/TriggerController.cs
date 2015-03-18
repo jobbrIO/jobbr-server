@@ -38,7 +38,7 @@ namespace Jobbr.Server.Web.Controller
                 return this.NotFound();
             }
 
-            return this.Ok(this.jobStorageProvider.GetTriggers(jobId));
+            return this.Ok(this.jobStorageProvider.GetTriggersByJobId(jobId));
         }
 
         [HttpGet]
@@ -52,7 +52,7 @@ namespace Jobbr.Server.Web.Controller
                 return this.NotFound();
             }
 
-            return this.Ok(this.jobStorageProvider.GetTriggers(job.Id));
+            return this.Ok(this.jobStorageProvider.GetTriggersByJobId(job.Id));
         }
 
         [HttpPost]
@@ -123,7 +123,7 @@ namespace Jobbr.Server.Web.Controller
 
         private ScheduledTrigger ConvertToTrigger(ScheduledTriggerDto dto)
         {
-            var trigger = new ScheduledTrigger { TriggerType = ScheduledTrigger.TypeName, DateTimeUtc = dto.DateTimeUtc };
+            var trigger = new ScheduledTrigger { TriggerType = ScheduledTrigger.TypeName, StartDateTimeUtc = dto.DateTimeUtc };
             return (ScheduledTrigger)this.AddBaseInfos(dto, trigger);
         }
 
