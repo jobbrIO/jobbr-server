@@ -167,25 +167,27 @@ namespace Jobbr.Server.Dapper
                                         [WorkingDir] = @WorkingDir,
                                         [TempDir] = @TempDir
                                     WHERE [Id] = @Id",
-                                    this.schemaName, "JobRuns");
+                                    this.schemaName, 
+                                    "JobRuns");
 
             using (var connection = new SqlConnection(this.connectionString))
             {
-                connection.Execute(sql, new
-                                            {
-                                                jobRun.Id,
-                                                jobRun.JobParameters,
-                                                jobRun.InstanceParameters,
-                                                jobRun.PlannedStartDateTimeUtc,
-                                                jobRun.ActualStartDateTimeUtc,
-                                                jobRun.EstimatedEndDateTimeUtc,
-                                                jobRun.ActualEndDateTimeUtc,
-                                                jobRun.Progress,
-                                                State = jobRun.State.ToString(),
-                                                jobRun.Pid,
-                                                jobRun.WorkingDir,
-                                                jobRun.TempDir,
-                                            });
+                connection.Execute(
+                    sql, 
+                    new {
+                        jobRun.Id,
+                        jobRun.JobParameters,
+                        jobRun.InstanceParameters,
+                        jobRun.PlannedStartDateTimeUtc,
+                        jobRun.ActualStartDateTimeUtc,
+                        jobRun.EstimatedEndDateTimeUtc,
+                        jobRun.ActualEndDateTimeUtc,
+                        jobRun.Progress,
+                        State = jobRun.State.ToString(),
+                        jobRun.Pid,
+                        jobRun.WorkingDir,
+                        jobRun.TempDir,
+                    });
 
                 return true;
             }
