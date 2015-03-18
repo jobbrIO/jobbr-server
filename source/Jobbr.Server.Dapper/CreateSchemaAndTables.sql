@@ -1,9 +1,9 @@
-﻿/* EXECUTE this manually in your FIS DB */
+﻿/* EXECUTE this manually in your DB */
 
-/****** Object:  Schema [Jobbr]    Script Date: 11.03.2015 14:17:37 ******/
+/****** Object:  Schema [Jobbr]    Script Date: 18.03.2015 19:33:04 ******/
 CREATE SCHEMA [Jobbr]
 GO
-/****** Object:  Table [Jobbr].[JobRuns]    Script Date: 11.03.2015 14:17:37 ******/
+/****** Object:  Table [Jobbr].[JobRuns]    Script Date: 18.03.2015 19:33:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -36,7 +36,7 @@ CREATE TABLE [Jobbr].[JobRuns](
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [Jobbr].[Jobs]    Script Date: 11.03.2015 14:17:37 ******/
+/****** Object:  Table [Jobbr].[Jobs]    Script Date: 18.03.2015 19:33:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -45,9 +45,9 @@ SET ANSI_PADDING ON
 GO
 CREATE TABLE [Jobbr].[Jobs](
 	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[UniqueName] [varchar](50) NOT NULL,
-	[Title] [varchar](80) NOT NULL,
-	[Type] [varchar](150) NOT NULL,
+	[UniqueName] [varchar](80) NOT NULL,
+	[Title] [varchar](150) NULL,
+	[Type] [varchar](50) NOT NULL,
 	[Parameters] [varchar](max) NULL,
 	[CreatedDateTimeUtc] [datetime2](7) NOT NULL,
 	[UpdatedDateTimeUtc] [datetime2](7) NULL,
@@ -60,7 +60,7 @@ CREATE TABLE [Jobbr].[Jobs](
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [Jobbr].[Triggers]    Script Date: 11.03.2015 14:17:37 ******/
+/****** Object:  Table [Jobbr].[Triggers]    Script Date: 18.03.2015 19:33:04 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -87,11 +87,3 @@ CREATE TABLE [Jobbr].[Triggers](
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-
-GO
-SET ANSI_PADDING OFF
-GO
-USE [master]
-GO
-ALTER DATABASE [JobbrDemo] SET  READ_WRITE 
-GO
