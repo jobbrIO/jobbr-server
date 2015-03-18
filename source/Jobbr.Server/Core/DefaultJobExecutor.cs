@@ -50,7 +50,7 @@ namespace Jobbr.Server.Core
             var scheduledRuns = this.jobService.GetJobRuns(JobRunState.Scheduled);
             var processingRuns = this.jobService.GetJobRuns(JobRunState.Processing);
 
-            var pastScheduledRuns = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc > dateTime).OrderBy(jr => jr.PlannedStartDateTimeUtc));
+            var pastScheduledRuns = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc < dateTime).OrderBy(jr => jr.PlannedStartDateTimeUtc));
             var futureScheduledRuns = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc >= dateTime).OrderBy(jr => jr.PlannedStartDateTimeUtc));
 
             // Handle current activeContexts Jobs
