@@ -65,7 +65,7 @@ namespace Jobbr.Server
                 this.scheduler = kernel.GetService<DefaultScheduler>();
                 this.executor = kernel.GetService<IJobExecutor>();
 
-                Logger.Log(LogLevel.Debug, () => "Done");
+                Logger.Debug("Done resolving services");
             }
             catch (Exception e)
             {
