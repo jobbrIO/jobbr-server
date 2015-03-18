@@ -132,7 +132,7 @@ Please note that
 
 	{
         "triggerType": "scheduled",
-		"dateTimeUtc": "2015-03-12 11:00"
+		"startDateTimeUtc": "2015-03-12 11:00"
         "isActive": true,
 		"userName": "test"
 		"parameters": { "Param1": "test", "Param2" : 42 }
@@ -144,13 +144,13 @@ Please note that
         "triggerType": "recurring",
 		"startDateTimeUtc": "2015-03-12 11:00
 		"endDateTimeUtc": "2015-03-19 18:00"
-		"definition: "* * * * *",
+		"definition: "* 15 * * *",
 	    "isActive": true,
 		"userName": "test"
 		"parameters": { "Param1": "test", "Param2" : 42 }
 	}
 
-A definition is a cron definition as specified here:  http://en.wikipedia.org/wiki/Cron 
+A definition is a cron definition as specified here: http://en.wikipedia.org/wiki/Cron 
 
 ### List JobRuns By User
 A jobrun is triggered by a trigger. To get jobruns for a specific used, it required to provide at least a UserId or UserName for the trigger.

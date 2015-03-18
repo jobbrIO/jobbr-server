@@ -123,7 +123,7 @@ namespace Jobbr.Server.Web.Controller
 
         private ScheduledTrigger ConvertToTrigger(ScheduledTriggerDto dto)
         {
-            var trigger = new ScheduledTrigger { TriggerType = ScheduledTrigger.TypeName, StartDateTimeUtc = dto.DateTimeUtc };
+            var trigger = new ScheduledTrigger { TriggerType = ScheduledTrigger.TypeName, StartDateTimeUtc = dto.StartDateTimeUtc };
             return (ScheduledTrigger)this.AddBaseInfos(dto, trigger);
         }
 

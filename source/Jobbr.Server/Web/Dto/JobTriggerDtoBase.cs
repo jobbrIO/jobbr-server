@@ -37,7 +37,7 @@ namespace Jobbr.Server.Web.Dto
     {
         public const string TypeName = "Scheduled";
 
-        public DateTime DateTimeUtc { get; set; }
+        public DateTime StartDateTimeUtc { get; set; }
     }
 
     public class InstantTriggerDto : JobTriggerDtoBase
