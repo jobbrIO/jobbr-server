@@ -7,9 +7,9 @@ using System.Net.Http.Headers;
 
 using System.Web.Http;
 
+using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
-using Jobbr.Server.Web.Dto;
 
 using Newtonsoft.Json;
 

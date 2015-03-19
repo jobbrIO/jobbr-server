@@ -39,7 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JobRunState.cs" />
+    <Compile Include="Model\JobDto.cs" />
+    <Compile Include="Model\JobRunArtefactDto.cs" />
+    <Compile Include="Model\JobRunDto.cs" />
+    <Compile Include="Model\JobRunState.cs" />
+    <Compile Include="Model\JobTriggerDtoBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

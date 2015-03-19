@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Jobbr.Common;
+using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Model;

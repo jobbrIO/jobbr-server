@@ -1,4 +1,4 @@
-namespace Jobbr.Common
+namespace Jobbr.Common.Model
 {
     /// <summary>
     /// The job run state.

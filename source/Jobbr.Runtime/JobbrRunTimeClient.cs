@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 
 using Jobbr.Common;
-
+using Jobbr.Common.Model;
 using Jobbr.Shared;
 
 using Newtonsoft.Json;

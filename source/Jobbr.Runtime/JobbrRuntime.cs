@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Jobbr.Common;
-
+using Jobbr.Common.Model;
 using Jobbr.Runtime.Logging;
 using Jobbr.Shared;
 

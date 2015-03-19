@@ -1,4 +1,5 @@
 ﻿using Jobbr.Common;
+using Jobbr.Common.Model;
 
 namespace Jobbr.Shared
 {

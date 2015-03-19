@@ -4,8 +4,8 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 
+using Jobbr.Common.Model;
 using Jobbr.Server.Logging;
-using Jobbr.Server.Web.Dto;
 using Jobbr.Shared;
 
 using Newtonsoft.Json;

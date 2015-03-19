@@ -101,10 +101,6 @@
     <Compile Include="Web\Controller\TriggerController.cs" />
     <Compile Include="Web\Mapping\JobMapper.cs" />
     <Compile Include="Web\Mapping\TriggerMapper.cs" />
-    <Compile Include="Web\Dto\JobDto.cs" />
-    <Compile Include="Web\Dto\JobRunArtefactDto.cs" />
-    <Compile Include="Web\Dto\JobRunDto.cs" />
-    <Compile Include="Web\Dto\JobTriggerDtoBase.cs" />
     <Compile Include="Web\JsonTypeConverter.cs" />
     <Compile Include="Web\TraceSourceExceptionLogger.cs" />
     <Compile Include="Web\WebHost.cs" />
@@ -133,6 +129,7 @@
       <Name>Jobbr.Shared</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

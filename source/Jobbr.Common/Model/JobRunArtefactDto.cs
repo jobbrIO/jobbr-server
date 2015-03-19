@@ -1,4 +1,4 @@
-﻿namespace Jobbr.Server.Web.Dto
+﻿namespace Jobbr.Common.Model
 {
     /// <summary>
     /// The job run artefact dto.

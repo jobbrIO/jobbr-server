@@ -1,10 +1,10 @@
 ﻿using System.Net;
 using System.Web.Http;
 
+using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Core;
 using Jobbr.Server.Model;
-using Jobbr.Server.Web.Dto;
 using Jobbr.Server.Web.Mapping;
 
 namespace Jobbr.Server.Web.Controller

@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 
 using Jobbr.Common;
+using Jobbr.Common.Model;
 
 namespace Jobbr.Server.Model
 {

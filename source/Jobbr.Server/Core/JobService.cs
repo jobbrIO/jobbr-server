@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Jobbr.Common;
+using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
 
