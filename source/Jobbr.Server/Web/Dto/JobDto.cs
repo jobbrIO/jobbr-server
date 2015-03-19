@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Jobbr.Server.Web.Dto
 {
@@ -17,5 +18,7 @@ namespace Jobbr.Server.Web.Dto
         public DateTime? CreatedDateTimeUtc { get; set; }
 
         public DateTime? UpdatedDateTimeUtc { get; set; }
+
+        public List<JobTriggerDtoBase> Trigger { get; set; } 
     }
 }

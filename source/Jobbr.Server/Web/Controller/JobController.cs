@@ -7,6 +7,7 @@ using Jobbr.Server.Common;
 using Jobbr.Server.Core;
 using Jobbr.Server.Model;
 using Jobbr.Server.Web.Dto;
+using Jobbr.Server.Web.Mapping;
 
 using Newtonsoft.Json;
 
@@ -33,7 +34,21 @@ namespace Jobbr.Server.Web.Controller
         [Route("api/jobs")]
         public IHttpActionResult AllJobs()
         {
-            return this.Ok(this.jobStorageProvider.GetJobs().Select(this.Map));
+            return this.Ok(this.jobStorageProvider.GetJobs().Select(JobMapper.Map));
+        }
+
+        [HttpGet]
+        [Route("api/jobs/{jobId}")]
+        public IHttpActionResult SingleJob(long jobId)
+        {
+            var job = this.jobStorageProvider.GetJobById(jobId);
+
+            var triggers = this.jobStorageProvider.GetTriggersByJobId(jobId);
+            
+            var jobDto = JobMapper.Map(job);
+            jobDto.Trigger = triggers.Select(t => TriggerMapper.ConvertToDto(t as dynamic)).Cast<JobTriggerDtoBase>().ToList();
+
+            return this.Ok(jobDto);
         }
 
         [HttpPost]
@@ -54,10 +69,10 @@ namespace Jobbr.Server.Web.Controller
                 return this.Conflict();
             }
 
-            var job = new Job() { UniqueName = dto.UniqueName, Title = dto.Title, Type = dto.Type, Parameters = JsonConvert.SerializeObject(dto.Parameters), };
+            var job = new Job() { UniqueName = dto.UniqueName, Title = dto.Title, Type = dto.Type, Parameters = dto.Parameters != null ? JsonConvert.SerializeObject(dto.Parameters) : null, };
             var returnJob = this.service.AddJob(job);
 
-            return this.Created("/api/jobs/" + job.Id, this.Map(returnJob));
+            return this.Created("/api/jobs/" + job.Id, JobMapper.Map(returnJob));
         }
 
         [HttpPost]
@@ -80,7 +95,7 @@ namespace Jobbr.Server.Web.Controller
         {
             var jobRuns = this.jobStorageProvider.GetJobRuns().Where(jr => jr.JobId == jobId);
 
-            var list = jobRuns.Select(MapJobRunForOverview).ToList();
+            var list = jobRuns.Select(JobMapper.Map).ToList();
 
             return this.Ok(list);
         }
@@ -93,39 +108,9 @@ namespace Jobbr.Server.Web.Controller
 
             var jobRuns = this.jobStorageProvider.GetJobRuns().Where(jr => jr.JobId == job.Id);
 
-            var list = jobRuns.Select(MapJobRunForOverview).ToList();
+            var list = jobRuns.Select(JobMapper.Map).ToList();
 
             return this.Ok(list);
-        }
-
-        private JobDto Map(Job job)
-        {
-            return new JobDto()
-                       {
-                           Id = job.Id,
-                           UniqueName = job.UniqueName,
-                           Title = job.Title,
-                           Parameters = JsonConvert.DeserializeObject(job.Parameters),
-                           Type = job.Type,
-                           UpdatedDateTimeUtc = job.UpdatedDateTimeUtc,
-                           CreatedDateTimeUtc = job.CreatedDateTimeUtc
-                       };
-        }
-
-        private static JobRunDto MapJobRunForOverview(JobRun jobRun)
-        {
-            return new JobRunDto()
-            {
-                JobRunId = jobRun.Id,
-                JobId = jobRun.JobId,
-                TriggerId = jobRun.TriggerId,
-                UniqueId = new Guid(jobRun.UniqueId),
-                State = jobRun.State.ToString(),
-                Progress = jobRun.Progress,
-                PlannedStartUtc = jobRun.PlannedStartDateTimeUtc,
-                AuctualStartUtc = jobRun.ActualStartDateTimeUtc,
-                AuctualEndUtc = jobRun.ActualEndDateTimeUtc,
-            };
         }
     }
 }
