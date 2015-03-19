@@ -1,0 +1,21 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Jobbr.Client</id>
+    <version>$version$</version>
+    <authors>Jobbr</authors>
+    <owners>Jobbr</owners>
+    <projectUrl>http://github.com/michaelschnyder/jobbr</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Jobbr is a .NET JobServer</description>
+    <copyright>Copyright 2015</copyright>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="6.0.8" />
+    </dependencies>
+  </metadata>
+  
+  <files>
+    <file src="Jobbr.Client\bin\Release\Jobbr.Client.dll" target="lib\net45"/>
+    <file src="Jobbr.Common\bin\Release\Jobbr.Common.dll" target="lib\net45"/>
+  </files>
+</package>
