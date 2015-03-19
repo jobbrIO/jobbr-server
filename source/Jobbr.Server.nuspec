@@ -28,6 +28,7 @@
 
     <!-- The Backend binaries-->
     <file src="Jobbr.Server\bin\Release\Jobbr.Server.dll" target="lib\net45"/>
+    <file src="Jobbr.Shared\bin\Release\Jobbr.Shared.dll" target="lib\net45"/>
     <file src="Jobbr.Common\bin\Release\Jobbr.Common.dll" target="lib\net45"/>
     <file src="Jobbr.Server.Dapper\bin\Release\Jobbr.Server.Dapper.dll" target="lib\net45"/>
 
