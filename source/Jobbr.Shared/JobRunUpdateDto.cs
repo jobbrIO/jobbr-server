@@ -1,4 +1,6 @@
-﻿namespace Jobbr.Common
+﻿using Jobbr.Common;
+
+namespace Jobbr.Shared
 {
     public class JobRunUpdateDto
     {

@@ -1,6 +1,6 @@
-﻿using Jobbr.Common;
-using Jobbr.Server.Common;
+﻿using Jobbr.Server.Common;
 using Jobbr.Server.Core;
+using Jobbr.Shared;
 
 using Ninject;
 

@@ -1,8 +1,8 @@
 using System;
 
-using Jobbr.Common;
 using Jobbr.Server.Common;
 using Jobbr.Server.Logging;
+using Jobbr.Shared;
 
 using Microsoft.Owin.Hosting;
 using Microsoft.Owin.Hosting.Services;
@@ -56,7 +56,9 @@ namespace Jobbr.Server.Web
             var services = (ServiceProvider)ServicesFactory.Create();
             var options = new StartOptions()
                               {
-                                  Urls = { this.configuration.BackendAddress }, 
+                                  Urls = {
+                                            this.configuration.BackendAddress 
+                                         }, 
                                   AppStartup = typeof(Startup).FullName
                               };
 

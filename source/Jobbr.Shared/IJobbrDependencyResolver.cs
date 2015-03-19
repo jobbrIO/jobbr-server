@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Jobbr.Common
+namespace Jobbr.Shared
 {
     /// <summary>
     /// Represents an interface for the range of the dependencies.

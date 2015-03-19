@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 
-using Jobbr.Common;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Web.Dto;
+using Jobbr.Shared;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;

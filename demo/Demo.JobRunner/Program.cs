@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-
-using Jobbr.Runtime;
+﻿using Jobbr.Runtime;
 
 namespace Demo.JobRunner
 {

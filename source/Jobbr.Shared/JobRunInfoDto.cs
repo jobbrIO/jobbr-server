@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Jobbr.Common
+namespace Jobbr.Shared
 {
     /// <summary>
     /// The job run configuration.

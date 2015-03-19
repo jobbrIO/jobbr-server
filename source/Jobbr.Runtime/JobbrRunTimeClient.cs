@@ -6,6 +6,8 @@ using System.Text;
 
 using Jobbr.Common;
 
+using Jobbr.Shared;
+
 using Newtonsoft.Json;
 
 namespace Jobbr.Runtime

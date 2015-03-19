@@ -7,7 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Jobbr.Common;
+
 using Jobbr.Runtime.Logging;
+using Jobbr.Shared;
 
 using Newtonsoft.Json;
 

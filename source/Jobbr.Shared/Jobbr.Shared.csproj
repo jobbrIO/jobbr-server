@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FC503F89-61B7-4E2F-A950-6DA216C830E1}</ProjectGuid>
+    <ProjectGuid>{4C7FF32D-8514-4D17-B21C-3EF69968AB1F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Jobbr.Runtime</RootNamespace>
-    <AssemblyName>Jobbr.Runtime</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <RootNamespace>Jobbr.Shared</RootNamespace>
+    <AssemblyName>Jobbr.Shared</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,16 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,24 +39,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
-    <Compile Include="JobbrRuntime.cs" />
-    <Compile Include="CommandlineOptions.cs" />
-    <Compile Include="JobbrRuntimeClient.cs" />
-    <Compile Include="NoDependencyResolver.cs" />
+    <Compile Include="IJobbrDependencyResolver.cs" />
+    <Compile Include="JobRunInfoDto.cs" />
+    <Compile Include="JobRunUpdateDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Jobbr.Common\Jobbr.Common.csproj">
       <Project>{37E22E5D-F8B2-4336-B509-53C94B170E4C}</Project>
       <Name>Jobbr.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Jobbr.Shared\Jobbr.Shared.csproj">
-      <Project>{4c7ff32d-8514-4d17-b21c-3ef69968ab1f}</Project>
-      <Name>Jobbr.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

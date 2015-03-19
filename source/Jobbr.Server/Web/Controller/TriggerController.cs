@@ -11,8 +11,6 @@ namespace Jobbr.Server.Web.Controller
 {
     public class TriggerController : ApiController
     {
-        private readonly TriggerMapper triggerMapper;
-
         private IJobStorageProvider jobStorageProvider;
 
         private IJobService jobService;
@@ -21,7 +19,6 @@ namespace Jobbr.Server.Web.Controller
         {
             this.jobStorageProvider = jobStorageProvider;
             this.jobService = jobService;
-            this.triggerMapper = new TriggerMapper();
         }
 
         [HttpGet]
@@ -35,7 +32,7 @@ namespace Jobbr.Server.Web.Controller
                 return this.NotFound();
             }
 
-            return this.Ok(this.triggerMapper.ConvertToDto((dynamic)trigger));
+            return this.Ok(TriggerMapper.ConvertToDto((dynamic)trigger));
         }
 
         [HttpGet]
@@ -100,12 +97,12 @@ namespace Jobbr.Server.Web.Controller
                 return this.StatusCode(HttpStatusCode.BadRequest);
             }
 
-            var trigger = this.triggerMapper.ConvertToTrigger(triggerDto as dynamic);
+            var trigger = TriggerMapper.ConvertToTrigger(triggerDto as dynamic);
             ((JobTriggerBase)trigger).JobId = job.Id;
 
             var triggerId = this.jobService.AddTrigger(trigger);
 
-            return this.Created(string.Format("api/trigger/{0}", triggerId), this.triggerMapper.ConvertToDto(trigger));
+            return this.Created(string.Format("api/trigger/{0}", triggerId), TriggerMapper.ConvertToDto(trigger));
         }
     }
 }

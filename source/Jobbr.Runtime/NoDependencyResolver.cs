@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-using Jobbr.Common;
+using Jobbr.Shared;
 
 namespace Jobbr.Runtime
 {

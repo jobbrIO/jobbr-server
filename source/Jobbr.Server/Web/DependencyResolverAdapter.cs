@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Web.Http.Dependencies;
 
-using Jobbr.Common;
+using Jobbr.Shared;
 
 namespace Jobbr.Server.Web
 {
