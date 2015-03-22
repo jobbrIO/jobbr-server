@@ -264,7 +264,7 @@ namespace Jobbr.Runtime
 
             if (type == null)
             {
-                Logger.DebugFormat("Still no lock finding '{0}' somewhere. Iterating through all types and comparing class-names. Please hold on", typeName);
+                Logger.DebugFormat("Still no luck finding '{0}' somewhere. Iterating through all types and comparing class-names. Please hold on", typeName);
 
                 // Absolutely no clue
                 var matchingTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => x.Name == typeName && x.IsClass && !x.IsAbstract).ToList();
