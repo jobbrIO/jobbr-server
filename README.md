@@ -108,18 +108,14 @@ Take the following Endpoint
 	GET http://localhost/jobbr/api/jobs
 
 ### Trigger a Job to run (JobRun)
-A job can be triggered in three different modes using the following Endpoint (JobId or UniqueId is required)
+A job can be triggered by using the following Endpoint (JobId or UniqueId is required)
 
 	POST http://localhost/jobbr/api/jobs/{JobId}/trigger
 	POST http://localhost/jobbr/api/jobs/{UniqueId}/trigger
 
+There are 3 different modes 
 
-Please note that
-* DateTime Values are always UTC
-* UserId, UserName or UserDisplayName are optional
-* Parameters are an object
-
-####Instant
+#### 1. Instant
 
 	{
         "triggerType": "instant",
@@ -128,7 +124,7 @@ Please note that
 		"parameters": { "Param1": "test", "Param2" : 42 }
 	}
 
-####Scheduled
+#### 2. Scheduled
 
 	{
         "triggerType": "scheduled",
@@ -138,7 +134,7 @@ Please note that
 		"parameters": { "Param1": "test", "Param2" : 42 }
 	}
 
-####Recurring
+#### 3. Recurring
 
 	{
         "triggerType": "recurring",
@@ -151,6 +147,12 @@ Please note that
 	}
 
 A definition is a cron definition as specified here: http://en.wikipedia.org/wiki/Cron 
+
+Please note that
+* DateTime Values are always UTC
+* UserId, UserName or UserDisplayName are optional
+* Parameters are an object
+
 
 ### List JobRuns By User
 A jobrun is triggered by a trigger. To get jobruns for a specific used, it required to provide at least a UserId or UserName for the trigger.
