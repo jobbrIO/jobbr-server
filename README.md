@@ -16,7 +16,7 @@ There is a demo-solution with a ready to run application.
 Simply create a database (or use any existing) by executing the CreateSchemaAndTables.sql-File, located in source\Jobbr.Server.Dapper. The JobStorageProvider is Dapper-based and has been tested against SQL Server 2012.
 
 ## Hosting a JobbrServer
-To Host a JobbrServer simply define a Storage Provider for Jobs and JobArtefacts and initialize the JobServer:
+To host a JobbrServer simply define a Storage Provider for Jobs and JobArtefacts and initialize the JobServer:
 
 ```c#
 var jobStorageProvider = new DapperStorageProvider(@"YourConnectionString");
