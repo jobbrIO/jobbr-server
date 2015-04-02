@@ -161,7 +161,7 @@ namespace Jobbr.Runtime
                 var specificMethod = runMethods.FirstOrDefault(m => m.GetParameters().Count() == 2);
                 if (specificMethod != null)
                 {
-                    // TODO: Log
+                    Logger.DebugFormat("Found specific method '{0}' with JobParameter '{1}' and InstanceParameters '{2}'.", specificMethod, this.jobInfo.JobParameter, this.jobInfo.InstanceParameter);
                     var allParams = specificMethod.GetParameters().OrderBy(p => p.Position).ToList();
 
                     var param1Type = allParams[0].ParameterType;
