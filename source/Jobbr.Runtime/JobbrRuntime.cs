@@ -159,9 +159,9 @@ namespace Jobbr.Runtime
             {
                 // Try to use the method with 2 concrete parameters
                 var specificMethod = runMethods.FirstOrDefault(m => m.GetParameters().Count() == 2);
-                if (specificMethod != null && this.jobInfo.JobParameter != null && this.jobInfo.InstanceParameter != null)
+                if (specificMethod != null)
                 {
-                    Logger.DebugFormat("Found specific method '{0}' with JobParameter '{1}' and InstanceParameters '{2}'.", specificMethod, this.jobInfo.JobParameter, this.jobInfo.InstanceParameter);
+                    // TODO: Log
                     var allParams = specificMethod.GetParameters().OrderBy(p => p.Position).ToList();
 
                     var param1Type = allParams[0].ParameterType;
