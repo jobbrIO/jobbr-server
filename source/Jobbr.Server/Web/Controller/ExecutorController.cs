@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-using Jobbr.Common;
 using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Core;
