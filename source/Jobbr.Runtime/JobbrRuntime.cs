@@ -158,11 +158,11 @@ namespace Jobbr.Runtime
             if (runMethods.Any())
             {
                 // Try to use the method with 2 concrete parameters
-                var specificMethod = runMethods.FirstOrDefault(m => m.GetParameters().Count() == 2);
-                if (specificMethod != null)
+                var parameterizedMethod = runMethods.FirstOrDefault(m => m.GetParameters().Count() == 2);
+                if (parameterizedMethod != null)
                 {
-                    Logger.DebugFormat("Found specific method '{0}' with JobParameter '{1}' and InstanceParameters '{2}'.", specificMethod, this.jobInfo.JobParameter, this.jobInfo.InstanceParameter);
-                    var allParams = specificMethod.GetParameters().OrderBy(p => p.Position).ToList();
+                    Logger.DebugFormat("Decided to use parameterized method '{0}' with JobParameter '{1}' and InstanceParameters '{2}'.", parameterizedMethod, this.jobInfo.JobParameter, this.jobInfo.InstanceParameter);
+                    var allParams = parameterizedMethod.GetParameters().OrderBy(p => p.Position).ToList();
 
                     var param1Type = allParams[0].ParameterType;
                     var param2Type = allParams[1].ParameterType;
@@ -181,18 +181,28 @@ namespace Jobbr.Runtime
                         param2Value = JsonConvert.DeserializeObject(param2Value.ToString(), param2Type);
                     }
 
-                    this.jobRunTask = new Task(() => { specificMethod.Invoke(this.jobInstance, new[] { param1Value, param2Value }); }, this.cancellationTokenSource.Token);
+                    this.jobRunTask = new Task(() => { parameterizedMethod.Invoke(this.jobInstance, new[] { param1Value, param2Value }); }, this.cancellationTokenSource.Token);
                 }
                 else
                 {
-                    var theRightOne = runMethods.First();
+                    var fallBackMethod = runMethods.FirstOrDefault(m => !m.GetParameters().Any());
 
-                    this.jobRunTask = new Task(() => theRightOne.Invoke(this.jobInstance, null), this.cancellationTokenSource.Token);
+                    if (fallBackMethod != null)
+                    {
+                        Logger.DebugFormat("Decided to use parameterless method '{0}'", fallBackMethod);
+                        this.jobRunTask = new Task(() => fallBackMethod.Invoke(this.jobInstance, null), this.cancellationTokenSource.Token);
+                    }
                 }
 
-
-                this.jobRunTask.Start();
-                this.client.PublishState(JobRunState.Processing);
+                if (this.jobRunTask != null)
+                {
+                    this.jobRunTask.Start();
+                    this.client.PublishState(JobRunState.Processing);
+                }
+                else
+                {
+                    Logger.ErrorFormat("None of your Run()-Methods are compatible with Jobbr. Please see coeumentation");
+                }
             }
             else
             {
