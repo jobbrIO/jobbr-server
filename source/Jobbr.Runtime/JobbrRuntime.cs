@@ -220,6 +220,8 @@ namespace Jobbr.Runtime
             }
             else
             {
+                Logger.InfoFormat("Type '{0}' has been resolved to '{1}'. Activating now.", this.jobInfo.JobType, type);
+
                 try
                 {
                     this.jobInstance = this.dependencyResolver.GetService(type);
@@ -271,6 +273,7 @@ namespace Jobbr.Runtime
 
                 if (matchingTypes.Count() == 1)
                 {
+                    Logger.DebugFormat("Found matching type: '{0}'", matchingTypes[0]);
                     type = matchingTypes.First();
                 }
                 else if (matchingTypes.Count() > 1)
