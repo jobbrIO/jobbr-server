@@ -58,18 +58,20 @@ namespace Jobbr.Runtime
         /// </param>
         public void Run(string[] args)
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += this.CurrentDomainOnUnhandledException;
 
-            Logger.InfoFormat("JobbrRuntime is now running with the following parameters: '{0}'", string.Join(" ", args));
+            Logger.InfoFormat("JobbrRuntime started at {0} (UTC) with cmd-arguments {1}", DateTime.UtcNow, string.Join(" ", args));
 
             this.ParseArguments(args);
+
+            Logger.InfoFormat("JobRunId:  {0}", this.commandlineOptions.JobRunId);
+            Logger.InfoFormat("JobServer: {0}", this.commandlineOptions.JobServer);
+            Logger.InfoFormat("IsDebug:   {0}", this.commandlineOptions.IsDebug);
 
             this.InitializeClient();
             
             try
             {
-                this.DisplayWelcomeBannerIfEnabled(args);
-
                 this.WaitForDebuggerIfEnabled();
 
                 this.InitializeJob();
@@ -333,20 +335,6 @@ namespace Jobbr.Runtime
             if (Debugger.IsAttached)
             {
                 Debugger.Break();
-            }
-        }
-
-        private void DisplayWelcomeBannerIfEnabled(string[] args)
-        {
-            if (this.commandlineOptions.IsChatty)
-            {
-                Console.Write(
-                    "This is the runner started at " + DateTime.UtcNow + " (UTC) with arguments " + string.Join(" ", args));
-
-                Console.WriteLine();
-                Console.WriteLine("JobRunId:  " + this.commandlineOptions.JobRunId);
-                Console.WriteLine("JobServer: " + this.commandlineOptions.JobServer);
-                Console.WriteLine("IsDebug:   " + this.commandlineOptions.IsDebug);
             }
         }
 

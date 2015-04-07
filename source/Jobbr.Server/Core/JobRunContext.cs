@@ -86,19 +86,17 @@ namespace Jobbr.Server.Core
             Logger.InfoFormat("[{0}] Preparing to start the runner from '{1}' in '{2}'", jobRun.UniqueId, runnerFileExe, workDir);
 
             Process proc = new Process();
+
             proc.EnableRaisingEvents = true;
             proc.StartInfo.FileName = runnerFileExe;
 
             var arguments = string.Format("--jobRunId {0} --server {1}", jobRun.Id, this.configuration.BackendAddress);
-
-            if (this.configuration.BeChatty)
+            
+            if (this.configuration.IsRuntimeWaitingForDebugger) 
             {
-                arguments += " --chatty";
+                arguments += " --debug";
             }
-
-#if DEBUG
-            arguments += " --debug";
-#endif
+    
             proc.StartInfo.Arguments = arguments;
             proc.StartInfo.WorkingDirectory = workDir;
             proc.StartInfo.RedirectStandardOutput = true;

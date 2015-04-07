@@ -36,7 +36,7 @@ namespace Jobbr.Server.Common
 
         string JobRunDirectory { get; }
 
-        bool BeChatty { get; set; }
+        bool IsRuntimeWaitingForDebugger { get; set; }
 
         /// <summary>
         /// Gets the artefact storage provider.

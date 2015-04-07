@@ -18,7 +18,7 @@ namespace Jobbr.Server.Configuration
 
         public string JobRunDirectory { get; set; }
 
-        public bool BeChatty { get; set; }
+        public bool IsRuntimeWaitingForDebugger { get; set; }
 
         public IArtefactsStorageProvider ArtefactStorageProvider { get; set; }
 

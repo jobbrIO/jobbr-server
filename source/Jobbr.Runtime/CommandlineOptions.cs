@@ -24,8 +24,5 @@ namespace Jobbr.Runtime
         /// </summary>
         [Option('d', "debug", DefaultValue = false)]
         public bool IsDebug { get; set; }
-
-        [Option('c', "chatty", DefaultValue = false)]
-        public bool IsChatty { get; set; }
     }
 }
