@@ -15,7 +15,7 @@
   </metadata>
   
   <files>
-    <file src="Jobbr.Client\bin\Release\Jobbr.Client.dll" target="lib\net45"/>
-    <file src="Jobbr.Common\bin\Release\Jobbr.Common.dll" target="lib\net45"/>
+    <file src="Jobbr.Client\bin\Release\Jobbr.Client.*" target="lib\net45"/>
+    <file src="Jobbr.Common\bin\Release\Jobbr.Common.*" target="lib\net45"/>
   </files>
 </package>

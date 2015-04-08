@@ -20,6 +20,6 @@
   <files>
 
     <!-- The Backend binaries-->
-    <file src="Jobbr.Runtime\bin\Release\Jobbr.*.dll" target="lib\net45"/>
+    <file src="Jobbr.Runtime\bin\Release\Jobbr.*" target="lib\net45"/>
   </files>
 </package>
