@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Policy;
 
 using Jobbr.Server.Common;
 using Jobbr.Server.Configuration;
@@ -15,7 +16,7 @@ namespace Demo.JobServer
             this.JobStorageProvider = storageProvider;
             this.ArtefactStorageProvider = new FileSystemArtefactsStorageProvider("data");
             this.JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe";
-            this.BeChatty = true;
+            this.IsRuntimeWaitingForDebugger = true;
         }
 
         public override void OnRepositoryCreating(RepositoryBuilder repositoryBuilder)
