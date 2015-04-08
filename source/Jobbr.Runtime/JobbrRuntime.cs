@@ -163,27 +163,21 @@ namespace Jobbr.Runtime
                 var parameterizedMethod = runMethods.FirstOrDefault(m => m.GetParameters().Count() == 2);
                 if (parameterizedMethod != null)
                 {
-                    Logger.DebugFormat("Decided to use parameterized method '{0}' with JobParameter '{1}' and InstanceParameters '{2}'.", parameterizedMethod, this.jobInfo.JobParameter, this.jobInfo.InstanceParameter);
+                    Logger.DebugFormat("Decided to use parameterized method '{0}' with JobParameter '{1}' and InstanceParameters '{2}'.", parameterizedMethod, this.jobInfo.JobParameter ?? "<null>", this.jobInfo.InstanceParameter ?? "<null>");
                     var allParams = parameterizedMethod.GetParameters().OrderBy(p => p.Position).ToList();
 
                     var param1Type = allParams[0].ParameterType;
                     var param2Type = allParams[1].ParameterType;
 
-                    object param1Value = this.jobInfo.JobParameter;
-                    object param2Value = this.jobInfo.InstanceParameter;
+                    var param1Name = allParams[0].Name;
+                    var param2Name = allParams[1].Name;
 
-                    // Try to cast them to specific types
-                    if (param1Type != typeof(object))
-                    {
-                        param1Value = JsonConvert.DeserializeObject(param1Value.ToString(), param1Type);
-                    }
+                    // Casting in the most preferrable type
+                    var jobParameterValue = this.GetCastedParameterValue(param1Name, param1Type, "job", this.jobInfo.JobParameter);
+                    var instanceParamaterValue = this.GetCastedParameterValue(param2Name, param2Type, "instance", this.jobInfo.InstanceParameter);
 
-                    if (param2Type != typeof(object))
-                    {
-                        param2Value = JsonConvert.DeserializeObject(param2Value.ToString(), param2Type);
-                    }
-
-                    this.jobRunTask = new Task(() => { parameterizedMethod.Invoke(this.jobInstance, new[] { param1Value, param2Value }); }, this.cancellationTokenSource.Token);
+                    Logger.Debug("Initializing task for JobRun");
+                    this.jobRunTask = new Task(() => { parameterizedMethod.Invoke(this.jobInstance, new[] { jobParameterValue, instanceParamaterValue }); }, this.cancellationTokenSource.Token);
                 }
                 else
                 {
@@ -198,6 +192,7 @@ namespace Jobbr.Runtime
 
                 if (this.jobRunTask != null)
                 {
+                    Logger.Debug("Starting Task to execute the Run()-Method.");
                     this.jobRunTask.Start();
                     this.client.PublishState(JobRunState.Processing);
                 }
@@ -211,6 +206,32 @@ namespace Jobbr.Runtime
                 Logger.Error("Unable to find an entrypoint to call your job. Is there at least a public Run()-Method?");
                 this.client.PublishState(JobRunState.Failed);
             }
+        }
+
+        private object GetCastedParameterValue(string parameterName, Type targetType, string jobbrParamName, object value)
+        {
+            object castedValue;
+
+            Logger.InfoFormat("Casting {0}-parameter to its target value '{1}' based on the Run()-Parameter {2}", jobbrParamName, targetType, parameterName);
+
+            // Try to cast them to specific types
+            if (value == null)
+            {
+                Logger.DebugFormat("The {0}-parameter is null - no cast needed.", jobbrParamName);
+                castedValue = null;
+            }
+            else if (targetType == typeof(object))
+            {
+                Logger.DebugFormat("The {0}-parameter is of type 'object' - no cast needed.", jobbrParamName);
+                castedValue = value;
+            }
+            else
+            {
+                Logger.DebugFormat("The {0}-parameter '{1}' is from type '{2}'. Casting this value to '{2}'", jobbrParamName, parameterName, targetType);
+                castedValue = JsonConvert.DeserializeObject(value.ToString(), targetType);
+            }
+
+            return castedValue;
         }
 
         private void InitializeJob()
