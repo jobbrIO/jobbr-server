@@ -108,7 +108,14 @@ namespace Jobbr.Runtime
         {
             if (this.jobRunTask != null)
             {
-                this.jobRunTask.Wait(this.cancellationTokenSource.Token);
+                try
+                {
+                    this.jobRunTask.Wait(this.cancellationTokenSource.Token);
+                }
+                catch (Exception e)
+                {
+                    Logger.ErrorException("Exception while waiting for completion of job", e);
+                }
 
                 if (this.jobRunTask.IsFaulted)
                 {
