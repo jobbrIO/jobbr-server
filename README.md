@@ -27,7 +27,7 @@ var config = new DefaultJobbrConfiguration
     JobStorageProvider = jobStorageProvider,
     ArtefactStorageProvider = artefactStorageProvider,
     JobRunnerExeResolver = () => @"..\..\..\Demo.JobRunner\bin\Debug\Demo.JobRunner.exe",
-    BeChatty = true, // Verbose output on the RunnerExecutable
+    IsRuntimeWaitingForDebugger = true, // The runtime waits 10s for an debugger
 };
 
 using (var jobbrServer = new JobbrServer(config))
@@ -42,7 +42,7 @@ using (var jobbrServer = new JobbrServer(config))
 }
 ```
 
-The JobbrServer has an embedded OWIN-Selfhost for WebApi, to please add the corresponding NuGet-Package to the project where the JobbrServer is included.
+The JobbrServer has an embedded OWIN-Selfhost for WebApi, so please add the corresponding NuGet-Package to the project where the JobbrServer is included.
 
 	PM> Install-Package Microsoft.Owin.Host.HttpListener
 
@@ -62,7 +62,8 @@ public static void Main(string[] args)
 ## Make your Jobs Jobbr compatible
 Good news! All your C#-Code is compatible with jobbr as long as the CLR-type can be instantiated and has at least a `public Run()`- Method.
 
- If you want to log, just log with the logframework of your choice. 
+If you want to log, just log with the framework of your choice, thus there is no dependency to any framework you can use log4net, nLog or any other framework.
+  
 You have long running jobs an would like to show the progress somewhere in your application? Simply drop a service-message to the `Console`. Sample
 
 ```c#
@@ -76,7 +77,7 @@ Adding Jobs can be done via Database, RestAPI (see below) or via the FluentApi. 
 
 > **Note**
 > - There is no functionality to remove existing jobs
-> - Not specified triggers automatically get deactivated
+> - All in Fluent API unspecified triggers automatically get deactivated
 
 **Sample:**
 ```c#
@@ -99,8 +100,8 @@ public class MyJobbrConfiguration : DefaultJobbrConfiguration
 
 ``` 
 
-## API
-The JobbrServer exposes a RestFul-Api to define Jobs, Triggers and watch the status for running Jobs. Please see the section WebAPI for a complete reference
+## Rest API
+The JobbrServer exposes a Rest-API to define Jobs, Triggers and watch the status for running Jobs. Please see the section WebAPI for a complete reference
 
 ### Available Jobs
 Take the following Endpoint
