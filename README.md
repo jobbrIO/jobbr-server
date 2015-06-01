@@ -71,7 +71,6 @@ var progress = (double)(i + 1) / iterations * 100;
 
 Console.WriteLine("##jobbr[progress percent='{0:0.00}']", progress);
 ``` 
-
 ## Define Jobs
 Adding Jobs can be done via Database, RestAPI (see below) or via the FluentApi. A job consists at least of an ``UniqueName`` and a ``Type`` (which is basically the CLR-Type of the JobClass). To register Jobs on Startup, implement your own ``JobbrContiguration`` and override the ``OnRepositoryCreating``-Method.
 
@@ -202,8 +201,18 @@ Jobbr uses the LobLog library to detect your Logging-Framework of the Hosting Pr
 ## Parameters
 Write about jobParameters and runParameters. Serialization to concrete types, etc.
 
-## Dependency Injection
-Resolve your own Dependency Resolver which activates the clr-type of your JobRun-Class
+## Dependency Injection (Runtime)
+Provide your own Dependency Resolver which activates the clr-type of your JobRun-Class by implementing the `IJobbrDependencyResolver`-Interface. If no JobbrDependencyResover is provided, a generic resolver is used, but a parameterless constructor is then required.
+
+### RuntimeContext
+Sometimes it's necessary to retreive the Jobbr `RuntimeContext` which is currently providing the 
+`UserId` and `UserName`. See RuntimeContext.cs for available information.
+
+If you decide to use the RuntimeContext, you will have to implement a DependencyResolver which also supports registration of instances by the Jobbr Runtime (i.e the Context) by implementing the `IJobbrDependencyRegistrator`-Interface. See the Demo with the SpecifiedUser-Job.
+
+The JobbrRuntime will then register a instance of `RuntimeContex` after start but before the actual Job will be activated. Depending on your Depencency Container, this instance can then be injected to the Job-Instance.
+How-ever, you should not reference the JobbrRuntime from your Jobs-Assembly, but this can be handled with an additional indirection. See the Damo with the SpeciciedUser-Job for details.
+
 
 ## Artefacts
 Everything you store in the Working-Directory is automatically collected and pushed to the Jobbr-Server 
@@ -277,6 +286,7 @@ Only the ``UniqueName`` and ``Type`` are required.
 ## Authors
 * Michael Schnyder
 * Peter Gfader
+* Mark Odermatt
 
 # License
 This software cannot be licenced.
