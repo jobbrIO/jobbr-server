@@ -45,10 +45,12 @@ namespace Jobbr.Server.Web.Controller
             var trigger = this.jobStorageProvider.GetTriggerById(jobRun.TriggerId);
             var job = this.jobStorageProvider.GetJobById(jobRun.JobId);
 
-            var infoDto = new JobRunInfoDto()
+            var infoDto = new JobRunInfoDto
                               {
                                   JobId = job.Id,
                                   TriggerId = trigger.Id,
+                                  UserId = trigger.UserId,
+                                  UserName = trigger.UserName,
                                   JobRunId = jobRunId,
                                   JobName = job.UniqueName,
                                   JobType = job.Type,

@@ -6,7 +6,8 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Jobbr.Common;
+using CommandLine;
+
 using Jobbr.Common.Model;
 using Jobbr.Runtime.Logging;
 using Jobbr.Shared;
@@ -37,6 +38,8 @@ namespace Jobbr.Runtime
         private Task jobRunTask;
 
         private JobRunInfoDto jobInfo;
+
+        private RuntimeContext context;
 
         public JobbrRuntime(Assembly defaultAssembly, IJobbrDependencyResolver dependencyResolver)
         {
@@ -245,6 +248,7 @@ namespace Jobbr.Runtime
         {
             this.client.PublishState(JobRunState.Initializing);
             this.jobInfo = this.client.GetJobRunInfo();
+            this.SetRuntimeContext();
 
             var typeName = this.jobInfo.JobType;
 
@@ -270,6 +274,22 @@ namespace Jobbr.Runtime
                 {
                     Logger.ErrorException("Failed while activating type '{0}'. See Exception for details!", exception);
                 }
+            }
+        }
+
+        private void SetRuntimeContext()
+        {
+            this.context = new RuntimeContext
+            {
+                UserId = this.jobInfo.UserId,
+                UserName = this.jobInfo.UserName
+            };
+
+            var registrator = this.dependencyResolver as IJobbrDependencyRegistrator;
+
+            if (registrator != null)
+            {
+                registrator.RegisterInstance(this.context);
             }
         }
 
@@ -369,7 +389,7 @@ namespace Jobbr.Runtime
         private void ParseArguments(string[] args)
         {
             this.commandlineOptions = new CommandlineOptions();
-            CommandLine.Parser.Default.ParseArguments(args, this.commandlineOptions);
+            Parser.Default.ParseArguments(args, this.commandlineOptions);
         }
     }
 }

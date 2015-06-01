@@ -11,7 +11,7 @@ namespace Demo.JobServer
     {
         public MyJobbrConfiguration()
         {
-            var storageProvider = new DapperStorageProvider(@"Data Source=.\SQLEXPRESS;Initial Catalog=JobbrDemo;Integrated Security=True");
+            var storageProvider = new DapperStorageProvider(@"Data Source=.\SQLEXPRESS;Initial Catalog=JobbrDemo;Integrated Security=True;");
 
             this.JobStorageProvider = storageProvider;
             this.ArtefactStorageProvider = new FileSystemArtefactsStorageProvider("data");
@@ -26,6 +26,8 @@ namespace Demo.JobServer
             repositoryBuilder.Define("MinimalJobId", "Demo.MyJobs.MinimalJob")
                 .WithTrigger(new DateTime(2015, 3, 20, 12, 00, 00))
                 .WithTrigger("* 15 * * *");
+
+            repositoryBuilder.Define("UserSpecificJob", "Demo.MyJobs.UserSpecificJob");
         }
     }
 }

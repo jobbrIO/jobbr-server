@@ -43,6 +43,13 @@
     <Compile Include="MinimalJob.cs" />
     <Compile Include="ProgressJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserSpecificJob.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Demo.Common\Demo.Common.csproj">
+      <Project>{50B5724F-5B72-4932-87A6-0890A612642C}</Project>
+      <Name>Demo.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

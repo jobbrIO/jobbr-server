@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{41B720F3-A119-41BF-AE09-C248BA525B83}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{50B5724F-5B72-4932-87A6-0890A612642C}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Demo.JobRunner</RootNamespace>
-    <AssemblyName>Demo.JobRunner</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <RootNamespace>Demo.Common</RootNamespace>
+    <AssemblyName>Demo.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ninject">
-      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,30 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="UserResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\source\Jobbr.Runtime\Jobbr.Runtime.csproj">
-      <Project>{fc503f89-61b7-4e2f-a950-6da216c830e1}</Project>
-      <Name>Jobbr.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\source\Jobbr.Shared\Jobbr.Shared.csproj">
-      <Project>{4C7FF32D-8514-4D17-B21C-3EF69968AB1F}</Project>
-      <Name>Jobbr.Shared</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Demo.Common\Demo.Common.csproj">
-      <Project>{50B5724F-5B72-4932-87A6-0890A612642C}</Project>
-      <Name>Demo.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Demo.MyJobs\Demo.MyJobs.csproj">
-      <Project>{f1c2e1e1-815d-4d07-91a2-fd8bee8c4240}</Project>
-      <Name>Demo.MyJobs</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

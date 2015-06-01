@@ -54,6 +54,7 @@
     <Compile Include="JobbrRuntimeClient.cs" />
     <Compile Include="NoDependencyResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RuntimeContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

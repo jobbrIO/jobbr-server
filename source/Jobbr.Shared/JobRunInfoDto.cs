@@ -11,6 +11,10 @@ namespace Jobbr.Shared
 
         public long TriggerId { get; set; }
 
+        public long? UserId { get; set; }
+
+        public string UserName { get; set; }
+
         public long JobRunId { get; set; }
 
         public Guid UniqueId { get; set; }
