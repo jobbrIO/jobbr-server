@@ -51,14 +51,14 @@ namespace Jobbr.Server
         /// </param>
         public JobbrServer(IJobbrConfiguration configuration)
         {
-            Logger.Log(LogLevel.Debug, () => "A new instance of a a JobbrServer has been created.");
+            Logger.Debug("A new instance of a a JobbrServer has been created.");
 
             this.configuration = configuration;
 
-            Logger.Log(LogLevel.Debug, () => "Creating DI-Container.");
+            Logger.Debug("Creating DI-Container.");
             var kernel = new DefaultKernel(this.configuration);
 
-            Logger.Log(LogLevel.Debug, () => "Resolving Services...");
+            Logger.Debug("Resolving Services...");
 
             try
             {
