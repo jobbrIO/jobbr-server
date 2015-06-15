@@ -201,7 +201,15 @@ namespace Jobbr.Server.Core
 
         public List<JobTriggerBase> GetActiveTriggers()
         {
-            return this.storageProvider.GetActiveTriggers();
+            try
+            {
+                return this.storageProvider.GetActiveTriggers();
+            }
+            catch (Exception e)
+            {
+                Logger.FatalException("Cannot access active triggers from storage provider. Returning empty list", e);
+                return new List<JobTriggerBase>();
+            }
         }
 
         public JobRun GetLastJobRunByTriggerId(long triggerId)
