@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Jobbr.Tests
 {
     [TestClass]
-    public class JobbrRuntimeSpecs
+    public class JobbrRuntimeTests
     {
         [TestMethod]
         public void StartJob_WithParameters()
