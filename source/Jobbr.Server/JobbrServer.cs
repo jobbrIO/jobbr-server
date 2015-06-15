@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Jobbr.Server.Common;
 using Jobbr.Server.Configuration;
@@ -29,17 +31,17 @@ namespace Jobbr.Server
         /// <summary>
         /// The scheduler.
         /// </summary>
-        private readonly DefaultScheduler scheduler;
+        private DefaultScheduler scheduler;
 
         /// <summary>
         /// The executor.
         /// </summary>
-        private readonly IJobExecutor executor;
+        private  IJobExecutor executor;
 
         /// <summary>
         /// The web host.
         /// </summary>
-        private readonly WebHost webHost;
+        private WebHost webHost;
 
         private bool isRunning;
 
@@ -51,72 +53,81 @@ namespace Jobbr.Server
         /// </param>
         public JobbrServer(IJobbrConfiguration configuration)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
+            
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
             this.configuration = configuration;
+        }
 
-            Logger.Debug("Creating DI-Container.");
-            var kernel = new DefaultKernel(this.configuration);
+        public bool IsRunning
+        {
+            get
+            {
+                return this.isRunning;
+            }
+        }
 
-            Logger.Debug("Resolving Services...");
+        public JobbrState State { get; private set; }
+
+        public bool Start(int waitForStartupTimeout = 2000)
+        {
+            var startupTask = this.StartAsync(CancellationToken.None);
 
             try
             {
-                this.webHost = kernel.GetService<WebHost>();
-                this.scheduler = kernel.GetService<DefaultScheduler>();
-                this.executor = kernel.GetService<IJobExecutor>();
-
-                Logger.Debug("Done resolving services");
+                startupTask.Wait(waitForStartupTimeout);
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
-                Logger.FatalException("Cannot resolve components. See the exception for details.", e);
+                throw e.InnerExceptions[0];
             }
+            
+            if (!startupTask.IsCompleted)
+            {
+                Logger.FatalFormat("Jobbr was unable to start within {0}ms. Keep starting but returning now from Start()", waitForStartupTimeout);
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
         /// The start.
         /// </summary>
-        public void Start()
+        public async Task<bool> StartAsync(CancellationToken cancellationToken)
         {
-            Logger.InfoFormat(
-                "JobbrServer is now starting with the following configuration: BackendUrl='{0}', MaxConcurrentJobs='{1}', JobRunDirectory='{2}', JobRunnerExeutable='{3}', JobStorageProvider='{4}' ArtefactsStorageProvider='{5}'", 
-                this.configuration.BackendAddress,
-                this.configuration.MaxConcurrentJobs,
-                this.configuration.JobRunDirectory,
-                this.configuration.JobRunnerExeResolver != null ? Path.GetFullPath(this.configuration.JobRunnerExeResolver()) : "none",
-                this.configuration.JobStorageProvider, 
-                this.configuration.ArtefactStorageProvider);
+            this.LogConfiguration();
 
-            try
-            {
-                Logger.Debug("Validating the configuration...");
-                
-                this.ValidateConfiguration();
-                
-                Logger.Info("The configuration was validated and seems ok.");
-            }
-            catch (Exception e)
-            {
-                Logger.ErrorException("A least one configuration setting has failed. Please see the exception for details.", e);
+            this.State = JobbrState.Initializing;
+            this.ValidateConfigurationAndThrowOnErrors();
+            this.ResolveServicesAndThrowOnErrors();
 
-                return;
-            }
+            this.State = JobbrState.Starting;
 
-            try
-            {
-                Logger.Info("Registering Jobs from configuration");
+            var waitForDbTask = new Task(this.WaitForDb, cancellationToken);
+            var startComponents = waitForDbTask.ContinueWith(
+                t =>
+                    {
+                        this.RegisterJobsFromRepository();
+                        this.StartComponents();
+                    },
+                cancellationToken);
 
-                var numberOfChanges = this.RegisterJobs();
-                var numberOfJobs = this.configuration.JobStorageProvider.GetJobs().Count;
+            waitForDbTask.Start();
 
-                Logger.InfoFormat("There were {0} changes for the JobRegistry which contains {1} jobs right now.", numberOfChanges, numberOfJobs);
-            }
-            catch (Exception e)
-            {
-                Logger.FatalException("Cannot register Jobs on startup. See Execption for details", e);
-            }
+            await Task.WhenAll(waitForDbTask, startComponents);
 
+            this.State = JobbrState.Running;
+
+            return true;
+        }
+
+        private void StartComponents()
+        {
             try
             {
                 Logger.DebugFormat("Starting WebHost ({0})...", this.webHost.GetType().Name);
@@ -129,13 +140,98 @@ namespace Jobbr.Server
                 this.executor.Start();
 
                 Logger.Info("All services (WebHost, Scheduler, Executor) have been started sucessfully.");
+
+                this.isRunning = true;
             }
             catch (Exception e)
             {
                 Logger.FatalException("A least one service couldn't be started. Please see the exception for details.", e);
             }
+        }
 
-            this.isRunning = true;
+        private void WaitForDb()
+        {
+            while (true)
+            {
+                try
+                {
+                    this.configuration.JobStorageProvider.GetJobs();
+                    return;
+                }
+                catch
+                {
+                    Thread.Sleep(1000);
+                }                
+            }
+        }
+
+        private void RegisterJobsFromRepository()
+        {
+            try
+            {
+                Logger.Info("Registering Jobs from configuration");
+
+                var model = new RepositoryBuilder();
+
+                this.configuration.OnRepositoryCreating(model);
+                var numberOfChanges = model.Apply(this.configuration.JobStorageProvider);
+                var numberOfJobs = this.configuration.JobStorageProvider.GetJobs().Count;
+
+                Logger.InfoFormat("There were {0} changes for the JobRegistry which contains {1} jobs right now.", numberOfChanges, numberOfJobs);
+            }
+            catch (Exception e)
+            {
+                Logger.FatalException("Cannot register Jobs on startup. See Execption for details", e);
+            }
+        }
+
+        private void LogConfiguration()
+        {
+            Logger.InfoFormat(
+                "JobbrServer is now starting with the following configuration: BackendUrl='{0}', MaxConcurrentJobs='{1}', JobRunDirectory='{2}', JobRunnerExeutable='{3}', JobStorageProvider='{4}' ArtefactsStorageProvider='{5}'",
+                this.configuration.BackendAddress,
+                this.configuration.MaxConcurrentJobs,
+                this.configuration.JobRunDirectory,
+                this.configuration.JobRunnerExeResolver != null ? Path.GetFullPath(this.configuration.JobRunnerExeResolver()) : "none",
+                this.configuration.JobStorageProvider,
+                this.configuration.ArtefactStorageProvider);
+        }
+
+        private void ResolveServicesAndThrowOnErrors()
+        {
+            Logger.Debug("Creating DI-Container.");
+            var kernel = new DefaultKernel(this.configuration);
+
+            Logger.Debug("Resolving Services...");
+
+            try
+            {
+                this.webHost = kernel.GetService<WebHost>();
+                this.scheduler = kernel.GetService<DefaultScheduler>();
+                this.executor = kernel.GetService<IJobExecutor>();
+
+                if (this.webHost == null)
+                {
+                    throw new NullReferenceException("'WebHost' is not set!");
+                }
+
+                if (this.scheduler == null)
+                {
+                    throw new NullReferenceException("'Schheduler' is not set!");
+                }
+
+                if (this.executor == null)
+                {
+                    throw new NullReferenceException("'Executor' is not set!");
+                }
+
+                Logger.Debug("Done resolving services");
+            }
+            catch (Exception e)
+            {
+                Logger.FatalException("Cannot resolve components. See the exception for details.", e);
+                throw e;
+            }
         }
 
         /// <summary>
@@ -163,43 +259,69 @@ namespace Jobbr.Server
             }
         }
 
-        private int RegisterJobs()
+        private void ValidateConfigurationAndThrowOnErrors()
         {
-            var model = new RepositoryBuilder();
+            Logger.Debug("Validating the configuration...");
 
-            this.configuration.OnRepositoryCreating(model);
+            try
+            {
+                if (this.configuration.JobRunnerExeResolver == null)
+                {
+                    throw new ArgumentException("You should set a runner-Executable which runs your jobs later!");
+                }
 
-            return model.Apply(this.configuration.JobStorageProvider);
+                /*
+                var executableFullPath = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
+
+                if (!File.Exists(executableFullPath))
+                {
+                    throw new ArgumentException(string.Format("The RunnerExecutable '{0}' cannot be found!", executableFullPath));
+                }
+                */
+
+                if (string.IsNullOrEmpty(this.configuration.BackendAddress))
+                {
+                    throw new ArgumentException("Please provide a backend address to host the api!");
+                }
+
+                if (string.IsNullOrEmpty(this.configuration.JobRunDirectory))
+                {
+                    throw new ArgumentException("Please provide a JobRunDirectory!");
+                }
+
+                if (this.configuration.JobStorageProvider == null)
+                {
+                    throw new ArgumentException("Please provide a storage provider for Jobs!");
+                }
+
+                if (this.configuration.ArtefactStorageProvider == null)
+                {
+                    throw new ArgumentException("Please provide a storage provider for artefacts!");
+                }
+
+                Logger.Info("The configuration was validated and seems ok.");
+            }
+            catch (Exception e)
+            {
+                this.State = JobbrState.Error;
+                throw;
+            }
+
         }
+    }
 
-        private void ValidateConfiguration()
-        {
-            var executableFullPath = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
+    public enum JobbrState
+    {
+        Unknown = 0,
+        Initializing = 11,
+        Validating = 12,
+        Starting = 13,
+        Running = 14,
 
-            if (!File.Exists(executableFullPath))
-            {
-                throw new Exception(string.Format("The RunnerExecutable '{0}' cannot be found!", executableFullPath));
-            }
+        Stopping = 21,
+        Stopped = 29,
+        Error = 99,
 
-            if (string.IsNullOrEmpty(this.configuration.BackendAddress))
-            {
-                throw new Exception("Please provide a backend address!");
-            }
 
-            if (string.IsNullOrEmpty(this.configuration.JobRunDirectory))
-            {
-                throw new Exception("Please provide a JobRunDirectory!");
-            }
-
-            if (this.configuration.JobStorageProvider == null)
-            {
-                throw new Exception("Please provide a storage provider for Jobs!");
-            }
-
-            if (this.configuration.ArtefactStorageProvider == null)
-            {
-                throw new Exception("Please provide a storage provider for artefacts!");
-            }
-        }
     }
 }
