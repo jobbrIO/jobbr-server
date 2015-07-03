@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Jobbr.Server.Model
 {
+    [Serializable]
     public class Job
     {
         [Key]

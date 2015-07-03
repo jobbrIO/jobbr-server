@@ -6,6 +6,7 @@ namespace Jobbr.Server.Model
     /// <summary>
     /// The job trigger base.
     /// </summary>
+    [Serializable]
     public abstract class JobTriggerBase
     {
         /// <summary>
@@ -36,6 +37,7 @@ namespace Jobbr.Server.Model
         public DateTime CreatedDateTimeUtc { get; set; }
     }
 
+    [Serializable]
     public class RecurringTrigger : JobTriggerBase
     {
         public const string TypeName = "Recurring";
@@ -47,6 +49,7 @@ namespace Jobbr.Server.Model
         public string Definition { get; set; }
     }
 
+    [Serializable]
     public class ScheduledTrigger : JobTriggerBase
     {
         public const string TypeName = "Scheduled";
@@ -54,6 +57,7 @@ namespace Jobbr.Server.Model
         public DateTime StartDateTimeUtc { get; set; }
     }
 
+    [Serializable]
     public class InstantTrigger : JobTriggerBase
     {
         public const string TypeName = "Instant";

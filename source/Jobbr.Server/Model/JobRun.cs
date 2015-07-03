@@ -9,6 +9,7 @@ namespace Jobbr.Server.Model
     /// <summary>
     /// The actual run of the job
     /// </summary>
+    [Serializable]
     public class JobRun
     {
         [Key]
