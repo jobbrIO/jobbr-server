@@ -64,13 +64,13 @@ namespace Jobbr.Client
         public T UpdateTrigger<T>(T triggerDto) where T : JobTriggerDtoBase
         {
             var url = string.Format("triggers/{0}", triggerDto.Id);
-            return this.PutTrigger(triggerDto, url);
+            return this.PatchTrigger(triggerDto, url);
         }
 
-        public JobTriggerDtoBase GetTriggerById<T>(long id) where T : JobTriggerDtoBase
+        public T GetTriggerById<T>(long id) where T : JobTriggerDtoBase
         {
             var url = string.Format("triggers/{0}", id);
-            return this.GetTrigger(url);
+            return this.GetTrigger<T>(url);
         }
 
         public List<JobRunDto> GetJobRunsByTriggerId(long triggerId)
@@ -116,21 +116,25 @@ namespace Jobbr.Client
             return this.ExecuteDtoRequest(url, triggerDto, HttpMethod.Post);
         }
 
-        private T PutTrigger<T>(T triggerDto, string url) where T : JobTriggerDtoBase
+        private T PatchTrigger<T>(T triggerDto, string url) where T : JobTriggerDtoBase
         {
-            return this.ExecuteDtoRequest(url, triggerDto, HttpMethod.Post);
+            return this.ExecuteDtoRequest(url, triggerDto, new HttpMethod("PATCH"));
         }
 
-        private JobTriggerDtoBase GetTrigger(string url)
+        private T GetTrigger<T>(string url) where T : class
         {
-            return this.ExecuteDtoRequest<JobTriggerDtoBase>(url, null, HttpMethod.Get);
+            return this.ExecuteDtoRequest<T>(url, null, HttpMethod.Get);
         }
 
         private T ExecuteDtoRequest<T>(string url, T dto, HttpMethod httpMethod) where T: class
         {
             var json = dto != null ? JsonConvert.SerializeObject(dto) : string.Empty;
             var request = new HttpRequestMessage(httpMethod, url);
-            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            if (httpMethod != HttpMethod.Get)
+            {
+                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            }
 
             var response = this.httpClient.SendAsync(request).Result;
 
