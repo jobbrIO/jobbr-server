@@ -98,25 +98,44 @@ namespace Jobbr.Server.Core
         {
             lock (this.syncRoot)
             {
-                // a) TODO: Remove from queue if trigger was removed --> Not yet detected.
+                var changedJobRun = args.JobRun;
 
-                // b) Add to queue
-                if (this.queue.All(jr => jr.Id != args.JobRun.Id))
+                // a) Not yet in Queue
+                if (this.queue.All(jr => jr.Id != changedJobRun.Id))
                 {
                     // Only add scheduled jobruns
-                    if (args.JobRun.State == JobRunState.Scheduled)
+                    if (changedJobRun.State == JobRunState.Scheduled)
                     {
                         var job = args.Job;
 
-                        Logger.InfoFormat("Adding JobRun for Job '{0}' (Id: {1}, Type: '{2}') with JobRunId {3} to the queue", job.UniqueName, job.Id, job.Type, args.JobRun.Id);
-                        this.queue.Add(args.JobRun);
+                        Logger.InfoFormat("Adding JobRun for Job '{0}' (Id: {1}, Type: '{2}') with JobRunId {3} to the queue", job.UniqueName, job.Id, job.Type, changedJobRun.Id);
+                        this.queue.Add(changedJobRun);
                     }
                 }
+                // b) TODO: Change information
                 else
                 {
-                    // c) TODO: Change information
-                    Logger.WarnFormat("An already queued jobrun was updated. Plase add functionality here.");
+                    var queuedJobRun = this.queue.FirstOrDefault(x => x.Id == changedJobRun.Id);
+
+                    if (queuedJobRun.State == JobRunState.Scheduled)
+                    {
+                        if (queuedJobRun.PlannedStartDateTimeUtc != changedJobRun.PlannedStartDateTimeUtc)
+                        {
+                            Logger.InfoFormat("The planned startdate for a prepared jobRun (uniqueId: {0}) has changed from {1} to {2}", queuedJobRun.UniqueId, queuedJobRun.PlannedStartDateTimeUtc, changedJobRun.PlannedStartDateTimeUtc);
+                            queuedJobRun.PlannedStartDateTimeUtc = changedJobRun.PlannedStartDateTimeUtc;
+                        }
+                        else
+                        {
+                            Logger.ErrorFormat("Cannot handle the updated JobRun (uniqueId: {0}) because of missing functionality.", queuedJobRun.UniqueId);
+                        }
+                    }
+                    else
+                    {
+                        Logger.WarnFormat("There was a change to the already started JobRun (uniqueId: {0}) wich cannot be handled.", queuedJobRun.UniqueId);
+                    }
                 }
+
+                // c) TODO: Remove from queue if trigger was removed --> Not yet detected.
             }
         }
 

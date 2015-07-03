@@ -55,15 +55,17 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="BadEnvironmentTests.cs" />
-    <Compile Include="CompleteJobberConfiguration.cs" />
-    <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="Execution\DefaultJobExecutorTests.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Setup\BadEnvironmentTests.cs" />
+    <Compile Include="Setup\CompleteJobberConfiguration.cs" />
+    <Compile Include="Setup\ConfigurationTests.cs" />
     <Compile Include="Scheduler\SchedulerTests.cs" />
     <Compile Include="StorageProvider\FaultyJobStorageProvider.cs" />
-    <Compile Include="JobbrRuntimeTests.cs" />
+    <Compile Include="ClientRuntime\JobbrRuntimeTests.cs" />
     <Compile Include="StorageProvider\InMemoryJobStorageProvider.cs" />
     <Compile Include="StorageProvider\NotImplementedJobStorageProvider.cs" />
-    <Compile Include="ServiceMessagesParserTests.cs" />
+    <Compile Include="Execution\ServiceMessagesParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WaitFor.cs" />
   </ItemGroup>

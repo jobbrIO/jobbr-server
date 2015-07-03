@@ -109,6 +109,9 @@ namespace Jobbr.Server.Core
             var fromDb = this.storageProvider.GetJobRunById(jobRun.Id);
             fromDb.PlannedStartDateTimeUtc = jobRun.PlannedStartDateTimeUtc;
 
+            var jobFromDb = this.storageProvider.GetJobById(jobRun.JobId);
+
+            this.OnJobRunModification(new JobRunModificationEventArgs() { Job = jobFromDb , JobRun = jobRun });
             this.storageProvider.Update(fromDb);
         }
 
@@ -286,6 +289,11 @@ namespace Jobbr.Server.Core
             if (triggerFromDb is RecurringTrigger)
             {
                 ((RecurringTrigger)triggerFromDb).Definition = ((RecurringTrigger)trigger).Definition;
+            }
+
+            if (triggerFromDb is ScheduledTrigger)
+            {
+                ((ScheduledTrigger)triggerFromDb).StartDateTimeUtc = ((ScheduledTrigger)trigger).StartDateTimeUtc;
             }
 
             this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = triggerFromDb });
