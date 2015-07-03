@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Web.Http;
 
 using Jobbr.Common.Model;
@@ -49,17 +50,19 @@ namespace Jobbr.Server.Web.Controller
             bool hadChanges = false;
             if (trigger.IsActive && !dto.IsActive)
             {
+                trigger.IsActive = false;
                 this.jobService.DisableTrigger(trigger.Id, true);
                 hadChanges = true;
             }
             else if (!trigger.IsActive && dto.IsActive)
             {
+                trigger.IsActive = true;
                 this.jobService.EnableTrigger(trigger.Id);
                 hadChanges = true;
             }
 
             var recurringTriggerDto = dto as RecurringTriggerDto;
-            if (recurringTriggerDto != null && recurringTriggerDto.Definition != ((RecurringTrigger)trigger).Definition)
+            if (recurringTriggerDto != null && !string.IsNullOrEmpty(recurringTriggerDto.Definition) && recurringTriggerDto.Definition != ((RecurringTrigger)trigger).Definition)
             {
                 ((RecurringTrigger)trigger).Definition = recurringTriggerDto.Definition;
                 this.jobService.UpdateTrigger(trigger.Id, trigger);
@@ -68,7 +71,7 @@ namespace Jobbr.Server.Web.Controller
             }
 
             var scheduledTriggerDto = dto as ScheduledTriggerDto;
-            if (scheduledTriggerDto != null && scheduledTriggerDto.StartDateTimeUtc != ((ScheduledTrigger)trigger).StartDateTimeUtc)
+            if (scheduledTriggerDto != null && scheduledTriggerDto.StartDateTimeUtc >= DateTime.UtcNow && scheduledTriggerDto.StartDateTimeUtc != ((ScheduledTrigger)trigger).StartDateTimeUtc)
             {
                 ((ScheduledTrigger)trigger).StartDateTimeUtc = scheduledTriggerDto.StartDateTimeUtc;
                 this.jobService.UpdateTrigger(trigger.Id, trigger);
@@ -144,6 +147,11 @@ namespace Jobbr.Server.Web.Controller
             if (triggerDto == null)
             {
                 return this.StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            if (triggerDto is InstantTriggerDto)
+            {
+                triggerDto.IsActive = true;
             }
 
             var trigger = TriggerMapper.ConvertToTrigger(triggerDto as dynamic);
