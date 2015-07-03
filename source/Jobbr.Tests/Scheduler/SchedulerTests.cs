@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 
 using Jobbr.Server.Core;
 using Jobbr.Server.Model;
+using Jobbr.Tests.Setup;
 using Jobbr.Tests.StorageProvider;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
