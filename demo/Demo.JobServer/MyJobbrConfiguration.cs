@@ -25,7 +25,7 @@ namespace Demo.JobServer
 
             repositoryBuilder.Define("MinimalJobId", "Demo.MyJobs.MinimalJob")
                 .WithTrigger(new DateTime(2015, 3, 20, 12, 00, 00))
-                .WithTrigger("* 15 * * *");
+                .WithTrigger("15 * * * *");
 
             repositoryBuilder.Define("UserSpecificJob", "Demo.MyJobs.UserSpecificJob");
         }
