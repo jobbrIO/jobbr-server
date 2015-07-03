@@ -35,6 +35,55 @@ namespace Jobbr.Server.Web.Controller
             return this.Ok(TriggerMapper.ConvertToDto((dynamic)trigger));
         }
 
+        [HttpPatch]
+        [Route("api/triggers/{triggerId}")]
+        public IHttpActionResult UpdateTrigger(long triggerId, [FromBody] JobTriggerDtoBase dto)
+        {
+            var trigger = this.jobStorageProvider.GetTriggerById(triggerId);
+
+            if (trigger == null)
+            {
+                return this.NotFound();
+            }
+
+            bool hadChanges = false;
+            if (trigger.IsActive && !dto.IsActive)
+            {
+                this.jobService.DisableTrigger(trigger.Id, true);
+                hadChanges = true;
+            }
+            else if (!trigger.IsActive && dto.IsActive)
+            {
+                this.jobService.EnableTrigger(trigger.Id);
+                hadChanges = true;
+            }
+
+            var recurringTriggerDto = dto as RecurringTriggerDto;
+            if (recurringTriggerDto != null && recurringTriggerDto.Definition != ((RecurringTrigger)trigger).Definition)
+            {
+                ((RecurringTrigger)trigger).Definition = recurringTriggerDto.Definition;
+                this.jobService.UpdateTrigger(trigger.Id, trigger);
+                
+                hadChanges = true;
+            }
+
+            var scheduledTriggerDto = dto as ScheduledTriggerDto;
+            if (scheduledTriggerDto != null && scheduledTriggerDto.StartDateTimeUtc != ((ScheduledTrigger)trigger).StartDateTimeUtc)
+            {
+                ((ScheduledTrigger)trigger).StartDateTimeUtc = scheduledTriggerDto.StartDateTimeUtc;
+                this.jobService.UpdateTrigger(trigger.Id, trigger);
+
+                hadChanges = true;
+            }
+
+            if (hadChanges)
+            {
+                return this.Ok(TriggerMapper.ConvertToDto((dynamic)trigger));
+            }
+            
+            return this.StatusCode(HttpStatusCode.NotModified);
+        }
+
         [HttpGet]
         [Route("api/jobs/{jobId:long}/trigger")]
         public IHttpActionResult GetTriggersForJob(long jobId)

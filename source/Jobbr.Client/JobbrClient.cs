@@ -61,6 +61,18 @@ namespace Jobbr.Client
             return this.PostTrigger(triggerDto, url);
         }
 
+        public T UpdateTrigger<T>(T triggerDto) where T : JobTriggerDtoBase
+        {
+            var url = string.Format("triggers/{0}", triggerDto.Id);
+            return this.PutTrigger(triggerDto, url);
+        }
+
+        public JobTriggerDtoBase GetTriggerById<T>(long id) where T : JobTriggerDtoBase
+        {
+            var url = string.Format("triggers/{0}", id);
+            return this.GetTrigger(url);
+        }
+
         public List<JobRunDto> GetJobRunsByTriggerId(long triggerId)
         {
             // Get the JobRun by this triggerId
@@ -101,13 +113,28 @@ namespace Jobbr.Client
 
         private T PostTrigger<T>(T triggerDto, string url) where T : JobTriggerDtoBase
         {
-            var json = JsonConvert.SerializeObject(triggerDto);
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            return this.ExecuteDtoRequest(url, triggerDto, HttpMethod.Post);
+        }
+
+        private T PutTrigger<T>(T triggerDto, string url) where T : JobTriggerDtoBase
+        {
+            return this.ExecuteDtoRequest(url, triggerDto, HttpMethod.Post);
+        }
+
+        private JobTriggerDtoBase GetTrigger(string url)
+        {
+            return this.ExecuteDtoRequest<JobTriggerDtoBase>(url, null, HttpMethod.Get);
+        }
+
+        private T ExecuteDtoRequest<T>(string url, T dto, HttpMethod httpMethod) where T: class
+        {
+            var json = dto != null ? JsonConvert.SerializeObject(dto) : string.Empty;
+            var request = new HttpRequestMessage(httpMethod, url);
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = this.httpClient.SendAsync(request).Result;
 
-            if (response.StatusCode == HttpStatusCode.Created)
+            if (response.StatusCode == HttpStatusCode.Created || response.StatusCode == HttpStatusCode.OK)
             {
                 var contentString = response.Content.ReadAsStringAsync().Result;
 
