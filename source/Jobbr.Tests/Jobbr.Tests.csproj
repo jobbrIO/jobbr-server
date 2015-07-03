@@ -74,6 +74,10 @@
       <Project>{a45f729d-8629-4c7a-96b8-29eaa8d52919}</Project>
       <Name>Jobbr.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Jobbr.Common\Jobbr.Common.csproj">
+      <Project>{37E22E5D-F8B2-4336-B509-53C94B170E4C}</Project>
+      <Name>Jobbr.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

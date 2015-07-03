@@ -63,6 +63,11 @@ namespace Jobbr.Common.Model
         /// <summary>
         /// The job failed.
         /// </summary>
-        Failed
+        Failed,
+
+        /// <summary>
+        /// The JobRun has ben deleted in advance
+        /// </summary>
+        Deleted
     }
 }

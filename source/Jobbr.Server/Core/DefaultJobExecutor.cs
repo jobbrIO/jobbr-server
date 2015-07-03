@@ -80,6 +80,7 @@ namespace Jobbr.Server.Core
             
             // Wire Events
             this.jobService.JobRunModification += this.JobServiceOnJobRunModification;
+            this.jobService.TriggerUpdate += this.JobServiceOnTriggerUpdate;
 
             Logger.InfoFormat("Enabling periodic check for JobRuns to start every {0}s", this.StartNewJobsEverySeconds);
             this.timer.Change(TimeSpan.FromSeconds(this.StartNewJobsEverySeconds), TimeSpan.FromSeconds(this.StartNewJobsEverySeconds));
@@ -92,6 +93,7 @@ namespace Jobbr.Server.Core
             this.timer.Change(Timeout.Infinite, Timeout.Infinite);
 
             this.jobService.JobRunModification -= this.JobServiceOnJobRunModification;
+            this.jobService.TriggerUpdate -= this.JobServiceOnTriggerUpdate;
         }
 
         private void JobServiceOnJobRunModification(object sender, JobRunModificationEventArgs args)
@@ -124,18 +126,35 @@ namespace Jobbr.Server.Core
                             Logger.InfoFormat("The planned startdate for a prepared jobRun (uniqueId: {0}) has changed from {1} to {2}", queuedJobRun.UniqueId, queuedJobRun.PlannedStartDateTimeUtc, changedJobRun.PlannedStartDateTimeUtc);
                             queuedJobRun.PlannedStartDateTimeUtc = changedJobRun.PlannedStartDateTimeUtc;
                         }
-                        else
-                        {
-                            Logger.ErrorFormat("Cannot handle the updated JobRun (uniqueId: {0}) because of missing functionality.", queuedJobRun.UniqueId);
-                        }
                     }
                     else
                     {
                         Logger.WarnFormat("There was a change to the already started JobRun (uniqueId: {0}) wich cannot be handled.", queuedJobRun.UniqueId);
                     }
                 }
+            }
+        }
 
-                // c) TODO: Remove from queue if trigger was removed --> Not yet detected.
+        private void JobServiceOnTriggerUpdate(object sender, JobTriggerEventArgs jobTriggerEventArgs)
+        {
+            var trigger = jobTriggerEventArgs.Trigger;
+
+            if (!trigger.IsActive)
+            {
+                lock (this.syncRoot)
+                {
+                    var jobRunsFromQueueByThisTrigger = this.queue.Where(r => r.TriggerId == trigger.Id).ToList();
+
+                    if (jobRunsFromQueueByThisTrigger.Count > 0)
+                    {
+                        Logger.InfoFormat("Removing {0} ready JobRuns from Queue because related trigger (id: {1}) was deactivated!", jobRunsFromQueueByThisTrigger.Count, trigger.Id);
+
+                        foreach (var jobRun in jobRunsFromQueueByThisTrigger)
+                        {
+                            this.queue.Remove(jobRun);
+                        }
+                    }
+                }
             }
         }
 

@@ -2,6 +2,7 @@ using System;
 
 using System.Threading;
 
+using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
 
@@ -207,7 +208,8 @@ namespace Jobbr.Server.Core
 
         private void RemoveSchedule(JobTriggerBase trigger)
         {
-            throw new NotImplementedException();
+            var jobRun = this.jobService.GetNextJobRunByTriggerId(trigger.Id);
+            this.jobService.UpdateJobRunState(jobRun, JobRunState.Deleted);
         }
     }
 }

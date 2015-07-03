@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 using Jobbr.Common;
 using Jobbr.Common.Model;
@@ -186,6 +187,7 @@ namespace Jobbr.Server.Core
                 return false;
             }
 
+            trigger.IsActive = false;
             this.storageProvider.DisableTrigger(triggerId);
 
             if (enableNotification)
@@ -205,6 +207,7 @@ namespace Jobbr.Server.Core
                 return false;
             }
 
+            trigger.IsActive = true;
             this.storageProvider.EnableTrigger(triggerId);
 
             this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = trigger });
@@ -286,17 +289,59 @@ namespace Jobbr.Server.Core
 
             var triggerFromDb = this.storageProvider.GetTriggerById(id);
 
-            if (triggerFromDb is RecurringTrigger)
+            var hadChanges = false;
+
+            if (trigger.IsActive != triggerFromDb.IsActive)
             {
-                ((RecurringTrigger)triggerFromDb).Definition = ((RecurringTrigger)trigger).Definition;
+                // Activated or deactivated
+                triggerFromDb.IsActive = trigger.IsActive;
+                hadChanges = true;
             }
 
-            if (triggerFromDb is ScheduledTrigger)
+            hadChanges = hadChanges || this.ApplyOtherChanges(triggerFromDb as dynamic, trigger as dynamic);
+
+            if (hadChanges)
             {
-                ((ScheduledTrigger)triggerFromDb).StartDateTimeUtc = ((ScheduledTrigger)trigger).StartDateTimeUtc;
+                this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = triggerFromDb });
             }
 
-            this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = triggerFromDb });
+        }
+
+        private bool ApplyOtherChanges(RecurringTrigger fromDb, RecurringTrigger updatedOne)
+        {
+            if (fromDb.Definition != updatedOne.Definition)
+            {
+                fromDb.Definition = updatedOne.Definition;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ApplyOtherChanges(ScheduledTrigger fromDb, ScheduledTrigger updatedOne)
+        {
+            if (fromDb.StartDateTimeUtc != updatedOne.StartDateTimeUtc)
+            {
+                fromDb.StartDateTimeUtc = updatedOne.StartDateTimeUtc;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ApplyOtherChanges(InstantTrigger fromDb, InstantTrigger updatedOne)
+        {
+            Logger.WarnFormat("Cannot change an instant trigger!");
+
+            return false;
+        }
+
+        private bool ApplyOtherChanges(object fromDb, object updatedOne)
+        {
+            Logger.WarnFormat("Unknown trigger types: From: {1}, To: {2}!", fromDb.GetType(), updatedOne.GetType());
+
+            return false;
         }
     }
 }
