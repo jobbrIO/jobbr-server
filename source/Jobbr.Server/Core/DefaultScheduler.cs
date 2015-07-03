@@ -119,8 +119,6 @@ namespace Jobbr.Server.Core
                             plannedNextRun.PlannedStartDateTimeUtc = calculatedNextRun.Value;
 
                             this.jobService.UpdatePlannedStartDate(plannedNextRun);
-
-                            // TODO: Change the trigger and make sure thath the schedule and queue of the jobexecutor is adjusted accordingly.
                         }
                         else
                         {
