@@ -58,12 +58,14 @@
     <Compile Include="BadEnvironmentTests.cs" />
     <Compile Include="CompleteJobberConfiguration.cs" />
     <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="Scheduler\SchedulerTests.cs" />
     <Compile Include="StorageProvider\FaultyJobStorageProvider.cs" />
     <Compile Include="JobbrRuntimeTests.cs" />
     <Compile Include="StorageProvider\InMemoryJobStorageProvider.cs" />
     <Compile Include="StorageProvider\NotImplementedJobStorageProvider.cs" />
     <Compile Include="ServiceMessagesParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WaitFor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\source\Jobbr.Server\Jobbr.Server.csproj">

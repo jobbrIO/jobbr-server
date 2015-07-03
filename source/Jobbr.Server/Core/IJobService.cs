@@ -65,5 +65,9 @@ namespace Jobbr.Server.Core
         void SetJobRunEndTime(JobRun jobRun, DateTime endDateTimeUtc);
 
         void UpdateJobRunProgress(JobRun jobRun, double percent);
+
+        void UpdatePlannedStartDate(JobRun plannedNextRun);
+
+        void UpdateTrigger(long id, JobTriggerBase trigger);
     }
 }

@@ -84,6 +84,8 @@ namespace Jobbr.Server.Core
         {
             jobRun.ActualStartDateTimeUtc = startDateTimeUtc;
             this.storageProvider.Update(jobRun);
+
+            this.OnJobRunModification(new JobRunModificationEventArgs() { JobRun = jobRun });
         }
 
         public void SetJobRunEndTime(JobRun jobRun, DateTime endDateTimeUtc)
@@ -99,6 +101,14 @@ namespace Jobbr.Server.Core
             var fromDb = this.storageProvider.GetJobRunById(jobRun.Id);
 
             fromDb.Progress = percent;
+            this.storageProvider.Update(fromDb);
+        }
+
+        public void UpdatePlannedStartDate(JobRun jobRun)
+        {
+            var fromDb = this.storageProvider.GetJobRunById(jobRun.Id);
+            fromDb.PlannedStartDateTimeUtc = jobRun.PlannedStartDateTimeUtc;
+
             this.storageProvider.Update(fromDb);
         }
 
@@ -262,6 +272,23 @@ namespace Jobbr.Server.Core
             {
                 handler(this, e);
             }
+        }
+
+        public void UpdateTrigger(long id, JobTriggerBase trigger)
+        {
+            if (id == 0)
+            {
+                throw new ArgumentException("JobId is required", "id");
+            }
+
+            var triggerFromDb = this.storageProvider.GetTriggerById(id);
+
+            if (triggerFromDb is RecurringTrigger)
+            {
+                ((RecurringTrigger)triggerFromDb).Definition = ((RecurringTrigger)trigger).Definition;
+            }
+
+            this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = triggerFromDb });
         }
     }
 }

@@ -112,9 +112,13 @@ namespace Jobbr.Server.Core
                         if (plannedNextRun.PlannedStartDateTimeUtc.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) < calculatedNextRun)
                         {
                             Logger.WarnFormat(
-                                "The planned startdate '{0}' has changed to '{1}'. This trigger should be updated in database and the DefaultJobExecutor should be notified",
+                                "The planned startdate '{0}' has changed to '{1}', the planned jobRun needs to be updated",
                                 plannedNextRun.PlannedStartDateTimeUtc,
                                 calculatedNextRun.Value);
+
+                            plannedNextRun.PlannedStartDateTimeUtc = calculatedNextRun.Value;
+
+                            this.jobService.UpdatePlannedStartDate(plannedNextRun);
 
                             // TODO: Change the trigger and make sure thath the schedule and queue of the jobexecutor is adjusted accordingly.
                         }
