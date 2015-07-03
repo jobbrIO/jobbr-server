@@ -139,7 +139,7 @@ namespace Jobbr.Server.Core
         {
             var trigger = jobTriggerEventArgs.Trigger;
 
-            if (!trigger.IsActive)
+            if (!trigger.IsActive && !(trigger is InstantTrigger))
             {
                 lock (this.syncRoot)
                 {
@@ -147,11 +147,19 @@ namespace Jobbr.Server.Core
 
                     if (jobRunsFromQueueByThisTrigger.Count > 0)
                     {
-                        Logger.InfoFormat("Removing {0} ready JobRuns from Queue because related trigger (id: {1}) was deactivated!", jobRunsFromQueueByThisTrigger.Count, trigger.Id);
+                        Logger.InfoFormat("Trying to remove {0} ready JobRuns from Queue because related trigger (id: {1}) was deactivated!", jobRunsFromQueueByThisTrigger.Count, trigger.Id);
 
                         foreach (var jobRun in jobRunsFromQueueByThisTrigger)
                         {
-                            this.queue.Remove(jobRun);
+                            if (jobRun.State == JobRunState.Scheduled)
+                            {
+                                Logger.InfoFormat("Removed JobRun with id {0} because trigger (id: {1}) was deactivated", jobRun.UniqueId, trigger.Id);
+                                this.queue.Remove(jobRun);
+                            }
+                            else
+                            {
+                                Logger.WarnFormat("Cannot JobRun with id {0} it has already been started", jobRun.UniqueId);
+                            }
                         }
                     }
                 }
