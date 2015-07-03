@@ -220,7 +220,7 @@ Everything you store in the Working-Directory is automatically collected and pus
 ## Service Messages
 At the moment, only progress is supported.
 
-## Restful API Reference
+## Rest API Reference
 
 ### Get all Jobs
 Take the following Endpoint
@@ -268,7 +268,27 @@ Only the ``UniqueName`` and ``Type`` are required.
 		"createdDateTimeUtc": "2015-03-04T17:40:00"
 	}
 
-### More
+### Activate / Deactivate Trigger
+A Trigger and all scheduled JobRuns getting deactivated
+
+	PATCH http://localhost/jobbr/triggers/1234
+	
+		{
+	        "triggerType": "scheduled",
+	        "isActive": false,
+		}
+
+### Update Trigger
+Causes a trigger to be updated. Right now, only the Definition (for RecurringJobs) or the StartDateTimeUtc (for ScheduledJobs) can be updated.
+
+	PATCH http://localhost/jobbr/triggers/1234
+	
+		{
+	        "triggerType": "scheduled",
+	        "isActive": true,
+		}
+
+### ...
 ...
 
 # Credits
