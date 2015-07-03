@@ -2,7 +2,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jobbr.Tests
+namespace Jobbr.Tests.ClientRuntime
 {
     [TestClass]
     public class JobbrRuntimeTests

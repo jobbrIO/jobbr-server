@@ -18,17 +18,17 @@ namespace Jobbr.Tests.StorageProvider
 
         public List<JobTriggerBase> GetActiveTriggers()
         {
-            return this.localTriggers.Where(t => t.IsActive == true).ToList();
+            return this.localTriggers.Where(t => t.IsActive == true).ToList().Clone();
         }
 
         public List<Job> GetJobs()
         {
-            return this.localJobs;
+            return this.localJobs.Clone();
         }
 
         public List<JobRun> GetJobRuns()
         {
-            return this.localJobRuns;
+            return this.localJobRuns.Clone();
         }
 
         public long AddJob(Job job)
@@ -42,7 +42,7 @@ namespace Jobbr.Tests.StorageProvider
 
         public List<JobTriggerBase> GetTriggersByJobId(long jobId)
         {
-            return this.localTriggers.Where(t => t.JobId == jobId).ToList();
+            return this.localTriggers.Where(t => t.JobId == jobId).ToList().Clone();
         }
 
         public long AddTrigger(RecurringTrigger trigger)
@@ -88,17 +88,17 @@ namespace Jobbr.Tests.StorageProvider
 
         public JobTriggerBase GetTriggerById(long triggerId)
         {
-            return this.localTriggers.FirstOrDefault(t => t.Id == triggerId);
+            return this.localTriggers.FirstOrDefault(t => t.Id == triggerId).Clone();
         }
 
         public JobRun GetLastJobRunByTriggerId(long triggerId)
         {
-            return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId);
+            return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId).Clone();
         }
 
         public JobRun GetFutureJobRunsByTriggerId(long triggerId)
         {
-            return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId && jr.PlannedStartDateTimeUtc >= DateTime.UtcNow);
+            return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId && jr.PlannedStartDateTimeUtc >= DateTime.UtcNow).Clone();
         }
 
         public int AddJobRun(JobRun jobRun)
@@ -122,31 +122,31 @@ namespace Jobbr.Tests.StorageProvider
 
         public Job GetJobById(long id)
         {
-            return this.localJobs.FirstOrDefault(j => j.Id == id);
+            return this.localJobs.FirstOrDefault(j => j.Id == id).Clone();
         }
 
         public Job GetJobByUniqueName(string identifier)
         {
-            return this.localJobs.FirstOrDefault(j => j.UniqueName == identifier);
+            return this.localJobs.FirstOrDefault(j => j.UniqueName == identifier).Clone();
         }
 
         public JobRun GetJobRunById(long id)
         {
-            return this.localJobRuns.FirstOrDefault(j => j.Id == id);
+            return this.localJobRuns.FirstOrDefault(j => j.Id == id).Clone();
         }
 
         public List<JobRun> GetJobRunsForUserId(long userId)
         {
             var allTriggers = this.localTriggers.Where(t => t.UserId == userId).Select(t => t.Id);
 
-            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).ToList();
+            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).ToList().Clone();
         }
 
         public List<JobRun> GetJobRunsForUserName(string userName)
         {
             var allTriggers = this.localTriggers.Where(t => t.UserName == userName).Select(t => t.Id);
 
-            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).ToList();
+            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).ToList().Clone();
         }
 
         public bool Update(Job job)
@@ -159,7 +159,7 @@ namespace Jobbr.Tests.StorageProvider
 
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
-            return this.localJobRuns.Where(jr => jr.TriggerId == triggerId).ToList();
+            return this.localJobRuns.Where(jr => jr.TriggerId == triggerId).ToList().Clone();
         }
     }
 }

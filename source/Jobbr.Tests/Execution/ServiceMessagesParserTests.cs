@@ -2,7 +2,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jobbr.Tests
+namespace Jobbr.Tests.Execution
 {
     /// <summary>
     /// Based on: https://confluence.jetbrains.com/display/TCD8/Build+Script+Interaction+with+TeamCity

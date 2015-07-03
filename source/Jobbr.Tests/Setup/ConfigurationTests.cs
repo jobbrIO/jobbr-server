@@ -4,7 +4,7 @@ using Jobbr.Server;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jobbr.Tests
+namespace Jobbr.Tests.Setup
 {
     [TestClass]
     public class ConfigurationTests

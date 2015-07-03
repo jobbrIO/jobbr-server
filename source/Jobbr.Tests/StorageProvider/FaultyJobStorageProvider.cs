@@ -3,9 +3,8 @@ using System.Reflection;
 
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
-using Jobbr.Tests.StorageProvider;
 
-namespace Jobbr.Tests
+namespace Jobbr.Tests.StorageProvider
 {
     public class FaultyJobStorageProvider : IJobStorageProvider
     {

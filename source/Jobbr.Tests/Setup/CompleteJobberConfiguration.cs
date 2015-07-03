@@ -2,7 +2,7 @@ using Jobbr.Server.Common;
 using Jobbr.Server.Configuration;
 using Jobbr.Tests.StorageProvider;
 
-namespace Jobbr.Tests
+namespace Jobbr.Tests.Setup
 {
     public class CompleteJobberConfiguration : EmptyJobbrConfiguration
     {
