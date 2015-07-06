@@ -66,7 +66,7 @@ namespace Jobbr.Server.Core
             // Expire Scheduled Runs from the past
             if (pastScheduledRuns.Any())
             {
-                Logger.WarnFormat("There are {0} scheduled JobRuns with a startdate in the past. They all get expired, because Is unlikely that JobRuns get relevant in the near future.", pastScheduledRuns.Count);
+                Logger.WarnFormat("There are {0} scheduled JobRuns with a startdate in the past. They are all expired, because it's unlikely that JobRuns get relevant in the near future.", pastScheduledRuns.Count);
                 
                 // TODO: Trigger past scheduled jobs with no runs?
             }
