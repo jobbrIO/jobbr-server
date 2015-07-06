@@ -110,10 +110,10 @@ namespace Jobbr.Server.Core
                     }
                     else
                     {
-                        if (plannedNextRun.PlannedStartDateTimeUtc.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) < calculatedNextRun)
+                        if (DateTime.UtcNow.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) < calculatedNextRun)
                         {
                             Logger.WarnFormat(
-                                "The planned startdate '{0}' has changed to '{1}', the planned jobRun needs to be updated",
+                                "The calculated startdate '{0}' has changed to '{1}', the planned jobRun needs to be updated as next step",
                                 plannedNextRun.PlannedStartDateTimeUtc,
                                 calculatedNextRun.Value);
 
@@ -124,7 +124,7 @@ namespace Jobbr.Server.Core
                         else
                         {
                             Logger.WarnFormat(
-                                "The planned startdate '{0}' has changed to '{1}'. This change was done too close (less than {2} seconds) to the next planned run and cannnot be reflected",
+                                "The planned startdate '{0}' has changed to '{1}'. This change was done too close (less than {2} seconds) to the next planned run and cannot be adjusted",
                                 plannedNextRun.PlannedStartDateTimeUtc,
                                 calculatedNextRun.Value,
                                 this.configuration.AllowChangesBeforeStartInSec);
