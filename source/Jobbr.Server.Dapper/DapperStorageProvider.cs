@@ -292,7 +292,7 @@ namespace Jobbr.Server.Dapper
 
         public bool EnableTrigger(long triggerId)
         {
-            var sql = string.Format("UPDATE {0}.Trigger SET [IsActive] = @IsActive WHERE [JobId] = @JobId", this.schemaName);
+            var sql = string.Format("UPDATE {0}.Triggers SET [IsActive] = @IsActive WHERE [Id] = @TriggerId", this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
             {
