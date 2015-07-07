@@ -302,6 +302,21 @@ namespace Jobbr.Server.Core
 
             if (hadChanges)
             {
+                if (trigger is InstantTrigger)
+                {
+                    this.storageProvider.Update(trigger as InstantTrigger);
+                }
+
+                if (trigger is ScheduledTrigger)
+                {
+                    this.storageProvider.Update(trigger as ScheduledTrigger);
+                }
+
+                if (trigger is RecurringTrigger)
+                {
+                    this.storageProvider.Update(trigger as RecurringTrigger);
+                }
+
                 this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = triggerFromDb });
             }
 
