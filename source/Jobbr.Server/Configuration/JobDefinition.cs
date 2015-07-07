@@ -9,6 +9,8 @@ namespace Jobbr.Server.Configuration
     {
         private readonly List<JobTriggerBase> triggers = new List<JobTriggerBase>();
 
+        private bool hasTriggerDefinition;
+
         internal string UniqueName { get; set; }
 
         internal string ClrType { get; set; }
@@ -21,8 +23,18 @@ namespace Jobbr.Server.Configuration
             }
         }
 
+        public bool HasTriggerDefinition
+        {
+            get
+            {
+                return this.hasTriggerDefinition;
+            }
+        }
+
         public JobDefinition WithTrigger(DateTime startDateTimeUtc)
         {
+            this.hasTriggerDefinition = true;
+
             this.triggers.Add(new ScheduledTrigger() { TriggerType = ScheduledTrigger.TypeName, StartDateTimeUtc = startDateTimeUtc });
             
             return this;
@@ -30,6 +42,8 @@ namespace Jobbr.Server.Configuration
 
         public JobDefinition WithTrigger(string cronDefinition, DateTime? validFromDateTimeUtc = null, DateTime? validToDateTimeUtc = null)
         {
+            this.hasTriggerDefinition = true;
+
             NCrontab.CrontabSchedule.Parse(cronDefinition);
 
             this.triggers.Add(new RecurringTrigger { TriggerType = RecurringTrigger.TypeName, StartDateTimeUtc = validFromDateTimeUtc, EndDateTimeUtc = validToDateTimeUtc, Definition = cronDefinition });

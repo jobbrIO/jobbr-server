@@ -57,7 +57,7 @@ namespace Jobbr.Server.Configuration
 
         internal int Apply(IJobStorageProvider storage)
         {
-            var numnberOfChanges = 0;
+            var numberOfChanges = 0;
 
             if (this.HasConfiguration)
             {
@@ -74,7 +74,7 @@ namespace Jobbr.Server.Configuration
                         foreach (var trigger in jobDef.Triggers)
                         {
                             AddTrigger(storage, trigger, jobDef, jobId);
-                            numnberOfChanges++;
+                            numberOfChanges++;
                         }
                     }
                     else
@@ -87,41 +87,50 @@ namespace Jobbr.Server.Configuration
 
                             storage.Update(existentJob);
 
-                            numnberOfChanges++;
+                            numberOfChanges++;
                         }
 
-                        // Setup triggers
-                        var job = storage.GetJobByUniqueName(jobDef.UniqueName);
-                        var activeTriggers = storage.GetTriggersByJobId(job.Id).Where(t => t.IsActive).ToList();
-                        var toDeactivateTriggers = new List<JobTriggerBase>(activeTriggers.Where(t => !(t is InstantTrigger)));
-
-                        // Update or add new ones
-                        foreach (var trigger in jobDef.Triggers)
+                        if (jobDef.HasTriggerDefinition)
                         {
-                            var existingOne = activeTriggers.FirstOrDefault(t => this.IsSame(t as dynamic, trigger as dynamic));
+                            // Setup triggers
+                            var job = storage.GetJobByUniqueName(jobDef.UniqueName);
+                            var activeTriggers = storage.GetTriggersByJobId(job.Id).Where(t => t.IsActive).ToList();
+                            var toDeactivateTriggers = new List<JobTriggerBase>(activeTriggers.Where(t => !(t is InstantTrigger)));
 
-                            if (existingOne == null)
+                            if (jobDef.Triggers.Any())
                             {
-                                // Add one
-                                AddTrigger(storage, trigger, jobDef, job.Id);
-                                numnberOfChanges++;
+                                Logger.InfoFormat("Job '{0}' has {1} tiggers explicitly specified by definition. Going to apply the TriggerDefiniton to the actual storage provider.", existentJob.UniqueName, jobDef.Triggers.Count);
                             }
-                            else
+
+                            // Update or add new ones
+                            foreach (var trigger in jobDef.Triggers)
                             {
-                                // TODO: Update
-                                toDeactivateTriggers.Remove(existingOne);
+                                var existingOne = activeTriggers.FirstOrDefault(t => this.IsSame(t as dynamic, trigger as dynamic));
+
+                                if (existingOne == null)
+                                {
+                                    // Add one
+                                    AddTrigger(storage, trigger, jobDef, job.Id);
+                                    Logger.InfoFormat("Added trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.TriggerType, jobDef.UniqueName, trigger.Id);
+
+                                    numberOfChanges++;
+                                }
+                                else
+                                {
+                                    toDeactivateTriggers.Remove(existingOne);
+                                }
+                            }
+
+
+                            // Deactivate not specified triggers
+                            foreach (var trigger in toDeactivateTriggers)
+                            {
+                                Logger.InfoFormat("Deactivating trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.TriggerType, jobDef.UniqueName, trigger.Id);
+                                storage.DisableTrigger(trigger.Id);
+                                numberOfChanges++;
                             }
                         }
 
-
-                        // Deactivate not specified triggers
-                        foreach (var trigger in toDeactivateTriggers)
-                        {
-                            Logger.InfoFormat("Dactivating trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.TriggerType, jobDef.UniqueName, trigger.Id);
-                            storage.DisableTrigger(trigger.Id);
-                            numnberOfChanges++;
-                        }
-                        
                     }
 
                 }
@@ -129,7 +138,7 @@ namespace Jobbr.Server.Configuration
                 // Deactivate non existent
             }
 
-            return numnberOfChanges;
+            return numberOfChanges;
         }
 
         private static void AddTrigger(IJobStorageProvider storage, JobTriggerBase trigger, JobDefinition jobDef, long jobId)
