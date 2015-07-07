@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Jobbr.Common;
 using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Logging;
@@ -114,7 +113,7 @@ namespace Jobbr.Server.Core
                         this.queue.Add(changedJobRun);
                     }
                 }
-                // b) TODO: Change information
+                // b) Change information
                 else
                 {
                     var queuedJobRun = this.queue.FirstOrDefault(x => x.Id == changedJobRun.Id);
@@ -129,7 +128,7 @@ namespace Jobbr.Server.Core
                     }
                     else
                     {
-                        Logger.WarnFormat("There was a change to the already started JobRun (uniqueId: {0}) wich cannot be handled.", queuedJobRun.UniqueId);
+                        Logger.ErrorFormat("There was a change to the already started JobRun (uniqueId: {0}) wich cannot be handled.", queuedJobRun.UniqueId);
                     }
                 }
             }
@@ -153,12 +152,12 @@ namespace Jobbr.Server.Core
                         {
                             if (jobRun.State == JobRunState.Scheduled)
                             {
-                                Logger.InfoFormat("Removed JobRun with id {0} because trigger (id: {1}) was deactivated", jobRun.UniqueId, trigger.Id);
+                                Logger.WarnFormat("Removed prepared JobRun with id {0} because trigger (id: {1}) was deactivated", jobRun.UniqueId, trigger.Id);
                                 this.queue.Remove(jobRun);
                             }
                             else
                             {
-                                Logger.WarnFormat("Cannot JobRun with id {0} it has already been started", jobRun.UniqueId);
+                                Logger.ErrorFormat("Cannot JobRun with id {0} it has already been started", jobRun.UniqueId);
                             }
                         }
                     }
