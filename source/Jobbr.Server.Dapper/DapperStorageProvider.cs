@@ -5,6 +5,7 @@ using System.Linq;
 
 using Dapper;
 
+using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
 
@@ -69,11 +70,11 @@ namespace Jobbr.Server.Dapper
 
         public JobRun GetFutureJobRunsByTriggerId(long triggerId)
         {
-            var sql = string.Format("SELECT * FROM {0}.JobRuns WHERE [TriggerId] = @TriggerId AND PlannedStartDateTimeUtc >= @DateTimeNowUtc ORDER BY [PlannedStartDateTimeUtc] ASC", this.schemaName);
+            var sql = string.Format("SELECT * FROM {0}.JobRuns WHERE [TriggerId] = @TriggerId AND PlannedStartDateTimeUtc >= @DateTimeNowUtc AND State = @State ORDER BY [PlannedStartDateTimeUtc] ASC", this.schemaName);
 
             using (var connection = new SqlConnection(this.connectionString))
             {
-                var jobRuns = connection.Query<JobRun>(sql, new { TriggerId = triggerId, DateTimeNowUtc = DateTime.UtcNow }).ToList();
+                var jobRuns = connection.Query<JobRun>(sql, new { TriggerId = triggerId, DateTimeNowUtc = DateTime.UtcNow, State = JobRunState.Scheduled.ToString() }).ToList();
 
                 return jobRuns.Any() ? jobRuns.FirstOrDefault() : null;
             }
