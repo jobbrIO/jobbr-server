@@ -156,6 +156,24 @@ namespace Jobbr.Tests.StorageProvider
             return this.inMemoryVersion.Update(job);
         }
 
+        public bool Update(InstantTrigger trigger)
+        {
+            this.CheckFailAll();
+            return this.inMemoryVersion.Update(trigger);
+        }
+
+        public bool Update(ScheduledTrigger trigger)
+        {
+            this.CheckFailAll();
+            return this.inMemoryVersion.Update(trigger);
+        }
+
+        public bool Update(RecurringTrigger trigger)
+        {
+            this.CheckFailAll();
+            return this.inMemoryVersion.Update(trigger);
+        }
+
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
             this.CheckFailAll();

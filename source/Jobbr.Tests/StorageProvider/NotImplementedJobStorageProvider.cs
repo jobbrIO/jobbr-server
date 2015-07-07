@@ -112,6 +112,21 @@ namespace Jobbr.Tests.StorageProvider
             throw new System.NotImplementedException();
         }
 
+        public bool Update(InstantTrigger trigger)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool Update(ScheduledTrigger trigger)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool Update(RecurringTrigger trigger)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public virtual List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
             throw new System.NotImplementedException();

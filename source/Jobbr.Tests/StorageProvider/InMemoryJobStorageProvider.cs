@@ -157,6 +157,30 @@ namespace Jobbr.Tests.StorageProvider
             return true;
         }
 
+        public bool Update(InstantTrigger trigger)
+        {
+            this.localTriggers.Remove(this.localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
+            this.localTriggers.Add(trigger);
+
+            return true;
+        }
+
+        public bool Update(ScheduledTrigger trigger)
+        {
+            this.localTriggers.Remove(this.localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
+            this.localTriggers.Add(trigger);
+
+            return true;
+        }
+
+        public bool Update(RecurringTrigger trigger)
+        {
+            this.localTriggers.Remove(this.localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
+            this.localTriggers.Add(trigger);
+
+            return true;
+        }
+
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
             return this.localJobRuns.Where(jr => jr.TriggerId == triggerId).ToList().Clone();

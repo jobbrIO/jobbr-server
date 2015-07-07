@@ -48,6 +48,12 @@ namespace Jobbr.Server.Common
 
         bool Update(Job job);
 
+        bool Update(InstantTrigger trigger);
+        
+        bool Update(ScheduledTrigger trigger);
+
+        bool Update(RecurringTrigger trigger);
+
         List<JobRun> GetJobRunsByTriggerId(long triggerId);
     }
 }

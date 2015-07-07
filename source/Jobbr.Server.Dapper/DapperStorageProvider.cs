@@ -253,6 +253,21 @@ namespace Jobbr.Server.Dapper
             }
         }
 
+        public bool Update(InstantTrigger trigger)
+        {
+            return this.UpdateTrigger(trigger, delayedInMinutes: trigger.DelayedMinutes);
+        }
+
+        public bool Update(ScheduledTrigger trigger)
+        {
+            return this.UpdateTrigger(trigger, startDateTimeUtc: trigger.StartDateTimeUtc, endDateTimeUtc: trigger.StartDateTimeUtc);
+        }
+
+        public bool Update(RecurringTrigger trigger)
+        {
+            return this.UpdateTrigger(trigger, trigger.Definition);
+        }
+
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
             var sql = string.Format("SELECT * FROM {0}.JobRuns WHERE [TriggerId] = @TriggerId", this.schemaName);
@@ -263,11 +278,6 @@ namespace Jobbr.Server.Dapper
             }
         }
 
-        public long AddTrigger(RecurringTrigger trigger)
-        {
-            return this.InsertTrigger(trigger, RecurringTrigger.TypeName, trigger.Definition);
-        }
-
         public long AddTrigger(InstantTrigger trigger)
         {
             return this.InsertTrigger(trigger, InstantTrigger.TypeName, delayedInMinutes: trigger.DelayedMinutes);
@@ -275,7 +285,12 @@ namespace Jobbr.Server.Dapper
 
         public long AddTrigger(ScheduledTrigger trigger)
         {
-            return this.InsertTrigger(trigger, ScheduledTrigger.TypeName, startDateTimeUtc: trigger.StartDateTimeUtc, endDateTimeUtc:trigger.StartDateTimeUtc);
+            return this.InsertTrigger(trigger, ScheduledTrigger.TypeName, startDateTimeUtc: trigger.StartDateTimeUtc, endDateTimeUtc: trigger.StartDateTimeUtc);
+        }
+
+        public long AddTrigger(RecurringTrigger trigger)
+        {
+            return this.InsertTrigger(trigger, RecurringTrigger.TypeName, trigger.Definition);
         }
 
         public bool DisableTrigger(long triggerId)
@@ -421,6 +436,49 @@ namespace Jobbr.Server.Dapper
                 trigger.Id = id;
 
                 return id;
+            }
+        }
+
+        private bool UpdateTrigger(JobTriggerBase trigger, string definition = "", DateTime? startDateTimeUtc = null, DateTime? endDateTimeUtc = null, int delayedInMinutes = 0)
+        {
+            var dateTimeUtcNow = DateTime.UtcNow;
+
+            var sql = string.Format(
+                @"UPDATE {0}.[Triggers]
+                  SET [Definition] = @Definition
+                     ,[StartDateTimeUtc] = @StartDateTimeUtc
+                     ,[EndDateTimeUtc] = @EndDateTimeUtc
+                     ,[DelayedInMinutes] = @DelayedInMinutes
+                     ,[IsActive] = @IsActive
+                     ,[UserId] = @UserId
+                     ,[UserName] = @UserName
+                     ,[UserDisplayName] = @UserDisplayName
+                     ,[Parameters] = @Parameters
+                     ,[Comment] = @Comment
+                 WHERE Id = @Id",
+                this.schemaName);
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                var triggerObject =
+                    new
+                    {
+                        trigger.Id,
+                        Definition = definition,
+                        StartDateTimeUtc = startDateTimeUtc,
+                        EndDateTimeUtc = endDateTimeUtc,
+                        DelayedInMinutes = delayedInMinutes,
+                        trigger.IsActive,
+                        trigger.UserId,
+                        trigger.UserName,
+                        trigger.UserDisplayName,
+                        trigger.Parameters,
+                        trigger.Comment,
+                    };
+
+                connection.Execute(sql, triggerObject);
+
+                return true;
             }
         }
     }
