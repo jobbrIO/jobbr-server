@@ -59,7 +59,6 @@ namespace Jobbr.Server.Core
 
         public List<JobRun> GetJobRuns(JobRunState state)
         {
-            // TODO: Performance
             return this.storageProvider.GetJobRunsByState(state);
         }
 
