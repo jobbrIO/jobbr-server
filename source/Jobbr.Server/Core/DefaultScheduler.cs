@@ -58,7 +58,14 @@ namespace Jobbr.Server.Core
 
             foreach (var trigger in alltriggers)
             {
-                this.CreateSchedule(trigger);
+                try
+                {
+                    this.CreateSchedule(trigger);
+                }
+                catch (Exception e)
+                {
+                    Logger.ErrorException(string.Format("Exception thrown while creating schedule for trigger with Id '{0}' (Type: '{1}', userId: '{2}', userName: '{3}')", trigger.Id, trigger.TriggerType, trigger.UserId, trigger.UserName), e);
+                }
             }
         }
 
