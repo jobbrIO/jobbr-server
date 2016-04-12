@@ -224,18 +224,40 @@ namespace Jobbr.Server.Core
 
                 jobRunContext.Ended -= this.ContextOnEnded;
 
-                this.jobService.SetJobRunEndTime(args.JobRun, DateTime.UtcNow);
+                try
+                {
+                    this.jobService.SetJobRunEndTime(args.JobRun, DateTime.UtcNow);
+                }
+                catch (Exception e)
+                {
+                    Logger.ErrorException(string.Format("Exception while setting the end-time of the jobRun with id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId), e);
+                }
 
                 if (args.ExitCode != 0)
                 {
                     Logger.WarnFormat("The process within the context JobRun has exited with a non-zero exit code. JobRunId: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId);
-                    this.jobService.UpdateJobRunState(args.JobRun, JobRunState.Failed);
+
+                    try
+                    {
+                        this.jobService.UpdateJobRunState(args.JobRun, JobRunState.Failed);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.ErrorException(string.Format("Exception while setting the 'Failed'-State to the jobRun with id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId), e);
+                    }
                 }
                 else
                 {
                     if (args.JobRun.Progress > 0)
                     {
-                        this.jobService.UpdateJobRunProgress(args.JobRun, 100);
+                        try
+                        {
+                            this.jobService.UpdateJobRunProgress(args.JobRun, 100);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.ErrorException(string.Format("Exception while setting progress to 100% after completion of the jobRun with id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId), e);
+                        }
                     }
                 }
 
