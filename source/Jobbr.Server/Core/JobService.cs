@@ -216,7 +216,8 @@ namespace Jobbr.Server.Core
             }
             catch (Exception e)
             {
-                Logger.FatalException("Cannot access active triggers from storage provider. Returning empty list", e);
+                Logger.FatalException("Cannot read active triggers from storage provider due to an exception. Returning empty list.", e);
+
                 return new List<JobTriggerBase>();
             }
         }
