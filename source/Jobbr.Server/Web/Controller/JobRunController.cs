@@ -31,7 +31,7 @@ namespace Jobbr.Server.Web.Controller
         [Route("api/jobRuns/{jobRunId}")]
         public IHttpActionResult GetJonRun(long jobRunId)
         {
-            var jobRun = this.jobStorageProvider.GetJobRuns().FirstOrDefault(jr => jr.Id == jobRunId);
+            var jobRun = this.jobStorageProvider.GetJobRunById(jobRunId);
 
             if (jobRun == null)
             {
@@ -80,7 +80,7 @@ namespace Jobbr.Server.Web.Controller
         [Route("api/jobRuns/{jobRunId}/artefacts/{filename}")]
         public IHttpActionResult GetArtefact(long jobRunId, string filename)
         {
-            var jobRun = this.jobStorageProvider.GetJobRuns().FirstOrDefault(jr => jr.Id == jobRunId);
+            var jobRun = this.jobStorageProvider.GetJobRunById(jobRunId);
 
             if (jobRun == null)
             {

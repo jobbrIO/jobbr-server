@@ -120,7 +120,7 @@ namespace Jobbr.Server.Dapper
 
         public bool Update(JobRun jobRun)
         {
-            var fromDb = this.GetJobRuns().FirstOrDefault(jr => jr.Id == jobRun.Id);
+            var fromDb = this.GetJobRunById(jobRun.Id);
             
             if (fromDb == null)
             {
