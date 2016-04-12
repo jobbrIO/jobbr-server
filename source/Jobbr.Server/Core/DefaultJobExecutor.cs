@@ -128,7 +128,7 @@ namespace Jobbr.Server.Core
                     }
                     else
                     {
-                        Logger.ErrorFormat("There was a change to the already started JobRun (uniqueId: {0}) wich cannot be handled.", queuedJobRun.UniqueId);
+                        Logger.WarnFormat("There was a change to the already started JobRun (uniqueId: {0}) wich cannot be handled.", queuedJobRun.UniqueId);
                     }
                 }
             }
