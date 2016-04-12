@@ -60,7 +60,7 @@ namespace Jobbr.Server.Core
         public List<JobRun> GetJobRuns(JobRunState state)
         {
             // TODO: Performance
-            return this.storageProvider.GetJobRuns().Where(jr => jr.State == state).ToList();
+            return this.storageProvider.GetJobRunsByState(state);
         }
 
         public void UpdateJobRunState(JobRun jobRun, JobRunState state)

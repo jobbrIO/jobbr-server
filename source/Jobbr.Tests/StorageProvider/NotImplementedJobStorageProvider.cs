@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
+using Jobbr.Common.Model;
 
 namespace Jobbr.Tests.StorageProvider
 {
@@ -130,6 +132,11 @@ namespace Jobbr.Tests.StorageProvider
         public virtual List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
             throw new System.NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRunsByState(JobRunState state)
+        {
+            throw new NotImplementedException();
         }
     }
 }

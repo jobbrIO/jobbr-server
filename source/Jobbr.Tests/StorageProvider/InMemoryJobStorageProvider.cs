@@ -5,6 +5,7 @@ using System.Linq;
 using Jobbr.Server.Common;
 using Jobbr.Server.Core;
 using Jobbr.Server.Model;
+using Jobbr.Common.Model;
 
 namespace Jobbr.Tests.StorageProvider
 {
@@ -184,6 +185,11 @@ namespace Jobbr.Tests.StorageProvider
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
             return this.localJobRuns.Where(jr => jr.TriggerId == triggerId).ToList().Clone();
+        }
+
+        public List<JobRun> GetJobRunsByState(JobRunState state)
+        {
+            return this.localJobRuns.Where(jr => jr.State == state).ToList().Clone();
         }
     }
 }

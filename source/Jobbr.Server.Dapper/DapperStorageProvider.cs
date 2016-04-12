@@ -279,6 +279,16 @@ namespace Jobbr.Server.Dapper
             }
         }
 
+        public List<JobRun> GetJobRunsByState(JobRunState state)
+        {
+            var sql = string.Format("SELECT * FROM {0}.JobRuns WHERE [State] = @State", this.schemaName);
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                return connection.Query<JobRun>(sql, new { State = state.ToString() }).ToList();
+            }
+        }
+
         public long AddTrigger(InstantTrigger trigger)
         {
             return this.InsertTrigger(trigger, InstantTrigger.TypeName, delayedInMinutes: trigger.DelayedMinutes);
