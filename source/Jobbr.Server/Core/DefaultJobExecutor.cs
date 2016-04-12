@@ -185,22 +185,34 @@ namespace Jobbr.Server.Core
 
                 foreach (var jobRun in jobsToStart)
                 {
-                    var run = jobRun;
-
-                    Logger.InfoFormat("Creating new context for JobRun with Id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId);
-
-                    this.jobService.UpdateJobRunState(jobRun, JobRunState.Preparing);
-                    this.queue.Remove(jobRun);
-
-                    var context = new JobRunContext(this.jobService, this.configuration);
-                    context.Ended += this.ContextOnEnded;
-
-                    this.activeContexts.Add(context);
-
-                    Logger.InfoFormat("Starting JobRun with Id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId);
-                    new TaskFactory().StartNew(() => context.Start(run));
+                    try
+                    {
+                        this.StartNewJob(jobRun);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.ErrorException(string.Format("Exception was thrown while starting a new JobRun with Id: {0}. Retry to start next time. (TriggerId: {1}, JobId: {2})", jobRun.Id, jobRun.TriggerId, jobRun.JobId), e);
+                    }
                 }
             }
+        }
+
+        private void StartNewJob(JobRun jobRun)
+        {
+            var run = jobRun;
+
+            Logger.InfoFormat("Creating new context for JobRun with Id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId);
+
+            this.jobService.UpdateJobRunState(jobRun, JobRunState.Preparing);
+            this.queue.Remove(jobRun);
+
+            var context = new JobRunContext(this.jobService, this.configuration);
+            context.Ended += this.ContextOnEnded;
+
+            this.activeContexts.Add(context);
+
+            Logger.InfoFormat("Starting JobRun with Id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId);
+            new TaskFactory().StartNew(() => context.Start(run));
         }
 
         private void ContextOnEnded(object sender, JobRunEndedEventArgs args)
