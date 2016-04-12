@@ -153,14 +153,14 @@ namespace Jobbr.Server.Dapper
                         jobRun.JobParameters,
                         jobRun.InstanceParameters,
                         jobRun.PlannedStartDateTimeUtc,
-                        jobRun.ActualStartDateTimeUtc,
-                        jobRun.EstimatedEndDateTimeUtc,
-                        jobRun.ActualEndDateTimeUtc,
                         jobRun.Progress,
-                        State = jobRun.State.ToString(),
                         jobRun.Pid,
                         jobRun.WorkingDir,
                         jobRun.TempDir,
+                        ActualStartDateTimeUtc = jobRun.ActualStartDateTimeUtc ?? fromDb.ActualStartDateTimeUtc,
+                        EstimatedEndDateTimeUtc = jobRun.EstimatedEndDateTimeUtc ?? fromDb.EstimatedEndDateTimeUtc,
+                        ActualEndDateTimeUtc = jobRun.ActualEndDateTimeUtc ?? fromDb.ActualEndDateTimeUtc,
+                        State = jobRun.State.ToString(),
                     });
 
                 return true;
