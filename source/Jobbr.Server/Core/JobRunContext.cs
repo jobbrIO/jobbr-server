@@ -64,8 +64,70 @@ namespace Jobbr.Server.Core
         {
             Logger.InfoFormat("[{0}] A new JobRunContext is starting for JobRun with id: '{1}'. (JobId: '{2}', TriggerId: '{3}'", jobRun.UniqueId, jobRun.Id, jobRun.JobId, jobRun.TriggerId);
 
-            this.jobRun = jobRun;
+            try
+            {
+                this.jobRun = jobRun;
 
+                var workDir = this.SetupDirectories(jobRun);
+
+                var proc = this.StartProcess(jobRun, workDir);
+
+                this.UpdateState(jobRun, proc);
+            }
+            catch (Exception e)
+            {
+                Logger.ErrorException(string.Format("[{0}] Exception thrown while starting JobRun with id: '{1}'. (JobId: '{2}', TriggerId: '{3}'", jobRun.UniqueId, jobRun.Id, jobRun.JobId, jobRun.TriggerId), e);
+            }
+        }
+
+        private void UpdateState(JobRun jobRun, Process proc)
+        {
+            this.jobService.SetPidForJobRun(jobRun, proc.Id);
+            this.jobService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
+
+            this.jobService.UpdateJobRunState(jobRun, JobRunState.Started);
+        }
+
+        private Process StartProcess(JobRun jobRun, string workDir)
+        {
+            var runnerFileExe = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
+            Logger.InfoFormat("[{0}] Preparing to start the runner from '{1}' in '{2}'", jobRun.UniqueId, runnerFileExe, workDir);
+
+            Process proc = new Process();
+
+            proc.EnableRaisingEvents = true;
+            proc.StartInfo.FileName = runnerFileExe;
+
+            var arguments = string.Format("--jobRunId {0} --server {1}", jobRun.Id, this.configuration.BackendAddress);
+
+            if (this.configuration.IsRuntimeWaitingForDebugger)
+            {
+                arguments += " --debug";
+            }
+
+            proc.StartInfo.Arguments = arguments;
+            proc.StartInfo.WorkingDirectory = workDir;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.CreateNoWindow = true;
+
+            // Wire events
+            proc.OutputDataReceived += this.ProcOnOutputDataReceived;
+            proc.Exited += (o, args) => this.OnEnded(new JobRunEndedEventArgs() { ExitCode = proc.ExitCode, JobRun = jobRun, ProcInfo = proc });
+
+            this.jobService.UpdateJobRunState(jobRun, JobRunState.Starting);
+
+            Logger.InfoFormat("[{0}] Starting '{1} {2}' in '{3}'", jobRun.UniqueId, runnerFileExe, arguments, workDir);
+            proc.Start();
+
+            Logger.InfoFormat("[{0}] Started Runner with ProcessId '{1}' at '{2}'", jobRun.UniqueId, proc.Id, proc.StartTime);
+
+            proc.BeginOutputReadLine();
+            return proc;
+        }
+
+        private string SetupDirectories(JobRun jobRun)
+        {
             // Create the WorkingDir and TempDir for the execution
             var jobRunPath = Path.Combine(this.configuration.JobRunDirectory, "jobbr-" + jobRun.UniqueId);
 
@@ -81,46 +143,7 @@ namespace Jobbr.Server.Core
             Logger.InfoFormat("[{0}] Created Working-Directory '{1}'", jobRun.UniqueId, workDir);
 
             this.jobService.UpdateJobRunDirectories(this.jobRun, workDir, tempDir);
-
-            var runnerFileExe = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
-            Logger.InfoFormat("[{0}] Preparing to start the runner from '{1}' in '{2}'", jobRun.UniqueId, runnerFileExe, workDir);
-
-            Process proc = new Process();
-
-            proc.EnableRaisingEvents = true;
-            proc.StartInfo.FileName = runnerFileExe;
-
-            var arguments = string.Format("--jobRunId {0} --server {1}", jobRun.Id, this.configuration.BackendAddress);
-            
-            if (this.configuration.IsRuntimeWaitingForDebugger) 
-            {
-                arguments += " --debug";
-            }
-    
-            proc.StartInfo.Arguments = arguments;
-            proc.StartInfo.WorkingDirectory = workDir;
-            proc.StartInfo.RedirectStandardOutput = true;
-            proc.StartInfo.UseShellExecute = false;
-            proc.StartInfo.CreateNoWindow = true;
-
-            // Wire events
-            proc.OutputDataReceived += this.ProcOnOutputDataReceived;
-            proc.Exited += (o, args) => this.OnEnded(new JobRunEndedEventArgs() { ExitCode = proc.ExitCode, JobRun = jobRun, ProcInfo = proc });
-
-            this.jobService.UpdateJobRunState(jobRun, JobRunState.Starting);
-
-
-            Logger.InfoFormat("[{0}] Starting '{1} {2}' in '{3}'", jobRun.UniqueId, runnerFileExe, arguments, workDir);
-            proc.Start();
-
-            Logger.InfoFormat("[{0}] Started Runner with ProcessId '{1}' at '{2}'", jobRun.UniqueId, proc.Id, proc.StartTime);
-
-            proc.BeginOutputReadLine();
-
-            this.jobService.SetPidForJobRun(jobRun, proc.Id);
-            this.jobService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
-
-            this.jobService.UpdateJobRunState(jobRun, JobRunState.Started);
+            return workDir;
         }
 
         protected virtual void OnEnded(JobRunEndedEventArgs e)
@@ -152,21 +175,28 @@ namespace Jobbr.Server.Core
                 {
                     var message = this.serviceMessageParser.Parse(line);
 
-                    if (message != null)
+                    try
                     {
-                        if (this.HandleMessage(message as dynamic))
+                        if (message != null)
                         {
-                            Logger.DebugFormat("[{0}] Handled service-message of type '{1}'. RawValue: '{2}'", this.jobRun.UniqueId, message.GetType().Name, line);
+                            if (this.HandleMessage(message as dynamic))
+                            {
+                                Logger.DebugFormat("[{0}] Handled service-message of type '{1}'. RawValue: '{2}'", this.jobRun.UniqueId, message.GetType().Name, line);
+                            }
+                            else
+                            {
+                                // TODO: Implement this type!
+                                Logger.WarnFormat("[{0}] Cannot handle messages of type '{1}'. RawValue: '{2}'", this.jobRun.UniqueId, message.GetType().Name, line);
+                            }
                         }
                         else
                         {
-                            // TODO: Implement this type!
-                            Logger.WarnFormat("[{0}] Cannot handle messages of type '{1}'. RawValue: '{2}'", this.jobRun.UniqueId, message.GetType().Name, line);
+                            Logger.WarnFormat("[{0}] Parsing Error while processing service message '{1}'", this.jobRun.UniqueId, line);
                         }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        Logger.WarnFormat("[{0}] Parsing Error while processing service message '{1}'", this.jobRun.UniqueId, line);
+                        Logger.ErrorException(string.Format("[{0}] Exception while processing service message '{1}'", this.jobRun.UniqueId, line), e);
                     }
                 }
             }
