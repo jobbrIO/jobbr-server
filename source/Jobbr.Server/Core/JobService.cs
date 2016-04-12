@@ -122,12 +122,6 @@ namespace Jobbr.Server.Core
             this.storageProvider.Update(jobRun);
         }
 
-        public List<JobRun> GetJobAllRuns()
-        {
-            // TODO: Performance
-            return this.storageProvider.GetJobRuns();
-        }
-
         public JobRun GetJobRun(long id)
         {
             return this.storageProvider.GetJobRunById(id);

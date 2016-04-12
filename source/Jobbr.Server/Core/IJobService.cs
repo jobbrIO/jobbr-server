@@ -23,8 +23,6 @@ namespace Jobbr.Server.Core
 
         Job AddJob(Job job);
 
-        List<JobRun> GetJobAllRuns();
-
         JobRun GetJobRun(long id);
 
         List<JobTriggerBase> GetTriggers(long jobId);
