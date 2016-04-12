@@ -75,7 +75,7 @@ namespace Jobbr.Server.Core
 
             if (calculatedNextRun < DateTime.UtcNow && trigger.IsActive)
             {
-                Logger.WarnFormat("Active Disabling trigger for startdate '{0}', because historical startdate is not supported.  Id '{1}' (Type: '{2}', userId: '{3}', userName: '{4}')", calculatedNextRun, trigger.Id, trigger.TriggerType, trigger.UserId, trigger.UserName);
+                Logger.WarnFormat("Active Disabling trigger for startdate '{0}', because historical startdate is not supported. Id '{1}' (Type: '{2}', userId: '{3}', userName: '{4}')", calculatedNextRun, trigger.Id, trigger.TriggerType, trigger.UserId, trigger.UserName);
                 this.jobService.DisableTrigger(trigger.Id, false);
             }
             else if (calculatedNextRun != null)
