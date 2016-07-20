@@ -272,7 +272,7 @@ namespace Jobbr.Runtime
                 }
                 catch (Exception exception)
                 {
-                    Logger.ErrorException("Failed while activating type '{0}'. See Exception for details!", exception);
+                    Logger.ErrorException("Failed while activating type '{0}'. See Exception for details!", exception, type);
                 }
             }
         }
