@@ -47,7 +47,7 @@ CREATE TABLE [Jobbr].[Jobs](
 	[Id] [bigint] IDENTITY(1,1) NOT NULL,
 	[UniqueName] [varchar](80) NOT NULL,
 	[Title] [varchar](150) NULL,
-	[Type] [varchar](50) NOT NULL,
+	[Type] [varchar](200) NOT NULL,
 	[Parameters] [varchar](max) NULL,
 	[CreatedDateTimeUtc] [datetime2](7) NOT NULL,
 	[UpdatedDateTimeUtc] [datetime2](7) NULL,
