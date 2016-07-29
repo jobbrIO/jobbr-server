@@ -1,24 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-
-using Jobbr.Common;
 using Jobbr.Common.Model;
 using Jobbr.Server.Common;
+using Jobbr.Server.Logging;
 using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Core
 {
-    using Jobbr.Server.Logging;
-
     /// <summary>
     /// The job repository.
     /// </summary>
     public class JobService : IJobService
     {
         private static readonly ILog Logger = LogProvider.For<JobService>();
-        
+
         private readonly IJobStorageProvider storageProvider;
 
         public JobService(IJobStorageProvider storageProvider)
@@ -40,17 +35,17 @@ namespace Jobbr.Server.Core
 
         public List<Job> GetAllJobs()
         {
-            return this.storageProvider.GetJobs();
+            return storageProvider.GetJobs();
         }
 
         public Job GetJob(long id)
         {
-            return this.storageProvider.GetJobById(id);
+            return storageProvider.GetJobById(id);
         }
 
         public Job AddJob(Job job)
         {
-            var id = this.storageProvider.AddJob(job);
+            var id = storageProvider.AddJob(job);
 
             job.Id = id;
 
@@ -59,17 +54,17 @@ namespace Jobbr.Server.Core
 
         public List<JobRun> GetJobRuns(JobRunState state)
         {
-            return this.storageProvider.GetJobRunsByState(state);
+            return storageProvider.GetJobRunsByState(state);
         }
 
         public void UpdateJobRunState(JobRun jobRun, JobRunState state)
         {
             jobRun.State = state;
-            this.storageProvider.Update(jobRun);
+            storageProvider.Update(jobRun);
 
             Logger.InfoFormat("[{0}] The JobRun with id: {1} has switched to the '{2}'-State", jobRun.UniqueId, jobRun.Id, state);
 
-            this.OnJobRunModification(new JobRunModificationEventArgs() { JobRun = jobRun });
+            OnJobRunModification(new JobRunModificationEventArgs {JobRun = jobRun});
         }
 
         public void UpdateJobRunDirectories(JobRun jobRun, string workDir, string tempDir)
@@ -77,59 +72,59 @@ namespace Jobbr.Server.Core
             jobRun.WorkingDir = workDir;
             jobRun.TempDir = tempDir;
 
-            this.storageProvider.Update(jobRun);
+            storageProvider.Update(jobRun);
         }
 
         public void SetJobRunStartTime(JobRun jobRun, DateTime startDateTimeUtc)
         {
             jobRun.ActualStartDateTimeUtc = startDateTimeUtc;
-            this.storageProvider.Update(jobRun);
+            storageProvider.Update(jobRun);
 
-            this.OnJobRunModification(new JobRunModificationEventArgs() { JobRun = jobRun });
+            OnJobRunModification(new JobRunModificationEventArgs {JobRun = jobRun});
         }
 
         public void SetJobRunEndTime(JobRun jobRun, DateTime endDateTimeUtc)
         {
-            var fromDb = this.storageProvider.GetJobRunById(jobRun.Id);
+            var fromDb = storageProvider.GetJobRunById(jobRun.Id);
 
             fromDb.ActualEndDateTimeUtc = endDateTimeUtc;
-            this.storageProvider.Update(fromDb);
+            storageProvider.Update(fromDb);
         }
 
         public void UpdateJobRunProgress(JobRun jobRun, double percent)
         {
-            var fromDb = this.storageProvider.GetJobRunById(jobRun.Id);
+            var fromDb = storageProvider.GetJobRunById(jobRun.Id);
 
             fromDb.Progress = percent;
-            this.storageProvider.Update(fromDb);
+            storageProvider.Update(fromDb);
         }
 
         public void UpdatePlannedStartDate(JobRun jobRun)
         {
-            var fromDb = this.storageProvider.GetJobRunById(jobRun.Id);
+            var fromDb = storageProvider.GetJobRunById(jobRun.Id);
             fromDb.PlannedStartDateTimeUtc = jobRun.PlannedStartDateTimeUtc;
 
-            var jobFromDb = this.storageProvider.GetJobById(jobRun.JobId);
+            var jobFromDb = storageProvider.GetJobById(jobRun.JobId);
 
-            this.OnJobRunModification(new JobRunModificationEventArgs() { Job = jobFromDb , JobRun = jobRun });
-            this.storageProvider.Update(fromDb);
+            OnJobRunModification(new JobRunModificationEventArgs {Job = jobFromDb, JobRun = jobRun});
+            storageProvider.Update(fromDb);
         }
 
         public void SetPidForJobRun(JobRun jobRun, int id)
         {
             jobRun.Pid = id;
 
-            this.storageProvider.Update(jobRun);
+            storageProvider.Update(jobRun);
         }
 
         public JobRun GetJobRun(long id)
         {
-            return this.storageProvider.GetJobRunById(id);
+            return storageProvider.GetJobRunById(id);
         }
 
         public List<JobTriggerBase> GetTriggers(long jobId)
         {
-            return this.storageProvider.GetTriggersByJobId(jobId);
+            return storageProvider.GetTriggersByJobId(jobId);
         }
 
         public long AddTrigger(RecurringTrigger trigger)
@@ -139,8 +134,8 @@ namespace Jobbr.Server.Core
                 throw new ArgumentException("JobId is required", "trigger.JobId");
             }
 
-            trigger.Id = this.storageProvider.AddTrigger(trigger);
-            this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = trigger });
+            trigger.Id = storageProvider.AddTrigger(trigger);
+            OnTriggerUpdate(new JobTriggerEventArgs {Trigger = trigger});
 
             return trigger.Id;
         }
@@ -152,8 +147,8 @@ namespace Jobbr.Server.Core
                 throw new ArgumentException("JobId is required", "trigger.JobId");
             }
 
-            trigger.Id = this.storageProvider.AddTrigger(trigger);
-            this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = trigger });
+            trigger.Id = storageProvider.AddTrigger(trigger);
+            OnTriggerUpdate(new JobTriggerEventArgs {Trigger = trigger});
 
             return trigger.Id;
         }
@@ -165,15 +160,15 @@ namespace Jobbr.Server.Core
                 throw new ArgumentException("JobId is required", "trigger.JobId");
             }
 
-            trigger.Id = this.storageProvider.AddTrigger(trigger);
-            this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = trigger });
+            trigger.Id = storageProvider.AddTrigger(trigger);
+            OnTriggerUpdate(new JobTriggerEventArgs {Trigger = trigger});
 
             return trigger.Id;
         }
 
         public bool DisableTrigger(long triggerId, bool enableNotification = true)
         {
-            var trigger = this.storageProvider.GetTriggerById(triggerId);
+            var trigger = storageProvider.GetTriggerById(triggerId);
 
             if (!trigger.IsActive)
             {
@@ -181,11 +176,11 @@ namespace Jobbr.Server.Core
             }
 
             trigger.IsActive = false;
-            this.storageProvider.DisableTrigger(triggerId);
+            storageProvider.DisableTrigger(triggerId);
 
             if (enableNotification)
             {
-                this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = trigger });
+                OnTriggerUpdate(new JobTriggerEventArgs {Trigger = trigger});
             }
 
             return true;
@@ -193,7 +188,7 @@ namespace Jobbr.Server.Core
 
         public bool EnableTrigger(long triggerId)
         {
-            var trigger = this.storageProvider.GetTriggerById(triggerId);
+            var trigger = storageProvider.GetTriggerById(triggerId);
 
             if (trigger.IsActive)
             {
@@ -201,9 +196,9 @@ namespace Jobbr.Server.Core
             }
 
             trigger.IsActive = true;
-            this.storageProvider.EnableTrigger(triggerId);
+            storageProvider.EnableTrigger(triggerId);
 
-            this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = trigger });
+            OnTriggerUpdate(new JobTriggerEventArgs {Trigger = trigger});
 
             return true;
         }
@@ -212,7 +207,7 @@ namespace Jobbr.Server.Core
         {
             try
             {
-                return this.storageProvider.GetActiveTriggers();
+                return storageProvider.GetActiveTriggers();
             }
             catch (Exception e)
             {
@@ -224,17 +219,17 @@ namespace Jobbr.Server.Core
 
         public JobRun GetLastJobRunByTriggerId(long triggerId)
         {
-            return this.storageProvider.GetLastJobRunByTriggerId(triggerId);
+            return storageProvider.GetLastJobRunByTriggerId(triggerId);
         }
 
         public JobRun GetNextJobRunByTriggerId(long triggerId)
         {
-            return this.storageProvider.GetFutureJobRunsByTriggerId(triggerId);
+            return storageProvider.GetFutureJobRunsByTriggerId(triggerId);
         }
 
         public long CreateJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc)
         {
-            var jobRun = new JobRun()
+            var jobRun = new JobRun
             {
                 JobId = job.Id,
                 TriggerId = trigger.Id,
@@ -244,34 +239,21 @@ namespace Jobbr.Server.Core
                 State = JobRunState.Scheduled,
                 PlannedStartDateTimeUtc = startDateTimeUtc
             };
-            
-            jobRun.Id = this.storageProvider.AddJobRun(jobRun);
-            
-            this.OnJobRunModification(new JobRunModificationEventArgs
-                                          {
-                                              Job = job,
-                                              Trigger = trigger,
-                                              JobRun = jobRun
-                                          });
+
+            jobRun.Id = storageProvider.AddJobRun(jobRun);
+
+            OnJobRunModification(new JobRunModificationEventArgs
+            {
+                Job = job,
+                Trigger = trigger,
+                JobRun = jobRun
+            });
             return jobRun.Id;
         }
 
-        protected virtual void OnTriggerUpdate(JobTriggerEventArgs e)
+        public bool CheckParallelExecution(long triggerId)
         {
-            var handler = this.TriggerUpdate;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        protected virtual void OnJobRunModification(JobRunModificationEventArgs e)
-        {
-            var handler = this.JobRunModification;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            return storageProvider.CheckParallelExecution(triggerId);
         }
 
         public void UpdateTrigger(long id, JobTriggerBase trigger)
@@ -281,7 +263,7 @@ namespace Jobbr.Server.Core
                 throw new ArgumentException("JobId is required", "id");
             }
 
-            var triggerFromDb = this.storageProvider.GetTriggerById(id);
+            var triggerFromDb = storageProvider.GetTriggerById(id);
 
             var hadChanges = false;
 
@@ -298,22 +280,39 @@ namespace Jobbr.Server.Core
             {
                 if (trigger is InstantTrigger)
                 {
-                    this.storageProvider.Update(trigger as InstantTrigger);
+                    storageProvider.Update(trigger as InstantTrigger);
                 }
 
                 if (trigger is ScheduledTrigger)
                 {
-                    this.storageProvider.Update(trigger as ScheduledTrigger);
+                    storageProvider.Update(trigger as ScheduledTrigger);
                 }
 
                 if (trigger is RecurringTrigger)
                 {
-                    this.storageProvider.Update(trigger as RecurringTrigger);
+                    storageProvider.Update(trigger as RecurringTrigger);
                 }
 
-                this.OnTriggerUpdate(new JobTriggerEventArgs { Trigger = triggerFromDb });
+                OnTriggerUpdate(new JobTriggerEventArgs {Trigger = triggerFromDb});
             }
+        }
 
+        protected virtual void OnTriggerUpdate(JobTriggerEventArgs e)
+        {
+            var handler = TriggerUpdate;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnJobRunModification(JobRunModificationEventArgs e)
+        {
+            var handler = JobRunModification;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
 
         private bool ApplyOtherChanges(RecurringTrigger fromDb, RecurringTrigger updatedOne)

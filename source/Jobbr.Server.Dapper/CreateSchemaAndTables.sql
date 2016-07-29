@@ -82,6 +82,7 @@ CREATE TABLE [Jobbr].[Triggers](
 	[Parameters] [varchar](max) NULL,
 	[Comment] [varchar](max) NULL,
 	[CreatedDateTimeUtc] [datetime2](7) NOT NULL,
+	[NoParallelExecution] [bit] DEFAULT 0 NOT NULL
  CONSTRAINT [PK_Triggers] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

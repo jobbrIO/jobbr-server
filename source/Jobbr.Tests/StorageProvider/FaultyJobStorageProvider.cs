@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
-
+using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
-using Jobbr.Common.Model;
 
 namespace Jobbr.Tests.StorageProvider
 {
@@ -14,178 +12,184 @@ namespace Jobbr.Tests.StorageProvider
 
         private bool failAll;
 
-        public void DisableImplementation()
-        {
-            this.failAll = true;
-        }
-
-        public void EnableImplementation()
-        {
-            this.failAll = false;
-        }
-
-        private void CheckFailAll()
-        {
-            if (this.failAll)
-            {
-                throw new TargetException("This JobStorageProvider is currently not healthy!");
-            }
-        }
-
         public List<Job> GetJobs()
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobs();
+            CheckFailAll();
+            return inMemoryVersion.GetJobs();
         }
 
         public long AddJob(Job job)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.AddJob(job);
+            CheckFailAll();
+            return inMemoryVersion.AddJob(job);
         }
 
         public List<JobTriggerBase> GetTriggersByJobId(long jobId)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetTriggersByJobId(jobId);
+            CheckFailAll();
+            return inMemoryVersion.GetTriggersByJobId(jobId);
         }
 
         public long AddTrigger(RecurringTrigger trigger)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.AddTrigger(trigger);
+            CheckFailAll();
+            return inMemoryVersion.AddTrigger(trigger);
         }
 
         public long AddTrigger(InstantTrigger trigger)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.AddTrigger(trigger);
+            CheckFailAll();
+            return inMemoryVersion.AddTrigger(trigger);
         }
 
         public long AddTrigger(ScheduledTrigger trigger)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.AddTrigger(trigger);
+            CheckFailAll();
+            return inMemoryVersion.AddTrigger(trigger);
         }
 
         public bool DisableTrigger(long triggerId)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.DisableTrigger(triggerId);
+            CheckFailAll();
+            return inMemoryVersion.DisableTrigger(triggerId);
         }
 
         public bool EnableTrigger(long triggerId)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.EnableTrigger(triggerId);
+            CheckFailAll();
+            return inMemoryVersion.EnableTrigger(triggerId);
         }
 
         public List<JobTriggerBase> GetActiveTriggers()
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetActiveTriggers();
+            CheckFailAll();
+            return inMemoryVersion.GetActiveTriggers();
         }
 
         public JobTriggerBase GetTriggerById(long triggerId)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetTriggerById(triggerId);
+            CheckFailAll();
+            return inMemoryVersion.GetTriggerById(triggerId);
         }
 
         public JobRun GetLastJobRunByTriggerId(long triggerId)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetLastJobRunByTriggerId(triggerId);
+            CheckFailAll();
+            return inMemoryVersion.GetLastJobRunByTriggerId(triggerId);
         }
 
         public JobRun GetFutureJobRunsByTriggerId(long triggerId)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetFutureJobRunsByTriggerId(triggerId);
+            CheckFailAll();
+            return inMemoryVersion.GetFutureJobRunsByTriggerId(triggerId);
         }
 
         public int AddJobRun(JobRun jobRun)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.AddJobRun(jobRun);
+            CheckFailAll();
+            return inMemoryVersion.AddJobRun(jobRun);
         }
 
         public List<JobRun> GetJobRuns()
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRuns();
+            CheckFailAll();
+            return inMemoryVersion.GetJobRuns();
         }
 
         public bool Update(JobRun jobRun)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.Update(jobRun);
+            CheckFailAll();
+            return inMemoryVersion.Update(jobRun);
         }
 
         public Job GetJobById(long id)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobById(id);
+            CheckFailAll();
+            return inMemoryVersion.GetJobById(id);
         }
 
         public Job GetJobByUniqueName(string identifier)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobByUniqueName(identifier);
+            CheckFailAll();
+            return inMemoryVersion.GetJobByUniqueName(identifier);
         }
 
         public JobRun GetJobRunById(long id)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunById(id);
+            CheckFailAll();
+            return inMemoryVersion.GetJobRunById(id);
         }
 
         public List<JobRun> GetJobRunsForUserId(long userId)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsForUserId(userId);
+            CheckFailAll();
+            return inMemoryVersion.GetJobRunsForUserId(userId);
         }
 
         public List<JobRun> GetJobRunsForUserName(string userName)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsForUserName(userName);
+            CheckFailAll();
+            return inMemoryVersion.GetJobRunsForUserName(userName);
         }
 
         public bool Update(Job job)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.Update(job);
+            CheckFailAll();
+            return inMemoryVersion.Update(job);
         }
 
         public bool Update(InstantTrigger trigger)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.Update(trigger);
+            CheckFailAll();
+            return inMemoryVersion.Update(trigger);
         }
 
         public bool Update(ScheduledTrigger trigger)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.Update(trigger);
+            CheckFailAll();
+            return inMemoryVersion.Update(trigger);
         }
 
         public bool Update(RecurringTrigger trigger)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.Update(trigger);
+            CheckFailAll();
+            return inMemoryVersion.Update(trigger);
         }
 
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByTriggerId(triggerId);
+            CheckFailAll();
+            return inMemoryVersion.GetJobRunsByTriggerId(triggerId);
         }
 
         public List<JobRun> GetJobRunsByState(JobRunState state)
         {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByState(state);
+            CheckFailAll();
+            return inMemoryVersion.GetJobRunsByState(state);
+        }
+
+        public bool CheckParallelExecution(long triggerId)
+        {
+            CheckFailAll();
+            return inMemoryVersion.CheckParallelExecution(triggerId);
+        }
+
+        public void DisableImplementation()
+        {
+            failAll = true;
+        }
+
+        public void EnableImplementation()
+        {
+            failAll = false;
+        }
+
+        private void CheckFailAll()
+        {
+            if (failAll)
+            {
+                throw new TargetException("This JobStorageProvider is currently not healthy!");
+            }
         }
     }
 }

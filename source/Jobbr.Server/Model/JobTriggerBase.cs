@@ -47,6 +47,8 @@ namespace Jobbr.Server.Model
         public DateTime? EndDateTimeUtc { get; set; }
 
         public string Definition { get; set; }
+
+        public bool NoParallelExecution { get; set; }
     }
 
     [Serializable]

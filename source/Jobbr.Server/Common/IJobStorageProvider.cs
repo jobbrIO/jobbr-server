@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-
-using Jobbr.Server.Model;
-using Jobbr.Shared;
 using Jobbr.Common.Model;
+using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Common
 {
@@ -51,7 +49,7 @@ namespace Jobbr.Server.Common
         bool Update(Job job);
 
         bool Update(InstantTrigger trigger);
-        
+
         bool Update(ScheduledTrigger trigger);
 
         bool Update(RecurringTrigger trigger);
@@ -59,5 +57,7 @@ namespace Jobbr.Server.Common
         List<JobRun> GetJobRunsByTriggerId(long triggerId);
 
         List<JobRun> GetJobRunsByState(JobRunState state);
+
+        bool CheckParallelExecution(long triggerId);
     }
 }
