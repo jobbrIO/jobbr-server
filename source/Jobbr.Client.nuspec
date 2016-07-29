@@ -8,14 +8,10 @@
     <projectUrl>http://github.com/michaelschnyder/jobbr</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Jobbr is a .NET JobServer</description>
-    <copyright>Copyright 2015</copyright>
-    <dependencies>
-      <dependency id="Newtonsoft.Json" version="6.0.8" />
-    </dependencies>
+    <copyright>Copyright 2016</copyright>
   </metadata>
   
   <files>
-    <file src="Jobbr.Client\bin\Release\Jobbr.Client.*" target="lib\net45"/>
-    <file src="Jobbr.Common\bin\Release\Jobbr.Common.*" target="lib\net45"/>
+    <file src="ilmerged\Jobbr.Client.*" target="lib\net45"/>
   </files>
 </package>
