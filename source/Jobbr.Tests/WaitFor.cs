@@ -24,5 +24,24 @@ namespace Jobbr.Tests
 
             return false;
         }
+
+        public static bool MinElements<T>(Func<IList<T>> func, int min, int timeOut = 5000)
+        {
+            var timedOut = DateTime.UtcNow.AddMilliseconds(timeOut);
+
+            while (DateTime.UtcNow < timedOut)
+            {
+                var retVal = func();
+
+                if (retVal != null && retVal.Count >= min)
+                {
+                    return true;
+                }
+
+                Thread.Sleep(100);
+            }
+
+            return false;
+        }
     }
 }

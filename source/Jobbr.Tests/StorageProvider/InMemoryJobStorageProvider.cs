@@ -191,5 +191,10 @@ namespace Jobbr.Tests.StorageProvider
         {
             return this.localJobRuns.Where(jr => jr.State == state).ToList().Clone();
         }
+
+        public bool CheckParallelExecution(long triggerId)
+        {
+            return this.localJobRuns.Count(jr => jr.TriggerId == triggerId && jr.State < JobRunState.Completed) == 0;
+        }
     }
 }

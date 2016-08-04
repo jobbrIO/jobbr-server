@@ -40,13 +40,13 @@ namespace Jobbr.Server.Configuration
             return this;
         }
 
-        public JobDefinition WithTrigger(string cronDefinition, DateTime? validFromDateTimeUtc = null, DateTime? validToDateTimeUtc = null)
+        public JobDefinition WithTrigger(string cronDefinition, DateTime? validFromDateTimeUtc = null, DateTime? validToDateTimeUtc = null, bool noParallelExecution = false)
         {
             this.hasTriggerDefinition = true;
 
             NCrontab.CrontabSchedule.Parse(cronDefinition);
 
-            this.triggers.Add(new RecurringTrigger { TriggerType = RecurringTrigger.TypeName, StartDateTimeUtc = validFromDateTimeUtc, EndDateTimeUtc = validToDateTimeUtc, Definition = cronDefinition });
+            this.triggers.Add(new RecurringTrigger { TriggerType = RecurringTrigger.TypeName, StartDateTimeUtc = validFromDateTimeUtc, EndDateTimeUtc = validToDateTimeUtc, Definition = cronDefinition, NoParallelExecution = noParallelExecution });
 
             return this;
         }

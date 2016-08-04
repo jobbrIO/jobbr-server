@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using Jobbr.Common;
 using Jobbr.Common.Model;
 using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Core
 {
     /// <summary>
-    /// The JobService interface.
+    ///     The JobService interface.
     /// </summary>
     public interface IJobService
     {
         /// <summary>
-        /// The trigger updated.
+        ///     The trigger updated.
         /// </summary>
         event EventHandler<JobTriggerEventArgs> TriggerUpdate;
 
@@ -45,8 +43,10 @@ namespace Jobbr.Server.Core
 
         long CreateJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc);
 
+        bool CheckParallelExecution(long triggerId);
+
         /// <summary>
-        /// The job run modification.
+        ///     The job run modification.
         /// </summary>
         event EventHandler<JobRunModificationEventArgs> JobRunModification;
 

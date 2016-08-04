@@ -279,6 +279,32 @@ namespace Jobbr.Server.Dapper
             }
         }
 
+        public bool CheckParallelExecution(long triggerId)
+        {
+            var runningJobStates = new int[]
+            {
+                
+            };
+
+            var sql = string.Format(
+                "SELECT * FROM {0}.JobRuns WHERE [TriggerId] = @TriggerId AND [State] IN ('{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}')", 
+                this.schemaName, 
+                JobRunState.Collecting,
+                JobRunState.Connected,
+                JobRunState.Finishing,
+                JobRunState.Initializing,
+                JobRunState.Preparing,
+                JobRunState.Processing,
+                JobRunState.Scheduled,
+                JobRunState.Started,
+                JobRunState.Starting);
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                return connection.Query<JobRun>(sql, new {TriggerId = triggerId}).Any() == false;
+            }
+        }
+
         public List<JobRun> GetJobRunsByState(JobRunState state)
         {
             var sql = string.Format("SELECT * FROM {0}.JobRuns WHERE [State] = @State", this.schemaName);
@@ -301,7 +327,7 @@ namespace Jobbr.Server.Dapper
 
         public long AddTrigger(RecurringTrigger trigger)
         {
-            return this.InsertTrigger(trigger, RecurringTrigger.TypeName, trigger.Definition);
+            return this.InsertTrigger(trigger, RecurringTrigger.TypeName, trigger.Definition, noParallelExecution: trigger.NoParallelExecution);
         }
 
         public bool DisableTrigger(long triggerId)
@@ -412,13 +438,13 @@ namespace Jobbr.Server.Dapper
             }
         }
 
-        private long InsertTrigger(JobTriggerBase trigger, string type, string definition = "", DateTime? startDateTimeUtc = null, DateTime? endDateTimeUtc = null, int delayedInMinutes = 0)
+        private long InsertTrigger(JobTriggerBase trigger, string type, string definition = "", DateTime? startDateTimeUtc = null, DateTime? endDateTimeUtc = null, int delayedInMinutes = 0, bool noParallelExecution = false)
         {
             var dateTimeUtcNow = DateTime.UtcNow;
 
             var sql = string.Format(
-                @"INSERT INTO {0}.Triggers([JobId],[TriggerType],[Definition],[StartDateTimeUtc],[EndDateTimeUtc],[DelayedInMinutes],[IsActive],[UserId],[UserName],[UserDisplayName],[Parameters],[Comment],[CreatedDateTimeUtc])
-                  VALUES (@JobId,@TriggerType,@Definition,@StartDateTimeUtc,@EndDateTimeUtc,@DelayedInMinutes,1,@UserId,@UserName,@UserDisplayName,@Parameters,@Comment,@UtcNow)
+                @"INSERT INTO {0}.Triggers([JobId],[TriggerType],[Definition],[StartDateTimeUtc],[EndDateTimeUtc],[DelayedInMinutes],[IsActive],[UserId],[UserName],[UserDisplayName],[Parameters],[Comment],[CreatedDateTimeUtc],[NoParallelExecution])
+                  VALUES (@JobId,@TriggerType,@Definition,@StartDateTimeUtc,@EndDateTimeUtc,@DelayedInMinutes,1,@UserId,@UserName,@UserDisplayName,@Parameters,@Comment,@UtcNow,@NoParallelExecution)
                   SELECT CAST(SCOPE_IDENTITY() as int)",
                 this.schemaName);
 
@@ -439,7 +465,8 @@ namespace Jobbr.Server.Dapper
                         trigger.UserDisplayName,
                         trigger.Parameters,
                         trigger.Comment,
-                        UtcNow = dateTimeUtcNow
+                        UtcNow = dateTimeUtcNow,
+                        NoParallelExecution = noParallelExecution
                     };
                 
                 var id = connection.Query<int>(sql, triggerObject).Single();

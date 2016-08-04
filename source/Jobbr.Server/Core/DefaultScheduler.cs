@@ -43,7 +43,7 @@ namespace Jobbr.Server.Core
         public void Stop()
         {
             this.timer.Change(Timeout.Infinite, Timeout.Infinite);
-            
+
             this.jobService.TriggerUpdate -= this.JobServiceOnTriggerUpdate;
         }
 
@@ -89,6 +89,25 @@ namespace Jobbr.Server.Core
             {
                 if (plannedNextRun == null)
                 {
+                    var recurringTrigger = trigger as RecurringTrigger;
+
+                    if (recurringTrigger != null && recurringTrigger.NoParallelExecution)
+                    {
+                        if (this.jobService.CheckParallelExecution(recurringTrigger.Id) == false)
+                        {
+                            Logger.InfoFormat(
+                                "No Parallel Execution: prevented planning of new JobRun for Job '{0}' (JobId: {1}). Caused by trigger with id '{2}' (Type: '{3}', userId: '{4}', userName: '{5}')",
+                                job.UniqueName,
+                                job.Id,
+                                trigger.Id,
+                                trigger.TriggerType,
+                                trigger.UserId,
+                                trigger.UserName);
+
+                            return;
+                        }
+                    }
+
                     Logger.InfoFormat(
                         "Planning new JobRun for Job '{0}' (JobId: {1}) to start @ '{2}'. Caused by trigger with id '{3}' (Type: '{4}', userId: '{5}', userName: '{6}')",
                         job.UniqueName,
@@ -166,7 +185,7 @@ namespace Jobbr.Server.Core
 
             this.jobService.DisableTrigger(instantTrigger.Id, false);
             instantTrigger.IsActive = false;
-            
+
             return startDate;
         }
 
