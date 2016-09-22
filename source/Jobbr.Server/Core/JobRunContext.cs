@@ -1,9 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-
-using Jobbr.Common;
 using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Logging;
@@ -28,7 +25,9 @@ namespace Jobbr.Server.Core
         /// The configuration.
         /// </summary>
         private readonly IJobbrConfiguration configuration;
-        
+
+        private readonly IJobStorageProvider jobStorageProvider;
+
         private readonly ServiceMessageParser serviceMessageParser;
 
         public event EventHandler<JobRunEndedEventArgs> Ended;
@@ -47,10 +46,11 @@ namespace Jobbr.Server.Core
         /// <param name="configuration">
         /// The configuration.
         /// </param>
-        public JobRunContext(IJobService jobService, IJobbrConfiguration configuration)
+        public JobRunContext(IJobService jobService, IJobbrConfiguration configuration, IJobStorageProvider jobStorageProvider)
         {
             this.jobService = jobService;
             this.configuration = configuration;
+            this.jobStorageProvider = jobStorageProvider;
             this.serviceMessageParser = new ServiceMessageParser();
         }
 
@@ -93,16 +93,31 @@ namespace Jobbr.Server.Core
             var runnerFileExe = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
             Logger.InfoFormat("[{0}] Preparing to start the runner from '{1}' in '{2}'", jobRun.UniqueId, runnerFileExe, workDir);
 
-            Process proc = new Process();
+            var proc = new Process { EnableRaisingEvents = true, StartInfo = { FileName = runnerFileExe } };
 
-            proc.EnableRaisingEvents = true;
-            proc.StartInfo.FileName = runnerFileExe;
-
-            var arguments = string.Format("--jobRunId {0} --server {1}", jobRun.Id, this.configuration.BackendAddress);
+            var arguments = $"--jobRunId {jobRun.Id} --server {this.configuration.BackendAddress}";
 
             if (this.configuration.IsRuntimeWaitingForDebugger)
             {
                 arguments += " --debug";
+            }
+
+            if (this.configuration.CustomJobRunnerParameters != null)
+            {
+                var job = jobStorageProvider.GetJobById(jobRun.JobId);
+                var customParameters = this.configuration.CustomJobRunnerParameters(job.Type, job.UniqueName);
+
+                foreach (var customParameter in customParameters)
+                {
+                    if (customParameter.Value.Contains(" "))
+                    {
+                        arguments += $" --{customParameter.Key} \"{customParameter.Value}\"";
+                    }
+                    else
+                    {
+                        arguments += $" --{customParameter.Key} {customParameter.Value}";
+                    }
+                }
             }
 
             proc.StartInfo.Arguments = arguments;

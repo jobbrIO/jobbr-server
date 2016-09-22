@@ -301,7 +301,7 @@ namespace Jobbr.Server
 
                 Logger.Info("The configuration was validated and seems ok.");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.State = JobbrState.Error;
                 throw;

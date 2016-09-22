@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-
 using Jobbr.Server.Core;
 using Jobbr.Server.Model;
 using Jobbr.Tests.Setup;
@@ -23,7 +21,7 @@ namespace Jobbr.Tests.Execution
 
             var jobService = new JobService(storageProvider);
 
-            var executor = new DefaultJobExecutor(jobService, new CompleteJobberConfiguration());
+            var executor = new DefaultJobExecutor(jobService, new CompleteJobberConfiguration(), new NotImplementedJobStorageProvider());
 
             var futureDate1 = DateTime.UtcNow.AddHours(2);
             var futureDate2 = DateTime.UtcNow.AddHours(4);
@@ -55,7 +53,7 @@ namespace Jobbr.Tests.Execution
 
             var jobService = new JobService(storageProvider);
 
-            var executor = new DefaultJobExecutor(jobService, new CompleteJobberConfiguration());
+            var executor = new DefaultJobExecutor(jobService, new CompleteJobberConfiguration(), new NotImplementedJobStorageProvider());
 
             var futureDate1 = DateTime.UtcNow.AddHours(2);
 

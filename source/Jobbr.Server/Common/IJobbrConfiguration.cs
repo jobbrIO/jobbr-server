@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 
 using Jobbr.Server.Configuration;
+using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Common
 {
@@ -44,5 +46,10 @@ namespace Jobbr.Server.Common
         IArtefactsStorageProvider ArtefactStorageProvider { get; }
 
         void OnRepositoryCreating(RepositoryBuilder repositoryBuilder);
+
+        /// <summary>
+        /// Callback to add custom parameters to jobrunner
+        /// </summary>
+        Func<string, string, IEnumerable<KeyValuePair<string, string>>> CustomJobRunnerParameters { get; set; }
     }
 }

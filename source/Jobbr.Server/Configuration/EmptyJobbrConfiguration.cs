@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Jobbr.Server.Common;
 
@@ -25,5 +26,7 @@ namespace Jobbr.Server.Configuration
         public virtual void OnRepositoryCreating(RepositoryBuilder repositoryBuilder)
         {
         }
+
+        public Func<string, string, IEnumerable<KeyValuePair<string, string>>> CustomJobRunnerParameters { get; set; }
     }
 }

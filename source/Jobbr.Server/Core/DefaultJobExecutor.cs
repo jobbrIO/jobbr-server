@@ -25,6 +25,8 @@ namespace Jobbr.Server.Core
 
         private IJobbrConfiguration configuration;
 
+        private readonly IJobStorageProvider jobStorageProvider;
+
         private Timer timer;
 
         private List<JobRun> queue = new List<JobRun>();
@@ -35,10 +37,11 @@ namespace Jobbr.Server.Core
 
         private int StartNewJobsEverySeconds = 1;
 
-        public DefaultJobExecutor(IJobService jobService, IJobbrConfiguration configuration)
+        public DefaultJobExecutor(IJobService jobService, IJobbrConfiguration configuration, IJobStorageProvider jobStorageProvider)
         {
             this.jobService = jobService;
             this.configuration = configuration;
+            this.jobStorageProvider = jobStorageProvider;
 
             this.timer = new Timer(this.StartReadyJobsFromQueue, null, Timeout.Infinite, Timeout.Infinite);
         }
@@ -206,7 +209,7 @@ namespace Jobbr.Server.Core
             this.jobService.UpdateJobRunState(jobRun, JobRunState.Preparing);
             this.queue.Remove(jobRun);
 
-            var context = new JobRunContext(this.jobService, this.configuration);
+            var context = new JobRunContext(this.jobService, this.configuration, this.jobStorageProvider);
             context.Ended += this.ContextOnEnded;
 
             this.activeContexts.Add(context);
