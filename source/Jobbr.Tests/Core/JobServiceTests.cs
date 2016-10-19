@@ -2,7 +2,7 @@
 
 using Jobbr.Server.Core;
 using Jobbr.Server.Model;
-
+using Jobbr.Tests.Setup;
 using Jobbr.Tests.StorageProvider;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,6 +16,7 @@ namespace Jobbr.Tests.Core
         public void JobService_ScheduledTriggerIsUpdated_UpdateIsPersisted()
         {
             var storageProvider = new InMemoryJobStorageProvider();
+            var configuration = new CompleteJobberConfiguration();
 
             var demoJob = new Job();
             storageProvider.AddJob(demoJob);
@@ -27,7 +28,7 @@ namespace Jobbr.Tests.Core
 
             storageProvider.AddTrigger(trigger);
 
-            var service = new JobService(storageProvider);
+            var service = new JobService(storageProvider, configuration);
 
             var triggerCopy = (ScheduledTrigger)storageProvider.GetTriggerById(trigger.Id).Clone();
             triggerCopy.StartDateTimeUtc = futureDate2;
@@ -43,6 +44,7 @@ namespace Jobbr.Tests.Core
         public void JobService_RecurringTriggerIsUpdated_UpdateIsPersisted()
         {
             var storageProvider = new InMemoryJobStorageProvider();
+            var configuration = new CompleteJobberConfiguration();
 
             var demoJob = new Job();
             storageProvider.AddJob(demoJob);
@@ -54,7 +56,7 @@ namespace Jobbr.Tests.Core
 
             storageProvider.AddTrigger(trigger);
 
-            var service = new JobService(storageProvider);
+            var service = new JobService(storageProvider, configuration);
 
             var triggerCopy = (RecurringTrigger)storageProvider.GetTriggerById(trigger.Id).Clone();
             triggerCopy.Definition = definition2;

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Logging;
@@ -16,9 +19,14 @@ namespace Jobbr.Server.Core
 
         private readonly IJobStorageProvider storageProvider;
 
-        public JobService(IJobStorageProvider storageProvider)
+        private readonly string jobRunnerProcessName;
+
+        public JobService(IJobStorageProvider storageProvider, IJobbrConfiguration configuration)
         {
             this.storageProvider = storageProvider;
+
+            var exeName = new FileInfo(configuration.JobRunnerExeResolver.Invoke()).Name;
+            this.jobRunnerProcessName = exeName.Substring(0, exeName.Length - ".exe".Length);
 
             Logger.Log(LogLevel.Debug, () => "New instance of a JobService has been created.");
         }
@@ -248,12 +256,32 @@ namespace Jobbr.Server.Core
                 Trigger = trigger,
                 JobRun = jobRun
             });
+
             return jobRun.Id;
         }
 
         public bool CheckParallelExecution(long triggerId)
         {
+            FailJobRunIfProcessDoesNotExistAnymore(triggerId);
+
             return storageProvider.CheckParallelExecution(triggerId);
+        }
+
+        private void FailJobRunIfProcessDoesNotExistAnymore(long triggerId)
+        {
+            var lastJobRun = storageProvider.GetLastJobRunByTriggerId(triggerId);
+
+            if (lastJobRun == null)
+            {
+                return;
+            }
+
+            if (lastJobRun.IsFinished == false && Process.GetProcessesByName(jobRunnerProcessName).All(p => p.Id != lastJobRun.Pid))
+            {
+                Logger.Warn(string.Format("Setting JobRun (Id: {0}) to failed since Pid {1} could not be found. Old State of JobRun: {2}", lastJobRun.Id, lastJobRun.Pid, lastJobRun.State));
+                lastJobRun.State = JobRunState.Failed;
+                storageProvider.Update(lastJobRun);
+            }
         }
 
         public void UpdateTrigger(long id, JobTriggerBase trigger)

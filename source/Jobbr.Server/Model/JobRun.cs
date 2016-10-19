@@ -1,7 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-
-using Jobbr.Common;
 using Jobbr.Common.Model;
 
 namespace Jobbr.Server.Model
@@ -28,6 +26,11 @@ namespace Jobbr.Server.Model
         public double? Progress { get; set; }
 
         public JobRunState State { get; set; }
+
+        public bool IsFinished
+        {
+            get { return this.State == JobRunState.Failed || this.State == JobRunState.Completed || this.State == JobRunState.Deleted; }
+        }
 
         public DateTime PlannedStartDateTimeUtc { get; set; }
 

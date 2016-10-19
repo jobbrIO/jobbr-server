@@ -19,9 +19,11 @@ namespace Jobbr.Tests.Execution
             var demoJob = new Job();
             storageProvider.AddJob(demoJob);
 
-            var jobService = new JobService(storageProvider);
+            var configuration = new CompleteJobberConfiguration();
 
-            var executor = new DefaultJobExecutor(jobService, new CompleteJobberConfiguration(), new NotImplementedJobStorageProvider());
+            var jobService = new JobService(storageProvider, configuration);
+
+            var executor = new DefaultJobExecutor(jobService, configuration, new NotImplementedJobStorageProvider());
 
             var futureDate1 = DateTime.UtcNow.AddHours(2);
             var futureDate2 = DateTime.UtcNow.AddHours(4);
@@ -51,9 +53,11 @@ namespace Jobbr.Tests.Execution
             var demoJob = new Job();
             storageProvider.AddJob(demoJob);
 
-            var jobService = new JobService(storageProvider);
+            var configuration = new CompleteJobberConfiguration();
 
-            var executor = new DefaultJobExecutor(jobService, new CompleteJobberConfiguration(), new NotImplementedJobStorageProvider());
+            var jobService = new JobService(storageProvider, configuration);
+
+            var executor = new DefaultJobExecutor(jobService, configuration, new NotImplementedJobStorageProvider());
 
             var futureDate1 = DateTime.UtcNow.AddHours(2);
 
