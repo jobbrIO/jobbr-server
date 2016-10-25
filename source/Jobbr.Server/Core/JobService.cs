@@ -276,7 +276,7 @@ namespace Jobbr.Server.Core
                 return;
             }
 
-            if (lastJobRun.IsFinished == false && Process.GetProcessesByName(jobRunnerProcessName).All(p => p.Id != lastJobRun.Pid))
+            if (lastJobRun.IsFinished == false && lastJobRun.Pid > 0 && Process.GetProcessesByName(jobRunnerProcessName).All(p => p.Id != lastJobRun.Pid))
             {
                 Logger.Warn(string.Format("Setting JobRun (Id: {0}) to failed since Pid {1} could not be found. Old State of JobRun: {2}", lastJobRun.Id, lastJobRun.Pid, lastJobRun.State));
                 lastJobRun.State = JobRunState.Failed;
