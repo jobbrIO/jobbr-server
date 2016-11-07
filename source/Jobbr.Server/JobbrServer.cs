@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Configuration;
 using Jobbr.Server.Core;
@@ -36,7 +37,7 @@ namespace Jobbr.Server
         /// <summary>
         /// The executor.
         /// </summary>
-        private  IJobExecutor executor;
+        private IJobExecutor executor;
 
         /// <summary>
         /// The web host.
@@ -57,7 +58,7 @@ namespace Jobbr.Server
             {
                 throw new ArgumentNullException("configuration");
             }
-            
+
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
             this.configuration = configuration;
@@ -85,7 +86,7 @@ namespace Jobbr.Server
             {
                 throw e.InnerExceptions[0];
             }
-            
+
             if (!startupTask.IsCompleted)
             {
                 Logger.FatalFormat("Jobbr was unable to start within {0}ms. Keep starting but returning now from Start()", waitForStartupTimeout);
@@ -109,10 +110,12 @@ namespace Jobbr.Server
             this.State = JobbrState.Starting;
 
             var waitForDbTask = new Task(this.WaitForDb, cancellationToken);
+
             var startComponents = waitForDbTask.ContinueWith(
                 t =>
                     {
                         this.RegisterJobsFromRepository();
+                        this.SetScheduledJobsFromPastToOmitted();
                         this.StartComponents();
                     },
                 cancellationToken);
@@ -161,7 +164,18 @@ namespace Jobbr.Server
                 catch
                 {
                     Thread.Sleep(1000);
-                }                
+                }
+            }
+        }
+
+        private void SetScheduledJobsFromPastToOmitted()
+        {
+            var scheduledJobs = this.configuration.JobStorageProvider.GetJobRunsByState(JobRunState.Scheduled).Where(p => p.PlannedStartDateTimeUtc < DateTime.UtcNow);
+
+            foreach (var job in scheduledJobs)
+            {
+                job.State = JobRunState.Omitted;
+                this.configuration.JobStorageProvider.Update(job);
             }
         }
 
