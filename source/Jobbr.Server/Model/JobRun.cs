@@ -29,7 +29,7 @@ namespace Jobbr.Server.Model
 
         public bool IsFinished
         {
-            get { return this.State == JobRunState.Failed || this.State == JobRunState.Completed || this.State == JobRunState.Deleted; }
+            get { return this.State == JobRunState.Failed || this.State == JobRunState.Completed || this.State == JobRunState.Deleted || this.State == JobRunState.Omitted; }
         }
 
         public DateTime PlannedStartDateTimeUtc { get; set; }
