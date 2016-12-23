@@ -34,6 +34,8 @@ namespace Jobbr.Server.Common
 
         List<JobRun> GetJobRuns();
 
+        bool UpdateProgress(long jobRunId, double? progress);
+
         bool Update(JobRun jobRun);
 
         Job GetJobById(long id);

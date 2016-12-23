@@ -8,7 +8,7 @@ namespace Jobbr.Tests.Setup
     {
         public CompleteJobberConfiguration()
         {
-            this.JobRunnerExeResolver = () => ".";
+            this.JobRunnerExeResolver = () => "JobRunner.exe";
             this.JobStorageProvider = new InMemoryJobStorageProvider();
             this.ArtefactStorageProvider = new FileSystemArtefactsStorageProvider("test");
             this.BackendAddress = "http://localhost:49654/jobbr";

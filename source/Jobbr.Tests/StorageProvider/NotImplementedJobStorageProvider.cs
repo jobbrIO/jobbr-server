@@ -79,6 +79,11 @@ namespace Jobbr.Tests.StorageProvider
             throw new NotImplementedException();
         }
 
+        public bool UpdateProgress(long jobRunId, double? progress)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual bool Update(JobRun jobRun)
         {
             throw new NotImplementedException();

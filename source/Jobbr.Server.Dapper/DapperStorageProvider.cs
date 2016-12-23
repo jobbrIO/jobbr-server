@@ -118,6 +118,18 @@ namespace Jobbr.Server.Dapper
             }
         }
 
+        public bool UpdateProgress(long jobRunId, double? progress)
+        {
+            var sql = string.Format(@"UPDATE {0}.{1} SET [Progress] = @Progress WHERE [Id] = @Id", this.schemaName, "JobRuns");
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                connection.Execute(sql, new { Id = jobRunId, Progress = progress });
+
+                return true;
+            }
+        }
+
         public bool Update(JobRun jobRun)
         {
             var fromDb = this.GetJobRunById(jobRun.Id);

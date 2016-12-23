@@ -96,6 +96,12 @@ namespace Jobbr.Tests.StorageProvider
             return inMemoryVersion.GetJobRuns();
         }
 
+        public bool UpdateProgress(long jobRunId, double? progress)
+        {
+            CheckFailAll();
+            return inMemoryVersion.UpdateProgress(jobRunId, progress);
+        }
+
         public bool Update(JobRun jobRun)
         {
             CheckFailAll();

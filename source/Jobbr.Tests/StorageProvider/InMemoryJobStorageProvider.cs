@@ -121,6 +121,14 @@ namespace Jobbr.Tests.StorageProvider
             return true;
         }
 
+        public bool UpdateProgress(long jobRunId, double? progress)
+        {
+            var jobRun = this.localJobRuns.First(p => p.Id == jobRunId);
+            jobRun.Progress = progress;
+
+            return true;
+        }
+
         public Job GetJobById(long id)
         {
             return this.localJobs.FirstOrDefault(j => j.Id == id).Clone();
