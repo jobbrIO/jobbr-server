@@ -255,7 +255,7 @@ namespace Jobbr.Server.Core
                     {
                         try
                         {
-                            this.jobService.UpdateJobRunProgress(args.JobRun, 100);
+                            this.jobService.UpdateJobRunProgress(args.JobRun.Id, 100);
                         }
                         catch (Exception e)
                         {

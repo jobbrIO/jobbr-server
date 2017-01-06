@@ -220,7 +220,7 @@ namespace Jobbr.Server.Core
         private bool HandleMessage(ProgressServiceMessage message)
         {
             this.jobRun.Progress = message.Percent;
-            this.jobService.UpdateJobRunProgress(this.jobRun, message.Percent);
+            this.jobService.UpdateJobRunProgress(this.jobRun.Id, message.Percent);
 
             return true;
         }

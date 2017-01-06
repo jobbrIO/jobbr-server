@@ -99,12 +99,9 @@ namespace Jobbr.Server.Core
             storageProvider.Update(fromDb);
         }
 
-        public void UpdateJobRunProgress(JobRun jobRun, double percent)
+        public void UpdateJobRunProgress(long jobRunId, double progress)
         {
-            var fromDb = storageProvider.GetJobRunById(jobRun.Id);
-
-            fromDb.Progress = percent;
-            storageProvider.Update(fromDb);
+            storageProvider.UpdateProgress(jobRunId, progress);
         }
 
         public void UpdatePlannedStartDate(JobRun jobRun)
