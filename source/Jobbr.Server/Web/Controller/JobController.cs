@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
 using Jobbr.Common.Model;
-using Jobbr.Server.Common;
 using Jobbr.Server.Core;
 using Jobbr.Server.Model;
 using Jobbr.Server.Web.Mapping;
@@ -20,30 +18,30 @@ namespace Jobbr.Server.Web.Controller
     /// </summary>
     public class JobController : ApiController
     {
-        private readonly IJobService service;
+        private readonly IStateService service;
 
-        private readonly IJobStorageProvider jobStorageProvider;
+        private readonly IJobManagementService jobManagementService;
 
-        public JobController(IJobService service, IJobStorageProvider jobStorageProvider)
+        public JobController(IStateService service, IJobManagementService jobManagementService)
         {
             this.service = service;
-            this.jobStorageProvider = jobStorageProvider;
+            this.jobManagementService = jobManagementService;
         }
 
         [HttpGet]
         [Route("api/jobs")]
         public IHttpActionResult AllJobs()
         {
-            return this.Ok(this.jobStorageProvider.GetJobs().Select(JobMapper.Map));
+            return this.Ok(this.jobManagementService.GetAllJobs().Select(JobMapper.Map));
         }
 
         [HttpGet]
         [Route("api/jobs/{jobId}")]
         public IHttpActionResult SingleJob(long jobId)
         {
-            var job = this.jobStorageProvider.GetJobById(jobId);
+            var job = this.jobManagementService.GetJobById(jobId);
 
-            var triggers = this.jobStorageProvider.GetTriggersByJobId(jobId);
+            var triggers = this.jobManagementService.GetTriggers(jobId);
             
             var jobDto = JobMapper.Map(job);
             jobDto.Trigger = triggers.Select(t => TriggerMapper.ConvertToDto(t as dynamic)).Cast<JobTriggerDtoBase>().ToList();
@@ -62,7 +60,7 @@ namespace Jobbr.Server.Web.Controller
                 return this.StatusCode(HttpStatusCode.NotAcceptable);
             }
 
-            var existingJob = this.jobStorageProvider.GetJobByUniqueName(identifier);
+            var existingJob = this.jobManagementService.GetJobByUniqueName(identifier);
 
             if (existingJob != null)
             {
@@ -70,7 +68,7 @@ namespace Jobbr.Server.Web.Controller
             }
 
             var job = new Job() { UniqueName = dto.UniqueName, Title = dto.Title, Type = dto.Type, Parameters = dto.Parameters != null ? JsonConvert.SerializeObject(dto.Parameters) : null, };
-            var returnJob = this.service.AddJob(job);
+            var returnJob = this.jobManagementService.AddJob(job);
 
             return this.Created("/api/jobs/" + job.Id, JobMapper.Map(returnJob));
         }
@@ -79,7 +77,7 @@ namespace Jobbr.Server.Web.Controller
         [Route("api/jobs/{jobId:long}")]
         public IHttpActionResult UpdateJob(long jobId, [FromBody] JobDto dto)
         {
-            var existingJob = this.jobStorageProvider.GetJobById(jobId);
+            var existingJob = this.jobManagementService.GetJobById(jobId);
 
             if (existingJob == null)
             {
@@ -93,7 +91,7 @@ namespace Jobbr.Server.Web.Controller
         [Route("api/jobs/{jobId:long}/runs")]
         public IHttpActionResult GetJobRunsForJobById(long jobId)
         {
-            var jobRuns = this.jobStorageProvider.GetJobRuns().Where(jr => jr.JobId == jobId);
+            var jobRuns = this.jobManagementService.GetJobRuns().Where(jr => jr.JobId == jobId);
 
             var list = jobRuns.Select(JobMapper.Map).ToList();
 
@@ -104,9 +102,9 @@ namespace Jobbr.Server.Web.Controller
         [Route("api/jobs/{uniqueName}/runs")]
         public IHttpActionResult GetJobRunsForJobByUniqueName(string uniqueName)
         {
-            var job = this.jobStorageProvider.GetJobByUniqueName(uniqueName);
+            var job = this.jobManagementService.GetJobByUniqueName(uniqueName);
 
-            var jobRuns = this.jobStorageProvider.GetJobRuns().Where(jr => jr.JobId == job.Id);
+            var jobRuns = this.jobManagementService.GetJobRuns().Where(jr => jr.JobId == job.Id);
 
             var list = jobRuns.Select(JobMapper.Map).ToList();
 

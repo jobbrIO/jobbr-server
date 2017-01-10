@@ -28,7 +28,9 @@ namespace Jobbr.Tests.Core
 
             storageProvider.AddTrigger(trigger);
 
-            var service = new JobService(storageProvider, configuration);
+            var jobbrRepository = new JobbrRepository(storageProvider);
+            var stateService = new StateService(configuration, jobbrRepository);
+            var service = new JobManagementService(jobbrRepository, stateService);
 
             var triggerCopy = (ScheduledTrigger)storageProvider.GetTriggerById(trigger.Id).Clone();
             triggerCopy.StartDateTimeUtc = futureDate2;
@@ -56,7 +58,9 @@ namespace Jobbr.Tests.Core
 
             storageProvider.AddTrigger(trigger);
 
-            var service = new JobService(storageProvider, configuration);
+            var jobbrRepository = new JobbrRepository(storageProvider);
+            var stateService = new StateService(configuration, jobbrRepository);
+            var service = new JobManagementService(jobbrRepository, stateService);
 
             var triggerCopy = (RecurringTrigger)storageProvider.GetTriggerById(trigger.Id).Clone();
             triggerCopy.Definition = definition2;

@@ -1,45 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
+
 using Jobbr.Common.Model;
 using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Core
 {
     /// <summary>
-    ///     The JobService interface.
+    ///     The stateService interface.
     /// </summary>
-    public interface IJobService
+    public interface IStateService
     {
         /// <summary>
         ///     The trigger updated.
         /// </summary>
         event EventHandler<JobTriggerEventArgs> TriggerUpdate;
-
-        List<Job> GetAllJobs();
-
-        Job GetJob(long id);
-
-        Job AddJob(Job job);
-
-        JobRun GetJobRun(long id);
-
-        List<JobTriggerBase> GetTriggers(long jobId);
-
-        long AddTrigger(RecurringTrigger trigger);
-
-        long AddTrigger(ScheduledTrigger trigger);
-
-        long AddTrigger(InstantTrigger trigger);
-
-        bool DisableTrigger(long triggerId, bool enableNotification);
-
-        bool EnableTrigger(long triggerId);
-
-        List<JobTriggerBase> GetActiveTriggers();
-
-        JobRun GetLastJobRunByTriggerId(long triggerId);
-
-        JobRun GetNextJobRunByTriggerId(long triggerId);
 
         long CreateJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc);
 
@@ -49,8 +23,6 @@ namespace Jobbr.Server.Core
         ///     The job run modification.
         /// </summary>
         event EventHandler<JobRunModificationEventArgs> JobRunModification;
-
-        List<JobRun> GetJobRuns(JobRunState state);
 
         void UpdateJobRunState(JobRun jobRun, JobRunState state);
 
@@ -64,8 +36,8 @@ namespace Jobbr.Server.Core
 
         void UpdateJobRunProgress(long jobRunId, double percent);
 
-        void UpdatePlannedStartDate(JobRun plannedNextRun);
+        void UpdatePlannedStartDate(long jobRunId, DateTime plannedStartDateTimeUtc);
 
-        void UpdateTrigger(long id, JobTriggerBase trigger);
+        void DipathOnTriggerUpdate(JobTriggerBase triggerFromDb);
     }
 }

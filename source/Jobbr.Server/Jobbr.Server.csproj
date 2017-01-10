@@ -81,12 +81,14 @@
     <Compile Include="Configuration\EmptyJobbrConfiguration.cs" />
     <Compile Include="Configuration\JobDefinition.cs" />
     <Compile Include="Configuration\RepositoryBuilder.cs" />
-    <Compile Include="Core\IJobService.cs" />
+    <Compile Include="Core\IJobManagementService.cs" />
+    <Compile Include="Core\IStateService.cs" />
+    <Compile Include="Core\JobbrRepo.cs" />
     <Compile Include="ServiceMessaging\ServiceMessageParser.cs" />
     <Compile Include="Core\DefaultJobExecutor.cs" />
     <Compile Include="Core\JobRunEndedEventArgs.cs" />
     <Compile Include="Core\JobRunModificationEventArgs.cs" />
-    <Compile Include="Core\JobService.cs" />
+    <Compile Include="Core\StateService.cs" />
     <Compile Include="Core\JobTriggerEventArgs.cs" />
     <Compile Include="Core\JobRunContext.cs" />
     <Compile Include="ServiceMessaging\ServiceMessage.cs" />

@@ -21,11 +21,13 @@ namespace Jobbr.Server.Core
         /// </summary>
         private static readonly ILog Logger = LogProvider.For<DefaultJobExecutor>();
 
-        private IJobService jobService;
+        private IStateService stateService;
 
         private IJobbrConfiguration configuration;
 
         private readonly IJobStorageProvider jobStorageProvider;
+
+        private readonly IJobbrRepository jobbrRepository;
 
         private Timer timer;
 
@@ -37,11 +39,12 @@ namespace Jobbr.Server.Core
 
         private int StartNewJobsEverySeconds = 1;
 
-        public DefaultJobExecutor(IJobService jobService, IJobbrConfiguration configuration, IJobStorageProvider jobStorageProvider)
+        public DefaultJobExecutor(IStateService stateService, IJobbrConfiguration configuration, IJobStorageProvider jobStorageProvider, IJobbrRepository jobbrRepository)
         {
-            this.jobService = jobService;
+            this.stateService = stateService;
             this.configuration = configuration;
             this.jobStorageProvider = jobStorageProvider;
+            this.jobbrRepository = jobbrRepository;
 
             this.timer = new Timer(this.StartReadyJobsFromQueue, null, Timeout.Infinite, Timeout.Infinite);
         }
@@ -50,8 +53,8 @@ namespace Jobbr.Server.Core
         {
             var dateTime = DateTime.UtcNow;
 
-            var scheduledRuns = this.jobService.GetJobRuns(JobRunState.Scheduled);
-            var processingRuns = this.jobService.GetJobRuns(JobRunState.Processing);
+            var scheduledRuns = this.jobbrRepository.GetJobRunsByState(JobRunState.Scheduled);
+            var processingRuns = this.jobbrRepository.GetJobRunsByState(JobRunState.Processing);
 
             var pastScheduledRuns = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc < dateTime).OrderBy(jr => jr.PlannedStartDateTimeUtc));
             var futureScheduledRuns = new List<JobRun>(scheduledRuns.Where(jr => jr.PlannedStartDateTimeUtc >= dateTime).OrderBy(jr => jr.PlannedStartDateTimeUtc));
@@ -81,8 +84,8 @@ namespace Jobbr.Server.Core
             }
             
             // Wire Events
-            this.jobService.JobRunModification += this.JobServiceOnJobRunModification;
-            this.jobService.TriggerUpdate += this.JobServiceOnTriggerUpdate;
+            this.stateService.JobRunModification += this.StateServiceOnStateRunModification;
+            this.stateService.TriggerUpdate += this.StateServiceOnTriggerUpdate;
 
             Logger.InfoFormat("Enabling periodic check for JobRuns to start every {0}s", this.StartNewJobsEverySeconds);
             this.timer.Change(TimeSpan.FromSeconds(this.StartNewJobsEverySeconds), TimeSpan.FromSeconds(this.StartNewJobsEverySeconds));
@@ -94,11 +97,11 @@ namespace Jobbr.Server.Core
         {
             this.timer.Change(Timeout.Infinite, Timeout.Infinite);
 
-            this.jobService.JobRunModification -= this.JobServiceOnJobRunModification;
-            this.jobService.TriggerUpdate -= this.JobServiceOnTriggerUpdate;
+            this.stateService.JobRunModification -= this.StateServiceOnStateRunModification;
+            this.stateService.TriggerUpdate -= this.StateServiceOnTriggerUpdate;
         }
 
-        private void JobServiceOnJobRunModification(object sender, JobRunModificationEventArgs args)
+        private void StateServiceOnStateRunModification(object sender, JobRunModificationEventArgs args)
         {
             lock (this.syncRoot)
             {
@@ -137,7 +140,7 @@ namespace Jobbr.Server.Core
             }
         }
 
-        private void JobServiceOnTriggerUpdate(object sender, JobTriggerEventArgs jobTriggerEventArgs)
+        private void StateServiceOnTriggerUpdate(object sender, JobTriggerEventArgs jobTriggerEventArgs)
         {
             var trigger = jobTriggerEventArgs.Trigger;
 
@@ -206,10 +209,10 @@ namespace Jobbr.Server.Core
 
             Logger.InfoFormat("Creating new context for JobRun with Id: {0} (TriggerId: {1}, JobId: {2})", run.Id, run.TriggerId, run.JobId);
 
-            this.jobService.UpdateJobRunState(jobRun, JobRunState.Preparing);
+            this.stateService.UpdateJobRunState(jobRun, JobRunState.Preparing);
             this.queue.Remove(jobRun);
 
-            var context = new JobRunContext(this.jobService, this.configuration, this.jobStorageProvider);
+            var context = new JobRunContext(this.stateService, this.configuration, this.jobStorageProvider);
             context.Ended += this.ContextOnEnded;
 
             this.activeContexts.Add(context);
@@ -229,7 +232,7 @@ namespace Jobbr.Server.Core
 
                 try
                 {
-                    this.jobService.SetJobRunEndTime(args.JobRun, DateTime.UtcNow);
+                    this.stateService.SetJobRunEndTime(args.JobRun, DateTime.UtcNow);
                 }
                 catch (Exception e)
                 {
@@ -242,7 +245,7 @@ namespace Jobbr.Server.Core
 
                     try
                     {
-                        this.jobService.UpdateJobRunState(args.JobRun, JobRunState.Failed);
+                        this.stateService.UpdateJobRunState(args.JobRun, JobRunState.Failed);
                     }
                     catch (Exception e)
                     {
@@ -255,7 +258,7 @@ namespace Jobbr.Server.Core
                     {
                         try
                         {
-                            this.jobService.UpdateJobRunProgress(args.JobRun.Id, 100);
+                            this.stateService.UpdateJobRunProgress(args.JobRun.Id, 100);
                         }
                         catch (Exception e)
                         {

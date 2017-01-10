@@ -6,11 +6,12 @@ using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Model;
 
+using Jobbr.Server.Logging;
+
 using NCrontab;
 
 namespace Jobbr.Server.Core
 {
-    using Jobbr.Server.Logging;
 
     /// <summary>
     /// The Scheduler creates new scheduled Jobs in the JobRun Table based on the triggers
@@ -19,23 +20,29 @@ namespace Jobbr.Server.Core
     {
         private static readonly ILog Logger = LogProvider.For<DefaultScheduler>();
 
-        private readonly IJobService jobService;
+        private readonly IStateService stateService;
 
         private readonly IJobbrConfiguration configuration;
 
+        private readonly IJobbrRepository jobbrRepository;
+
+        private readonly IJobManagementService jobManagementService;
+
         private Timer timer;
 
-        public DefaultScheduler(IJobService jobService, IJobbrConfiguration configuration)
+        public DefaultScheduler(IStateService stateService, IJobbrConfiguration configuration, IJobbrRepository jobbrRepository, IJobManagementService jobManagementService)
         {
-            this.jobService = jobService;
+            this.stateService = stateService;
             this.configuration = configuration;
+            this.jobbrRepository = jobbrRepository;
+            this.jobManagementService = jobManagementService;
 
             this.timer = new Timer(this.ScheduleJobRuns, null, Timeout.Infinite, Timeout.Infinite);
         }
 
         public void Start()
         {
-            this.jobService.TriggerUpdate += this.JobServiceOnTriggerUpdate;
+            this.stateService.TriggerUpdate += this.StateServiceOnTriggerUpdate;
 
             this.timer.Change(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(60));
         }
@@ -44,7 +51,7 @@ namespace Jobbr.Server.Core
         {
             this.timer.Change(Timeout.Infinite, Timeout.Infinite);
 
-            this.jobService.TriggerUpdate -= this.JobServiceOnTriggerUpdate;
+            this.stateService.TriggerUpdate -= this.StateServiceOnTriggerUpdate;
         }
 
         public void Dispose()
@@ -54,7 +61,7 @@ namespace Jobbr.Server.Core
 
         private void ScheduleJobRuns(object state)
         {
-            var alltriggers = this.jobService.GetActiveTriggers();
+            var alltriggers = this.jobbrRepository.GetActiveTriggers();
 
             foreach (var trigger in alltriggers)
             {
@@ -71,11 +78,11 @@ namespace Jobbr.Server.Core
 
         private void CreateSchedule(JobTriggerBase trigger)
         {
-            var job = this.jobService.GetJob(trigger.JobId);
+            var job = this.jobbrRepository.GetJob(trigger.JobId);
             DateTime? calculatedNextRun = null;
 
             // Get the next occurence from database
-            var plannedNextRun = this.jobService.GetNextJobRunByTriggerId(trigger.Id);
+            var plannedNextRun = this.jobbrRepository.GetNextJobRunByTriggerId(trigger.Id);
 
             // Calculate the next occurance for the trigger
             calculatedNextRun = this.GetNextTriggerDateTime(trigger as dynamic);
@@ -83,7 +90,7 @@ namespace Jobbr.Server.Core
             if (calculatedNextRun < DateTime.UtcNow && trigger.IsActive)
             {
                 Logger.WarnFormat("Active Disabling trigger for startdate '{0}', because historical startdate is not supported. Id '{1}' (Type: '{2}', userId: '{3}', userName: '{4}')", calculatedNextRun, trigger.Id, trigger.TriggerType, trigger.UserId, trigger.UserName);
-                this.jobService.DisableTrigger(trigger.Id, false);
+                this.jobManagementService.DisableTrigger(trigger.Id, false);
             }
             else if (calculatedNextRun != null)
             {
@@ -93,7 +100,7 @@ namespace Jobbr.Server.Core
 
                     if (recurringTrigger != null && recurringTrigger.NoParallelExecution)
                     {
-                        if (this.jobService.CheckParallelExecution(recurringTrigger.Id) == false)
+                        if (this.stateService.CheckParallelExecution(recurringTrigger.Id) == false)
                         {
                             Logger.InfoFormat(
                                 "No Parallel Execution: prevented planning of new JobRun for Job '{0}' (JobId: {1}). Caused by trigger with id '{2}' (Type: '{3}', userId: '{4}', userName: '{5}')",
@@ -118,7 +125,7 @@ namespace Jobbr.Server.Core
                         trigger.UserId,
                         trigger.UserName);
 
-                    this.jobService.CreateJobRun(job, trigger, calculatedNextRun.Value);
+                    this.stateService.CreateJobRun(job, trigger, calculatedNextRun.Value);
                 }
                 else
                 {
@@ -145,7 +152,7 @@ namespace Jobbr.Server.Core
 
                             plannedNextRun.PlannedStartDateTimeUtc = calculatedNextRun.Value;
 
-                            this.jobService.UpdatePlannedStartDate(plannedNextRun);
+                            this.stateService.UpdatePlannedStartDate(plannedNextRun.Id, plannedNextRun.PlannedStartDateTimeUtc);
                         }
                         else
                         {
@@ -183,7 +190,7 @@ namespace Jobbr.Server.Core
             var baseDateTimeUtc = instantTrigger.CreatedDateTimeUtc;
             var startDate = baseDateTimeUtc.AddMinutes(instantTrigger.DelayedMinutes);
 
-            this.jobService.DisableTrigger(instantTrigger.Id, false);
+            this.jobManagementService.DisableTrigger(instantTrigger.Id, false);
             instantTrigger.IsActive = false;
 
             return startDate;
@@ -212,13 +219,13 @@ namespace Jobbr.Server.Core
             return null;
         }
 
-        private void JobServiceOnTriggerUpdate(object sender, JobTriggerEventArgs args)
+        private void StateServiceOnTriggerUpdate(object sender, JobTriggerEventArgs args)
         {
             Logger.Log(
                 LogLevel.Info,
                 () =>
                     {
-                        var job = this.jobService.GetJob(args.Trigger.JobId);
+                        var job = this.jobbrRepository.GetJob(args.Trigger.JobId);
                         return string.Format("Got new or updated trigger (Type: '{0}'. Id: '{1}', UserId: '{2}', UserName: '{3}' for job '{4}' (JobId: {5})", args.Trigger.TriggerType, args.Trigger.Id, args.Trigger.UserId, args.Trigger.UserName, job.UniqueName, job.Id);
                     });
 
@@ -234,8 +241,8 @@ namespace Jobbr.Server.Core
 
         private void RemoveSchedule(JobTriggerBase trigger)
         {
-            var jobRun = this.jobService.GetNextJobRunByTriggerId(trigger.Id);
-            this.jobService.UpdateJobRunState(jobRun, JobRunState.Deleted);
+            var jobRun = this.jobbrRepository.GetNextJobRunByTriggerId(trigger.Id);
+            this.stateService.UpdateJobRunState(jobRun, JobRunState.Deleted);
         }
     }
 }

@@ -24,7 +24,9 @@ namespace Jobbr.Server
             this.Bind<IJobStorageProvider>().ToConstant(configuration.JobStorageProvider);
             this.Bind<IArtefactsStorageProvider>().ToConstant(configuration.ArtefactStorageProvider);
 
-            this.Bind<IJobService>().To<JobService>().InSingletonScope();
+            this.Bind<IJobManagementService>().To<JobManagementService>().InSingletonScope();
+            this.Bind<IJobbrRepository>().To<JobbrRepository>().InSingletonScope();
+            this.Bind<IStateService>().To<StateService>().InSingletonScope();
             this.Bind<DefaultScheduler>().To<DefaultScheduler>();
             this.Bind<IJobExecutor>().To<DefaultJobExecutor>();
         }

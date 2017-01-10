@@ -18,24 +18,27 @@ namespace Jobbr.Server.Web.Controller
     /// </summary>
     public class ExecutorController : ApiController
     {
-        private readonly IJobService jobService;
+        private readonly IStateService stateService;
 
         private readonly IJobStorageProvider jobStorageProvider;
 
         private readonly IArtefactsStorageProvider artefactsStorageProvider;
 
-        public ExecutorController(IJobService jobService, IJobStorageProvider jobStorageProvider, IArtefactsStorageProvider artefactsStorageProvider)
+        private readonly IJobManagementService jobManagementService;
+
+        public ExecutorController(IStateService stateService, IJobStorageProvider jobStorageProvider, IArtefactsStorageProvider artefactsStorageProvider, IJobManagementService jobManagementService)
         {
-            this.jobService = jobService;
+            this.stateService = stateService;
             this.jobStorageProvider = jobStorageProvider;
             this.artefactsStorageProvider = artefactsStorageProvider;
+            this.jobManagementService = jobManagementService;
         }
 
         [HttpGet]
         [Route("client/jobrun/{jobRunId}")]
         public IHttpActionResult GetJonbRunInfos(long jobRunId)
         {
-            var jobRun = this.jobService.GetJobRun(jobRunId);
+            var jobRun = this.jobManagementService.GetJobRun(jobRunId);
 
             if (jobRun == null)
             {
@@ -68,7 +71,7 @@ namespace Jobbr.Server.Web.Controller
         [Route("client/jobrun/{jobRunId}")]
         public IHttpActionResult PutJobRunUpdate(long jobRunId, [FromBody] JobRunUpdateDto dto)
         {
-            var jobRun = this.jobService.GetJobRun(jobRunId);
+            var jobRun = this.jobManagementService.GetJobRun(jobRunId);
 
             if (jobRun == null)
             {
@@ -77,7 +80,7 @@ namespace Jobbr.Server.Web.Controller
 
             if (dto.State != JobRunState.Null)
             {
-                this.jobService.UpdateJobRunState(jobRun, dto.State);
+                this.stateService.UpdateJobRunState(jobRun, dto.State);
             }
 
             return this.StatusCode(HttpStatusCode.Accepted);
@@ -87,7 +90,7 @@ namespace Jobbr.Server.Web.Controller
         [Route("client/jobrun/{jobRunId}/artefacts")]
         public IHttpActionResult AddArtefacts(long jobRunId)
         {
-            var jobRun = this.jobService.GetJobRun(jobRunId);
+            var jobRun = this.jobManagementService.GetJobRun(jobRunId);
 
             if (jobRun == null)
             {

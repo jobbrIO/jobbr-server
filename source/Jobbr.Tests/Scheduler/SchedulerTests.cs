@@ -22,9 +22,11 @@ namespace Jobbr.Tests.Scheduler
 
             var configuration = new CompleteJobberConfiguration();
 
-            var jobService = new JobService(storageProvider, configuration);
-
-            var scheduler = new DefaultScheduler(jobService, configuration);
+            var repository = new JobbrRepository(storageProvider);
+            var stateService = new StateService(configuration, repository);
+            var jobService = new JobManagementService(repository, stateService);
+            
+            var scheduler = new DefaultScheduler(stateService, configuration, repository, jobService);
 
             var currentMinutesInHour = DateTime.UtcNow.Minute;
             var futureMinute = (currentMinutesInHour + 5)%60;
@@ -61,9 +63,12 @@ namespace Jobbr.Tests.Scheduler
 
             var configuration = new CompleteJobberConfiguration();
 
-            var jobService = new JobService(storageProvider, configuration);
+            var repository = new JobbrRepository(storageProvider);
+            var stateService = new StateService(configuration, repository);
+            var jobService = new JobManagementService(repository, stateService);
 
-            var scheduler = new DefaultScheduler(jobService, configuration);
+            var scheduler = new DefaultScheduler(stateService, configuration, repository, jobService);
+
             var futureDate1 = DateTime.UtcNow.AddHours(2);
 
             var trigger = new ScheduledTrigger {JobId = demoJob.Id, StartDateTimeUtc = futureDate1, IsActive = true};
@@ -95,9 +100,12 @@ namespace Jobbr.Tests.Scheduler
 
             var configuration = new CompleteJobberConfiguration();
 
-            var jobService = new JobService(storageProvider, configuration);
+            var repository = new JobbrRepository(storageProvider);
+            var stateService = new StateService(configuration, repository);
+            var jobService = new JobManagementService(repository, stateService);
 
-            var scheduler = new DefaultScheduler(jobService, configuration);
+            var scheduler = new DefaultScheduler(stateService, configuration, repository, jobService);
+
             var futureDate1 = DateTime.UtcNow.AddHours(2);
 
             var trigger = new ScheduledTrigger {JobId = demoJob.Id, StartDateTimeUtc = futureDate1, IsActive = false};
@@ -132,7 +140,9 @@ namespace Jobbr.Tests.Scheduler
 
             var configuration = new CompleteJobberConfiguration();
 
-            var jobService = new JobService(storageProvider, configuration);
+            var repository = new JobbrRepository(storageProvider);
+            var stateService = new StateService(configuration, repository);
+            var jobService = new JobManagementService(repository, stateService);
 
             var recurringTrigger = new RecurringTrigger {Definition = "* * * * *", JobId = demoJob.Id, IsActive = true, NoParallelExecution = false, StartDateTimeUtc = DateTime.UtcNow.AddDays(-1)};
             jobService.AddTrigger(recurringTrigger);
@@ -142,7 +152,7 @@ namespace Jobbr.Tests.Scheduler
 
             storageProvider.AddJobRun(new JobRun {State = JobRunState.Processing, TriggerId = recurringTrigger.Id, JobId = demoJob.Id});
 
-            var scheduler = new DefaultScheduler(jobService, configuration);
+            var scheduler = new DefaultScheduler(stateService, configuration, repository, jobService);
 
             scheduler.Start();
 
@@ -167,7 +177,9 @@ namespace Jobbr.Tests.Scheduler
 
             var configuration = new CompleteJobberConfiguration();
 
-            var jobService = new JobService(storageProvider, configuration);
+            var repository = new JobbrRepository(storageProvider);
+            var stateService = new StateService(configuration, repository);
+            var jobService = new JobManagementService(repository, stateService);
 
             var recurringTrigger = new RecurringTrigger {Definition = "* * * * *", JobId = demoJob.Id, IsActive = true, NoParallelExecution = true, StartDateTimeUtc = DateTime.UtcNow.AddDays(-1)};
             jobService.AddTrigger(recurringTrigger);
@@ -177,7 +189,7 @@ namespace Jobbr.Tests.Scheduler
 
             storageProvider.AddJobRun(new JobRun {State = JobRunState.Processing, TriggerId = recurringTrigger.Id, JobId = demoJob.Id});
 
-            var scheduler = new DefaultScheduler(jobService, configuration);
+            var scheduler = new DefaultScheduler(stateService, configuration, repository, jobService);
 
             scheduler.Start();
 

@@ -19,7 +19,7 @@ namespace Jobbr.Server.Core
         /// <summary>
         /// The job service.
         /// </summary>
-        private readonly IJobService jobService;
+        private readonly IStateService stateService;
 
         /// <summary>
         /// The configuration.
@@ -40,15 +40,15 @@ namespace Jobbr.Server.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="JobRunContext"/> class.
         /// </summary>
-        /// <param name="jobService">
+        /// <param name="stateService">
         /// The job service.
         /// </param>
         /// <param name="configuration">
         /// The configuration.
         /// </param>
-        public JobRunContext(IJobService jobService, IJobbrConfiguration configuration, IJobStorageProvider jobStorageProvider)
+        public JobRunContext(IStateService stateService, IJobbrConfiguration configuration, IJobStorageProvider jobStorageProvider)
         {
-            this.jobService = jobService;
+            this.stateService = stateService;
             this.configuration = configuration;
             this.jobStorageProvider = jobStorageProvider;
             this.serviceMessageParser = new ServiceMessageParser();
@@ -82,10 +82,10 @@ namespace Jobbr.Server.Core
 
         private void UpdateState(JobRun jobRun, Process proc)
         {
-            this.jobService.SetPidForJobRun(jobRun, proc.Id);
-            this.jobService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
+            this.stateService.SetPidForJobRun(jobRun, proc.Id);
+            this.stateService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
 
-            this.jobService.UpdateJobRunState(jobRun, JobRunState.Started);
+            this.stateService.UpdateJobRunState(jobRun, JobRunState.Started);
         }
 
         private Process StartProcess(JobRun jobRun, string workDir)
@@ -130,7 +130,7 @@ namespace Jobbr.Server.Core
             proc.OutputDataReceived += this.ProcOnOutputDataReceived;
             proc.Exited += (o, args) => this.OnEnded(new JobRunEndedEventArgs() { ExitCode = proc.ExitCode, JobRun = jobRun, ProcInfo = proc });
 
-            this.jobService.UpdateJobRunState(jobRun, JobRunState.Starting);
+            this.stateService.UpdateJobRunState(jobRun, JobRunState.Starting);
 
             Logger.InfoFormat("[{0}] Starting '{1} {2}' in '{3}'", jobRun.UniqueId, runnerFileExe, arguments, workDir);
             proc.Start();
@@ -157,7 +157,7 @@ namespace Jobbr.Server.Core
             Directory.CreateDirectory(workDir);
             Logger.InfoFormat("[{0}] Created Working-Directory '{1}'", jobRun.UniqueId, workDir);
 
-            this.jobService.UpdateJobRunDirectories(this.jobRun, workDir, tempDir);
+            this.stateService.UpdateJobRunDirectories(this.jobRun, workDir, tempDir);
             return workDir;
         }
 
@@ -220,7 +220,7 @@ namespace Jobbr.Server.Core
         private bool HandleMessage(ProgressServiceMessage message)
         {
             this.jobRun.Progress = message.Percent;
-            this.jobService.UpdateJobRunProgress(this.jobRun.Id, message.Percent);
+            this.stateService.UpdateJobRunProgress(this.jobRun.Id, message.Percent);
 
             return true;
         }
