@@ -8,7 +8,6 @@ using Jobbr.Server.Common;
 using Jobbr.Server.Configuration;
 using Jobbr.Server.Core;
 using Jobbr.Server.Logging;
-using Jobbr.Server.Web;
 
 using Microsoft.Owin.Hosting.Services;
 
@@ -38,11 +37,6 @@ namespace Jobbr.Server
         /// The executor.
         /// </summary>
         private IJobExecutor executor;
-
-        /// <summary>
-        /// The web host.
-        /// </summary>
-        private WebHost webHost;
 
         private bool isRunning;
 
@@ -116,7 +110,10 @@ namespace Jobbr.Server
                     {
                         this.RegisterJobsFromRepository();
                         this.SetScheduledJobsFromPastToOmitted();
-                        this.StartComponents();
+                        this.StartInternalComponents();
+                        this.StartOptionalComponents();
+
+                        this.isRunning = true;
                     },
                 cancellationToken);
 
@@ -129,20 +126,42 @@ namespace Jobbr.Server
             return true;
         }
 
-        private void StartComponents()
+        private void StartInternalComponents()
         {
             try
             {
-                Logger.DebugFormat("Starting WebHost ({0})...", this.webHost.GetType().Name);
-                this.webHost.Start();
-
                 Logger.DebugFormat("Starting Scheduler ({0})...", this.scheduler.GetType().Name);
                 this.scheduler.Start();
 
                 Logger.DebugFormat("Starting Executor ({0})...", this.executor.GetType().Name);
                 this.executor.Start();
 
-                Logger.Info("All services (WebHost, Scheduler, Executor) have been started sucessfully.");
+                Logger.Info("All services (Scheduler, Executor) have been started sucessfully.");
+
+            }
+            catch (Exception e)
+            {
+                Logger.FatalException("A least one service couldn't be started. Please see the exception for details.", e);
+            }
+        }
+
+        private void StartOptionalComponents()
+        {
+            if (this.configuration.Components == null)
+            {
+                return;
+            }
+
+            try
+            {
+                foreach (var jobbrComponent in this.configuration.Components)
+                {
+                    var type = jobbrComponent.GetType();
+                    Logger.DebugFormat($"Starting JobbrComponent '{type.FullName}' ...");
+                    jobbrComponent.Start();
+                }
+
+                Logger.Info("All Optional Services have been started sucessfully.");
 
                 this.isRunning = true;
             }
@@ -220,14 +239,8 @@ namespace Jobbr.Server
 
             try
             {
-                this.webHost = kernel.GetService<WebHost>();
                 this.scheduler = kernel.GetService<DefaultScheduler>();
                 this.executor = kernel.GetService<IJobExecutor>();
-
-                if (this.webHost == null)
-                {
-                    throw new NullReferenceException("'WebHost' is not set!");
-                }
 
                 if (this.scheduler == null)
                 {
@@ -244,7 +257,7 @@ namespace Jobbr.Server
             catch (Exception e)
             {
                 Logger.FatalException("Cannot resolve components. See the exception for details.", e);
-                throw e;
+                throw;
             }
         }
 
@@ -255,11 +268,12 @@ namespace Jobbr.Server
         {
             Logger.Info("Attempt to shut down JobbrServer...");
 
-            this.webHost.Stop();
+            this.configuration.Components.ForEach(component => component.Stop());
+
             this.scheduler.Stop();
             this.executor.Stop();
 
-            Logger.Info("All services (WebHost, Scheduler, Executor) have been stopped.");
+            Logger.Info("All components stopped.");
         }
 
         /// <summary>

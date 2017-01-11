@@ -1,10 +1,8 @@
 ﻿using System.IO;
 
-using Jobbr.Server.Common;
-
 namespace Jobbr.Server.Configuration
 {
-    public class DefaultJobbrConfiguration : EmptyJobbrConfiguration, IJobbrConfiguration
+    public class DefaultJobbrConfiguration : EmptyJobbrConfiguration
     {
         public DefaultJobbrConfiguration()
         {

@@ -98,24 +98,12 @@
     <Compile Include="Common\JobbrDependencyResolver.cs" />
     <Compile Include="Core\DefaultScheduler.cs" />
     <Compile Include="IJobExecutor.cs" />
-    <Compile Include="Web\Controller\ExecutorController.cs" />
-    <Compile Include="Web\Controller\JobRunController.cs" />
-    <Compile Include="Web\Controller\TriggerController.cs" />
-    <Compile Include="Web\Mapping\JobMapper.cs" />
-    <Compile Include="Web\Mapping\TriggerMapper.cs" />
-    <Compile Include="Web\JsonTypeConverter.cs" />
-    <Compile Include="Web\TraceSourceExceptionLogger.cs" />
-    <Compile Include="Web\WebHost.cs" />
-    <Compile Include="Web\Controller\DefaultController.cs" />
-    <Compile Include="Web\Controller\JobController.cs" />
-    <Compile Include="Web\Startup.cs" />
     <Compile Include="Model\Job.cs" />
     <Compile Include="Configuration\DefaultJobbrConfiguration.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Model\JobRun.cs" />
     <Compile Include="Model\JobTriggerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web\DependencyResolverAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

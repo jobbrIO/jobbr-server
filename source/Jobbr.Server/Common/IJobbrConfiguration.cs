@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 using Jobbr.Server.Configuration;
 using Jobbr.Server.Model;
@@ -51,5 +52,14 @@ namespace Jobbr.Server.Common
         /// Callback to add custom parameters to jobrunner
         /// </summary>
         Func<string, string, IEnumerable<KeyValuePair<string, string>>> CustomJobRunnerParameters { get; set; }
+
+        List<IJobbrComponent> Components { get; set; }
+    }
+
+    public interface IJobbrComponent : IDisposable
+    {
+        void Start();
+
+        void Stop();
     }
 }
