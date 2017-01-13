@@ -76,6 +76,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
+    <Compile Include="Builder\DefaultKernel.cs" />
+    <Compile Include="Builder\InMemoryJobStorageProvider.cs" />
+    <Compile Include="Builder\IJobbrBuilder.cs" />
+    <Compile Include="Builder\JobbrBuilder.cs" />
+    <Compile Include="Builder\ExtensionMethods.cs" />
     <Compile Include="Common\FileSystemArtefactsStorageProvider.cs" />
     <Compile Include="Common\IArtefactsStorageProvider.cs" />
     <Compile Include="Configuration\EmptyJobbrConfiguration.cs" />
