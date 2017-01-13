@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Reflection;
 
+using Jobbr.Common.Model;
 using Jobbr.Server.Common;
 using Jobbr.Server.Logging;
-using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Configuration
 {

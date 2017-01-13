@@ -3,7 +3,6 @@ using System.Linq;
 
 using Jobbr.Common.Model;
 using Jobbr.Server.Core;
-using Jobbr.Server.Model;
 using Jobbr.Tests.Setup;
 using Jobbr.Tests.StorageProvider;
 

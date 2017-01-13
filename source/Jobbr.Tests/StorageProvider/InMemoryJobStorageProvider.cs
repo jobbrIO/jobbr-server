@@ -4,7 +4,6 @@ using System.Linq;
 
 using Jobbr.Server.Common;
 using Jobbr.Server.Core;
-using Jobbr.Server.Model;
 using Jobbr.Common.Model;
 
 namespace Jobbr.Tests.StorageProvider

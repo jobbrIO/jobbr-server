@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Jobbr.Server.Model;
+using Jobbr.Common.Model;
 
 namespace Jobbr.Server.Configuration
 {

@@ -1,8 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using Jobbr.Common.Model;
 
-namespace Jobbr.Server.Model
+namespace Jobbr.Common.Model
 {
     /// <summary>
     /// The actual run of the job

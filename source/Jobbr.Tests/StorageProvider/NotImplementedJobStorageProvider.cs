@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 
 using Jobbr.Server.Common;
-using Jobbr.Server.Model;
 using Jobbr.Common.Model;
 
 namespace Jobbr.Tests.StorageProvider

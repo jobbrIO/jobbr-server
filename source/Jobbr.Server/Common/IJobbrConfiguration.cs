@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 
 using Jobbr.Server.Configuration;
-using Jobbr.Server.Model;
 
 namespace Jobbr.Server.Common
 {

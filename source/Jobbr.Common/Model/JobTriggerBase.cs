@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Jobbr.Server.Model
+namespace Jobbr.Common.Model
 {
     /// <summary>
     /// The job trigger base.

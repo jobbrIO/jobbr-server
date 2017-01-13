@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Jobbr.Server.Model;
+using Jobbr.Common.Model;
 
 namespace Jobbr.Server.Core
 {
