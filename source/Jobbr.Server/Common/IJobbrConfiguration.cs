@@ -6,6 +6,8 @@ using Jobbr.Server.Configuration;
 
 namespace Jobbr.Server.Common
 {
+    // TODO: Split into different configuration classes
+
     /// <summary>
     /// The JobbrConfiguration interface.
     /// </summary>
