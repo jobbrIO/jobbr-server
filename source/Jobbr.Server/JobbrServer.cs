@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -40,6 +41,8 @@ namespace Jobbr.Server
 
         private bool isRunning;
 
+        private readonly List<IJobbrComponent> components;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
@@ -56,6 +59,26 @@ namespace Jobbr.Server
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
             this.configuration = configuration;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JobbrServer"/> class.
+        /// </summary>
+        /// <param name="configuration">
+        /// The configuration.
+        /// </param>
+        public JobbrServer(IJobbrConfiguration configuration, List<IJobbrComponent> components)
+        {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
+
+            Logger.Debug("A new instance of a a JobbrServer has been created.");
+
+            this.configuration = configuration;
+
+            this.components = components;
         }
 
         public bool IsRunning
@@ -147,14 +170,14 @@ namespace Jobbr.Server
 
         private void StartOptionalComponents()
         {
-            if (this.configuration.Components == null)
+            if (this.components == null)
             {
                 return;
             }
 
             try
             {
-                foreach (var jobbrComponent in this.configuration.Components)
+                foreach (var jobbrComponent in this.components)
                 {
                     var type = jobbrComponent.GetType();
                     Logger.DebugFormat($"Starting JobbrComponent '{type.FullName}' ...");
@@ -268,7 +291,7 @@ namespace Jobbr.Server
         {
             Logger.Info("Attempt to shut down JobbrServer...");
 
-            this.configuration.Components.ForEach(component => component.Stop());
+            this.components.ForEach(component => component.Stop());
 
             this.scheduler.Stop();
             this.executor.Stop();
