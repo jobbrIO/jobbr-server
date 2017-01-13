@@ -23,7 +23,7 @@ namespace Jobbr.Server.Common
         /// <param name="ninjectKernel">
         /// The ninject kernel.
         /// </param>
-        public JobbrDependencyResolver(DefaultKernel ninjectKernel)
+        public JobbrDependencyResolver(IKernel ninjectKernel)
         {
             this.ninjectKernel = ninjectKernel;
         }
