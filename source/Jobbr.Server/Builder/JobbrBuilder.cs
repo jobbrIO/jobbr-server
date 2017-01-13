@@ -35,7 +35,7 @@ namespace Jobbr.Server.Builder
             // Register default implementations if user did not specify any separate
             if (this.container.TryGet<IArtefactsStorageProvider>() == null)
             {
-                Logger.Error("There was no ArtefactsStorageProvider registered. Will continue building with an InMemory version, which does not support production scenarios.");
+                Logger.Error("There was no ArtefactsStorageProvider registered. Adding a default FileSystemArtefactsStory, which stores artefacts in the current directory.");
                 fileSystemArtefactsStorageProvider = new FileSystemArtefactsStorageProvider(Directory.GetCurrentDirectory());
                 this.container.Bind<IArtefactsStorageProvider>().ToConstant(fileSystemArtefactsStorageProvider);
             }
