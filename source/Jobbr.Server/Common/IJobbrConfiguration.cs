@@ -51,8 +51,6 @@ namespace Jobbr.Server.Common
         /// Callback to add custom parameters to jobrunner
         /// </summary>
         Func<string, string, IEnumerable<KeyValuePair<string, string>>> CustomJobRunnerParameters { get; set; }
-
-        List<IJobbrComponent> Components { get; set; }
     }
 
     public interface IJobbrComponent : IDisposable

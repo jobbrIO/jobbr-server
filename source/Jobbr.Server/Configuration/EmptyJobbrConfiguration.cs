@@ -28,7 +28,5 @@ namespace Jobbr.Server.Configuration
         }
 
         public Func<string, string, IEnumerable<KeyValuePair<string, string>>> CustomJobRunnerParameters { get; set; }
-
-        public List<IJobbrComponent> Components { get; set; }
     }
 }
