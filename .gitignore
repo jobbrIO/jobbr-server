@@ -182,4 +182,6 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 
+# output of ilmerge & nuget package
 source/ilmerged
+source/Jobbr.Server.*.nupkg
