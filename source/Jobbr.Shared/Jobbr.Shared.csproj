@@ -40,8 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IJobbrDependencyRegistrator.cs" />
-    <Compile Include="IJobbrDependencyResolver.cs" />
     <Compile Include="JobRunInfoDto.cs" />
     <Compile Include="JobRunUpdateDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

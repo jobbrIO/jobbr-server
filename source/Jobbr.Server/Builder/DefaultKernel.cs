@@ -1,6 +1,7 @@
-﻿using Jobbr.Server.Common;
+﻿using Jobbr.ComponentModel.Registration;
+using Jobbr.Server.Common;
+using Jobbr.Server.ComponentModel.Services;
 using Jobbr.Server.Core;
-using Jobbr.Shared;
 using Ninject;
 
 namespace Jobbr.Server.Builder
@@ -18,13 +19,22 @@ namespace Jobbr.Server.Builder
         /// </param>
         public DefaultContainer()
         {
-            this.Bind<IJobbrDependencyResolver>().ToConstant(new JobbrDependencyResolver(this));
+            this.Bind<IJobbrServiceProvider>().ToConstant(new JobbrServiceProvider(this));
 
             this.Bind<IJobManagementService>().To<JobManagementService>().InSingletonScope();
             this.Bind<IJobbrRepository>().To<JobbrRepository>().InSingletonScope();
             this.Bind<IStateService>().To<StateService>().InSingletonScope();
             this.Bind<DefaultScheduler>().To<DefaultScheduler>();
             this.Bind<IJobExecutor>().To<DefaultJobExecutor>();
+
+            this.AddComponentModelServices();
         }
+
+        private void AddComponentModelServices()
+        {
+            this.Bind<Jobbr.ComponentModel.Management.IJobManagementService>().To<JobManagementServiceImplementation>();
+        }
+
+
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-
-using Jobbr.Shared;
+using Jobbr.ComponentModel.Registration;
 
 using Ninject;
 
@@ -10,7 +9,7 @@ namespace Jobbr.Server.Common
     /// <summary>
     /// The jobbr dependency resolver.
     /// </summary>
-    public class JobbrDependencyResolver : IJobbrDependencyResolver
+    public class JobbrServiceProvider : IJobbrServiceProvider
     {
         /// <summary>
         /// The ninject kernel.
@@ -18,12 +17,12 @@ namespace Jobbr.Server.Common
         private readonly IKernel ninjectKernel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="JobbrDependencyResolver"/> class.
+        /// Initializes a new instance of the <see cref="JobbrServiceProvider"/> class.
         /// </summary>
         /// <param name="ninjectKernel">
         /// The ninject kernel.
         /// </param>
-        public JobbrDependencyResolver(IKernel ninjectKernel)
+        public JobbrServiceProvider(IKernel ninjectKernel)
         {
             this.ninjectKernel = ninjectKernel;
         }
@@ -48,12 +47,14 @@ namespace Jobbr.Server.Common
         /// <param name="serviceType">
         /// The service type.
         /// </param>
-        /// <returns>
-        /// The <see cref="IEnumerable"/>.
-        /// </returns>
         public IEnumerable<object> GetServices(Type serviceType)
         {
             return new List<object>(new[] { this.GetService(serviceType) });
+        }
+
+        public IJobbrServiceProvider GetChild()
+        {
+            return new JobbrServiceProvider(this.ninjectKernel);
         }
     }
 }
