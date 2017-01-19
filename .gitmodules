@@ -1,0 +1,15 @@
+[submodule "source/submodules/jobbr-cm-management"]
+	path = source/submodules/jobbr-cm-management
+	url = https://github.com/jobbrIO/jobbr-cm-management.git
+[submodule "source/submodules/jobbr-cm-execution"]
+	path = source/submodules/jobbr-cm-execution
+	url = https://github.com/jobbrIO/jobbr-cm-execution.git
+[submodule "source/submodules/jobbr-cm-artefactstorage"]
+	path = source/submodules/jobbr-cm-artefactstorage
+	url = https://github.com/jobbrIO/jobbr-cm-artefactstorage.git
+[submodule "source/submodules/jobbr-cm-registration"]
+	path = source/submodules/jobbr-cm-registration
+	url = https://github.com/jobbrIO/jobbr-cm-registration.git
+[submodule "source/submodules/jobbr-cm-jobstorage"]
+	path = source/submodules/jobbr-cm-jobstorage
+	url = https://github.com/jobbrIO/jobbr-cm-jobstorage.git
