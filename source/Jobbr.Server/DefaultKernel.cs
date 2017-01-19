@@ -20,7 +20,6 @@ namespace Jobbr.Server
         public DefaultKernel(IJobbrConfiguration configuration)
         {
             this.Bind<IJobbrConfiguration>().ToConstant(configuration);
-            this.Bind<IJobbrDependencyResolver>().ToConstant(new JobbrDependencyResolver(this));
             this.Bind<IJobStorageProvider>().ToConstant(configuration.JobStorageProvider);
             this.Bind<IArtefactsStorageProvider>().ToConstant(configuration.ArtefactStorageProvider);
 

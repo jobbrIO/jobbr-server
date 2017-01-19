@@ -34,7 +34,5 @@ namespace Jobbr.Server.Builder
         {
             this.Bind<Jobbr.ComponentModel.Management.IJobManagementService>().To<JobManagementServiceImplementation>();
         }
-
-
     }
 }
