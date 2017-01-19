@@ -54,5 +54,10 @@ namespace Jobbr.Server.Builder
         {
             this.container.Bind<T>().To(type);
         }
+
+        public void Add<T>(object instance)
+        {
+            this.container.Bind<T>().ToConstant((T)instance);
+        }
     }
 }

@@ -43,6 +43,10 @@
     <Reference Include="NCrontab">
       <HintPath>..\packages\ncrontab.2.0.0\lib\net20\NCrontab.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Ninject">
       <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
     </Reference>
@@ -53,6 +57,14 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -110,7 +122,7 @@
       <Name>Jobbr.ComponentModel.Management</Name>
     </ProjectReference>
     <ProjectReference Include="..\submodules\jobbr-cm-registration\source\Jobbr.ComponentModel.Registration\Jobbr.ComponentModel.Registration.csproj">
-      <Project>{DA63448E-F6CD-4519-9284-09028659AD28}</Project>
+      <Project>{0718496b-04f3-4197-9ed6-f2ecb73ecc03}</Project>
       <Name>Jobbr.ComponentModel.Registration</Name>
     </ProjectReference>
   </ItemGroup>
