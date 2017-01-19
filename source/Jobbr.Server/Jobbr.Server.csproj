@@ -78,7 +78,6 @@
     <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
     <Compile Include="Builder\DefaultKernel.cs" />
     <Compile Include="Builder\InMemoryJobStorageProvider.cs" />
-    <Compile Include="Builder\IJobbrBuilder.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
     <Compile Include="Builder\ExtensionMethods.cs" />
     <Compile Include="Common\FileSystemArtefactsStorageProvider.cs" />
@@ -119,6 +118,10 @@
     <ProjectReference Include="..\Jobbr.Shared\Jobbr.Shared.csproj">
       <Project>{4c7ff32d-8514-4d17-b21c-3ef69968ab1f}</Project>
       <Name>Jobbr.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-registration\source\Jobbr.ComponentModel.Registration\Jobbr.ComponentModel.Registration.csproj">
+      <Project>{DA63448E-F6CD-4519-9284-09028659AD28}</Project>
+      <Name>Jobbr.ComponentModel.Registration</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -54,11 +54,4 @@ namespace Jobbr.Server.Common
         /// </summary>
         Func<string, string, IEnumerable<KeyValuePair<string, string>>> CustomJobRunnerParameters { get; set; }
     }
-
-    public interface IJobbrComponent : IDisposable
-    {
-        void Start();
-
-        void Stop();
-    }
 }

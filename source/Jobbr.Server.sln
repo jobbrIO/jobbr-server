@@ -18,6 +18,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Tests", "Jobbr.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Shared", "Jobbr.Shared\Jobbr.Shared.csproj", "{4C7FF32D-8514-4D17-B21C-3EF69968AB1F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{315A5141-A541-44FC-B7C7-1C0F7594CAAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.ComponentModel.Registration", "submodules\jobbr-cm-registration\source\Jobbr.ComponentModel.Registration\Jobbr.ComponentModel.Registration.csproj", "{DA63448E-F6CD-4519-9284-09028659AD28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,8 +43,15 @@ Global
 		{4C7FF32D-8514-4D17-B21C-3EF69968AB1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C7FF32D-8514-4D17-B21C-3EF69968AB1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C7FF32D-8514-4D17-B21C-3EF69968AB1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA63448E-F6CD-4519-9284-09028659AD28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA63448E-F6CD-4519-9284-09028659AD28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA63448E-F6CD-4519-9284-09028659AD28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA63448E-F6CD-4519-9284-09028659AD28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DA63448E-F6CD-4519-9284-09028659AD28} = {315A5141-A541-44FC-B7C7-1C0F7594CAAF}
 	EndGlobalSection
 EndGlobal

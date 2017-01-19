@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jobbr.Common.Model;
+using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
 using Jobbr.Server.Configuration;
 using Jobbr.Server.Core;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
 using Jobbr.Server.Configuration;
 using Jobbr.Server.Logging;
