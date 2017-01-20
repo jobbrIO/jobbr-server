@@ -1,8 +1,11 @@
 ﻿using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
-using Jobbr.Server.ComponentModel.Services;
+
 using Jobbr.Server.Core;
 using Ninject;
+
+using IJobManagementService = Jobbr.ComponentModel.Management.IJobManagementService;
+using IQueryService = Jobbr.ComponentModel.Management.IQueryService;
 
 namespace Jobbr.Server.Builder
 {
@@ -32,7 +35,8 @@ namespace Jobbr.Server.Builder
 
         private void AddComponentModelServices()
         {
-            this.Bind<Jobbr.ComponentModel.Management.IJobManagementService>().To<JobManagementServiceImplementation>();
+            this.Bind<IJobManagementService>().To<ComponentModel.Services.JobManagementService>().InSingletonScope();
+            this.Bind<IQueryService>().To<ComponentModel.Services.JobQueryService>().InSingletonScope();
         }
     }
 }

@@ -77,9 +77,10 @@
     <Compile Include="Builder\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
     <Compile Include="Builder\ExtensionMethods.cs" />
-    <Compile Include="ComponentModel\Services\JobManagementServiceImplementation.cs" />
+    <Compile Include="ComponentModel\Services\JobManagementService.cs" />
     <Compile Include="Common\FileSystemArtefactsStorageProvider.cs" />
     <Compile Include="Common\IArtefactsStorageProvider.cs" />
+    <Compile Include="ComponentModel\Services\JobQueryService.cs" />
     <Compile Include="Configuration\EmptyJobbrConfiguration.cs" />
     <Compile Include="Configuration\JobDefinition.cs" />
     <Compile Include="Configuration\RepositoryBuilder.cs" />
@@ -125,9 +126,6 @@
       <Project>{0718496b-04f3-4197-9ed6-f2ecb73ecc03}</Project>
       <Name>Jobbr.ComponentModel.Registration</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
