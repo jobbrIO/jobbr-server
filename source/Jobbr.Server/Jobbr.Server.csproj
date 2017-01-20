@@ -74,19 +74,19 @@
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
     <Compile Include="Builder\DefaultKernel.cs" />
-    <Compile Include="Builder\InMemoryJobStorageProvider.cs" />
+    <Compile Include="Builder\NoExecutor.cs" />
+    <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
     <Compile Include="Builder\ExtensionMethods.cs" />
     <Compile Include="ComponentModel\Services\JobManagementService.cs" />
-    <Compile Include="Common\FileSystemArtefactsStorageProvider.cs" />
-    <Compile Include="Common\IArtefactsStorageProvider.cs" />
+    <Compile Include="Storage\FileSystemArtefactsStorageProvider.cs" />
     <Compile Include="ComponentModel\Services\JobQueryService.cs" />
     <Compile Include="Configuration\EmptyJobbrConfiguration.cs" />
     <Compile Include="Configuration\JobDefinition.cs" />
     <Compile Include="Configuration\RepositoryBuilder.cs" />
     <Compile Include="Core\IJobManagementService.cs" />
     <Compile Include="Core\IStateService.cs" />
-    <Compile Include="Core\JobbrRepo.cs" />
+    <Compile Include="Storage\JobbrRepo.cs" />
     <Compile Include="ServiceMessaging\ServiceMessageParser.cs" />
     <Compile Include="Core\DefaultJobExecutor.cs" />
     <Compile Include="Core\JobRunEndedEventArgs.cs" />
@@ -95,12 +95,9 @@
     <Compile Include="Core\JobTriggerEventArgs.cs" />
     <Compile Include="Core\JobRunContext.cs" />
     <Compile Include="ServiceMessaging\ServiceMessage.cs" />
-    <Compile Include="DefaultKernel.cs" />
     <Compile Include="Common\IJobbrConfiguration.cs" />
-    <Compile Include="Common\IJobStorageProvider.cs" />
     <Compile Include="Common\JobbrDependencyResolver.cs" />
     <Compile Include="Core\DefaultScheduler.cs" />
-    <Compile Include="IJobExecutor.cs" />
     <Compile Include="Configuration\DefaultJobbrConfiguration.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -110,13 +107,21 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jobbr.Common\Jobbr.Common.csproj">
-      <Project>{37E22E5D-F8B2-4336-B509-53C94B170E4C}</Project>
-      <Name>Jobbr.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Jobbr.Shared\Jobbr.Shared.csproj">
       <Project>{4c7ff32d-8514-4d17-b21c-3ef69968ab1f}</Project>
       <Name>Jobbr.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-artefactstorage\source\Jobbr.ComponentModel.ArtefactStorage\Jobbr.ComponentModel.ArtefactStorage.csproj">
+      <Project>{183F7730-D805-405C-92B4-84BB151C2371}</Project>
+      <Name>Jobbr.ComponentModel.ArtefactStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-execution\source\Jobbr.ComponentModel.Execution\Jobbr.ComponentModel.Execution.csproj">
+      <Project>{f3083433-365e-4a70-a76f-78f27aefb7b4}</Project>
+      <Name>Jobbr.ComponentModel.Execution</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-jobstorage\source\Jobbr.ComponentModel.JobStorage\Jobbr.ComponentModel.JobStorage.csproj">
+      <Project>{375FFCCA-E278-4744-96DD-D4AB92186C66}</Project>
+      <Name>Jobbr.ComponentModel.JobStorage</Name>
     </ProjectReference>
     <ProjectReference Include="..\submodules\jobbr-cm-management\source\Jobbr.ComponentModel.Management\Jobbr.ComponentModel.Management.csproj">
       <Project>{44c1e5b0-5802-48fa-910e-17665587979d}</Project>

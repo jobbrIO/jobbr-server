@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-
-using Jobbr.Common.Model;
-using Jobbr.Server.Common;
+using Jobbr.ComponentModel.JobStorage;
+using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 
 namespace Jobbr.Server.Core
@@ -41,7 +40,7 @@ namespace Jobbr.Server.Core
 
         bool CheckParallelExecution(long triggerId);
 
-        List<JobRun> GetJobRunsByState(JobRunState state);
+        List<JobRun> GetJobRunsByState(JobRunStates state);
 
         long AddJob(Job job);
 
@@ -258,7 +257,7 @@ namespace Jobbr.Server.Core
             return this.storageProvider.CheckParallelExecution(triggerId);
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunState state)
+        public List<JobRun> GetJobRunsByState(JobRunStates state)
         {
             return this.storageProvider.GetJobRunsByState(state);
         }
@@ -276,8 +275,8 @@ namespace Jobbr.Server.Core
                 TriggerId = trigger.Id,
                 JobParameters = job.Parameters,
                 InstanceParameters = trigger.Parameters,
-                UniqueId = Guid.NewGuid().ToString(),
-                State = JobRunState.Scheduled,
+                UniqueId = Guid.NewGuid(),
+                State = JobRunStates.Scheduled,
                 PlannedStartDateTimeUtc = startDateTimeUtc
             };
 

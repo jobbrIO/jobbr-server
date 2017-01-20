@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
-using Jobbr.Common.Model;
-using Jobbr.Server.Common;
+using Jobbr.ComponentModel.JobStorage;
+using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 
 namespace Jobbr.Server.Configuration
@@ -111,7 +110,7 @@ namespace Jobbr.Server.Configuration
                                 {
                                     // Add one
                                     AddTrigger(storage, trigger, jobDef, job.Id);
-                                    Logger.InfoFormat("Added trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.TriggerType, jobDef.UniqueName, trigger.Id);
+                                    Logger.InfoFormat("Added trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.GetType().Name, jobDef.UniqueName, trigger.Id);
 
                                     numberOfChanges++;
                                 }
@@ -125,7 +124,7 @@ namespace Jobbr.Server.Configuration
                             // Deactivate not specified triggers
                             foreach (var trigger in toDeactivateTriggers)
                             {
-                                Logger.InfoFormat("Deactivating trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.TriggerType, jobDef.UniqueName, trigger.Id);
+                                Logger.InfoFormat("Deactivating trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.GetType().Name, jobDef.UniqueName, trigger.Id);
                                 storage.DisableTrigger(trigger.Id);
                                 numberOfChanges++;
                             }

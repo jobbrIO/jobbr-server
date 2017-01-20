@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using Jobbr.Common.Model;
+using Jobbr.ComponentModel.JobStorage.Model;
 
 namespace Jobbr.Server.Configuration
 {
@@ -35,7 +34,7 @@ namespace Jobbr.Server.Configuration
         {
             this.hasTriggerDefinition = true;
 
-            this.triggers.Add(new ScheduledTrigger() { TriggerType = ScheduledTrigger.TypeName, StartDateTimeUtc = startDateTimeUtc });
+            this.triggers.Add(new ScheduledTrigger() { StartDateTimeUtc = startDateTimeUtc });
             
             return this;
         }
@@ -46,7 +45,7 @@ namespace Jobbr.Server.Configuration
 
             NCrontab.CrontabSchedule.Parse(cronDefinition);
 
-            this.triggers.Add(new RecurringTrigger { TriggerType = RecurringTrigger.TypeName, StartDateTimeUtc = validFromDateTimeUtc, EndDateTimeUtc = validToDateTimeUtc, Definition = cronDefinition, NoParallelExecution = noParallelExecution });
+            this.triggers.Add(new RecurringTrigger { StartDateTimeUtc = validFromDateTimeUtc, EndDateTimeUtc = validToDateTimeUtc, Definition = cronDefinition, NoParallelExecution = noParallelExecution });
 
             return this;
         }

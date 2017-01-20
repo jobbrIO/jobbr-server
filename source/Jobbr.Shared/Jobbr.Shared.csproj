@@ -44,12 +44,6 @@
     <Compile Include="JobRunUpdateDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Jobbr.Common\Jobbr.Common.csproj">
-      <Project>{37E22E5D-F8B2-4336-B509-53C94B170E4C}</Project>
-      <Name>Jobbr.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

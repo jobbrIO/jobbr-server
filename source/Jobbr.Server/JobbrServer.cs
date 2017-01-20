@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Jobbr.Common.Model;
+using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
 using Jobbr.Server.Configuration;
 using Jobbr.Server.Core;
 using Jobbr.Server.Logging;
-
-using Microsoft.Owin.Hosting.Services;
 
 namespace Jobbr.Server
 {
@@ -68,7 +65,7 @@ namespace Jobbr.Server
         /// <param name="configuration">
         /// The configuration.
         /// </param>
-        public JobbrServer(IJobbrConfiguration configuration, List<IJobbrComponent> components)
+        public JobbrServer(IJobbrConfiguration configuration, DefaultScheduler scheduler, IJobExecutor jobExecutor, List<IJobbrComponent> components)
         {
             if (configuration == null)
             {
@@ -78,8 +75,10 @@ namespace Jobbr.Server
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
             this.configuration = configuration;
+            this.scheduler = scheduler;
 
             this.components = components;
+            this.executor = jobExecutor;
         }
 
         public bool IsRunning
@@ -123,7 +122,6 @@ namespace Jobbr.Server
 
             this.State = JobbrState.Initializing;
             this.ValidateConfigurationAndThrowOnErrors();
-            this.ResolveServicesAndThrowOnErrors();
 
             this.State = JobbrState.Starting;
 
@@ -204,7 +202,7 @@ namespace Jobbr.Server
                     this.configuration.JobStorageProvider.GetJobs();
                     return;
                 }
-                catch
+                catch (Exception e)
                 {
                     Thread.Sleep(1000);
                 }
@@ -213,13 +211,14 @@ namespace Jobbr.Server
 
         private void SetScheduledJobsFromPastToOmitted()
         {
-            var scheduledJobs = this.configuration.JobStorageProvider.GetJobRunsByState(JobRunState.Scheduled).Where(p => p.PlannedStartDateTimeUtc < DateTime.UtcNow);
+            // TODO: Reimplement this
+            //var scheduledJobs = this.configuration.JobStorageProvider.GetJobRunsByState(JobRunState.Scheduled).Where(p => p.PlannedStartDateTimeUtc < DateTime.UtcNow);
 
-            foreach (var job in scheduledJobs)
-            {
-                job.State = JobRunState.Omitted;
-                this.configuration.JobStorageProvider.Update(job);
-            }
+            //foreach (var job in scheduledJobs)
+            //{
+            //    job.State = JobRunState.Omitted;
+            //    this.configuration.JobStorageProvider.Update(job);
+            //}
         }
 
         private void RegisterJobsFromRepository()
@@ -252,37 +251,6 @@ namespace Jobbr.Server
                 this.configuration.JobRunnerExeResolver != null ? Path.GetFullPath(this.configuration.JobRunnerExeResolver()) : "none",
                 this.configuration.JobStorageProvider,
                 this.configuration.ArtefactStorageProvider);
-        }
-
-        private void ResolveServicesAndThrowOnErrors()
-        {
-            Logger.Debug("Creating DI-Container.");
-            var kernel = new DefaultKernel(this.configuration);
-
-            Logger.Debug("Resolving Services...");
-
-            try
-            {
-                this.scheduler = kernel.GetService<DefaultScheduler>();
-                this.executor = kernel.GetService<IJobExecutor>();
-
-                if (this.scheduler == null)
-                {
-                    throw new NullReferenceException("'Schheduler' is not set!");
-                }
-
-                if (this.executor == null)
-                {
-                    throw new NullReferenceException("'Executor' is not set!");
-                }
-
-                Logger.Debug("Done resolving services");
-            }
-            catch (Exception e)
-            {
-                Logger.FatalException("Cannot resolve components. See the exception for details.", e);
-                throw;
-            }
         }
 
         /// <summary>

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using Jobbr.ComponentModel.Execution;
+using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
 using Jobbr.Server.Configuration;
@@ -39,6 +41,13 @@ namespace Jobbr.Server.Builder
                 Logger.Error("There was no ArtefactsStorageProvider registered. Adding a default FileSystemArtefactsStory, which stores artefacts in the current directory.");
                 fileSystemArtefactsStorageProvider = new FileSystemArtefactsStorageProvider(Directory.GetCurrentDirectory());
                 this.container.Bind<IArtefactsStorageProvider>().ToConstant(fileSystemArtefactsStorageProvider);
+            }
+
+            // Register default implementations if user did not specify any separate
+            if (this.container.TryGet<IJobExecutor>() == null)
+            {
+                Logger.Error("There was no JobExecutor registered. Adding a Non-Operational JobExecutor");
+                this.container.Bind<IJobExecutor>().To<NoExecutor>();
             }
 
             // TODO: Eleminate JobbrConfiguration and create configuration classes per component

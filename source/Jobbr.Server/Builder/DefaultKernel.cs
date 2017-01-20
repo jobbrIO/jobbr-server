@@ -24,11 +24,11 @@ namespace Jobbr.Server.Builder
         {
             this.Bind<IJobbrServiceProvider>().ToConstant(new JobbrServiceProvider(this));
 
-            this.Bind<Core.IJobManagementService>().To<JobManagementService>().InSingletonScope();
             this.Bind<IJobbrRepository>().To<JobbrRepository>().InSingletonScope();
+            this.Bind<Core.IJobManagementService>().To<Core.JobManagementService>().InSingletonScope();
             this.Bind<IStateService>().To<StateService>().InSingletonScope();
+
             this.Bind<DefaultScheduler>().To<DefaultScheduler>();
-            this.Bind<IJobExecutor>().To<DefaultJobExecutor>();
 
             this.AddComponentModelServices();
         }
