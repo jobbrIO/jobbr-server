@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
     <Compile Include="Builder\DefaultKernel.cs" />
+    <Compile Include="ComponentModel\Services\JobRunInformationService.cs" />
     <Compile Include="Builder\NoExecutor.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />

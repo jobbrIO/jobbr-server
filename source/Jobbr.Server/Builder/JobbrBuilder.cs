@@ -61,7 +61,7 @@ namespace Jobbr.Server.Builder
 
         public void Register<T>(Type type)
         {
-            this.container.Bind<T>().To(type);
+            this.container.Bind<T>().To(type).InSingletonScope();
         }
 
         public void Add<T>(object instance)

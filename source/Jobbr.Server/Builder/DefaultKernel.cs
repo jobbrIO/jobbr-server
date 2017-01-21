@@ -1,4 +1,5 @@
-﻿using Jobbr.ComponentModel.Registration;
+﻿using Jobbr.ComponentModel.Execution;
+using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
 
 using Jobbr.Server.Core;
@@ -35,8 +36,12 @@ namespace Jobbr.Server.Builder
 
         private void AddComponentModelServices()
         {
+            // Management related services
             this.Bind<IJobManagementService>().To<ComponentModel.Services.JobManagementService>().InSingletonScope();
             this.Bind<IQueryService>().To<ComponentModel.Services.JobQueryService>().InSingletonScope();
+
+            // Execution related services
+            this.Bind<IJobRunInformationService>().To<ComponentModel.Services.JobRunInformationService>().InSingletonScope();
         }
     }
 }

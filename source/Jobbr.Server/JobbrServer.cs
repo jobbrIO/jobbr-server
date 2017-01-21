@@ -189,7 +189,7 @@ namespace Jobbr.Server
             }
             catch (Exception e)
             {
-                Logger.FatalException("A least one service couldn't be started. Please see the exception for details.", e);
+                Logger.FatalException($"A least one service couldn't be started. Reason: {e}\n\n Please see the exception for details.", e.InnerException);
             }
         }
 
