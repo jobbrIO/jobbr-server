@@ -1,4 +1,5 @@
 ﻿using Jobbr.ComponentModel.Execution;
+using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
 
@@ -42,6 +43,23 @@ namespace Jobbr.Server.Builder
 
             // Execution related services
             this.Bind<IJobRunInformationService>().To<ComponentModel.Services.JobRunInformationService>().InSingletonScope();
+            this.Bind<IJobRunProgressChannel>().To<ComponentModel.Services.JobRunProgressReceiver>().InSingletonScope();
+        }
+    }
+}
+
+namespace Jobbr.Server.ComponentModel.Services
+{
+    internal class JobRunProgressReceiver : IJobRunProgressChannel
+    {
+        public void PublishStatusUpdate(JobRunInfo jobRunInfo, JobRunStates state)
+        {
+            
+        }
+
+        public void PublishProgressUpdate(JobRunInfo jobRunInfo, double progress)
+        {
+
         }
     }
 }
