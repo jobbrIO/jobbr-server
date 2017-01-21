@@ -89,12 +89,7 @@
     <Compile Include="Core\IStateService.cs" />
     <Compile Include="Storage\JobbrRepo.cs" />
     <Compile Include="ServiceMessaging\ServiceMessageParser.cs" />
-    <Compile Include="Core\DefaultJobExecutor.cs" />
-    <Compile Include="Core\JobRunEndedEventArgs.cs" />
-    <Compile Include="Core\JobRunModificationEventArgs.cs" />
     <Compile Include="Core\StateService.cs" />
-    <Compile Include="Core\JobTriggerEventArgs.cs" />
-    <Compile Include="Core\JobRunContext.cs" />
     <Compile Include="ServiceMessaging\ServiceMessage.cs" />
     <Compile Include="Common\IJobbrConfiguration.cs" />
     <Compile Include="Common\JobbrDependencyResolver.cs" />
