@@ -88,9 +88,7 @@
     <Compile Include="Core\IJobManagementService.cs" />
     <Compile Include="Core\IStateService.cs" />
     <Compile Include="Storage\JobbrRepo.cs" />
-    <Compile Include="ServiceMessaging\ServiceMessageParser.cs" />
     <Compile Include="Core\StateService.cs" />
-    <Compile Include="ServiceMessaging\ServiceMessage.cs" />
     <Compile Include="Common\IJobbrConfiguration.cs" />
     <Compile Include="Common\JobbrDependencyResolver.cs" />
     <Compile Include="Core\DefaultScheduler.cs" />
@@ -103,10 +101,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jobbr.Shared\Jobbr.Shared.csproj">
-      <Project>{4c7ff32d-8514-4d17-b21c-3ef69968ab1f}</Project>
-      <Name>Jobbr.Shared</Name>
-    </ProjectReference>
     <ProjectReference Include="..\submodules\jobbr-cm-artefactstorage\source\Jobbr.ComponentModel.ArtefactStorage\Jobbr.ComponentModel.ArtefactStorage.csproj">
       <Project>{183F7730-D805-405C-92B4-84BB151C2371}</Project>
       <Name>Jobbr.ComponentModel.ArtefactStorage</Name>
