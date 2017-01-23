@@ -54,7 +54,7 @@ namespace Jobbr.Server.ComponentModel.Services
     {
         public void PublishStatusUpdate(JobRunInfo jobRunInfo, JobRunStates state)
         {
-            
+            //TODO: this.stateService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
         }
 
         public void PublishProgressUpdate(JobRunInfo jobRunInfo, double progress)
