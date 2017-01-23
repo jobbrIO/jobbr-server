@@ -10,5 +10,10 @@ namespace Jobbr.Server.ComponentModel.Services
         {
             throw new NotImplementedException();
         }
+
+        public JobRunInfo GetByJobRunId(long jobRunId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

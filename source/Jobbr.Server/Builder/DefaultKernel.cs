@@ -1,4 +1,6 @@
-﻿using Jobbr.ComponentModel.Execution;
+﻿using System;
+using System.IO;
+using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
@@ -60,6 +62,11 @@ namespace Jobbr.Server.ComponentModel.Services
         public void PublishProgressUpdate(JobRunInfo jobRunInfo, double progress)
         {
 
+        }
+
+        public void PublicArtefact(Guid uniqueId, string fileName, Stream result)
+        {
+            throw new NotImplementedException();
         }
     }
 }
