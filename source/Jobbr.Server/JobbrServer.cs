@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
-using Jobbr.Server.Configuration;
 using Jobbr.Server.Core;
 using Jobbr.Server.Logging;
 
@@ -21,11 +19,6 @@ namespace Jobbr.Server
         /// The logger.
         /// </summary>
         private static readonly ILog Logger = LogProvider.For<JobbrServer>();
-
-        /// <summary>
-        /// The configuration.
-        /// </summary>
-        private readonly IJobbrConfiguration configuration;
 
         /// <summary>
         /// The scheduler.
@@ -55,8 +48,6 @@ namespace Jobbr.Server
             }
 
             Logger.Debug("A new instance of a a JobbrServer has been created.");
-
-            this.configuration = configuration;
         }
 
         /// <summary>
@@ -74,7 +65,6 @@ namespace Jobbr.Server
 
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
-            this.configuration = configuration;
             this.scheduler = scheduler;
 
             this.components = components;
@@ -199,7 +189,8 @@ namespace Jobbr.Server
             {
                 try
                 {
-                    this.configuration.JobStorageProvider.GetJobs();
+                    // TODO: Check DB Access with storage provider explicitly
+                    // this.configuration.JobStorageProvider.GetJobs();
                     return;
                 }
                 catch (Exception e)
@@ -227,13 +218,14 @@ namespace Jobbr.Server
             {
                 Logger.Info("Registering Jobs from configuration");
 
-                var model = new RepositoryBuilder();
+                // TODO: Re implement this
+                //var model = new RepositoryBuilder();
 
-                this.configuration.OnRepositoryCreating(model);
-                var numberOfChanges = model.Apply(this.configuration.JobStorageProvider);
-                var numberOfJobs = this.configuration.JobStorageProvider.GetJobs().Count;
+                //this.configuration.OnRepositoryCreating(model);
+                //var numberOfChanges = model.Apply(this.configuration.JobStorageProvider);
+                //var numberOfJobs = this.configuration.JobStorageProvider.GetJobs().Count;
 
-                Logger.InfoFormat("There were {0} changes for the JobRegistry which contains {1} jobs right now.", numberOfChanges, numberOfJobs);
+                //Logger.InfoFormat("There were {0} changes for the JobRegistry which contains {1} jobs right now.", numberOfChanges, numberOfJobs);
             }
             catch (Exception e)
             {
@@ -243,14 +235,13 @@ namespace Jobbr.Server
 
         private void LogConfiguration()
         {
-            Logger.InfoFormat(
-                "JobbrServer is now starting with the following configuration: BackendUrl='{0}', MaxConcurrentJobs='{1}', JobRunDirectory='{2}', JobRunnerExeutable='{3}', JobStorageProvider='{4}' ArtefactsStorageProvider='{5}'",
-                this.configuration.BackendAddress,
-                this.configuration.MaxConcurrentJobs,
-                this.configuration.JobRunDirectory,
-                this.configuration.JobRunnerExeResolver != null ? Path.GetFullPath(this.configuration.JobRunnerExeResolver()) : "none",
-                this.configuration.JobStorageProvider,
-                this.configuration.ArtefactStorageProvider);
+            //Logger.InfoFormat("JobbrServer is now starting with the following configuration: BackendUrl='{0}', MaxConcurrentJobs='{1}', JobRunDirectory='{2}', JobRunnerExeutable='{3}', JobStorageProvider='{4}' ArtefactsStorageProvider='{5}'",
+            //    this.configuration.BackendAddress,
+            //    this.configuration.MaxConcurrentJobs,
+            //    this.configuration.JobRunDirectory,
+            //    this.configuration.JobRunnerExeResolver != null ? Path.GetFullPath(this.configuration.JobRunnerExeResolver()) : "none",
+            //    this.configuration.JobStorageProvider,
+            //    this.configuration.ArtefactStorageProvider);
         }
 
         /// <summary>
@@ -285,39 +276,31 @@ namespace Jobbr.Server
 
             try
             {
-                if (this.configuration.JobRunnerExeResolver == null)
-                {
-                    throw new ArgumentException("You should set a runner-Executable which runs your jobs later!");
-                }
+                // TODO: Move this check to forked executor
+                //if (this.configuration.JobRunnerExeResolver == null)
+                //{
+                //    throw new ArgumentException("You should set a runner-Executable which runs your jobs later!");
+                //}
 
-                /*
-                var executableFullPath = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
+                // TODO: Move this check to forked executor
+                //var executableFullPath = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
 
-                if (!File.Exists(executableFullPath))
-                {
-                    throw new ArgumentException(string.Format("The RunnerExecutable '{0}' cannot be found!", executableFullPath));
-                }
-                */
+                //if (!File.Exists(executableFullPath))
+                //{
+                //    throw new ArgumentException(string.Format("The RunnerExecutable '{0}' cannot be found!", executableFullPath));
+                //}
 
-                if (string.IsNullOrEmpty(this.configuration.BackendAddress))
-                {
-                    throw new ArgumentException("Please provide a backend address to host the api!");
-                }
+                // TODO: Move validation to API Feature
+                //if (string.IsNullOrEmpty(this.configuration.BackendAddress))
+                //{
+                //    throw new ArgumentException("Please provide a backend address to host the api!");
+                //}
 
-                if (string.IsNullOrEmpty(this.configuration.JobRunDirectory))
-                {
-                    throw new ArgumentException("Please provide a JobRunDirectory!");
-                }
-
-                if (this.configuration.JobStorageProvider == null)
-                {
-                    throw new ArgumentException("Please provide a storage provider for Jobs!");
-                }
-
-                if (this.configuration.ArtefactStorageProvider == null)
-                {
-                    throw new ArgumentException("Please provide a storage provider for artefacts!");
-                }
+                // TODO: Move validation to foked execution feature
+                //if (string.IsNullOrEmpty(this.configuration.JobRunDirectory))
+                //{
+                //    throw new ArgumentException("Please provide a JobRunDirectory!");
+                //}
 
                 Logger.Info("The configuration was validated and seems ok.");
             }

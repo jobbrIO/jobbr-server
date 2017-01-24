@@ -24,15 +24,12 @@ namespace Jobbr.Server.Builder
 
         public JobbrServer Create()
         {
-            InMemoryJobStorageProvider inMemoryJobStorageProvider = null;
-            FileSystemArtefactsStorageProvider fileSystemArtefactsStorageProvider = null;
-
             // Register default implementations if user did not specify any separate
             if (this.container.TryGet<IJobStorageProvider>() == null)
             {
                 Logger.Error("There was no JobStorageProvider registered. Will continue building with an InMemory version, which does not support production scenarios.");
 
-                inMemoryJobStorageProvider = new InMemoryJobStorageProvider();
+                var inMemoryJobStorageProvider = new InMemoryJobStorageProvider();
                 this.container.Bind<IJobStorageProvider>().ToConstant(inMemoryJobStorageProvider);
             }
 
@@ -40,7 +37,7 @@ namespace Jobbr.Server.Builder
             if (this.container.TryGet<IArtefactsStorageProvider>() == null)
             {
                 Logger.Error("There was no ArtefactsStorageProvider registered. Adding a default FileSystemArtefactsStory, which stores artefacts in the current directory.");
-                fileSystemArtefactsStorageProvider = new FileSystemArtefactsStorageProvider(Directory.GetCurrentDirectory());
+                var fileSystemArtefactsStorageProvider = new FileSystemArtefactsStorageProvider(Directory.GetCurrentDirectory());
                 this.container.Bind<IArtefactsStorageProvider>().ToConstant(fileSystemArtefactsStorageProvider);
             }
 
@@ -51,13 +48,12 @@ namespace Jobbr.Server.Builder
                 this.container.Bind<IJobExecutor>().To<NoExecutor>();
             }
 
-            // TODO: Eleminate JobbrConfiguration and create configuration classes per component
             if (this.container.TryGet<IJobbrConfiguration>() == null)
             {
-                this.container.Bind<IJobbrConfiguration>().ToConstant(new DefaultJobbrConfiguration() { JobRunnerExeResolver = () => "bla.exe", JobStorageProvider = inMemoryJobStorageProvider, ArtefactStorageProvider = fileSystemArtefactsStorageProvider});
+                this.container.Bind<IJobbrConfiguration>().ToConstant(new DefaultJobbrConfiguration());
             }
 
-            return container.Get<JobbrServer>();
+            return this.container.Get<JobbrServer>();
         }
 
         public void Register<T>(Type type)

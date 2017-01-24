@@ -1,14 +1,13 @@
-﻿using System.IO;
+﻿using Jobbr.Server.Common;
 
 namespace Jobbr.Server.Configuration
 {
-    public class DefaultJobbrConfiguration : EmptyJobbrConfiguration
+    public class DefaultJobbrConfiguration : IJobbrConfiguration
     {
-        public DefaultJobbrConfiguration()
+        public int AllowChangesBeforeStartInSec { get; set; }
+
+        public virtual void OnRepositoryCreating(RepositoryBuilder repositoryBuilder)
         {
-            this.BackendAddress = "http://localhost:80/jobbr";
-            this.MaxConcurrentJobs = 4;
-            this.JobRunDirectory = Path.GetTempPath();
         }
     }
 }
