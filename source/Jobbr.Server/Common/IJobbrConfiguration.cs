@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.Server.Configuration;
 

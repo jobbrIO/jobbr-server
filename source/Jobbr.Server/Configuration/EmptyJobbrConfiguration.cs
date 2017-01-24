@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.Server.Common;
 
