@@ -37,12 +37,6 @@ namespace Jobbr.Server
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JobbrServer"/> class.
-        /// </summary>
-        /// <param name="configuration">
-        /// The configuration.
-        /// </param>
         public JobbrServer(IJobbrConfiguration configuration, DefaultScheduler scheduler, IJobExecutor jobExecutor, List<IJobbrComponent> components)
         {
             if (configuration == null)
