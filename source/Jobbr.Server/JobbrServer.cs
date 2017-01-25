@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jobbr.ComponentModel.Execution;
@@ -33,11 +34,13 @@ namespace Jobbr.Server
         private bool isRunning;
 
         private readonly List<IJobbrComponent> components;
+        private readonly List<IConfigurationValidator> configurationValidators;
+        private readonly JobbrServiceProvider jobbrServiceProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        public JobbrServer(IJobbrConfiguration configuration, DefaultScheduler scheduler, IJobExecutor jobExecutor, List<IJobbrComponent> components)
+        public JobbrServer(IJobbrConfiguration configuration, DefaultScheduler scheduler, IJobExecutor jobExecutor, List<IJobbrComponent> components, List<IConfigurationValidator> configurationValidators, JobbrServiceProvider jobbrServiceProvider )
         {
             if (configuration == null)
             {
@@ -49,6 +52,8 @@ namespace Jobbr.Server
             this.scheduler = scheduler;
 
             this.components = components;
+            this.configurationValidators = configurationValidators;
+            this.jobbrServiceProvider = jobbrServiceProvider;
             this.executor = jobExecutor;
         }
 
@@ -253,43 +258,71 @@ namespace Jobbr.Server
 
         private void ValidateConfigurationAndThrowOnErrors()
         {
+            if (this.configurationValidators == null || !this.configurationValidators.Any())
+            {
+                Logger.Debug("Skipping validating configuration because there are no validators available.");
+                return;
+            }
+
             Logger.Debug("Validating the configuration...");
 
-            try
+            var results = new Dictionary<Type, bool>();
+
+            foreach (var validator in this.configurationValidators)
             {
-                // TODO: Move this check to forked executor
-                //if (this.configuration.JobRunnerExeResolver == null)
-                //{
-                //    throw new ArgumentException("You should set a runner-Executable which runs your jobs later!");
-                //}
+                var forType = validator.ConfigurationType;
 
-                // TODO: Move this check to forked executor
-                //var executableFullPath = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
+                var config = this.jobbrServiceProvider.GetService(forType);
 
-                //if (!File.Exists(executableFullPath))
-                //{
-                //    throw new ArgumentException(string.Format("The RunnerExecutable '{0}' cannot be found!", executableFullPath));
-                //}
+                if (config == null)
+                {
+                    Logger.Warn($"Unable to use Validator '{validator.GetType().FullName}' because there are no compatible configurations (of Type '{forType.FullName}') registered.");
+                    continue;
+                }
 
-                // TODO: Move validation to API Feature
-                //if (string.IsNullOrEmpty(this.configuration.BackendAddress))
-                //{
-                //    throw new ArgumentException("Please provide a backend address to host the api!");
-                //}
+                Logger.Debug($"Validating configuration of Type '{config.GetType()}'");
 
-                // TODO: Move validation to foked execution feature
-                //if (string.IsNullOrEmpty(this.configuration.JobRunDirectory))
-                //{
-                //    throw new ArgumentException("Please provide a JobRunDirectory!");
-                //}
+                try
+                {
+                    var result = validator.Validate(config);
 
-                Logger.Info("The configuration was validated and seems ok.");
+                    if (result)
+                    {
+                        Logger.Info($"Configuration '{config.GetType().Name}' has been validated successfully");
+                    }
+                    else
+                    {
+                        Logger.Warn($"Validation for Configuration '{config.GetType().Name}' failed.");
+                    }
+
+                    results.Add(forType, result);
+                }
+                catch (Exception e)
+                {
+                    Logger.ErrorException($"Validator '{validator.GetType().FullName}' has failed while validation!", e);
+                    results.Add(forType, false);
+                }
             }
-            catch (Exception)
+
+            if (!results.Values.All(r => r))
             {
                 this.State = JobbrState.Error;
-                throw;
+                throw new Exception("Configuration failed for one or more configurations");
             }
+
+            Logger.Info("The configuration was validated and seems ok.");
+
+            // TODO: Move validation to API Feature
+            //if (string.IsNullOrEmpty(this.configuration.BackendAddress))
+            //{
+            //    throw new ArgumentException("Please provide a backend address to host the api!");
+            //}
+
+            // TODO: Move validation to foked execution feature
+            //if (string.IsNullOrEmpty(this.configuration.JobRunDirectory))
+            //{
+            //    throw new ArgumentException("Please provide a JobRunDirectory!");
+            //}
 
         }
     }
