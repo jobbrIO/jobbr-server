@@ -77,6 +77,7 @@
     <Compile Include="ComponentModel\Services\JobRunInformationService.cs" />
     <Compile Include="Builder\NoExecutor.cs" />
     <Compile Include="ConfigurationManager.cs" />
+    <Compile Include="Scheduling\DefaultSchedulerConfiguration.cs" />
     <Compile Include="JobbrState.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
@@ -92,7 +93,7 @@
     <Compile Include="Core\StateService.cs" />
     <Compile Include="Common\IJobbrConfiguration.cs" />
     <Compile Include="Common\JobbrServiceProvider.cs" />
-    <Compile Include="Core\DefaultScheduler.cs" />
+    <Compile Include="Scheduling\DefaultScheduler.cs" />
     <Compile Include="Configuration\DefaultJobbrConfiguration.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

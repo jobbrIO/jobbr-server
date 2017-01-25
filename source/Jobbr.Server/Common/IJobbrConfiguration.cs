@@ -11,11 +11,6 @@ namespace Jobbr.Server.Common
     /// </summary>
     public interface IJobbrConfiguration
     {
-        /// <summary>
-        /// Gets or sets the allow changes before start in sec.
-        /// </summary>
-        int AllowChangesBeforeStartInSec { get; set; }
-
         void OnRepositoryCreating(RepositoryBuilder repositoryBuilder);
     }
 }

@@ -6,6 +6,7 @@ using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
 
 using Jobbr.Server.Core;
+using Jobbr.Server.Scheduling;
 using Ninject;
 
 using IJobManagementService = Jobbr.ComponentModel.Management.IJobManagementService;

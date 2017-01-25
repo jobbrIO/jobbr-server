@@ -1,14 +1,11 @@
 using System;
-
 using System.Threading;
-
 using Jobbr.ComponentModel.JobStorage.Model;
-using Jobbr.Server.Common;
+using Jobbr.Server.Core;
 using Jobbr.Server.Logging;
-
 using NCrontab;
 
-namespace Jobbr.Server.Core
+namespace Jobbr.Server.Scheduling
 {
 
     /// <summary>
@@ -18,22 +15,16 @@ namespace Jobbr.Server.Core
     {
         private static readonly ILog Logger = LogProvider.For<DefaultScheduler>();
 
-        private readonly IStateService stateService;
-
-        private readonly IJobbrConfiguration configuration;
+        private readonly DefaultSchedulerConfiguration configuration;
 
         private readonly IJobbrRepository jobbrRepository;
 
-        private readonly IJobManagementService jobManagementService;
-
         private Timer timer;
 
-        public DefaultScheduler(IStateService stateService, IJobbrConfiguration configuration, IJobbrRepository jobbrRepository, IJobManagementService jobManagementService)
+        public DefaultScheduler(DefaultSchedulerConfiguration configuration, IJobbrRepository jobbrRepository)
         {
-            this.stateService = stateService;
             this.configuration = configuration;
             this.jobbrRepository = jobbrRepository;
-            this.jobManagementService = jobManagementService;
 
             this.timer = new Timer(this.ScheduleJobRuns, null, Timeout.Infinite, Timeout.Infinite);
         }
