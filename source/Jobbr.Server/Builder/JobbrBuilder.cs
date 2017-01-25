@@ -63,6 +63,12 @@ namespace Jobbr.Server.Builder
 
         public void Add<T>(object instance)
         {
+            var featureConfiguration = (IFeatureConfiguration) instance;
+            if (featureConfiguration != null)
+            {
+                this.container.Bind<IFeatureConfiguration>().ToConstant((IFeatureConfiguration)instance);
+            }
+
             this.container.Bind<T>().ToConstant((T)instance);
         }
     }

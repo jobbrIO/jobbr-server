@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jobbr.ComponentModel.Execution;
@@ -34,13 +33,12 @@ namespace Jobbr.Server
         private bool isRunning;
 
         private readonly List<IJobbrComponent> components;
-        private readonly List<IConfigurationValidator> configurationValidators;
-        private readonly JobbrServiceProvider jobbrServiceProvider;
+        private readonly ConfigurationManager configurationManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        public JobbrServer(IJobbrConfiguration configuration, DefaultScheduler scheduler, IJobExecutor jobExecutor, List<IJobbrComponent> components, List<IConfigurationValidator> configurationValidators, JobbrServiceProvider jobbrServiceProvider )
+        public JobbrServer(IJobbrConfiguration configuration, DefaultScheduler scheduler, IJobExecutor jobExecutor, List<IJobbrComponent> components, ConfigurationManager configurationManager)
         {
             if (configuration == null)
             {
@@ -52,8 +50,7 @@ namespace Jobbr.Server
             this.scheduler = scheduler;
 
             this.components = components;
-            this.configurationValidators = configurationValidators;
-            this.jobbrServiceProvider = jobbrServiceProvider;
+            this.configurationManager = configurationManager;
             this.executor = jobExecutor;
         }
 
@@ -88,10 +85,25 @@ namespace Jobbr.Server
         /// </summary>
         public async Task<bool> StartAsync(CancellationToken cancellationToken)
         {
-            this.LogConfiguration();
-
             this.State = JobbrState.Initializing;
-            this.ValidateConfigurationAndThrowOnErrors();
+
+            Logger.InfoFormat("The JobServer has been set-up by the following configurations");
+            this.configurationManager.LogConfiguration();
+
+            this.State = JobbrState.Validating;
+
+            try
+            {
+                this.configurationManager.ValidateConfigurationAndThrowOnErrors();
+                Logger.Info("The configuration was validated and seems ok. Final configuration below:");
+
+                this.configurationManager.LogConfiguration();
+            }
+            catch (Exception)
+            {
+                this.State = JobbrState.Error;
+                throw;
+            }
 
             this.State = JobbrState.Starting;
 
@@ -213,17 +225,6 @@ namespace Jobbr.Server
             }
         }
 
-        private void LogConfiguration()
-        {
-            //Logger.InfoFormat("JobbrServer is now starting with the following configuration: BackendUrl='{0}', MaxConcurrentJobs='{1}', JobRunDirectory='{2}', JobRunnerExeutable='{3}', JobStorageProvider='{4}' ArtefactsStorageProvider='{5}'",
-            //    this.configuration.BackendAddress,
-            //    this.configuration.MaxConcurrentJobs,
-            //    this.configuration.JobRunDirectory,
-            //    this.configuration.JobRunnerExeResolver != null ? Path.GetFullPath(this.configuration.JobRunnerExeResolver()) : "none",
-            //    this.configuration.JobStorageProvider,
-            //    this.configuration.ArtefactStorageProvider);
-        }
-
         /// <summary>
         /// The stop.
         /// </summary>
@@ -248,69 +249,6 @@ namespace Jobbr.Server
             {
                 this.Stop();
             }
-        }
-
-        private void ValidateConfigurationAndThrowOnErrors()
-        {
-            if (this.configurationValidators == null || !this.configurationValidators.Any())
-            {
-                Logger.Debug("Skipping validating configuration because there are no validators available.");
-                return;
-            }
-
-            Logger.Debug("Validating the configuration...");
-
-            var results = new Dictionary<Type, bool>();
-
-            foreach (var validator in this.configurationValidators)
-            {
-                var forType = validator.ConfigurationType;
-
-                var config = this.jobbrServiceProvider.GetService(forType);
-
-                if (config == null)
-                {
-                    Logger.Warn($"Unable to use Validator '{validator.GetType().FullName}' because there are no compatible configurations (of Type '{forType.FullName}') registered.");
-                    continue;
-                }
-
-                Logger.Debug($"Validating configuration of Type '{config.GetType()}'");
-
-                try
-                {
-                    var result = validator.Validate(config);
-
-                    if (result)
-                    {
-                        Logger.Info($"Configuration '{config.GetType().Name}' has been validated successfully");
-                    }
-                    else
-                    {
-                        Logger.Warn($"Validation for Configuration '{config.GetType().Name}' failed.");
-                    }
-
-                    results.Add(forType, result);
-                }
-                catch (Exception e)
-                {
-                    Logger.ErrorException($"Validator '{validator.GetType().FullName}' has failed while validation!", e);
-                    results.Add(forType, false);
-                }
-            }
-
-            if (!results.Values.All(r => r))
-            {
-                this.State = JobbrState.Error;
-                throw new Exception("Configuration failed for one or more configurations");
-            }
-
-            Logger.Info("The configuration was validated and seems ok.");
-
-            // TODO: Move validation to API Feature
-            //if (string.IsNullOrEmpty(this.configuration.BackendAddress))
-            //{
-            //    throw new ArgumentException("Please provide a backend address to host the api!");
-            //}
         }
     }
 }
