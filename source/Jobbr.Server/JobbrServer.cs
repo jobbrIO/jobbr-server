@@ -37,19 +37,6 @@ namespace Jobbr.Server
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        /// <param name="configuration">
-        /// The configuration.
-        /// </param>
-        public JobbrServer(IJobbrConfiguration configuration)
-        {
-            if (configuration == null)
-            {
-                throw new ArgumentNullException("configuration");
-            }
-
-            Logger.Debug("A new instance of a a JobbrServer has been created.");
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
