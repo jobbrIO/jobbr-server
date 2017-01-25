@@ -317,13 +317,6 @@ namespace Jobbr.Server
             //{
             //    throw new ArgumentException("Please provide a backend address to host the api!");
             //}
-
-            // TODO: Move validation to foked execution feature
-            //if (string.IsNullOrEmpty(this.configuration.JobRunDirectory))
-            //{
-            //    throw new ArgumentException("Please provide a JobRunDirectory!");
-            //}
-
         }
     }
 
