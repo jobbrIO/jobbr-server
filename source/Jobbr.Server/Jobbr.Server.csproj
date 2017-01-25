@@ -76,6 +76,7 @@
     <Compile Include="Builder\DefaultKernel.cs" />
     <Compile Include="ComponentModel\Services\JobRunInformationService.cs" />
     <Compile Include="Builder\NoExecutor.cs" />
+    <Compile Include="JobbrState.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
     <Compile Include="Builder\ExtensionMethods.cs" />

@@ -24,12 +24,12 @@ namespace Jobbr.Server
         /// <summary>
         /// The scheduler.
         /// </summary>
-        private DefaultScheduler scheduler;
+        private readonly DefaultScheduler scheduler;
 
         /// <summary>
         /// The executor.
         /// </summary>
-        private IJobExecutor executor;
+        private readonly IJobExecutor executor;
 
         private bool isRunning;
 
@@ -44,7 +44,7 @@ namespace Jobbr.Server
         {
             if (configuration == null)
             {
-                throw new ArgumentNullException("configuration");
+                throw new ArgumentNullException(nameof(configuration));
             }
 
             Logger.Debug("A new instance of a a JobbrServer has been created.");
@@ -57,13 +57,7 @@ namespace Jobbr.Server
             this.executor = jobExecutor;
         }
 
-        public bool IsRunning
-        {
-            get
-            {
-                return this.isRunning;
-            }
-        }
+        public bool IsRunning => this.isRunning;
 
         public JobbrState State { get; private set; }
 
@@ -179,7 +173,7 @@ namespace Jobbr.Server
                     // this.configuration.JobStorageProvider.GetJobs();
                     return;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Thread.Sleep(1000);
                 }
@@ -318,20 +312,5 @@ namespace Jobbr.Server
             //    throw new ArgumentException("Please provide a backend address to host the api!");
             //}
         }
-    }
-
-    public enum JobbrState
-    {
-        Unknown = 0,
-        Initializing = 11,
-        Validating = 12,
-        Starting = 13,
-        Running = 14,
-
-        Stopping = 21,
-        Stopped = 29,
-        Error = 99,
-
-
     }
 }
