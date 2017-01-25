@@ -91,7 +91,7 @@
     <Compile Include="Storage\JobbrRepo.cs" />
     <Compile Include="Core\StateService.cs" />
     <Compile Include="Common\IJobbrConfiguration.cs" />
-    <Compile Include="Common\JobbrDependencyResolver.cs" />
+    <Compile Include="Common\JobbrServiceProvider.cs" />
     <Compile Include="Core\DefaultScheduler.cs" />
     <Compile Include="Configuration\DefaultJobbrConfiguration.cs" />
     <Compile Include="JobbrServer.cs" />

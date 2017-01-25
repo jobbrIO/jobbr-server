@@ -54,6 +54,7 @@ namespace Jobbr.Server.Common
 
         public IJobbrServiceProvider GetChild()
         {
+            // TODO: This might not be the right way to do
             return new JobbrServiceProvider(this.ninjectKernel);
         }
     }
