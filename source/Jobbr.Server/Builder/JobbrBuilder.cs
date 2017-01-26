@@ -5,7 +5,6 @@ using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
-using Jobbr.Server.Configuration;
 using Jobbr.Server.Logging;
 using Ninject;
 
@@ -46,11 +45,6 @@ namespace Jobbr.Server.Builder
             {
                 Logger.Error("There was no JobExecutor registered. Adding a Non-Operational JobExecutor");
                 this.container.Bind<IJobExecutor>().To<NoExecutor>();
-            }
-
-            if (this.container.TryGet<IJobbrConfiguration>() == null)
-            {
-                this.container.Bind<IJobbrConfiguration>().ToConstant(new DefaultJobbrConfiguration());
             }
 
             return this.container.Get<JobbrServer>();

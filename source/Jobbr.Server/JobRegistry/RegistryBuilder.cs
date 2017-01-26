@@ -6,12 +6,12 @@ using Jobbr.Server.Logging;
 
 namespace Jobbr.Server.Repository
 {
-    public class RepositoryBuilder
+    public class RegistryBuilder
     {
         /// <summary>
         /// The logger.
         /// </summary>
-        private static readonly ILog Logger = LogProvider.For<RepositoryBuilder>();
+        private static readonly ILog Logger = LogProvider.For<RegistryBuilder>();
 
         private List<JobDefinition> definitions = new List<JobDefinition>();
 
@@ -27,7 +27,7 @@ namespace Jobbr.Server.Repository
             }
         }
 
-        public RepositoryBuilder RemoveAll()
+        public RegistryBuilder RemoveAll()
         {
             this.HasConfiguration = true;
             this.RemoveNonExistent = true;

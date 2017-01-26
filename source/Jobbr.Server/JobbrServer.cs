@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Jobbr.ComponentModel.Execution;
+using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
-using Jobbr.Server.Common;
 using Jobbr.Server.Logging;
+using Jobbr.Server.Repository;
 using Jobbr.Server.Scheduling;
 
 namespace Jobbr.Server
@@ -30,28 +31,28 @@ namespace Jobbr.Server
         /// </summary>
         private readonly IJobExecutor executor;
 
+        private readonly IJobStorageProvider jobStorageProvider;
+
         private bool isRunning;
 
         private readonly List<IJobbrComponent> components;
         private readonly ConfigurationManager configurationManager;
+        private readonly RegistryBuilder registryBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        public JobbrServer(IJobbrConfiguration configuration, DefaultScheduler scheduler, IJobExecutor jobExecutor, List<IJobbrComponent> components, ConfigurationManager configurationManager)
+        public JobbrServer(DefaultScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> components, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
         {
-            if (configuration == null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
-
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
             this.scheduler = scheduler;
 
             this.components = components;
             this.configurationManager = configurationManager;
+            this.registryBuilder = registryBuilder;
             this.executor = jobExecutor;
+            this.jobStorageProvider = jobStorageProvider;
         }
 
         public bool IsRunning => this.isRunning;
@@ -206,18 +207,14 @@ namespace Jobbr.Server
 
         private void RegisterJobsFromRepository()
         {
+            Logger.Info("Addin jobs from the registry");
+
             try
             {
-                Logger.Info("Registering Jobs from configuration");
+                var numberOfChanges = this.registryBuilder.Apply(this.jobStorageProvider);
+                var numberOfJobs = this.jobStorageProvider.GetJobs().Count;
 
-                // TODO: Re implement this
-                //var model = new RepositoryBuilder();
-
-                //this.configuration.OnRepositoryCreating(model);
-                //var numberOfChanges = model.Apply(this.configuration.JobStorageProvider);
-                //var numberOfJobs = this.configuration.JobStorageProvider.GetJobs().Count;
-
-                //Logger.InfoFormat("There were {0} changes for the JobRegistry which contains {1} jobs right now.", numberOfChanges, numberOfJobs);
+                Logger.InfoFormat("There were {0} by the JobRegistry. There are now {1} known jobs right available.", numberOfChanges, numberOfJobs);
             }
             catch (Exception e)
             {
