@@ -85,7 +85,7 @@
     <Compile Include="Scheduling\IJobScheduler.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
-    <Compile Include="Builder\ExtensionMethods.cs" />
+    <Compile Include="Storage\ExtensionMethods.cs" />
     <Compile Include="ComponentServices\Management\JobManagementService.cs" />
     <Compile Include="Storage\FileSystemArtefactsStorageProvider.cs" />
     <Compile Include="ComponentServices\Management\JobQueryService.cs" />
