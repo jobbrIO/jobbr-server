@@ -182,8 +182,8 @@ namespace Jobbr.Server
             {
                 try
                 {
-                    // TODO: Check DB Access with storage provider explicitly
-                    // this.configuration.JobStorageProvider.GetJobs();
+                    // TODO: Migrate to a health-check
+                    this.jobStorageProvider.GetJobs();
                     return;
                 }
                 catch (Exception)
