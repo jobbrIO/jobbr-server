@@ -7,11 +7,10 @@ using NCrontab;
 
 namespace Jobbr.Server.Scheduling
 {
-
     /// <summary>
     /// The Scheduler creates new scheduled Jobs in the JobRun Table based on the triggers
     /// </summary>
-    public class DefaultScheduler : IDisposable
+    public class DefaultScheduler : IJobScheduler
     {
         private static readonly ILog Logger = LogProvider.For<DefaultScheduler>();
 

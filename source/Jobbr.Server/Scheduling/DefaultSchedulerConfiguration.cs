@@ -1,11 +1,13 @@
-﻿namespace Jobbr.Server.Scheduling
+﻿using Jobbr.ComponentModel.Registration;
+
+namespace Jobbr.Server.Scheduling
 {
-    public class DefaultSchedulerConfiguration
+    public class DefaultSchedulerConfiguration : IFeatureConfiguration
     {
         /// <summary>
         /// Gets or sets the allow changes before start in sec.
         /// </summary>
-        public int AllowChangesBeforeStartInSec { get; set; }
+        public int AllowChangesBeforeStartInSec { get; set; } = 5;
 
     }
 }

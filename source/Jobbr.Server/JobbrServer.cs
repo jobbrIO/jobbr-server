@@ -24,7 +24,7 @@ namespace Jobbr.Server
         /// <summary>
         /// The scheduler.
         /// </summary>
-        private readonly DefaultScheduler scheduler;
+        private readonly IJobScheduler scheduler;
 
         /// <summary>
         /// The executor.
@@ -36,13 +36,14 @@ namespace Jobbr.Server
         private bool isRunning;
 
         private readonly List<IJobbrComponent> components;
+
         private readonly ConfigurationManager configurationManager;
         private readonly RegistryBuilder registryBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        public JobbrServer(DefaultScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> components, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
+        public JobbrServer(IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> components, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
         {
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 

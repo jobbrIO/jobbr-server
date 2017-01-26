@@ -5,6 +5,7 @@ using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Logging;
+using Jobbr.Server.Scheduling;
 using Jobbr.Server.Storage;
 using Ninject;
 
@@ -45,6 +46,13 @@ namespace Jobbr.Server.Builder
             {
                 Logger.Error("There was no JobExecutor registered. Adding a Non-Operational JobExecutor");
                 this.container.Bind<IJobExecutor>().To<NoExecutor>();
+            }
+
+            // Register default implementations if user did not specify any separate
+            if (this.container.TryGet<IJobScheduler>() == null)
+            {
+                // Don't warn because the internel Scheduler is usually in use
+                this.AddDefaultScheduler();
             }
 
             return this.container.Get<JobbrServer>();
