@@ -5,7 +5,7 @@
     <version>$version$</version>
     <authors>Jobbr</authors>
     <owners>Jobbr</owners>
-    <projectUrl>http://github.com/michaelschnyder/jobbr</projectUrl>
+    <projectUrl>http://github.com/jobbrIO/jobbr-server</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Jobbr is a .NET JobServer</description>
     <copyright>Copyright 2016</copyright>
@@ -14,6 +14,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="ilmerged\Jobbr.Server.*" target="lib\net45"/>
+    <file src="Jobbr.Server.*" target="lib\net45"/>
   </files>
 </package>

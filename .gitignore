@@ -183,5 +183,4 @@ UpgradeLog*.htm
 FakesAssemblies/
 
 # output of ilmerge & nuget package
-source/ilmerged
-source/Jobbr.Server.*.nupkg
+tools/Jobbr.Server.*
