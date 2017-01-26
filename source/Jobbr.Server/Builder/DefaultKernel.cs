@@ -1,12 +1,15 @@
 ﻿using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Registration;
-using Jobbr.Server.Common;
+using Jobbr.Server.ComponentServices.Execution;
+using Jobbr.Server.ComponentServices.Management;
+using Jobbr.Server.ComponentServices.Registration;
 using Jobbr.Server.Core;
 using Jobbr.Server.Scheduling;
 using Jobbr.Server.Storage;
 using Ninject;
 using IJobManagementService = Jobbr.ComponentModel.Management.IJobManagementService;
+using JobManagementService = Jobbr.Server.ComponentServices.Management.JobManagementService;
 
 namespace Jobbr.Server.Builder
 {
@@ -24,10 +27,6 @@ namespace Jobbr.Server.Builder
         public DefaultContainer()
         {
             this.Bind<IJobbrRepository>().To<JobbrRepository>().InSingletonScope();
-            this.Bind<Core.IJobManagementService>().To<Core.JobManagementService>().InSingletonScope();
-            this.Bind<IStateService>().To<StateService>().InSingletonScope();
-
-            this.Bind<DefaultScheduler>().To<DefaultScheduler>();
 
             this.AddComponentModelServices();
         }
@@ -38,11 +37,11 @@ namespace Jobbr.Server.Builder
             this.Bind<IJobbrServiceProvider>().ToConstant(new JobbrServiceProvider(this));
 
             // Management related services
-            this.Bind<IJobManagementService>().To<ComponentModel.Services.JobManagementService>().InSingletonScope();
-            this.Bind<IQueryService>().To<ComponentModel.Services.JobQueryService>().InSingletonScope();
+            this.Bind<IJobManagementService>().To<JobManagementService>().InSingletonScope();
+            this.Bind<IQueryService>().To<JobQueryService>().InSingletonScope();
 
             // Execution related services
-            this.Bind<IJobRunInformationService>().To<ComponentModel.Services.JobRunInformationService>().InSingletonScope();
+            this.Bind<IJobRunInformationService>().To<JobRunInformationService>().InSingletonScope();
             this.Bind<IJobRunProgressChannel>().To<JobRunProgressReceiver>().InSingletonScope();
         }
     }

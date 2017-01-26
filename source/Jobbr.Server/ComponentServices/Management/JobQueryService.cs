@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Management.Model;
 
-namespace Jobbr.Server.ComponentModel.Services
+namespace Jobbr.Server.ComponentServices.Management
 {
     internal class JobQueryService : IQueryService
     {

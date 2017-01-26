@@ -3,7 +3,7 @@ using System.IO;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
 
-namespace Jobbr.Server.Builder
+namespace Jobbr.Server.ComponentServices.Execution
 {
     internal class JobRunProgressReceiver : IJobRunProgressChannel
     {

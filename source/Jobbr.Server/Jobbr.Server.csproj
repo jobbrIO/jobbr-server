@@ -93,7 +93,7 @@
     <Compile Include="Core\IStateService.cs" />
     <Compile Include="Storage\JobbrRepo.cs" />
     <Compile Include="Core\StateService.cs" />
-    <Compile Include="Common\JobbrServiceProvider.cs" />
+    <Compile Include="ComponentServices\Registration\JobbrServiceProvider.cs" />
     <Compile Include="Scheduling\DefaultScheduler.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -124,9 +124,7 @@
       <Name>Jobbr.ComponentModel.Registration</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ComponentModel\Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

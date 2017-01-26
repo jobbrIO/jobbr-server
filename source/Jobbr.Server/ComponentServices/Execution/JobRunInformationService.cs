@@ -3,7 +3,7 @@ using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.Server.Storage;
 
-namespace Jobbr.Server.ComponentModel.Services
+namespace Jobbr.Server.ComponentServices.Execution
 {
     internal class JobRunInformationService : IJobRunInformationService
     {
