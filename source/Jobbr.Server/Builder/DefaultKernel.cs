@@ -39,6 +39,7 @@ namespace Jobbr.Server.Builder
             // Management related services
             this.Bind<IJobManagementService>().To<JobManagementService>().InSingletonScope();
             this.Bind<IQueryService>().To<JobQueryService>().InSingletonScope();
+            this.Bind<IServerManagementService>().To<ServerManagementService>().InSingletonScope();
 
             // Execution related services
             this.Bind<IJobRunInformationService>().To<JobRunInformationService>().InSingletonScope();
