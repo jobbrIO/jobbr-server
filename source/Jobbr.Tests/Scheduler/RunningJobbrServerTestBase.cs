@@ -34,8 +34,6 @@ namespace Jobbr.Tests.Scheduler
         {
             var builder = new JobbrBuilder();
 
-            builder.AddJobs(registry => registry.Define("DemoJob", "DemoJobType"));
-
             builder.Register<IJobbrComponent>(typeof(ExposeAllServicesComponent));
 
             var server = builder.Create();
