@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-using Jobbr.Server.Common;
-using Jobbr.Common.Model;
+using Jobbr.ComponentModel.JobStorage;
+using Jobbr.ComponentModel.JobStorage.Model;
 
 namespace Jobbr.Tests.StorageProvider
 {
@@ -138,7 +138,7 @@ namespace Jobbr.Tests.StorageProvider
             throw new NotImplementedException();
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunState state)
+        public List<JobRun> GetJobRunsByState(JobRunStates state)
         {
             throw new NotImplementedException();
         }

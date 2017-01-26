@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Jobbr.Server.Common;
-using Jobbr.Server.Core;
-using Jobbr.Common.Model;
+using Jobbr.ComponentModel.JobStorage;
+using Jobbr.ComponentModel.JobStorage.Model;
 
 namespace Jobbr.Tests.StorageProvider
 {
@@ -194,14 +193,14 @@ namespace Jobbr.Tests.StorageProvider
             return this.localJobRuns.Where(jr => jr.TriggerId == triggerId).ToList().Clone();
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunState state)
+        public List<JobRun> GetJobRunsByState(JobRunStates state)
         {
             return this.localJobRuns.Where(jr => jr.State == state).ToList().Clone();
         }
 
         public bool CheckParallelExecution(long triggerId)
         {
-            return this.localJobRuns.Count(jr => jr.TriggerId == triggerId && jr.State < JobRunState.Completed) == 0;
+            return this.localJobRuns.Count(jr => jr.TriggerId == triggerId && jr.State < JobRunStates.Completed) == 0;
         }
     }
 }

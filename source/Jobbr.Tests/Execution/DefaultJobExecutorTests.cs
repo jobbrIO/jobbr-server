@@ -1,94 +1,90 @@
-﻿using System;
-using System.Linq;
-
-using Jobbr.Common.Model;
-using Jobbr.Server.Core;
-using Jobbr.Tests.Setup;
-using Jobbr.Tests.StorageProvider;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Execution
 {
     [TestClass]
     public class DefaultJobExecutorTests
     {
-        //[TestMethod]
-        //public void PreparedJobRun_IsUpdated_PreparedStartDateIsAdjusted()
-        //{
-        //    var storageProvider = new InMemoryJobStorageProvider();
+        [TestMethod]
+        public void PreparedJobRun_IsUpdated_PreparedStartDateIsAdjusted()
+        {
+            Assert.Fail("This test needs to be re-implemented!");
 
-        //    var demoJob = new Job();
-        //    storageProvider.AddJob(demoJob);
+            //var storageProvider = new InMemoryJobStorageProvider();
 
-        //    var configuration = new CompleteJobberConfiguration();
+            //var demoJob = new Job();
+            //storageProvider.AddJob(demoJob);
 
-        //    var jobbrRepository = new JobbrRepository(storageProvider);
-        //    var stateService = new StateService(configuration, jobbrRepository);
+            //var configuration = new CompleteJobberConfiguration();
 
-        //    var jobService = new JobManagementService(jobbrRepository, stateService);
+            //var jobbrRepository = new JobbrRepository(storageProvider);
+            //var stateService = new StateService(configuration, jobbrRepository);
 
-        //    var scheduler = new DefaultScheduler(stateService, configuration, jobbrRepository, jobService);
+            //var jobService = new JobManagementService(jobbrRepository, stateService);
 
-        //    var futureDate1 = DateTime.UtcNow.AddHours(2);
-        //    var futureDate2 = DateTime.UtcNow.AddHours(4);
+            //var scheduler = new DefaultScheduler(stateService, configuration, jobbrRepository, jobService);
 
-        //    var trigger = new ScheduledTrigger { JobId = demoJob.Id, StartDateTimeUtc = futureDate1, IsActive = true };
+            //var futureDate1 = DateTime.UtcNow.AddHours(2);
+            //var futureDate2 = DateTime.UtcNow.AddHours(4);
 
-        //    var triggerId = jobService.AddTrigger(trigger);
-        //    scheduler.Start();
+            //var trigger = new ScheduledTrigger { JobId = demoJob.Id, StartDateTimeUtc = futureDate1, IsActive = true };
 
-        //    // Wait for the scheduler to do his work
-        //    var hasJobRuns = WaitFor.HasElements(() => storageProvider.GetJobRuns());
+            //var triggerId = jobService.AddTrigger(trigger);
+            //scheduler.Start();
 
-        //    Assert.IsTrue(hasJobRuns, "There should be at least one element after a given amount of time");
+            //// Wait for the scheduler to do his work
+            //var hasJobRuns = WaitFor.HasElements(() => storageProvider.GetJobRuns());
 
-        //    var trigger2 = new ScheduledTrigger { JobId = demoJob.Id, StartDateTimeUtc = futureDate2, IsActive = true };
+            //Assert.IsTrue(hasJobRuns, "There should be at least one element after a given amount of time");
 
-        //    jobService.UpdateTrigger(triggerId, trigger2);
+            //var trigger2 = new ScheduledTrigger { JobId = demoJob.Id, StartDateTimeUtc = futureDate2, IsActive = true };
 
-        //    var jobRunFromStorage = storageProvider.GetJobRuns().Single();
+            //jobService.UpdateTrigger(triggerId, trigger2);
 
-        //    Assert.AreEqual(trigger2.StartDateTimeUtc, jobRunFromStorage.PlannedStartDateTimeUtc);
-        //}
+            //var jobRunFromStorage = storageProvider.GetJobRuns().Single();
 
-        //[TestMethod]
-        //public void PreparedJobRun_IsDeleted_WhenCorrespondingTriggerWasDeactivated()
-        //{
-        //    var storageProvider = new InMemoryJobStorageProvider();
+            //Assert.AreEqual(trigger2.StartDateTimeUtc, jobRunFromStorage.PlannedStartDateTimeUtc);
+        }
 
-        //    var demoJob = new Job();
-        //    storageProvider.AddJob(demoJob);
+        [TestMethod]
+        public void PreparedJobRun_IsDeleted_WhenCorrespondingTriggerWasDeactivated()
+        {
+            Assert.Fail("This test needs to be re-implemented!");
 
-        //    var configuration = new CompleteJobberConfiguration();
+            //var storageProvider = new InMemoryJobStorageProvider();
 
-        //    var jobbrRepository = new JobbrRepository(storageProvider);
-        //    var stateService = new StateService(configuration, jobbrRepository);
+            //var demoJob = new Job();
+            //storageProvider.AddJob(demoJob);
 
-        //    var jobService = new JobManagementService(jobbrRepository, stateService);
+            //var configuration = new CompleteJobberConfiguration();
 
-        //    var scheduler = new DefaultScheduler(stateService, configuration, jobbrRepository, jobService);
+            //var jobbrRepository = new JobbrRepository(storageProvider);
+            //var stateService = new StateService(configuration, jobbrRepository);
 
-        //    var futureDate1 = DateTime.UtcNow.AddHours(2);
+            //var jobService = new JobManagementService(jobbrRepository, stateService);
 
-        //    var trigger = new ScheduledTrigger { JobId = demoJob.Id, StartDateTimeUtc = futureDate1, IsActive = true };
+            //var scheduler = new DefaultScheduler(stateService, configuration, jobbrRepository, jobService);
 
-        //    var triggerId = jobService.AddTrigger(trigger);
+            //var futureDate1 = DateTime.UtcNow.AddHours(2);
 
-        //    scheduler.Start();
+            //var trigger = new ScheduledTrigger { JobId = demoJob.Id, StartDateTimeUtc = futureDate1, IsActive = true };
 
-        //    // Wait for the scheduler to do his work
-        //    var hasJobRuns = WaitFor.HasElements(() => storageProvider.GetJobRunsByState(JobRunState.Scheduled));
+            //var triggerId = jobService.AddTrigger(trigger);
 
-        //    // Precondition
-        //    Assert.IsTrue(hasJobRuns, "There should be at least one element after a given amount of time");
+            //scheduler.Start();
 
-        //    jobService.DisableTrigger(triggerId);
+            //// Wait for the scheduler to do his work
+            //var hasJobRuns = WaitFor.HasElements(() => storageProvider.GetJobRunsByState(JobRunState.Scheduled));
 
-        //    // Wait for the scheduler to do his work
-        //    var hasNoElements = WaitFor.HasZeroElements(() => storageProvider.GetJobRunsByState(JobRunState.Scheduled));
+            //// Precondition
+            //Assert.IsTrue(hasJobRuns, "There should be at least one element after a given amount of time");
 
-        //    Assert.IsTrue(hasNoElements, "Jobrun should be removed when disabled corresponding trigger");
-        //}
+            //jobService.DisableTrigger(triggerId);
+
+            //// Wait for the scheduler to do his work
+            //var hasNoElements = WaitFor.HasZeroElements(() => storageProvider.GetJobRunsByState(JobRunState.Scheduled));
+
+            //Assert.IsTrue(hasNoElements, "Jobrun should be removed when disabled corresponding trigger");
+        }
     }
 }

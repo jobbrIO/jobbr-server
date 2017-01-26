@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using Jobbr.Common.Model;
-using Jobbr.Server.Common;
+using Jobbr.ComponentModel.JobStorage;
+using Jobbr.ComponentModel.JobStorage.Model;
 
 namespace Jobbr.Tests.StorageProvider
 {
@@ -167,7 +167,7 @@ namespace Jobbr.Tests.StorageProvider
             return inMemoryVersion.GetJobRunsByTriggerId(triggerId);
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunState state)
+        public List<JobRun> GetJobRunsByState(JobRunStates state)
         {
             CheckFailAll();
             return inMemoryVersion.GetJobRunsByState(state);

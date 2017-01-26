@@ -1,7 +1,5 @@
 ﻿using System;
 
-using Jobbr.Server;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Setup
@@ -13,67 +11,79 @@ namespace Jobbr.Tests.Setup
         [ExpectedException(typeof(ArgumentNullException))]
         public void NewJobbr_WithoutConfiguration_FailsOnCtor()
         {
-            var jobbr = new JobbrServer(null);
+            Assert.Fail("This test needs to be re-implemented!");
+
+            //var jobbr = new JobbrServer(null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void NewJobbr_WithNoStorageProvider_FailsOnStart()
         {
-            var config = new CompleteJobberConfiguration();
-            config.JobStorageProvider = null;
+            Assert.Fail("This test needs to be re-implemented!");
 
-            var jobbr = new JobbrServer(config);
+            //var config = new CompleteJobberConfiguration();
+            //config.JobStorageProvider = null;
 
-            jobbr.Start(1000);
+            //var jobbr = new JobbrServer(config);
+
+            //jobbr.Start(1000);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void NewJobbr_WithNoArtefactsProvider_FailsOnStart()
         {
-            var config = new CompleteJobberConfiguration();
-            config.ArtefactStorageProvider = null;
+            Assert.Fail("This test needs to be re-implemented!");
 
-            var jobbr = new JobbrServer(config);
+            //var config = new CompleteJobberConfiguration();
+            //config.ArtefactStorageProvider = null;
 
-            jobbr.Start(1000);
+            //var jobbr = new JobbrServer(config);
+
+            //jobbr.Start(1000);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void NewJobbr_WithNoJobRunDirectory_FailsOnStart()
         {
-            var config = new CompleteJobberConfiguration();
-            config.JobRunDirectory = null;
+            Assert.Fail("This test needs to be re-implemented!");
 
-            var jobbr = new JobbrServer(config);
+            //var config = new CompleteJobberConfiguration();
+            //config.JobRunDirectory = null;
 
-            jobbr.Start(1000);
+            //var jobbr = new JobbrServer(config);
+
+            //jobbr.Start(1000);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void NewJobbr_WithNoJobRunnerExeResolver_FailsOnStart()
         {
-            var config = new CompleteJobberConfiguration();
-            config.JobRunnerExeResolver = null;
+            Assert.Fail("This test needs to be re-implemented!");
 
-            var jobbr = new JobbrServer(config);
+            //var config = new CompleteJobberConfiguration();
+            //config.JobRunnerExeResolver = null;
 
-            jobbr.Start(1000);
+            //var jobbr = new JobbrServer(config);
+
+            //jobbr.Start(1000);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void NewJobbr_WithNoBackendUrl_FailsOnStart()
         {
-            var config = new CompleteJobberConfiguration();
-            config.BackendAddress = string.Empty;
+            Assert.Fail("This test needs to be re-implemented!");
 
-            var jobbr = new JobbrServer(config);
+            //var config = new CompleteJobberConfiguration();
+            //config.BackendAddress = string.Empty;
 
-            jobbr.Start(1000);
+            //var jobbr = new JobbrServer(config);
+
+            //jobbr.Start(1000);
         }
     }
 }
