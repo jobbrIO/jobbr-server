@@ -1,51 +1,41 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Linq;
+using Jobbr.ComponentModel.Management.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Scheduler
 {
     [TestClass]
-    public class SchedulerTests
+    public class SchedulerTests : RunningJobbrServerTestBase
     {
         [TestMethod]
         public void JobRunIsScheduled_RecurringTriggerGetsUpdated_JobRunScheduleIsAdjusted()
         {
-            Assert.Fail("This test needs to be re-implemented!");
+            var jobService = this.Services.JobManagementService;
+            var storageProvider = this.Services.JobStorageProvider;
 
-            //var storageProvider = new InMemoryJobStorageProvider();
+            var currentMinutesInHour = DateTime.UtcNow.Minute;
+            var futureMinute = (currentMinutesInHour + 5) % 60;
+            var futureMinute2 = (futureMinute + 2) % 60;
 
-            //var demoJob = new Job();
-            //storageProvider.AddJob(demoJob);
+            var recurringTrigger = new RecurringTrigger { JobId = 1, Definition = futureMinute + " * * * *", IsActive = true };
+            jobService.AddTrigger(recurringTrigger);
 
-            //var configuration = new CompleteJobberConfiguration();
+            // Wait for the scheduler to do his work
+            WaitFor.HasElements(() => storageProvider.GetJobRuns());
 
-            //var repository = new JobbrRepository(storageProvider);
-            //var stateService = new StateService(configuration, repository);
-            //var jobService = new JobManagementService(repository, stateService);
+            var createdJobRun = storageProvider.GetJobRuns().FirstOrDefault();
 
-            //var scheduler = new DefaultScheduler(stateService, configuration, repository, jobService);
+            // Base Assertions
+            Assert.IsNotNull(createdJobRun, "There should be exact one JobRun which is not null");
+            Assert.IsTrue(createdJobRun.PlannedStartDateTimeUtc >= DateTime.UtcNow, "The job run needs to be in the future");
+            Assert.AreEqual(futureMinute, createdJobRun.PlannedStartDateTimeUtc.Minute);
 
-            //var currentMinutesInHour = DateTime.UtcNow.Minute;
-            //var futureMinute = (currentMinutesInHour + 5) % 60;
-            //var futureMinute2 = (futureMinute + 2) % 60;
+            jobService.UpdateTriggerDefinition(recurringTrigger.Id, futureMinute2 + " * * * *");
 
-            //var recurringTrigger = new RecurringTrigger { Definition = futureMinute + " * * * *", JobId = demoJob.Id, IsActive = true };
-            //jobService.AddTrigger(recurringTrigger);
-            //scheduler.Start();
+            var updatedJobRun = storageProvider.GetJobRuns().FirstOrDefault();
 
-            //// Wait for the scheduler to do his work
-            //WaitFor.HasElements(() => storageProvider.GetJobRuns());
-
-            //var createdJobRun = storageProvider.GetJobRuns().FirstOrDefault();
-
-            //// Base Assertions
-            //Assert.IsNotNull(createdJobRun, "There should be exact one JobRun which is not null");
-            //Assert.IsTrue(createdJobRun.PlannedStartDateTimeUtc >= DateTime.UtcNow, "The job run needs to be in the future");
-            //Assert.AreEqual(futureMinute, createdJobRun.PlannedStartDateTimeUtc.Minute);
-
-            //jobService.UpdateTrigger(recurringTrigger.Id, new RecurringTrigger { Definition = futureMinute2 + " * * * *", IsActive = true });
-
-            //var updatedJobRun = storageProvider.GetJobRuns().FirstOrDefault();
-
-            //Assert.AreEqual(futureMinute2, updatedJobRun.PlannedStartDateTimeUtc.Minute, "As per updated definition, the job should now start on a different plan");
+            Assert.AreEqual(futureMinute2, updatedJobRun.PlannedStartDateTimeUtc.Minute, "As per updated definition, the job should now start on a different plan");
         }
 
         [TestMethod]

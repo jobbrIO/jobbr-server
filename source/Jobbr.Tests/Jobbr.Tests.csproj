@@ -60,6 +60,8 @@
     <Compile Include="Management\JobManagementTests.cs" />
     <Compile Include="Builder\BadEnvironmentTests.cs" />
     <Compile Include="Builder\ConfigurationTests.cs" />
+    <Compile Include="Scheduler\ExposeAllServicesComponent.cs" />
+    <Compile Include="Scheduler\RunningJobbrServerTestBase.cs" />
     <Compile Include="Scheduler\SchedulerTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\FaultyJobStorageProvider.cs" />
     <Compile Include="Infrastructure\StorageProvider\InMemoryJobStorageProvider.cs" />
@@ -72,9 +74,21 @@
       <Project>{a45f729d-8629-4c7a-96b8-29eaa8d52919}</Project>
       <Name>Jobbr.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-artefactstorage\source\Jobbr.ComponentModel.ArtefactStorage\Jobbr.ComponentModel.ArtefactStorage.csproj">
+      <Project>{183F7730-D805-405C-92B4-84BB151C2371}</Project>
+      <Name>Jobbr.ComponentModel.ArtefactStorage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\submodules\jobbr-cm-jobstorage\source\Jobbr.ComponentModel.JobStorage\Jobbr.ComponentModel.JobStorage.csproj">
       <Project>{375FFCCA-E278-4744-96DD-D4AB92186C66}</Project>
       <Name>Jobbr.ComponentModel.JobStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-management\source\Jobbr.ComponentModel.Management\Jobbr.ComponentModel.Management.csproj">
+      <Project>{C83448F5-759D-4322-ACFE-B447D1ABF9EC}</Project>
+      <Name>Jobbr.ComponentModel.Management</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-registration\source\Jobbr.ComponentModel.Registration\Jobbr.ComponentModel.Registration.csproj">
+      <Project>{DA63448E-F6CD-4519-9284-09028659AD28}</Project>
+      <Name>Jobbr.ComponentModel.Registration</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
