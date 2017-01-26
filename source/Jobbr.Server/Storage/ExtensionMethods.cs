@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Jobbr.Server.Builder
+namespace Jobbr.Server.Storage
 {
     internal static class ExtensionMethods
     {
