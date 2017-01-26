@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using Jobbr.ComponentModel.Execution;
-using Jobbr.ComponentModel.Execution.Model;
+﻿using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Common;
@@ -26,8 +23,6 @@ namespace Jobbr.Server.Builder
         /// </param>
         public DefaultContainer()
         {
-            this.Bind<IJobbrServiceProvider>().ToConstant(new JobbrServiceProvider(this));
-
             this.Bind<IJobbrRepository>().To<JobbrRepository>().InSingletonScope();
             this.Bind<Core.IJobManagementService>().To<Core.JobManagementService>().InSingletonScope();
             this.Bind<IStateService>().To<StateService>().InSingletonScope();
@@ -39,6 +34,9 @@ namespace Jobbr.Server.Builder
 
         private void AddComponentModelServices()
         {
+            // Registration
+            this.Bind<IJobbrServiceProvider>().ToConstant(new JobbrServiceProvider(this));
+
             // Management related services
             this.Bind<IJobManagementService>().To<ComponentModel.Services.JobManagementService>().InSingletonScope();
             this.Bind<IQueryService>().To<ComponentModel.Services.JobQueryService>().InSingletonScope();
@@ -46,24 +44,6 @@ namespace Jobbr.Server.Builder
             // Execution related services
             this.Bind<IJobRunInformationService>().To<ComponentModel.Services.JobRunInformationService>().InSingletonScope();
             this.Bind<IJobRunProgressChannel>().To<JobRunProgressReceiver>().InSingletonScope();
-        }
-    }
-
-    internal class JobRunProgressReceiver : IJobRunProgressChannel
-    {
-        public void PublishStatusUpdate(JobRunInfo jobRunInfo, JobRunStates state)
-        {
-            //TODO: this.stateService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
-        }
-
-        public void PublishProgressUpdate(JobRunInfo jobRunInfo, double progress)
-        {
-
-        }
-
-        public void PublicArtefact(Guid uniqueId, string fileName, Stream result)
-        {
-            throw new NotImplementedException();
         }
     }
 }

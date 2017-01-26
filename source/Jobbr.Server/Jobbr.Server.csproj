@@ -74,7 +74,8 @@
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
     <Compile Include="Builder\DefaultKernel.cs" />
-    <Compile Include="ComponentModel\Services\JobRunInformationService.cs" />
+    <Compile Include="ComponentServices\Execution\JobRunProgressReceiver.cs" />
+    <Compile Include="ComponentServices\Execution\JobRunInformationService.cs" />
     <Compile Include="Builder\NoExecutor.cs" />
     <Compile Include="ConfigurationManager.cs" />
     <Compile Include="JobRegistry\JobbrBuilderExtension.cs" />
@@ -83,9 +84,9 @@
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
     <Compile Include="Builder\ExtensionMethods.cs" />
-    <Compile Include="ComponentModel\Services\JobManagementService.cs" />
+    <Compile Include="ComponentServices\Management\JobManagementService.cs" />
     <Compile Include="Storage\FileSystemArtefactsStorageProvider.cs" />
-    <Compile Include="ComponentModel\Services\JobQueryService.cs" />
+    <Compile Include="ComponentServices\Management\JobQueryService.cs" />
     <Compile Include="JobRegistry\JobDefinition.cs" />
     <Compile Include="JobRegistry\RegistryBuilder.cs" />
     <Compile Include="Core\IJobManagementService.cs" />
@@ -124,7 +125,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Configuration\" />
+    <Folder Include="ComponentModel\Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

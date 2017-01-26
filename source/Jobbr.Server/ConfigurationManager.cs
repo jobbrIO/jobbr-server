@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Jobbr.ComponentModel.Registration;
-using Jobbr.Server.Common;
+using Jobbr.Server.ComponentServices.Registration;
 using Jobbr.Server.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;

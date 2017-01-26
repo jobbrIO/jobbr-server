@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Jobbr.ComponentModel.Registration;
-
 using Ninject;
 
-namespace Jobbr.Server.Common
+namespace Jobbr.Server.ComponentServices.Registration
 {
     /// <summary>
     /// The jobbr dependency resolver.
