@@ -8,10 +8,7 @@
     <projectUrl>http://github.com/jobbrIO/jobbr-server</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Jobbr is a .NET JobServer</description>
-    <copyright>Copyright 2016</copyright>
-    <dependencies>
-      <dependency id="Microsoft.Owin.Host.HttpListener" version="3.0.1" />
-    </dependencies>
+    <copyright>Copyright 2017</copyright>
   </metadata>
   <files>
     <file src="Jobbr.Server.*" target="lib\net45"/>
