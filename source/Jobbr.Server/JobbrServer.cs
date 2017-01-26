@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
+using Jobbr.Server.JobRegistry;
 using Jobbr.Server.Logging;
-using Jobbr.Server.Repository;
 using Jobbr.Server.Scheduling;
 
 namespace Jobbr.Server

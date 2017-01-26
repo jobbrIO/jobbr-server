@@ -1,7 +1,7 @@
 ﻿using System;
 using Jobbr.ComponentModel.Registration;
 
-namespace Jobbr.Server.Repository
+namespace Jobbr.Server.JobRegistry
 {
     public static class JobbrBuilderExtension
     {

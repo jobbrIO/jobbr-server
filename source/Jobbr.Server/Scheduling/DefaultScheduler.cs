@@ -1,8 +1,8 @@
 using System;
 using System.Threading;
 using Jobbr.ComponentModel.JobStorage.Model;
-using Jobbr.Server.Core;
 using Jobbr.Server.Logging;
+using Jobbr.Server.Storage;
 using NCrontab;
 
 namespace Jobbr.Server.Scheduling

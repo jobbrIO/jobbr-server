@@ -4,7 +4,7 @@ using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 
-namespace Jobbr.Server.Core
+namespace Jobbr.Server.Storage
 {
     public interface IJobbrRepository
     {
@@ -74,34 +74,34 @@ namespace Jobbr.Server.Core
 
         public List<Job> GetAllJobs()
         {
-            return storageProvider.GetJobs();
+            return this.storageProvider.GetJobs();
         }
 
         public Job GetJob(long id)
         {
-            return storageProvider.GetJobById(id);
+            return this.storageProvider.GetJobById(id);
         }
 
         public void UpdateJobRunProgress(long jobRunId, double progress)
         {
-            storageProvider.UpdateProgress(jobRunId, progress);
+            this.storageProvider.UpdateProgress(jobRunId, progress);
         }
 
         public void SetPidForJobRun(JobRun jobRun, int id)
         {
             jobRun.Pid = id;
 
-            storageProvider.Update(jobRun);
+            this.storageProvider.Update(jobRun);
         }
 
         public JobRun GetJobRun(long id)
         {
-            return storageProvider.GetJobRunById(id);
+            return this.storageProvider.GetJobRunById(id);
         }
 
         public List<JobTriggerBase> GetTriggers(long jobId)
         {
-            return storageProvider.GetTriggersByJobId(jobId);
+            return this.storageProvider.GetTriggersByJobId(jobId);
         }
 
         public void SaveAddTrigger(RecurringTrigger trigger)
@@ -144,12 +144,12 @@ namespace Jobbr.Server.Core
 
         public JobRun GetLastJobRunByTriggerId(long triggerId)
         {
-            return storageProvider.GetLastJobRunByTriggerId(triggerId);
+            return this.storageProvider.GetLastJobRunByTriggerId(triggerId);
         }
 
         public JobRun GetNextJobRunByTriggerId(long triggerId)
         {
-            return storageProvider.GetFutureJobRunsByTriggerId(triggerId);
+            return this.storageProvider.GetFutureJobRunsByTriggerId(triggerId);
         }
 
         public bool SaveEnableTrigger(long triggerId, out JobTriggerBase trigger)

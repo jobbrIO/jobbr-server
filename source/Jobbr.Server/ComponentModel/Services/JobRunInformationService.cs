@@ -1,7 +1,7 @@
 ﻿using System;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
-using Jobbr.Server.Core;
+using Jobbr.Server.Storage;
 
 namespace Jobbr.Server.ComponentModel.Services
 {

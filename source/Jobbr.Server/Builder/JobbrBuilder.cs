@@ -4,8 +4,8 @@ using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
-using Jobbr.Server.Common;
 using Jobbr.Server.Logging;
+using Jobbr.Server.Storage;
 using Ninject;
 
 namespace Jobbr.Server.Builder

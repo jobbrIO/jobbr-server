@@ -4,7 +4,7 @@ using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 
-namespace Jobbr.Server.Repository
+namespace Jobbr.Server.JobRegistry
 {
     public class RegistryBuilder
     {

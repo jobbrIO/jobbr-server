@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using Jobbr.ComponentModel.ArtefactStorage;
 
-namespace Jobbr.Server.Common
+namespace Jobbr.Server.Storage
 {
     /// <summary>
     /// The file system artefacts storage provider.
