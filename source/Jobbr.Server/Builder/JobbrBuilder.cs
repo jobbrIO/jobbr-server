@@ -65,7 +65,7 @@ namespace Jobbr.Server.Builder
 
         public void Add<T>(object instance)
         {
-            var featureConfiguration = (IFeatureConfiguration) instance;
+            var featureConfiguration = instance as IFeatureConfiguration;
             if (featureConfiguration != null)
             {
                 this.container.Bind<IFeatureConfiguration>().ToConstant((IFeatureConfiguration)instance);
