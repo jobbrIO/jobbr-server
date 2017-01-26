@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\JobbrRuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -74,25 +77,30 @@
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
     <Compile Include="Builder\DefaultKernel.cs" />
-    <Compile Include="ComponentModel\Services\JobRunInformationService.cs" />
+    <Compile Include="ComponentServices\Execution\JobRunProgressReceiver.cs" />
+    <Compile Include="ComponentServices\Execution\JobRunInformationService.cs" />
     <Compile Include="Builder\NoExecutor.cs" />
+    <Compile Include="ComponentServices\Management\ServerManagementService.cs" />
+    <Compile Include="ConfigurationManager.cs" />
+    <Compile Include="JobRegistry\JobbrBuilderExtension.cs" />
+    <Compile Include="Scheduling\BuilderExtension.cs" />
+    <Compile Include="Scheduling\DefaultSchedulerConfiguration.cs" />
+    <Compile Include="JobbrState.cs" />
+    <Compile Include="Scheduling\IJobScheduler.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
-    <Compile Include="Builder\ExtensionMethods.cs" />
-    <Compile Include="ComponentModel\Services\JobManagementService.cs" />
+    <Compile Include="Storage\ExtensionMethods.cs" />
+    <Compile Include="ComponentServices\Management\JobManagementService.cs" />
     <Compile Include="Storage\FileSystemArtefactsStorageProvider.cs" />
-    <Compile Include="ComponentModel\Services\JobQueryService.cs" />
-    <Compile Include="Configuration\EmptyJobbrConfiguration.cs" />
-    <Compile Include="Configuration\JobDefinition.cs" />
-    <Compile Include="Configuration\RepositoryBuilder.cs" />
+    <Compile Include="ComponentServices\Management\JobQueryService.cs" />
+    <Compile Include="JobRegistry\JobDefinition.cs" />
+    <Compile Include="JobRegistry\RegistryBuilder.cs" />
     <Compile Include="Core\IJobManagementService.cs" />
     <Compile Include="Core\IStateService.cs" />
     <Compile Include="Storage\JobbrRepo.cs" />
     <Compile Include="Core\StateService.cs" />
-    <Compile Include="Common\IJobbrConfiguration.cs" />
-    <Compile Include="Common\JobbrDependencyResolver.cs" />
-    <Compile Include="Core\DefaultScheduler.cs" />
-    <Compile Include="Configuration\DefaultJobbrConfiguration.cs" />
+    <Compile Include="ComponentServices\Registration\JobbrServiceProvider.cs" />
+    <Compile Include="Scheduling\DefaultScheduler.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -121,6 +129,21 @@
       <Project>{0718496b-04f3-4197-9ed6-f2ecb73ecc03}</Project>
       <Name>Jobbr.ComponentModel.Registration</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Desktop.Analyzers.1.1.0\analyzers\dotnet\cs\Desktop.Analyzers.dll" />
+    <Analyzer Include="..\packages\Desktop.Analyzers.1.1.0\analyzers\dotnet\cs\Desktop.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.AnalyzerPowerPack.1.1.0\analyzers\dotnet\cs\Microsoft.AnalyzerPowerPack.Common.dll" />
+    <Analyzer Include="..\packages\Microsoft.AnalyzerPowerPack.1.1.0\analyzers\dotnet\cs\Microsoft.AnalyzerPowerPack.CSharp.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Runtime.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Runtime.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Runtime.InteropServices.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.InteropServices.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Runtime.InteropServices.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.InteropServices.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Security.Cryptography.Hashing.Algorithms.Analyzers.1.1.0\analyzers\dotnet\cs\System.Security.Cryptography.Hashing.Algorithms.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Security.Cryptography.Hashing.Algorithms.Analyzers.1.1.0\analyzers\dotnet\cs\System.Security.Cryptography.Hashing.Algorithms.CSharp.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

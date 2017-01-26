@@ -36,10 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\demo\packages\Microsoft.Owin.Host.HttpListener.3.0.1\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -56,17 +52,16 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Execution\DefaultJobExecutorTests.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Core\JobServiceTests.cs" />
-    <Compile Include="Setup\BadEnvironmentTests.cs" />
-    <Compile Include="Setup\CompleteJobberConfiguration.cs" />
-    <Compile Include="Setup\ConfigurationTests.cs" />
+    <Compile Include="Infrastructure\StorageProvider\Extensions.cs" />
+    <Compile Include="Management\JobManagementTests.cs" />
+    <Compile Include="Builder\BadEnvironmentTests.cs" />
+    <Compile Include="Builder\ConfigurationTests.cs" />
+    <Compile Include="Scheduler\ExposeAllServicesComponent.cs" />
+    <Compile Include="Scheduler\RunningJobbrServerTestBase.cs" />
     <Compile Include="Scheduler\SchedulerTests.cs" />
-    <Compile Include="StorageProvider\FaultyJobStorageProvider.cs" />
-    <Compile Include="ClientRuntime\JobbrRuntimeTests.cs" />
-    <Compile Include="StorageProvider\InMemoryJobStorageProvider.cs" />
-    <Compile Include="StorageProvider\NotImplementedJobStorageProvider.cs" />
-    <Compile Include="Execution\ServiceMessagesParserTests.cs" />
+    <Compile Include="Infrastructure\StorageProvider\FaultyJobStorageProvider.cs" />
+    <Compile Include="Infrastructure\StorageProvider\InMemoryJobStorageProvider.cs" />
+    <Compile Include="Infrastructure\StorageProvider\NotImplementedJobStorageProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WaitFor.cs" />
   </ItemGroup>
@@ -75,14 +70,25 @@
       <Project>{a45f729d-8629-4c7a-96b8-29eaa8d52919}</Project>
       <Name>Jobbr.Server</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Jobbr.Common\Jobbr.Common.csproj">
-      <Project>{37E22E5D-F8B2-4336-B509-53C94B170E4C}</Project>
-      <Name>Jobbr.Common</Name>
+    <ProjectReference Include="..\submodules\jobbr-cm-artefactstorage\source\Jobbr.ComponentModel.ArtefactStorage\Jobbr.ComponentModel.ArtefactStorage.csproj">
+      <Project>{183F7730-D805-405C-92B4-84BB151C2371}</Project>
+      <Name>Jobbr.ComponentModel.ArtefactStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-jobstorage\source\Jobbr.ComponentModel.JobStorage\Jobbr.ComponentModel.JobStorage.csproj">
+      <Project>{375FFCCA-E278-4744-96DD-D4AB92186C66}</Project>
+      <Name>Jobbr.ComponentModel.JobStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-management\source\Jobbr.ComponentModel.Management\Jobbr.ComponentModel.Management.csproj">
+      <Project>{C83448F5-759D-4322-ACFE-B447D1ABF9EC}</Project>
+      <Name>Jobbr.ComponentModel.Management</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-registration\source\Jobbr.ComponentModel.Registration\Jobbr.ComponentModel.Registration.csproj">
+      <Project>{DA63448E-F6CD-4519-9284-09028659AD28}</Project>
+      <Name>Jobbr.ComponentModel.Registration</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

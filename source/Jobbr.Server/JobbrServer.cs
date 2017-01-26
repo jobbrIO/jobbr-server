@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Jobbr.ComponentModel.Execution;
+using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
-using Jobbr.Server.Common;
-using Jobbr.Server.Configuration;
-using Jobbr.Server.Core;
+using Jobbr.Server.JobRegistry;
 using Jobbr.Server.Logging;
+using Jobbr.Server.Scheduling;
 
 namespace Jobbr.Server
 {
@@ -23,71 +22,41 @@ namespace Jobbr.Server
         private static readonly ILog Logger = LogProvider.For<JobbrServer>();
 
         /// <summary>
-        /// The configuration.
-        /// </summary>
-        private readonly IJobbrConfiguration configuration;
-
-        /// <summary>
         /// The scheduler.
         /// </summary>
-        private DefaultScheduler scheduler;
+        private readonly IJobScheduler scheduler;
 
         /// <summary>
         /// The executor.
         /// </summary>
-        private IJobExecutor executor;
+        private readonly IJobExecutor executor;
+
+        private readonly IJobStorageProvider jobStorageProvider;
 
         private bool isRunning;
 
         private readonly List<IJobbrComponent> components;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JobbrServer"/> class.
-        /// </summary>
-        /// <param name="configuration">
-        /// The configuration.
-        /// </param>
-        public JobbrServer(IJobbrConfiguration configuration)
-        {
-            if (configuration == null)
-            {
-                throw new ArgumentNullException("configuration");
-            }
-
-            Logger.Debug("A new instance of a a JobbrServer has been created.");
-
-            this.configuration = configuration;
-        }
+        private readonly ConfigurationManager configurationManager;
+        private readonly RegistryBuilder registryBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        /// <param name="configuration">
-        /// The configuration.
-        /// </param>
-        public JobbrServer(IJobbrConfiguration configuration, DefaultScheduler scheduler, IJobExecutor jobExecutor, List<IJobbrComponent> components)
+        public JobbrServer(IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> components, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
         {
-            if (configuration == null)
-            {
-                throw new ArgumentNullException("configuration");
-            }
-
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
-            this.configuration = configuration;
             this.scheduler = scheduler;
 
             this.components = components;
+            this.configurationManager = configurationManager;
+            this.registryBuilder = registryBuilder;
             this.executor = jobExecutor;
+            this.jobStorageProvider = jobStorageProvider;
         }
 
-        public bool IsRunning
-        {
-            get
-            {
-                return this.isRunning;
-            }
-        }
+        public bool IsRunning => this.isRunning;
 
         public JobbrState State { get; private set; }
 
@@ -118,10 +87,25 @@ namespace Jobbr.Server
         /// </summary>
         public async Task<bool> StartAsync(CancellationToken cancellationToken)
         {
-            this.LogConfiguration();
-
             this.State = JobbrState.Initializing;
-            this.ValidateConfigurationAndThrowOnErrors();
+
+            Logger.InfoFormat("The JobServer has been set-up by the following configurations");
+            this.configurationManager.LogConfiguration();
+
+            this.State = JobbrState.Validating;
+
+            try
+            {
+                this.configurationManager.ValidateConfigurationAndThrowOnErrors();
+                Logger.Info("The configuration was validated and seems ok. Final configuration below:");
+
+                this.configurationManager.LogConfiguration();
+            }
+            catch (Exception)
+            {
+                this.State = JobbrState.Error;
+                throw;
+            }
 
             this.State = JobbrState.Starting;
 
@@ -199,10 +183,11 @@ namespace Jobbr.Server
             {
                 try
                 {
-                    this.configuration.JobStorageProvider.GetJobs();
+                    // TODO: Migrate to a health-check
+                    this.jobStorageProvider.GetJobs();
                     return;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Thread.Sleep(1000);
                 }
@@ -223,34 +208,19 @@ namespace Jobbr.Server
 
         private void RegisterJobsFromRepository()
         {
+            Logger.Info("Addin jobs from the registry");
+
             try
             {
-                Logger.Info("Registering Jobs from configuration");
+                var numberOfChanges = this.registryBuilder.Apply(this.jobStorageProvider);
+                var numberOfJobs = this.jobStorageProvider.GetJobs().Count;
 
-                var model = new RepositoryBuilder();
-
-                this.configuration.OnRepositoryCreating(model);
-                var numberOfChanges = model.Apply(this.configuration.JobStorageProvider);
-                var numberOfJobs = this.configuration.JobStorageProvider.GetJobs().Count;
-
-                Logger.InfoFormat("There were {0} changes for the JobRegistry which contains {1} jobs right now.", numberOfChanges, numberOfJobs);
+                Logger.InfoFormat("There were {0} by the JobRegistry. There are now {1} known jobs right available.", numberOfChanges, numberOfJobs);
             }
             catch (Exception e)
             {
                 Logger.FatalException("Cannot register Jobs on startup. See Execption for details", e);
             }
-        }
-
-        private void LogConfiguration()
-        {
-            Logger.InfoFormat(
-                "JobbrServer is now starting with the following configuration: BackendUrl='{0}', MaxConcurrentJobs='{1}', JobRunDirectory='{2}', JobRunnerExeutable='{3}', JobStorageProvider='{4}' ArtefactsStorageProvider='{5}'",
-                this.configuration.BackendAddress,
-                this.configuration.MaxConcurrentJobs,
-                this.configuration.JobRunDirectory,
-                this.configuration.JobRunnerExeResolver != null ? Path.GetFullPath(this.configuration.JobRunnerExeResolver()) : "none",
-                this.configuration.JobStorageProvider,
-                this.configuration.ArtefactStorageProvider);
         }
 
         /// <summary>
@@ -278,70 +248,5 @@ namespace Jobbr.Server
                 this.Stop();
             }
         }
-
-        private void ValidateConfigurationAndThrowOnErrors()
-        {
-            Logger.Debug("Validating the configuration...");
-
-            try
-            {
-                if (this.configuration.JobRunnerExeResolver == null)
-                {
-                    throw new ArgumentException("You should set a runner-Executable which runs your jobs later!");
-                }
-
-                /*
-                var executableFullPath = Path.GetFullPath(this.configuration.JobRunnerExeResolver());
-
-                if (!File.Exists(executableFullPath))
-                {
-                    throw new ArgumentException(string.Format("The RunnerExecutable '{0}' cannot be found!", executableFullPath));
-                }
-                */
-
-                if (string.IsNullOrEmpty(this.configuration.BackendAddress))
-                {
-                    throw new ArgumentException("Please provide a backend address to host the api!");
-                }
-
-                if (string.IsNullOrEmpty(this.configuration.JobRunDirectory))
-                {
-                    throw new ArgumentException("Please provide a JobRunDirectory!");
-                }
-
-                if (this.configuration.JobStorageProvider == null)
-                {
-                    throw new ArgumentException("Please provide a storage provider for Jobs!");
-                }
-
-                if (this.configuration.ArtefactStorageProvider == null)
-                {
-                    throw new ArgumentException("Please provide a storage provider for artefacts!");
-                }
-
-                Logger.Info("The configuration was validated and seems ok.");
-            }
-            catch (Exception)
-            {
-                this.State = JobbrState.Error;
-                throw;
-            }
-
-        }
-    }
-
-    public enum JobbrState
-    {
-        Unknown = 0,
-        Initializing = 11,
-        Validating = 12,
-        Starting = 13,
-        Running = 14,
-
-        Stopping = 21,
-        Stopped = 29,
-        Error = 99,
-
-
     }
 }

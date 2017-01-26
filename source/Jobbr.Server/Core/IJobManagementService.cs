@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-namespace Jobbr.Server.Core
+﻿namespace Jobbr.Server.Core
 {
     public interface IJobManagementService
     {
