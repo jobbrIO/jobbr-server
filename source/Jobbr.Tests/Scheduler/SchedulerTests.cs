@@ -2,6 +2,7 @@
 using System.Linq;
 using Jobbr.ComponentModel.Management.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Job = Jobbr.ComponentModel.JobStorage.Model.Job;
 
 namespace Jobbr.Tests.Scheduler
 {
@@ -13,6 +14,9 @@ namespace Jobbr.Tests.Scheduler
         {
             var jobService = this.Services.JobManagementService;
             var storageProvider = this.Services.JobStorageProvider;
+
+            var demoJob = new Job();
+            storageProvider.AddJob(demoJob);
 
             var currentMinutesInHour = DateTime.UtcNow.Minute;
             var futureMinute = (currentMinutesInHour + 5) % 60;
