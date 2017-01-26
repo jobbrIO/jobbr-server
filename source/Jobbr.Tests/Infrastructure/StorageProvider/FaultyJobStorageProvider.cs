@@ -3,7 +3,7 @@ using System.Reflection;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 
-namespace Jobbr.Tests.StorageProvider
+namespace Jobbr.Tests.Infrastructure.StorageProvider
 {
     public class FaultyJobStorageProvider : IJobStorageProvider
     {
@@ -13,185 +13,185 @@ namespace Jobbr.Tests.StorageProvider
 
         public List<Job> GetJobs()
         {
-            CheckFailAll();
-            return inMemoryVersion.GetJobs();
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobs();
         }
 
         public long AddJob(Job job)
         {
-            CheckFailAll();
-            return inMemoryVersion.AddJob(job);
+            this.CheckFailAll();
+            return this.inMemoryVersion.AddJob(job);
         }
 
         public List<JobTriggerBase> GetTriggersByJobId(long jobId)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetTriggersByJobId(jobId);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetTriggersByJobId(jobId);
         }
 
         public long AddTrigger(RecurringTrigger trigger)
         {
-            CheckFailAll();
-            return inMemoryVersion.AddTrigger(trigger);
+            this.CheckFailAll();
+            return this.inMemoryVersion.AddTrigger(trigger);
         }
 
         public long AddTrigger(InstantTrigger trigger)
         {
-            CheckFailAll();
-            return inMemoryVersion.AddTrigger(trigger);
+            this.CheckFailAll();
+            return this.inMemoryVersion.AddTrigger(trigger);
         }
 
         public long AddTrigger(ScheduledTrigger trigger)
         {
-            CheckFailAll();
-            return inMemoryVersion.AddTrigger(trigger);
+            this.CheckFailAll();
+            return this.inMemoryVersion.AddTrigger(trigger);
         }
 
         public bool DisableTrigger(long triggerId)
         {
-            CheckFailAll();
-            return inMemoryVersion.DisableTrigger(triggerId);
+            this.CheckFailAll();
+            return this.inMemoryVersion.DisableTrigger(triggerId);
         }
 
         public bool EnableTrigger(long triggerId)
         {
-            CheckFailAll();
-            return inMemoryVersion.EnableTrigger(triggerId);
+            this.CheckFailAll();
+            return this.inMemoryVersion.EnableTrigger(triggerId);
         }
 
         public List<JobTriggerBase> GetActiveTriggers()
         {
-            CheckFailAll();
-            return inMemoryVersion.GetActiveTriggers();
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetActiveTriggers();
         }
 
         public JobTriggerBase GetTriggerById(long triggerId)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetTriggerById(triggerId);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetTriggerById(triggerId);
         }
 
         public JobRun GetLastJobRunByTriggerId(long triggerId)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetLastJobRunByTriggerId(triggerId);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetLastJobRunByTriggerId(triggerId);
         }
 
         public JobRun GetFutureJobRunsByTriggerId(long triggerId)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetFutureJobRunsByTriggerId(triggerId);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetFutureJobRunsByTriggerId(triggerId);
         }
 
         public int AddJobRun(JobRun jobRun)
         {
-            CheckFailAll();
-            return inMemoryVersion.AddJobRun(jobRun);
+            this.CheckFailAll();
+            return this.inMemoryVersion.AddJobRun(jobRun);
         }
 
         public List<JobRun> GetJobRuns()
         {
-            CheckFailAll();
-            return inMemoryVersion.GetJobRuns();
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobRuns();
         }
 
         public bool UpdateProgress(long jobRunId, double? progress)
         {
-            CheckFailAll();
-            return inMemoryVersion.UpdateProgress(jobRunId, progress);
+            this.CheckFailAll();
+            return this.inMemoryVersion.UpdateProgress(jobRunId, progress);
         }
 
         public bool Update(JobRun jobRun)
         {
-            CheckFailAll();
-            return inMemoryVersion.Update(jobRun);
+            this.CheckFailAll();
+            return this.inMemoryVersion.Update(jobRun);
         }
 
         public Job GetJobById(long id)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetJobById(id);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobById(id);
         }
 
         public Job GetJobByUniqueName(string identifier)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetJobByUniqueName(identifier);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobByUniqueName(identifier);
         }
 
         public JobRun GetJobRunById(long id)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetJobRunById(id);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobRunById(id);
         }
 
         public List<JobRun> GetJobRunsForUserId(long userId)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetJobRunsForUserId(userId);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobRunsForUserId(userId);
         }
 
         public List<JobRun> GetJobRunsForUserName(string userName)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetJobRunsForUserName(userName);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobRunsForUserName(userName);
         }
 
         public bool Update(Job job)
         {
-            CheckFailAll();
-            return inMemoryVersion.Update(job);
+            this.CheckFailAll();
+            return this.inMemoryVersion.Update(job);
         }
 
         public bool Update(InstantTrigger trigger)
         {
-            CheckFailAll();
-            return inMemoryVersion.Update(trigger);
+            this.CheckFailAll();
+            return this.inMemoryVersion.Update(trigger);
         }
 
         public bool Update(ScheduledTrigger trigger)
         {
-            CheckFailAll();
-            return inMemoryVersion.Update(trigger);
+            this.CheckFailAll();
+            return this.inMemoryVersion.Update(trigger);
         }
 
         public bool Update(RecurringTrigger trigger)
         {
-            CheckFailAll();
-            return inMemoryVersion.Update(trigger);
+            this.CheckFailAll();
+            return this.inMemoryVersion.Update(trigger);
         }
 
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetJobRunsByTriggerId(triggerId);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobRunsByTriggerId(triggerId);
         }
 
         public List<JobRun> GetJobRunsByState(JobRunStates state)
         {
-            CheckFailAll();
-            return inMemoryVersion.GetJobRunsByState(state);
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobRunsByState(state);
         }
 
         public bool CheckParallelExecution(long triggerId)
         {
-            CheckFailAll();
-            return inMemoryVersion.CheckParallelExecution(triggerId);
+            this.CheckFailAll();
+            return this.inMemoryVersion.CheckParallelExecution(triggerId);
         }
 
         public void DisableImplementation()
         {
-            failAll = true;
+            this.failAll = true;
         }
 
         public void EnableImplementation()
         {
-            failAll = false;
+            this.failAll = false;
         }
 
         private void CheckFailAll()
         {
-            if (failAll)
+            if (this.failAll)
             {
                 throw new TargetException("This JobStorageProvider is currently not healthy!");
             }

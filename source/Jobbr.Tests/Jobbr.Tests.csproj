@@ -56,10 +56,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Execution\DefaultJobExecutorTests.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Core\JobServiceTests.cs" />
-    <Compile Include="Setup\BadEnvironmentTests.cs" />
-    <Compile Include="Setup\ConfigurationTests.cs" />
+    <Compile Include="Infrastructure\StorageProvider\Extensions.cs" />
+    <Compile Include="Management\JobManagementTests.cs" />
+    <Compile Include="Builder\BadEnvironmentTests.cs" />
+    <Compile Include="Builder\ConfigurationTests.cs" />
     <Compile Include="Scheduler\SchedulerTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\FaultyJobStorageProvider.cs" />
     <Compile Include="Infrastructure\StorageProvider\InMemoryJobStorageProvider.cs" />

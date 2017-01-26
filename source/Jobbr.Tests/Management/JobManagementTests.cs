@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jobbr.Tests.Core
+namespace Jobbr.Tests.Management
 {
     [TestClass]
-    public class JobServiceTests
+    public class JobManagementTests
     {
         [TestMethod]
         public void JobService_ScheduledTriggerIsUpdated_UpdateIsPersisted()

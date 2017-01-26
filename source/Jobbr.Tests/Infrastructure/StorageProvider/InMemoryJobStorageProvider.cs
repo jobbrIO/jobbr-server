@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 
-namespace Jobbr.Tests.StorageProvider
+namespace Jobbr.Tests.Infrastructure.StorageProvider
 {
     public class InMemoryJobStorageProvider : IJobStorageProvider
     {

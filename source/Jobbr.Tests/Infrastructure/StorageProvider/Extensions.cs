@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Jobbr.Tests
+namespace Jobbr.Tests.Infrastructure.StorageProvider
 {
         public static class ExtensionMethods
         {

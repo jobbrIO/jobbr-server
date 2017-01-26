@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Threading;
-
 using Jobbr.Server;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jobbr.Tests.Setup
+namespace Jobbr.Tests.Builder
 {
     [TestClass]
     public class BadEnvironmentTests
