@@ -85,8 +85,8 @@
     <Compile Include="ComponentModel\Services\JobManagementService.cs" />
     <Compile Include="Storage\FileSystemArtefactsStorageProvider.cs" />
     <Compile Include="ComponentModel\Services\JobQueryService.cs" />
-    <Compile Include="Configuration\JobDefinition.cs" />
-    <Compile Include="Configuration\RepositoryBuilder.cs" />
+    <Compile Include="Repository\JobDefinition.cs" />
+    <Compile Include="Repository\RepositoryBuilder.cs" />
     <Compile Include="Core\IJobManagementService.cs" />
     <Compile Include="Core\IStateService.cs" />
     <Compile Include="Storage\JobbrRepo.cs" />

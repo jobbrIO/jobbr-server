@@ -1,4 +1,5 @@
 ﻿using Jobbr.Server.Common;
+using Jobbr.Server.Repository;
 
 namespace Jobbr.Server.Configuration
 {

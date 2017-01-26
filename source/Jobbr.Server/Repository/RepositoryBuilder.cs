@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 
-namespace Jobbr.Server.Configuration
+namespace Jobbr.Server.Repository
 {
     public class RepositoryBuilder
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Jobbr.ComponentModel.JobStorage.Model;
 
-namespace Jobbr.Server.Configuration
+namespace Jobbr.Server.Repository
 {
     public class JobDefinition
     {
