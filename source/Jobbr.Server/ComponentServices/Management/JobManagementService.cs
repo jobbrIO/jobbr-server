@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Management.Model;
+using Jobbr.Server.Storage;
 
 namespace Jobbr.Server.ComponentServices.Management
 {
     internal class JobManagementService : IJobManagementService
     {
-        public JobManagementService()
+        private readonly IJobbrRepository jobbrRepository;
+
+        public JobManagementService(IJobbrRepository jobbrRepository)
         {
-            
+            this.jobbrRepository = jobbrRepository;
         }
 
         public Job AddJob(Job job)
@@ -20,7 +23,27 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public long AddTrigger(RecurringTrigger trigger)
         {
-            throw new NotImplementedException();
+            var triggerEntity = new ComponentModel.JobStorage.Model.RecurringTrigger()
+            {
+                JobId = trigger.JobId,
+                Comment = trigger.Comment,
+                Definition = trigger.Definition,
+                // NoParallelExecution = trigger.
+                Parameters = trigger.Parameters,
+                IsActive = trigger.IsActive,
+                StartDateTimeUtc = trigger.StartDateTimeUtc,
+                EndDateTimeUtc = trigger.EndDateTimeUtc,
+                UserDisplayName = trigger.UserDisplayName,
+                UserId = trigger.UserId,
+                UserName = trigger.UserName
+            };
+
+            this.jobbrRepository.SaveAddTrigger(triggerEntity);
+
+
+            trigger.Id = triggerEntity.Id;
+
+            return trigger.Id;
         }
 
         public long AddTrigger(ScheduledTrigger trigger)
