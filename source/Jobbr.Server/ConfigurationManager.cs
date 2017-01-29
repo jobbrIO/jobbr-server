@@ -123,11 +123,6 @@ namespace Jobbr.Server
                 throw new Exception("Configuration failed for one or more configurations");
             }
 
-            // TODO: Move validation to API Feature
-            //if (string.IsNullOrEmpty(this.configuration.BackendAddress))
-            //{
-            //    throw new ArgumentException("Please provide a backend address to host the api!");
-            //}
         }
     }
 }
