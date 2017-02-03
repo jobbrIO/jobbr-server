@@ -279,25 +279,26 @@ namespace Jobbr.Server.Scheduling
                     trigger.GetType().Name,
                     trigger.UserId,
                     trigger.UserName);
-            }
-            else
-            {
-                if (DateTime.UtcNow.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) < calculatedNextRun)
-                {
-                    Logger.WarnFormat("The calculated startdate '{0}' has changed to '{1}', the planned jobRun needs to be updated as next step", plannedNextRun.PlannedStartDateTimeUtc, calculatedNextRun);
 
-                    plannedNextRun.PlannedStartDateTimeUtc = calculatedNextRun;
-                    this.repository.Update(plannedNextRun);
-                }
-                else
-                {
-                    Logger.WarnFormat(
-                        "The planned startdate '{0}' has changed to '{1}'. This change was done too close (less than {2} seconds) to the next planned run and cannot be adjusted",
-                        plannedNextRun.PlannedStartDateTimeUtc,
-                        calculatedNextRun,
-                        this.configuration.AllowChangesBeforeStartInSec);
-                }
+                return;
             }
+
+            // Was the change too close before the execution date?
+            if (DateTime.UtcNow.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) >= calculatedNextRun)
+            {
+                Logger.WarnFormat(
+                    "The planned startdate '{0}' has changed to '{1}'. This change was done too close (less than {2} seconds) to the next planned run and cannot be adjusted",
+                    plannedNextRun.PlannedStartDateTimeUtc,
+                    calculatedNextRun,
+                    this.configuration.AllowChangesBeforeStartInSec);
+
+                return;
+            }
+
+            Logger.WarnFormat("The calculated startdate '{0}' has changed to '{1}', the planned jobRun needs to be updated as next step", plannedNextRun.PlannedStartDateTimeUtc, calculatedNextRun);
+
+            plannedNextRun.PlannedStartDateTimeUtc = calculatedNextRun;
+            this.repository.Update(plannedNextRun);
         }
 
         private PlanResult GetPlanResult(InstantTrigger trigger, bool isNew = false) => this.instantJobRunPlaner.Plan(trigger, isNew);
