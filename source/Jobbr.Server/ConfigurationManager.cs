@@ -12,21 +12,6 @@ namespace Jobbr.Server
 {
     public class ConfigurationManager
     {
-        class IgnoreDelegatesFromSerializationContractResolver : DefaultContractResolver
-        {
-            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-            {
-                JsonProperty property = base.CreateProperty(member, memberSerialization);
-
-                if (typeof(MulticastDelegate).IsAssignableFrom(property.PropertyType.BaseType))
-                {
-                    property.ShouldSerialize = o => false;
-                }
-
-                return property;
-            }
-        }
-
         private static readonly ILog Logger = LogProvider.For<ConfigurationManager>();
 
         private readonly List<IConfigurationValidator> configurationValidators;
@@ -52,7 +37,7 @@ namespace Jobbr.Server
             {
                 var jsonSettings = new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, ContractResolver = new IgnoreDelegatesFromSerializationContractResolver() };
                 var serialized = JsonConvert.SerializeObject(config, jsonSettings);
-                
+
                 serialized = serialized.Replace("{", "[");
                 serialized = serialized.Replace("}", "]");
                 serialized = serialized.Replace(",\"", ", ");
@@ -122,12 +107,20 @@ namespace Jobbr.Server
             {
                 throw new Exception("Configuration failed for one or more configurations");
             }
+        }
+        private class IgnoreDelegatesFromSerializationContractResolver : DefaultContractResolver
+        {
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                JsonProperty property = base.CreateProperty(member, memberSerialization);
 
-            // TODO: Move validation to API Feature
-            //if (string.IsNullOrEmpty(this.configuration.BackendAddress))
-            //{
-            //    throw new ArgumentException("Please provide a backend address to host the api!");
-            //}
+                if (typeof(MulticastDelegate).IsAssignableFrom(property.PropertyType.BaseType))
+                {
+                    property.ShouldSerialize = o => false;
+                }
+
+                return property;
+            }
         }
     }
 }
