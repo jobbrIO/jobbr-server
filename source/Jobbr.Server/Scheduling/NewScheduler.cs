@@ -167,18 +167,107 @@ namespace Jobbr.Server.Scheduling
 
         public void OnTriggerDefinitionUpdated(long triggerId)
         {
+            var trigger = this.repository.GetTriggerById(triggerId);
+
+            PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
+
+            if (planResult.Action != PlanAction.Possible)
+            {
+                return;
+            }
+
+            var dateTime = planResult.ExpectedStartDateUtc;
+
+            if (!dateTime.HasValue)
+            {
+                return;
+            }
+
+            // Get the next occurence from database
+            var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id);
+
+            if (dependentJobRun != null)
+            {
+                this.UpdatePlannedJobRun(dependentJobRun, trigger, dateTime.Value);
+            }
         }
 
         public void OnTriggerStateUpdated(long triggerId)
         {
+            var trigger = this.repository.GetTriggerById(triggerId);
+
+            PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
+
+            if (planResult.Action == PlanAction.Obsolete)
+            {
+                // Remove from in memory plan to not publish this in future
+                this.currentPlan.RemoveAll(e => e.TriggerId == triggerId);
+
+                this.PublishCurrentPlan();
+
+                return;
+            }
+
+            if (planResult.Action == PlanAction.Possible)
+            {
+                var newItem = this.CreateNew(planResult, trigger);
+
+                if (newItem != null)
+                {
+                    this.currentPlan.Add(newItem);
+
+                    this.PublishCurrentPlan();
+                }
+            }
+        }
+
+        private TriggerPlannedJobRunCombination CreateNew(PlanResult planResult, JobTriggerBase trigger)
+        {
+            var dateTime = planResult.ExpectedStartDateUtc;
+
+            if (!dateTime.HasValue)
+            {
+                return null;
+            }
+
+            // Create the next occurence from database
+            var newJobRun = this.CreateNewJobRun(trigger, dateTime.Value);
+
+            // Add to the initial plan
+            var newItem = new TriggerPlannedJobRunCombination
+            {
+                TriggerId = trigger.Id,
+                UniqueId = newJobRun.UniqueId,
+                PlannedStartDateTimeUtc = newJobRun.PlannedStartDateTimeUtc
+            };
+            return newItem;
         }
 
         public void OnTriggerAdded(long triggerId)
         {
+            var trigger = this.repository.GetTriggerById(triggerId);
+
+            PlanResult planResult = this.GetPlanResult(trigger as dynamic, true);
+
+            if (planResult.Action != PlanAction.Possible)
+            {
+                return;
+            }
+
+            var newItem = this.CreateNew(planResult, trigger);
+
+            if (newItem != null)
+            {
+                this.currentPlan.Add(newItem);
+
+                this.PublishCurrentPlan();
+            }
         }
 
         public void OnJobRunEnded(Guid uniqueId)
         {
+            // Remove from in memory plan to not publish this in future
+            this.currentPlan.RemoveAll(e => e.UniqueId == uniqueId);
         }
 
         private void CreateInitialPlan()
