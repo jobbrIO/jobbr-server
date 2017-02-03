@@ -165,6 +165,22 @@ namespace Jobbr.Server.Scheduling
         {
         }
 
+        public void OnTriggerDefinitionUpdated(long triggerId)
+        {
+        }
+
+        public void OnTriggerStateUpdated(long triggerId)
+        {
+        }
+
+        public void OnTriggerAdded(long triggerId)
+        {
+        }
+
+        public void OnJobRunEnded(Guid uniqueId)
+        {
+        }
+
         private void CreateInitialPlan()
         {
             var activeTriggers = this.repository.GetActiveTriggers();
@@ -225,21 +241,6 @@ namespace Jobbr.Server.Scheduling
 
             // Publish the initial plan top the Excutor
             this.PublishCurrentPlan();
-        }
-
-        public void OnTriggerDefinitionUpdated(long triggerId)
-        {
-            
-        }
-
-        public void OnTriggerAdded(long triggerId)
-        {
-            
-        }
-
-        public void OnJobRunEnded(long jobRunId)
-        {
-            
         }
 
         private void PublishCurrentPlan()
