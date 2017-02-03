@@ -19,7 +19,7 @@ namespace Jobbr.Server.Scheduling
 
             builder.Add<DefaultSchedulerConfiguration>(defaultConfig);
 
-            builder.Register<IJobScheduler>(typeof(DefaultScheduler));
+            builder.Register<IJobScheduler>(typeof(NewScheduler));
         }
     }
 }

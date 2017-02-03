@@ -87,6 +87,7 @@
     <Compile Include="Scheduling\DefaultSchedulerConfiguration.cs" />
     <Compile Include="JobbrState.cs" />
     <Compile Include="Scheduling\IJobScheduler.cs" />
+    <Compile Include="Scheduling\NewScheduler.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
     <Compile Include="Storage\ExtensionMethods.cs" />
@@ -100,7 +101,7 @@
     <Compile Include="Storage\JobbrRepo.cs" />
     <Compile Include="Core\StateService.cs" />
     <Compile Include="ComponentServices\Registration\JobbrServiceProvider.cs" />
-    <Compile Include="Scheduling\DefaultScheduler.cs" />
+    <Compile Include="Scheduling\OldScheduler.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

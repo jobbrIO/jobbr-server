@@ -10,9 +10,9 @@ namespace Jobbr.Server.Scheduling
     /// <summary>
     /// The Scheduler creates new scheduled Jobs in the JobRun Table based on the triggers
     /// </summary>
-    public class DefaultScheduler : IJobScheduler
+    public class OldScheduler : IJobScheduler
     {
-        private static readonly ILog Logger = LogProvider.For<DefaultScheduler>();
+        private static readonly ILog Logger = LogProvider.For<OldScheduler>();
 
         private readonly DefaultSchedulerConfiguration configuration;
 
@@ -20,7 +20,7 @@ namespace Jobbr.Server.Scheduling
 
         private Timer timer;
 
-        public DefaultScheduler(DefaultSchedulerConfiguration configuration, IJobbrRepository jobbrRepository)
+        public OldScheduler(DefaultSchedulerConfiguration configuration, IJobbrRepository jobbrRepository)
         {
             this.configuration = configuration;
             this.jobbrRepository = jobbrRepository;

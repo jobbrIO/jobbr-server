@@ -22,7 +22,7 @@ namespace Jobbr.Tests.Execution
 
             //var jobService = new JobManagementService(jobbrRepository, stateService);
 
-            //var scheduler = new DefaultScheduler(stateService, configuration, jobbrRepository, jobService);
+            //var scheduler = new OldScheduler(stateService, configuration, jobbrRepository, jobService);
 
             //var futureDate1 = DateTime.UtcNow.AddHours(2);
             //var futureDate2 = DateTime.UtcNow.AddHours(4);
@@ -63,7 +63,7 @@ namespace Jobbr.Tests.Execution
 
             //var jobService = new JobManagementService(jobbrRepository, stateService);
 
-            //var scheduler = new DefaultScheduler(stateService, configuration, jobbrRepository, jobService);
+            //var scheduler = new OldScheduler(stateService, configuration, jobbrRepository, jobService);
 
             //var futureDate1 = DateTime.UtcNow.AddHours(2);
 
