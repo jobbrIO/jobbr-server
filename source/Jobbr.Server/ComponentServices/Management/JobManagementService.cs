@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
+using AutoMapper;
 using Jobbr.ComponentModel.Management.Model;
 using Jobbr.Server.Core;
 using Jobbr.Server.Storage;
@@ -13,11 +14,13 @@ namespace Jobbr.Server.ComponentServices.Management
     {
         private readonly IJobbrRepository jobbrRepository;
         private readonly TriggerService triggerService;
+        private readonly IMapper mapper;
 
-        public JobManagementService(IJobbrRepository jobbrRepository, TriggerService triggerService)
+        public JobManagementService(IJobbrRepository jobbrRepository, TriggerService triggerService, IMapper mapper)
         {
             this.jobbrRepository = jobbrRepository;
             this.triggerService = triggerService;
+            this.mapper = mapper;
         }
 
         public Job AddJob(Job job)
@@ -27,20 +30,22 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public long AddTrigger(RecurringTrigger trigger)
         {
-            var model = new RecurringTriggerModel()
-            {
-                JobId = trigger.JobId,
-                Comment = trigger.Comment,
-                Definition = trigger.Definition,
-                NoParallelExecution = trigger.NoParallelExecution,
-                Parameters = trigger.Parameters,
-                IsActive = trigger.IsActive,
-                StartDateTimeUtc = trigger.StartDateTimeUtc,
-                EndDateTimeUtc = trigger.EndDateTimeUtc,
-                UserDisplayName = trigger.UserDisplayName,
-                UserId = trigger.UserId,
-                UserName = trigger.UserName
-            };
+            var model = this.mapper.Map<RecurringTriggerModel>(trigger);
+
+            //var model = new RecurringTriggerModel()
+            //{
+            //    JobId = trigger.JobId,
+            //    Comment = trigger.Comment,
+            //    Definition = trigger.Definition,
+            //    NoParallelExecution = trigger.NoParallelExecution,
+            //    Parameters = trigger.Parameters,
+            //    IsActive = trigger.IsActive,
+            //    StartDateTimeUtc = trigger.StartDateTimeUtc,
+            //    EndDateTimeUtc = trigger.EndDateTimeUtc,
+            //    UserDisplayName = trigger.UserDisplayName,
+            //    UserId = trigger.UserId,
+            //    UserName = trigger.UserName
+            //};
 
             var id = this.triggerService.Add(model);
             trigger.Id = id;
