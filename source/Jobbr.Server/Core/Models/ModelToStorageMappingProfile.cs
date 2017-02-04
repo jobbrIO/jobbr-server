@@ -11,6 +11,8 @@ namespace Jobbr.Server.Core.Models
             this.CreateMap<ScheduledTriggerModel, ScheduledTrigger>();
             this.CreateMap<InstantTriggerModel, InstantTrigger>()
                 .ForMember(d => d.CreatedAtUtc, cgf => cgf.MapFrom(s => s.CreatedDateTimeUtc));
+
+            this.CreateMap<JobModel, Job>();
         }
     }
 }
