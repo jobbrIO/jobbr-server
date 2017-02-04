@@ -64,7 +64,7 @@ namespace Jobbr.Tests.Scheduler
             WaitFor.HasElements(() => storageProvider.GetJobRuns());
 
             var createdJobRun = storageProvider.GetJobRuns().FirstOrDefault();
-            Assert.IsNotNull(createdJobRun, "There should be exact one JobRun which is not null");
+            Assert.IsNotNull(createdJobRun, "There should be exact one JobRun");
             Assert.IsTrue(createdJobRun.PlannedStartDateTimeUtc >= DateTime.UtcNow, "The job run needs to be in the future");
             Assert.AreEqual(futureDate1, createdJobRun.PlannedStartDateTimeUtc);
 
@@ -75,7 +75,7 @@ namespace Jobbr.Tests.Scheduler
 
             var jobRun = storageProvider.GetJobRuns().FirstOrDefault();
 
-            Assert.AreEqual(JobRunStates.Deleted, jobRun.State);
+            Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Deleted, jobRun.State);
         }
 
         [TestMethod]

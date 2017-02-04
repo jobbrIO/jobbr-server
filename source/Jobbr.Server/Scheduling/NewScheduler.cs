@@ -7,6 +7,7 @@ using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
 using NCrontab;
+using JobRunStates = Jobbr.ComponentModel.JobStorage.Model.JobRunStates;
 
 namespace Jobbr.Server.Scheduling
 {
@@ -27,7 +28,7 @@ namespace Jobbr.Server.Scheduling
                 return PlanResult.FromAction(PlanAction.Obsolete);
             }
 
-            return PlanResult.FromAction(PlanAction.Possible);
+            return new PlanResult {Action = PlanAction.Possible, ExpectedStartDateUtc = calculatedNextRun};
         }
     }
 
@@ -47,7 +48,7 @@ namespace Jobbr.Server.Scheduling
                 return PlanResult.FromAction(PlanAction.Obsolete);
             }
 
-            return PlanResult.FromAction(PlanAction.Possible);
+            return new PlanResult { Action = PlanAction.Possible, ExpectedStartDateUtc = calculatedNextRun };
         }
     }
 
@@ -175,7 +176,7 @@ namespace Jobbr.Server.Scheduling
 
             if (planResult.Action != PlanAction.Possible)
             {
-                Logger.Debug($"The trigger was not considered to me relevant to the plan, skipping. PlanResult was '{planResult.Action}'");
+                Logger.Debug($"The trigger was not considered to be relevant to the plan, skipping. PlanResult was '{planResult.Action}'");
                 return;
             }
 
@@ -201,6 +202,8 @@ namespace Jobbr.Server.Scheduling
 
         public void OnTriggerStateUpdated(long triggerId)
         {
+            Logger.Info($"The trigger with id '{triggerId}' has been changed its state. Reflecting changes to Plan if any.");
+
             var trigger = this.repository.GetTriggerById(triggerId);
 
             PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
@@ -209,6 +212,15 @@ namespace Jobbr.Server.Scheduling
             {
                 // Remove from in memory plan to not publish this in future
                 this.currentPlan.RemoveAll(e => e.TriggerId == triggerId);
+
+                // Set the JobRun to deleted if any
+                var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id);
+
+                if (dependentJobRun != null)
+                {
+                    dependentJobRun.State = JobRunStates.Deleted;
+                    this.repository.Update(dependentJobRun);
+                }
 
                 this.PublishCurrentPlan();
 
@@ -230,23 +242,29 @@ namespace Jobbr.Server.Scheduling
 
         public void OnTriggerAdded(long triggerId)
         {
+            Logger.Info($"The trigger with id '{triggerId}' has been added. Reflecting changes to the current plan.");
+
             var trigger = this.repository.GetTriggerById(triggerId);
 
             PlanResult planResult = this.GetPlanResult(trigger as dynamic, true);
 
             if (planResult.Action != PlanAction.Possible)
             {
+                Logger.Debug($"The trigger was not considered to be relevant to the plan, skipping. PlanResult was '{planResult.Action}'");
                 return;
             }
 
             var newItem = this.CreateNew(planResult, trigger);
 
-            if (newItem != null)
+            if (newItem == null)
             {
-                this.currentPlan.Add(newItem);
-
-                this.PublishCurrentPlan();
+                Logger.Error($"Unable to create a new Planned Item with a JobRun.");
+                return;
             }
+
+            this.currentPlan.Add(newItem);
+
+            this.PublishCurrentPlan();
         }
 
         public void OnJobRunEnded(Guid uniqueId)
@@ -261,6 +279,8 @@ namespace Jobbr.Server.Scheduling
 
             if (!dateTime.HasValue)
             {
+                Logger.Warn($"Unable to gather an expected start date for trigger, skipping.");
+
                 return null;
             }
 
@@ -274,6 +294,7 @@ namespace Jobbr.Server.Scheduling
                 UniqueId = newJobRun.UniqueId,
                 PlannedStartDateTimeUtc = newJobRun.PlannedStartDateTimeUtc
             };
+
             return newItem;
         }
 
@@ -341,6 +362,8 @@ namespace Jobbr.Server.Scheduling
 
         private void PublishCurrentPlan()
         {
+            Logger.Info($"Publishing new plan for upcoming jobs to the executor. Number of Items: {this.currentPlan.Count}");
+
             var clone = this.currentPlan.Select(e => new PlannedJobRun() { PlannedStartDateTimeUtc = e.PlannedStartDateTimeUtc, UniqueId = e.UniqueId }).ToList();
 
             try
