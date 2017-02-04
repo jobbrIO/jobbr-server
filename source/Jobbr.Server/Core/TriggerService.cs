@@ -2,6 +2,7 @@
 using AutoMapper;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Core.Messaging;
+using Jobbr.Server.Core.Models;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
 using TinyMessenger;
@@ -124,48 +125,5 @@ namespace Jobbr.Server.Core
                 this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, triggerId));
             }
         }
-    }
-
-    internal class TriggerModelBase
-    {
-        public string Comment { get; set; }
-
-        public long JobId { get; set; }
-
-        public string Parameters { get; set; }
-
-        public bool IsActive { get; set; }
-
-        public string UserDisplayName { get; set; }
-
-        public long? UserId { get; set; }
-
-        public string UserName { get; set; }
-
-        public long Id { get; set; }
-
-        public DateTime CreatedDateTimeUtc { get; set; }
-
-    }
-
-    internal class RecurringTriggerModel : TriggerModelBase
-    {
-        public string Definition { get; set; }
-
-        public DateTime? StartDateTimeUtc { get; set; }
-
-        public DateTime? EndDateTimeUtc { get; set; }
-
-        public bool NoParallelExecution { get; set; }
-    }
-
-    internal class ScheduledTriggerModel : TriggerModelBase
-    {
-        public DateTime StartDateTimeUtc { get; set; }
-    }
-
-    internal class InstantTriggerModel : TriggerModelBase
-    {
-        public int DelayedMinutes { get; set; }
     }
 }

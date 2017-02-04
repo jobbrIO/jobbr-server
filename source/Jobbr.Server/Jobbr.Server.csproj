@@ -84,11 +84,15 @@
     <Compile Include="ComponentServices\Execution\JobRunInformationService.cs" />
     <Compile Include="Builder\NoExecutor.cs" />
     <Compile Include="ComponentServices\Management\ComponentToCoreMappingProfile.cs" />
+    <Compile Include="Core\Models\InstantTriggerModel.cs" />
     <Compile Include="Core\JobService.cs" />
     <Compile Include="Core\ModelToStorageMappingProfile.cs" />
     <Compile Include="ComponentServices\Management\ServerManagementService.cs" />
     <Compile Include="ConfigurationManager.cs" />
     <Compile Include="Core\Messaging\TriggerAddedMessage.cs" />
+    <Compile Include="Core\Models\RecurringTriggerModel.cs" />
+    <Compile Include="Core\Models\ScheduledTriggerModel.cs" />
+    <Compile Include="Core\Models\TriggerModelBase.cs" />
     <Compile Include="Core\TriggerService.cs" />
     <Compile Include="Core\Messaging\TriggerStateChangedMessage.cs" />
     <Compile Include="Core\Messaging\TriggerUpdatedMessage.cs" />
