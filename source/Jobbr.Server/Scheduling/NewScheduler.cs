@@ -16,7 +16,7 @@ namespace Jobbr.Server.Scheduling
 
         private readonly IJobbrRepository repository;
         private readonly IJobExecutor executor;
-        private List<TriggerPlannedJobRunCombination> currentPlan = new List<TriggerPlannedJobRunCombination>();
+        private List<ScheduledPlanItem> currentPlan = new List<ScheduledPlanItem>();
 
         private InstantJobRunPlaner instantJobRunPlaner;
         private ScheduledJobRunPlaner scheduledJobRunPlaner;
@@ -154,7 +154,7 @@ namespace Jobbr.Server.Scheduling
             this.currentPlan.RemoveAll(e => e.UniqueId == uniqueId);
         }
 
-        private TriggerPlannedJobRunCombination CreateNew(PlanResult planResult, JobTriggerBase trigger)
+        private ScheduledPlanItem CreateNew(PlanResult planResult, JobTriggerBase trigger)
         {
             var dateTime = planResult.ExpectedStartDateUtc;
 
@@ -169,7 +169,7 @@ namespace Jobbr.Server.Scheduling
             var newJobRun = this.CreateNewJobRun(trigger, dateTime.Value);
 
             // Add to the initial plan
-            var newItem = new TriggerPlannedJobRunCombination
+            var newItem = new ScheduledPlanItem
             {
                 TriggerId = trigger.Id,
                 UniqueId = newJobRun.UniqueId,
@@ -183,7 +183,7 @@ namespace Jobbr.Server.Scheduling
         {
             var activeTriggers = this.repository.GetActiveTriggers();
 
-            var newPlan = new List<TriggerPlannedJobRunCombination>();
+            var newPlan = new List<ScheduledPlanItem>();
             foreach (var trigger in activeTriggers)
             {
                 PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
@@ -225,7 +225,7 @@ namespace Jobbr.Server.Scheduling
                     }
 
                     // Add to the initial plan
-                    newPlan.Add(new TriggerPlannedJobRunCombination()
+                    newPlan.Add(new ScheduledPlanItem()
                     {
                         TriggerId = trigger.Id,
                         UniqueId = dependentJobRun.UniqueId,
@@ -317,14 +317,5 @@ namespace Jobbr.Server.Scheduling
         {
             throw new NotImplementedException($"Unable to dynamic dispatch trigger of type '{trigger?.GetType().Name}'");
         }
-    }
-
-    internal class TriggerPlannedJobRunCombination
-    {
-        public Guid UniqueId { get; set; }
-
-        public DateTime PlannedStartDateTimeUtc { get; set; }
-
-        public long TriggerId { get; set; }
     }
 }
