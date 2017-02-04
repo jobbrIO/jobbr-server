@@ -21,12 +21,11 @@ namespace Jobbr.Server.Builder
 
         public void OnPlanChanged(List<PlannedJobRun> newPlan)
         {
-            throw new NotImplementedException();
         }
 
         public bool OnJobRunCanceled(Guid uniqueId)
         {
-            throw new NotImplementedException();
+            return false;
         }
     }
 }
