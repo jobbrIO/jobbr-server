@@ -8,6 +8,7 @@ using Jobbr.Server.Core;
 using Jobbr.Server.Scheduling;
 using Jobbr.Server.Storage;
 using Ninject;
+using TinyMessenger;
 using IJobManagementService = Jobbr.ComponentModel.Management.IJobManagementService;
 using JobManagementService = Jobbr.Server.ComponentServices.Management.JobManagementService;
 
@@ -35,6 +36,9 @@ namespace Jobbr.Server.Builder
         {
             // Registration
             this.Bind<IJobbrServiceProvider>().ToConstant(new JobbrServiceProvider(this));
+
+            // Message Bus
+            this.Bind<ITinyMessengerHub>().To<TinyMessengerHub>().InSingletonScope();
 
             // Management related services
             this.Bind<IJobManagementService>().To<JobManagementService>().InSingletonScope();

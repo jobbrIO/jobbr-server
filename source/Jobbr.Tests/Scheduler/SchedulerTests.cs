@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Jobbr.ComponentModel.Management.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,7 +13,7 @@ namespace Jobbr.Tests.Scheduler
         [TestMethod]
         public void JobRunIsScheduled_RecurringTriggerGetsUpdated_JobRunScheduleIsAdjusted()
         {
-            var jobService = this.Services.JobManagementService;
+            var jobManagementService = this.Services.JobManagementService;
             var storageProvider = this.Services.JobStorageProvider;
 
             var demoJob = new Job();
@@ -23,7 +24,7 @@ namespace Jobbr.Tests.Scheduler
             var futureMinute2 = (futureMinute + 2) % 60;
 
             var recurringTrigger = new RecurringTrigger { JobId = 1, Definition = futureMinute + " * * * *", IsActive = true };
-            jobService.AddTrigger(recurringTrigger);
+            jobManagementService.AddTrigger(recurringTrigger);
 
             // Wait for the scheduler to do his work
             WaitFor.HasElements(() => storageProvider.GetJobRuns());
@@ -35,7 +36,10 @@ namespace Jobbr.Tests.Scheduler
             Assert.IsTrue(createdJobRun.PlannedStartDateTimeUtc >= DateTime.UtcNow, "The job run needs to be in the future");
             Assert.AreEqual(futureMinute, createdJobRun.PlannedStartDateTimeUtc.Minute);
 
-            jobService.UpdateTriggerDefinition(recurringTrigger.Id, futureMinute2 + " * * * *");
+            jobManagementService.UpdateTriggerDefinition(recurringTrigger.Id, futureMinute2 + " * * * *");
+
+            // Wait for the scheduler to do his work
+            WaitFor.HasElements(() => storageProvider.GetJobRuns().Where(r => r.PlannedStartDateTimeUtc.Minute == futureMinute2).ToList());
 
             var updatedJobRun = storageProvider.GetJobRuns().FirstOrDefault();
 

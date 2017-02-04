@@ -167,12 +167,15 @@ namespace Jobbr.Server.Scheduling
 
         public void OnTriggerDefinitionUpdated(long triggerId)
         {
+            Logger.Info($"The trigger with id '{triggerId}' has been updated. Reflecting changes to Plan if any.");
+
             var trigger = this.repository.GetTriggerById(triggerId);
 
             PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
 
             if (planResult.Action != PlanAction.Possible)
             {
+                Logger.Debug($"The trigger was not considered to me relevant to the plan, skipping. PlanResult was '{planResult.Action}'");
                 return;
             }
 
@@ -180,16 +183,20 @@ namespace Jobbr.Server.Scheduling
 
             if (!dateTime.HasValue)
             {
+                Logger.Warn($"Unable to gather an expected start date for trigger, skipping.");
                 return;
             }
 
             // Get the next occurence from database
             var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id);
 
-            if (dependentJobRun != null)
+            if (dependentJobRun == null)
             {
-                this.UpdatePlannedJobRun(dependentJobRun, trigger, dateTime.Value);
+                Logger.Error($"Trigger was updated before job run has been created. Cannot apply update.");
+                return;
             }
+
+            this.UpdatePlannedJobRun(dependentJobRun, trigger, dateTime.Value);
         }
 
         public void OnTriggerStateUpdated(long triggerId)
@@ -221,28 +228,6 @@ namespace Jobbr.Server.Scheduling
             }
         }
 
-        private TriggerPlannedJobRunCombination CreateNew(PlanResult planResult, JobTriggerBase trigger)
-        {
-            var dateTime = planResult.ExpectedStartDateUtc;
-
-            if (!dateTime.HasValue)
-            {
-                return null;
-            }
-
-            // Create the next occurence from database
-            var newJobRun = this.CreateNewJobRun(trigger, dateTime.Value);
-
-            // Add to the initial plan
-            var newItem = new TriggerPlannedJobRunCombination
-            {
-                TriggerId = trigger.Id,
-                UniqueId = newJobRun.UniqueId,
-                PlannedStartDateTimeUtc = newJobRun.PlannedStartDateTimeUtc
-            };
-            return newItem;
-        }
-
         public void OnTriggerAdded(long triggerId)
         {
             var trigger = this.repository.GetTriggerById(triggerId);
@@ -268,6 +253,28 @@ namespace Jobbr.Server.Scheduling
         {
             // Remove from in memory plan to not publish this in future
             this.currentPlan.RemoveAll(e => e.UniqueId == uniqueId);
+        }
+
+        private TriggerPlannedJobRunCombination CreateNew(PlanResult planResult, JobTriggerBase trigger)
+        {
+            var dateTime = planResult.ExpectedStartDateUtc;
+
+            if (!dateTime.HasValue)
+            {
+                return null;
+            }
+
+            // Create the next occurence from database
+            var newJobRun = this.CreateNewJobRun(trigger, dateTime.Value);
+
+            // Add to the initial plan
+            var newItem = new TriggerPlannedJobRunCombination
+            {
+                TriggerId = trigger.Id,
+                UniqueId = newJobRun.UniqueId,
+                PlannedStartDateTimeUtc = newJobRun.PlannedStartDateTimeUtc
+            };
+            return newItem;
         }
 
         private void CreateInitialPlan()

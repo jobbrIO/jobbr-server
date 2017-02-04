@@ -1,19 +1,23 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
-using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Management.Model;
+using Jobbr.Server.Core;
 using Jobbr.Server.Storage;
+using IJobManagementService = Jobbr.ComponentModel.Management.IJobManagementService;
 
 namespace Jobbr.Server.ComponentServices.Management
 {
     internal class JobManagementService : IJobManagementService
     {
         private readonly IJobbrRepository jobbrRepository;
+        private readonly TriggerService triggerService;
 
-        public JobManagementService(IJobbrRepository jobbrRepository)
+        public JobManagementService(IJobbrRepository jobbrRepository, TriggerService triggerService)
         {
             this.jobbrRepository = jobbrRepository;
+            this.triggerService = triggerService;
         }
 
         public Job AddJob(Job job)
@@ -23,12 +27,12 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public long AddTrigger(RecurringTrigger trigger)
         {
-            var triggerEntity = new ComponentModel.JobStorage.Model.RecurringTrigger()
+            var model = new RecurringTriggerModel()
             {
                 JobId = trigger.JobId,
                 Comment = trigger.Comment,
                 Definition = trigger.Definition,
-                // NoParallelExecution = trigger.
+                NoParallelExecution = trigger.NoParallelExecution,
                 Parameters = trigger.Parameters,
                 IsActive = trigger.IsActive,
                 StartDateTimeUtc = trigger.StartDateTimeUtc,
@@ -38,12 +42,11 @@ namespace Jobbr.Server.ComponentServices.Management
                 UserName = trigger.UserName
             };
 
-            this.jobbrRepository.SaveAddTrigger(triggerEntity);
-
-
-            trigger.Id = triggerEntity.Id;
+            var id = this.triggerService.Add(model);
+            trigger.Id = id;
 
             return trigger.Id;
+
         }
 
         public long AddTrigger(ScheduledTrigger trigger)
@@ -68,7 +71,7 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public void UpdateTriggerDefinition(long triggerId, string definition)
         {
-            throw new NotImplementedException();
+            this.triggerService.Update(triggerId, definition);
         }
 
         public void UpdatetriggerStartTime(long triggerId, DateTime startDateTimeUtc)

@@ -7,5 +7,9 @@ namespace Jobbr.Server.Scheduling
         void Start();
 
         void Stop();
+        void OnTriggerDefinitionUpdated(long triggerId);
+        void OnTriggerStateUpdated(long triggerId);
+        void OnTriggerAdded(long triggerId);
+        void OnJobRunEnded(Guid uniqueId);
     }
 }

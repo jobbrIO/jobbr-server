@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
+using Jobbr.Server.Core;
 using Jobbr.Server.JobRegistry;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Scheduling;
+using TinyMessenger;
 
 namespace Jobbr.Server
 {
@@ -43,7 +45,7 @@ namespace Jobbr.Server
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        public JobbrServer(IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> components, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
+        public JobbrServer(IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> components, MessageDispatcher MessageDispatcher, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
         {
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
@@ -247,6 +249,22 @@ namespace Jobbr.Server
             {
                 this.Stop();
             }
+        }
+    }
+
+    public class MessageDispatcher
+    {
+        private readonly ITinyMessengerHub messengerHub;
+        private readonly IJobScheduler scheduler;
+
+        public MessageDispatcher(ITinyMessengerHub messengerHub, IJobScheduler scheduler)
+        {
+            this.messengerHub = messengerHub;
+            this.scheduler = scheduler;
+
+            this.messengerHub.Subscribe<TriggerAddedMessage>(m => this.scheduler.OnTriggerAdded(m.TriggerId));
+            this.messengerHub.Subscribe<TriggerUpdatedMessage>(m => this.scheduler.OnTriggerDefinitionUpdated(m.TriggerId));
+            this.messengerHub.Subscribe<TriggerStateChangedMessage>(m => this.scheduler.OnTriggerStateUpdated(m.TriggerId));
         }
     }
 }

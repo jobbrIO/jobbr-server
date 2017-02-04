@@ -216,6 +216,26 @@ namespace Jobbr.Server.Scheduling
             return null;
         }
 
+        public void OnTriggerDefinitionUpdated(long triggerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnTriggerStateUpdated(long triggerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnTriggerAdded(long triggerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnJobRunEnded(Guid uniqueId)
+        {
+            throw new NotImplementedException();
+        }
+
         //private void StateServiceOnTriggerUpdate(object sender, JobTriggerEventArgs args)
         //{
         //    Logger.Log(
