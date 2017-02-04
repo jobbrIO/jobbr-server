@@ -9,13 +9,10 @@ using Jobbr.Server.ComponentServices.Execution;
 using Jobbr.Server.ComponentServices.Management;
 using Jobbr.Server.ComponentServices.Registration;
 using Jobbr.Server.Core;
-using Jobbr.Server.Scheduling;
 using Jobbr.Server.Storage;
 using Ninject;
 using Ninject.Activation;
 using TinyMessenger;
-using IJobManagementService = Jobbr.ComponentModel.Management.IJobManagementService;
-using JobManagementService = Jobbr.Server.ComponentServices.Management.JobManagementService;
 
 namespace Jobbr.Server.Builder
 {
