@@ -93,6 +93,7 @@
     <Compile Include="Core\Messaging\TriggerStateChangedMessage.cs" />
     <Compile Include="Core\Messaging\TriggerUpdatedMessage.cs" />
     <Compile Include="JobRegistry\JobbrBuilderExtension.cs" />
+    <Compile Include="Core\Messaging\MessageDispatcher.cs" />
     <Compile Include="Scheduling\BuilderExtension.cs" />
     <Compile Include="Scheduling\DefaultSchedulerConfiguration.cs" />
     <Compile Include="JobbrState.cs" />

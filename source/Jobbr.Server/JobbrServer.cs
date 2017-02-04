@@ -10,7 +10,6 @@ using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.JobRegistry;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Scheduling;
-using TinyMessenger;
 
 namespace Jobbr.Server
 {
@@ -250,22 +249,6 @@ namespace Jobbr.Server
             {
                 this.Stop();
             }
-        }
-    }
-
-    public class MessageDispatcher
-    {
-        private readonly ITinyMessengerHub messengerHub;
-        private readonly IJobScheduler scheduler;
-
-        public MessageDispatcher(ITinyMessengerHub messengerHub, IJobScheduler scheduler)
-        {
-            this.messengerHub = messengerHub;
-            this.scheduler = scheduler;
-
-            this.messengerHub.Subscribe<TriggerAddedMessage>(m => this.scheduler.OnTriggerAdded(m.TriggerId));
-            this.messengerHub.Subscribe<TriggerUpdatedMessage>(m => this.scheduler.OnTriggerDefinitionUpdated(m.TriggerId));
-            this.messengerHub.Subscribe<TriggerStateChangedMessage>(m => this.scheduler.OnTriggerStateUpdated(m.TriggerId));
         }
     }
 }
