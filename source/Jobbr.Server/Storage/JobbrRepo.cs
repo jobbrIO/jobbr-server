@@ -32,7 +32,7 @@ namespace Jobbr.Server.Storage
 
         JobRun GetNextJobRunByTriggerId(long triggerId);
 
-        bool SaveEnableTrigger(long triggerId, out JobTriggerBase trigger);
+        bool EnableTrigger(long triggerId);
 
         List<JobTriggerBase> GetActiveTriggers();
 
@@ -46,7 +46,7 @@ namespace Jobbr.Server.Storage
 
         JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc);
 
-        void DisableTrigger(long triggerId);
+        bool DisableTrigger(long triggerId);
 
         void Update(JobRun jobRun);
 
@@ -152,16 +152,16 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetFutureJobRunsByTriggerId(triggerId);
         }
 
-        public bool SaveEnableTrigger(long triggerId, out JobTriggerBase trigger)
+        public bool EnableTrigger(long triggerId)
         {
-            trigger = this.storageProvider.GetTriggerById(triggerId);
+            // TODO: Move this logic to the storage adapter which can implement this more efficient
+            var trigger = this.storageProvider.GetTriggerById(triggerId);
 
             if (trigger.IsActive)
             {
                 return false;
             }
 
-            trigger.IsActive = true;
             this.storageProvider.EnableTrigger(triggerId);
             return true;
         }
@@ -284,9 +284,18 @@ namespace Jobbr.Server.Storage
             return jobRun;
         }
 
-        public void DisableTrigger(long triggerId)
+        public bool DisableTrigger(long triggerId)
         {
+            // TODO: Move this logic to the storage adapter which can implement this more efficient
+            var trigger = this.storageProvider.GetTriggerById(triggerId);
+
+            if (!trigger.IsActive)
+            {
+                return false;
+            }
+
             this.storageProvider.DisableTrigger(triggerId);
+            return true;
         }
 
         public void Update(JobRun jobRun)
