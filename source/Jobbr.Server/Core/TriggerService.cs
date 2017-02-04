@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoMapper;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
@@ -10,31 +11,20 @@ namespace Jobbr.Server.Core
     {
         private readonly IJobbrRepository jobbrRepository;
         private readonly ITinyMessengerHub messengerHub;
+        private readonly IMapper mapper;
 
         private static readonly ILog Logger = LogProvider.For<TriggerService>();
 
-        public TriggerService(IJobbrRepository jobbrRepository, ITinyMessengerHub messengerHub)
+        public TriggerService(IJobbrRepository jobbrRepository, ITinyMessengerHub messengerHub, IMapper mapper)
         {
             this.jobbrRepository = jobbrRepository;
             this.messengerHub = messengerHub;
+            this.mapper = mapper;
         }
 
         internal long Add(RecurringTriggerModel trigger)
         {
-            var triggerEntity = new RecurringTrigger()
-            {
-                JobId = trigger.JobId,
-                Comment = trigger.Comment,
-                Definition = trigger.Definition,
-                NoParallelExecution = trigger.NoParallelExecution,
-                Parameters = trigger.Parameters,
-                IsActive = trigger.IsActive,
-                StartDateTimeUtc = trigger.StartDateTimeUtc,
-                EndDateTimeUtc = trigger.EndDateTimeUtc,
-                UserDisplayName = trigger.UserDisplayName,
-                UserId = trigger.UserId,
-                UserName = trigger.UserName
-            };
+            var triggerEntity = this.mapper.Map<RecurringTrigger>(trigger);
 
             this.jobbrRepository.SaveAddTrigger(triggerEntity);
             trigger.Id = triggerEntity.Id;
