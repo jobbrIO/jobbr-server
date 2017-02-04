@@ -16,6 +16,8 @@ namespace Jobbr.Server.Core.Messaging
             this.messengerHub.Subscribe<TriggerAddedMessage>(m => this.scheduler.OnTriggerAdded(m.TriggerId));
             this.messengerHub.Subscribe<TriggerUpdatedMessage>(m => this.scheduler.OnTriggerDefinitionUpdated(m.TriggerId));
             this.messengerHub.Subscribe<TriggerStateChangedMessage>(m => this.scheduler.OnTriggerStateUpdated(m.TriggerId));
+
+            this.messengerHub.Subscribe<JobRunCompletedMessage>(m => this.scheduler.OnJobRunEnded(m.UniqueId));
         }
     }
 }
