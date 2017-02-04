@@ -1,7 +1,7 @@
 ﻿namespace Jobbr.Server.Core
 {
-    public interface IJobManagementService
-    {
+    //public interface IJobManagementService
+    //{
         //        List<Job> GetAllJobs();
 
         //        Job GetJobById(long id);
@@ -35,10 +35,10 @@
         //        JobTriggerBase GetTriggerById(long triggerId);
 
         //        List<JobTriggerBase> GetTriggersByJobId(long jobId);
-    }
+    //}
 
-    public class JobManagementService : IJobManagementService
-    {
+    //public class JobManagementService : IJobManagementService
+    //{
         //        private readonly IJobbrRepository jobbrRepository;
 
         //        private readonly IStateService stateService;
@@ -185,5 +185,5 @@
         //        {
         //            return this.jobbrRepository.GetTriggersByJobId(jobId);
         //        }
-    }
+    //}
 }
