@@ -7,7 +7,6 @@ using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Scheduling.Planer;
 using Jobbr.Server.Storage;
-using JobRunStates = Jobbr.ComponentModel.JobStorage.Model.JobRunStates;
 
 namespace Jobbr.Server.Scheduling
 {
@@ -101,8 +100,7 @@ namespace Jobbr.Server.Scheduling
 
                 if (dependentJobRun != null)
                 {
-                    dependentJobRun.State = JobRunStates.Deleted;
-                    this.repository.Update(dependentJobRun);
+                    this.repository.Delete(dependentJobRun);
                 }
 
                 this.PublishCurrentPlan();

@@ -59,6 +59,7 @@ namespace Jobbr.Server.Storage
         List<JobRun> GetAllJobRuns();
 
         Job GetJobByUniqueName(string identifier);
+        void Delete(JobRun jobRun);
     }
 
     public class JobbrRepository : IJobbrRepository
@@ -326,6 +327,14 @@ namespace Jobbr.Server.Storage
         public Job GetJobByUniqueName(string identifier)
         {
             return this.storageProvider.GetJobByUniqueName(identifier);
+        }
+
+        public void Delete(JobRun jobRun)
+        {
+            var jobRunFromStorage = this.storageProvider.GetJobRunById(jobRun.Id);
+
+            jobRunFromStorage.State = JobRunStates.Deleted;
+            this.storageProvider.Update(jobRunFromStorage);
         }
     }
 }
