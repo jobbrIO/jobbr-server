@@ -16,12 +16,13 @@ namespace Jobbr.Server.Scheduling
 
         private readonly IJobbrRepository repository;
         private readonly IJobExecutor executor;
-        private List<ScheduledPlanItem> currentPlan = new List<ScheduledPlanItem>();
 
-        private InstantJobRunPlaner instantJobRunPlaner;
-        private ScheduledJobRunPlaner scheduledJobRunPlaner;
-        private RecurringJobRunPlaner recurringJobRunPlaner;
+        private readonly InstantJobRunPlaner instantJobRunPlaner;
+        private readonly ScheduledJobRunPlaner scheduledJobRunPlaner;
+        private readonly RecurringJobRunPlaner recurringJobRunPlaner;
         private readonly DefaultSchedulerConfiguration configuration;
+
+        private List<ScheduledPlanItem> currentPlan = new List<ScheduledPlanItem>();
 
         public NewScheduler(IJobbrRepository repository, IJobExecutor executor, InstantJobRunPlaner instantJobRunPlaner, ScheduledJobRunPlaner scheduledJobRunPlaner, RecurringJobRunPlaner recurringJobRunPlaner, DefaultSchedulerConfiguration configuration)
         {

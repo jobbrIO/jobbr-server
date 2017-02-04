@@ -99,6 +99,7 @@
     <Compile Include="Scheduling\Planer\PlanResult.cs" />
     <Compile Include="Scheduling\Planer\RecurringJobRunPlaner.cs" />
     <Compile Include="Scheduling\Planer\ScheduledJobRunPlaner.cs" />
+    <Compile Include="Scheduling\ScheduledPlanItem.cs" />
     <Compile Include="Storage\InMemoryArtefactsStorage.cs" />
     <Compile Include="Scheduling\NewScheduler.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
