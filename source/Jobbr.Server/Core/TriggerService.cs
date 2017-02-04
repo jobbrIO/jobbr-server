@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using Jobbr.ComponentModel.JobStorage.Model;
+using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
 using TinyMessenger;
@@ -123,36 +124,6 @@ namespace Jobbr.Server.Core
                 this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, triggerId));
             }
         }
-    }
-
-    public class TriggerUpdatedMessage : GenericTinyMessage<long>
-    {
-        public TriggerUpdatedMessage(object sender, long content)
-            : base(sender, content)
-        {
-        }
-
-        public long TriggerId => this.Content;
-    }
-
-    public class TriggerStateChangedMessage : GenericTinyMessage<long>
-    {
-        public TriggerStateChangedMessage(object sender, long content)
-            : base(sender, content)
-        {
-        }
-
-        public long TriggerId => this.Content;
-    }
-
-    internal class TriggerAddedMessage : GenericTinyMessage<long>
-    {
-        public TriggerAddedMessage(object sender, long content)
-            : base(sender, content)
-        {
-        }
-
-        public long TriggerId => this.Content;
     }
 
     internal class TriggerModelBase

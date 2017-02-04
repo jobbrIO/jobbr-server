@@ -88,7 +88,10 @@
     <Compile Include="Core\ModelToStorageMappingProfile.cs" />
     <Compile Include="ComponentServices\Management\ServerManagementService.cs" />
     <Compile Include="ConfigurationManager.cs" />
+    <Compile Include="Core\Messaging\TriggerAddedMessage.cs" />
     <Compile Include="Core\TriggerService.cs" />
+    <Compile Include="Core\Messaging\TriggerStateChangedMessage.cs" />
+    <Compile Include="Core\Messaging\TriggerUpdatedMessage.cs" />
     <Compile Include="JobRegistry\JobbrBuilderExtension.cs" />
     <Compile Include="Scheduling\BuilderExtension.cs" />
     <Compile Include="Scheduling\DefaultSchedulerConfiguration.cs" />
