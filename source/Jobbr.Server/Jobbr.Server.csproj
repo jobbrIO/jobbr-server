@@ -83,7 +83,9 @@
     <Compile Include="ComponentServices\Execution\JobRunProgressReceiver.cs" />
     <Compile Include="ComponentServices\Execution\JobRunInformationService.cs" />
     <Compile Include="Builder\NoExecutor.cs" />
-    <Compile Include="ComponentServices\Management\MappingProfile.cs" />
+    <Compile Include="ComponentServices\Management\ComponentToCoreMappingProfile.cs" />
+    <Compile Include="Core\JobService.cs" />
+    <Compile Include="Core\ModelToStorageMappingProfile.cs" />
     <Compile Include="ComponentServices\Management\ServerManagementService.cs" />
     <Compile Include="ConfigurationManager.cs" />
     <Compile Include="Core\TriggerService.cs" />
