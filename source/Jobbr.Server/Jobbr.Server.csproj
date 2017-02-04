@@ -86,7 +86,7 @@
     <Compile Include="ComponentServices\Management\ComponentToCoreMappingProfile.cs" />
     <Compile Include="Core\Models\InstantTriggerModel.cs" />
     <Compile Include="Core\JobService.cs" />
-    <Compile Include="Core\ModelToStorageMappingProfile.cs" />
+    <Compile Include="Core\Models\ModelToStorageMappingProfile.cs" />
     <Compile Include="ComponentServices\Management\ServerManagementService.cs" />
     <Compile Include="ConfigurationManager.cs" />
     <Compile Include="Core\Messaging\TriggerAddedMessage.cs" />

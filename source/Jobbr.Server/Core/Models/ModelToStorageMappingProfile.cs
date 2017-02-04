@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Jobbr.ComponentModel.JobStorage.Model;
 
-namespace Jobbr.Server.Core
+namespace Jobbr.Server.Core.Models
 {
-    class ModelToStorageMappingProfile : Profile
+    internal class ModelToStorageMappingProfile : Profile
     {
         public ModelToStorageMappingProfile()
         {
