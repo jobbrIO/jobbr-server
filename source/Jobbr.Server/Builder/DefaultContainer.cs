@@ -8,10 +8,8 @@ using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.ComponentServices.Execution;
 using Jobbr.Server.ComponentServices.Management;
 using Jobbr.Server.ComponentServices.Registration;
-using Jobbr.Server.Core;
 using Jobbr.Server.Storage;
 using Ninject;
-using Ninject.Activation;
 using TinyMessenger;
 
 namespace Jobbr.Server.Builder
@@ -21,19 +19,19 @@ namespace Jobbr.Server.Builder
     /// </summary>
     internal class DefaultContainer : StandardKernel
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultContainer"/> class.
-        /// </summary>
-        /// <param name="configuration">
-        /// The configuration.
-        /// </param>
         public DefaultContainer()
         {
-            this.Bind<IJobbrRepository>().To<JobbrRepository>().InSingletonScope();
+            this.AddCoreServices();
 
             this.AddAutoMapper();
 
-            this.AddComponentModelServices();
+            this.AddComponentModelImplementations();
+        }
+
+        private void AddCoreServices()
+        {
+            this.Bind<IJobbrRepository>().To<JobbrRepository>().InSingletonScope();
+            this.Bind<ITinyMessengerHub>().To<TinyMessengerHub>().InSingletonScope();
         }
 
         private void AddAutoMapper()
@@ -54,13 +52,10 @@ namespace Jobbr.Server.Builder
             this.Bind<IMapper>().ToProvider<AutoMapperProvider>();
         }
 
-        private void AddComponentModelServices()
+        private void AddComponentModelImplementations()
         {
             // Registration
             this.Bind<IJobbrServiceProvider>().ToConstant(new JobbrServiceProvider(this));
-
-            // Message Bus
-            this.Bind<ITinyMessengerHub>().To<TinyMessengerHub>().InSingletonScope();
 
             // Management related services
             this.Bind<IJobManagementService>().To<JobManagementService>().InSingletonScope();
@@ -71,22 +66,5 @@ namespace Jobbr.Server.Builder
             this.Bind<IJobRunInformationService>().To<JobRunInformationService>().InSingletonScope();
             this.Bind<IJobRunProgressChannel>().To<JobRunProgressReceiver>().InSingletonScope();
         }
-    }
-
-    internal class AutoMapperProvider : IProvider
-    {
-        private readonly MapperConfiguration mapperConfiguration;
-
-        public AutoMapperProvider(MapperConfiguration mapperConfiguration)
-        {
-            this.mapperConfiguration = mapperConfiguration;
-        }
-
-        public object Create(IContext context)
-        {
-            return this.mapperConfiguration.CreateMapper();
-        }
-
-        public Type Type => typeof(IMapper);
     }
 }

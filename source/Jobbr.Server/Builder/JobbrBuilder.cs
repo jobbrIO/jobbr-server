@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
@@ -15,7 +14,7 @@ namespace Jobbr.Server.Builder
     {
         private static readonly ILog Logger = LogProvider.For<JobbrBuilder>();
 
-        private StandardKernel container;
+        private readonly StandardKernel container;
 
         public JobbrBuilder()
         {
