@@ -10,32 +10,20 @@ namespace Jobbr.Server.JobRegistry
 
         private bool hasTriggerDefinition;
 
+        public bool HasTriggerDefinition => this.hasTriggerDefinition;
+
         internal string UniqueName { get; set; }
 
         internal string ClrType { get; set; }
 
-        internal List<JobTriggerBase> Triggers
-        {
-            get
-            {
-                return this.triggers;
-            }
-        }
-
-        public bool HasTriggerDefinition
-        {
-            get
-            {
-                return this.hasTriggerDefinition;
-            }
-        }
+        internal List<JobTriggerBase> Triggers => this.triggers;
 
         public JobDefinition WithTrigger(DateTime startDateTimeUtc)
         {
             this.hasTriggerDefinition = true;
 
             this.triggers.Add(new ScheduledTrigger() { StartDateTimeUtc = startDateTimeUtc });
-            
+
             return this;
         }
 
@@ -49,6 +37,5 @@ namespace Jobbr.Server.JobRegistry
 
             return this;
         }
-
     }
 }

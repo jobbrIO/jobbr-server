@@ -11,11 +11,11 @@ namespace Jobbr.Server.Core
 {
     internal class TriggerService
     {
+        private static readonly ILog Logger = LogProvider.For<TriggerService>();
+
         private readonly IJobbrRepository jobbrRepository;
         private readonly ITinyMessengerHub messengerHub;
         private readonly IMapper mapper;
-
-        private static readonly ILog Logger = LogProvider.For<TriggerService>();
 
         public TriggerService(IJobbrRepository jobbrRepository, ITinyMessengerHub messengerHub, IMapper mapper)
         {

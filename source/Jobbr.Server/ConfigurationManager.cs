@@ -108,6 +108,7 @@ namespace Jobbr.Server
                 throw new Exception("Configuration failed for one or more configurations");
             }
         }
+
         private class IgnoreDelegatesFromSerializationContractResolver : DefaultContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)

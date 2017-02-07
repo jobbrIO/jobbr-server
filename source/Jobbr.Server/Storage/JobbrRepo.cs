@@ -59,6 +59,7 @@ namespace Jobbr.Server.Storage
         List<JobRun> GetAllJobRuns();
 
         Job GetJobByUniqueName(string identifier);
+
         void Delete(JobRun jobRun);
     }
 

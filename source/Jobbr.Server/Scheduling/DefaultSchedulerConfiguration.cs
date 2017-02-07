@@ -8,6 +8,5 @@ namespace Jobbr.Server.Scheduling
         /// Gets or sets the allow changes before start in sec.
         /// </summary>
         public int AllowChangesBeforeStartInSec { get; set; } = 5;
-
     }
 }

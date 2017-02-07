@@ -20,7 +20,7 @@ namespace Jobbr.Server.Scheduling.Planer
                 return PlanResult.FromAction(PlanAction.Obsolete);
             }
 
-            return new PlanResult {Action = PlanAction.Possible, ExpectedStartDateUtc = calculatedNextRun};
+            return new PlanResult { Action = PlanAction.Possible, ExpectedStartDateUtc = calculatedNextRun };
         }
     }
 }

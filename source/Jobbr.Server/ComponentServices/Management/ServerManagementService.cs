@@ -6,7 +6,6 @@ namespace Jobbr.Server.ComponentServices.Management
     {
         public void Shutdown()
         {
-            
         }
     }
 }

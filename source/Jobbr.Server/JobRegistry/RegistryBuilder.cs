@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
@@ -13,19 +15,13 @@ namespace Jobbr.Server.JobRegistry
         /// </summary>
         private static readonly ILog Logger = LogProvider.For<RegistryBuilder>();
 
-        private List<JobDefinition> definitions = new List<JobDefinition>();
+        private readonly List<JobDefinition> definitions = new List<JobDefinition>();
 
         internal bool HasConfiguration { get; private set; }
 
         internal bool RemoveNonExistent { get; private set; }
 
-        internal List<JobDefinition> Definitions
-        {
-            get
-            {
-                return this.definitions;
-            }
-        }
+        internal List<JobDefinition> Definitions => this.definitions;
 
         public RegistryBuilder RemoveAll()
         {
@@ -37,7 +33,7 @@ namespace Jobbr.Server.JobRegistry
 
         public JobDefinition Define(string uniqueName, string typeName)
         {
-            var existing = this.definitions.FirstOrDefault(d => d.UniqueName == uniqueName);
+            var existing = this.definitions.FirstOrDefault(d => string.Equals(d.UniqueName, uniqueName, StringComparison.OrdinalIgnoreCase));
 
             if (existing != null)
             {
@@ -67,7 +63,7 @@ namespace Jobbr.Server.JobRegistry
                     {
                         // Add new Job
                         Logger.InfoFormat("Adding job '{0}' of type '{1}'", jobDef.UniqueName, jobDef.ClrType);
-                        var jobId = storage.AddJob(new Job() { UniqueName = jobDef.UniqueName, Type = jobDef.ClrType });
+                        var jobId = storage.AddJob(new Job { UniqueName = jobDef.UniqueName, Type = jobDef.ClrType });
 
                         foreach (var trigger in jobDef.Triggers)
                         {
@@ -78,7 +74,7 @@ namespace Jobbr.Server.JobRegistry
                     else
                     {
                         // Update existing Jobs and triggers
-                        if (existentJob.Type != jobDef.ClrType)
+                        if (!string.Equals(existentJob.Type, jobDef.ClrType, StringComparison.OrdinalIgnoreCase))
                         {
                             Logger.InfoFormat("Updating type for Job '{0}' (Id: '{1}') from '{2}' to '{2}'", existentJob.UniqueName, existentJob.Id, existentJob.Type, jobDef.ClrType);
                             existentJob.Type = jobDef.ClrType;
@@ -119,7 +115,6 @@ namespace Jobbr.Server.JobRegistry
                                 }
                             }
 
-
                             // Deactivate not specified triggers
                             foreach (var trigger in toDeactivateTriggers)
                             {
@@ -128,9 +123,7 @@ namespace Jobbr.Server.JobRegistry
                                 numberOfChanges++;
                             }
                         }
-
                     }
-
                 }
 
                 // Deactivate non existent
@@ -146,22 +139,25 @@ namespace Jobbr.Server.JobRegistry
 
             Logger.InfoFormat("Adding trigger (type: '{0}' to job '{1}' (JobId: '{2}')", trigger.GetType().Name, jobDef.UniqueName, jobId);
 
-            if (trigger is ScheduledTrigger)
+            var scheduledTrigger = trigger as ScheduledTrigger;
+            if (scheduledTrigger != null)
             {
-                storage.AddTrigger((ScheduledTrigger)trigger);
+                storage.AddTrigger(scheduledTrigger);
             }
 
-            if (trigger is RecurringTrigger)
+            var recurringTrigger = trigger as RecurringTrigger;
+            if (recurringTrigger != null)
             {
-                storage.AddTrigger((RecurringTrigger)trigger);
+                storage.AddTrigger(recurringTrigger);
             }
         }
 
+        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "Fallback for dynamic invocation.")]
         private bool IsSame(JobTriggerBase left, JobTriggerBase right)
         {
             return false;
         }
-        
+
         private bool IsSame(ScheduledTrigger left, ScheduledTrigger right)
         {
             return left.StartDateTimeUtc == right.StartDateTimeUtc;
@@ -169,7 +165,7 @@ namespace Jobbr.Server.JobRegistry
 
         private bool IsSame(RecurringTrigger left, RecurringTrigger right)
         {
-            return left.Definition == right.Definition;
+            return string.Equals(left.Definition, right.Definition, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

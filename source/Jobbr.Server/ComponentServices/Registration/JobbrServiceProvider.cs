@@ -40,12 +40,6 @@ namespace Jobbr.Server.ComponentServices.Registration
             return this.ninjectKernel.TryGet(serviceType);
         }
 
-        /// <summary>
-        /// The get services.
-        /// </summary>
-        /// <param name="serviceType">
-        /// The service type.
-        /// </param>
         public IEnumerable<object> GetServices(Type serviceType)
         {
             return new List<object>(new[] { this.GetService(serviceType) });

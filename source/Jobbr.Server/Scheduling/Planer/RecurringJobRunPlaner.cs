@@ -30,7 +30,8 @@ namespace Jobbr.Server.Scheduling.Planer
                 {
                     var job = this.jobbrRepository.GetJob(trigger.JobId);
 
-                    Logger.InfoFormat("No Parallel Execution: prevented planning of new JobRun for Job '{0}' (JobId: {1}). Caused by trigger with id '{2}' (Type: '{3}', userId: '{4}', userName: '{5}')",
+                    Logger.InfoFormat(
+                        "No Parallel Execution: prevented planning of new JobRun for Job '{0}' (JobId: {1}). Caused by trigger with id '{2}' (Type: '{3}', userId: '{4}', userName: '{5}')",
                         job.UniqueName,
                         job.Id,
                         trigger.Id,
