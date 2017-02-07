@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Jobbr.ComponentModel.Management.Model;
-using Jobbr.Server.Core;
 using Jobbr.Server.Core.Models;
 
 namespace Jobbr.Server.ComponentServices.Management

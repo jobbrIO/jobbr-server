@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
-using Jobbr.Server.Builder;
 
 namespace Jobbr.Server.Storage
 {

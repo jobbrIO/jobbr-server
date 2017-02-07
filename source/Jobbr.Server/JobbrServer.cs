@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
-using Jobbr.Server.Core;
 using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.JobRegistry;
 using Jobbr.Server.Logging;
