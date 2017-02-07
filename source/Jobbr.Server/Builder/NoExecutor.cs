@@ -5,7 +5,7 @@ using Jobbr.ComponentModel.Execution.Model;
 
 namespace Jobbr.Server.Builder
 {
-    class NoExecutor : IJobExecutor
+    internal class NoExecutor : IJobExecutor
     {
         public void Dispose()
         {
