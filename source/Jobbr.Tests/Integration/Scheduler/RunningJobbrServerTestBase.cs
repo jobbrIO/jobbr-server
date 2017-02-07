@@ -1,10 +1,9 @@
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server;
 using Jobbr.Server.Builder;
-using Jobbr.Server.JobRegistry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jobbr.Tests.Scheduler
+namespace Jobbr.Tests.Integration.Scheduler
 {
     public class RunningJobbrServerTestBase
     {

@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Jobbr.ComponentModel.Management.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Job = Jobbr.ComponentModel.JobStorage.Model.Job;
 using JobRunStates = Jobbr.ComponentModel.JobStorage.Model.JobRunStates;
 
-namespace Jobbr.Tests.Scheduler
+namespace Jobbr.Tests.Integration.Scheduler
 {
     [TestClass]
     public class SchedulerTests : RunningJobbrServerTestBase

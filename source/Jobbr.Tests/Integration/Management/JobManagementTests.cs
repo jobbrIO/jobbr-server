@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jobbr.Tests.Management
+namespace Jobbr.Tests.Integration.Management
 {
     [TestClass]
     public class JobManagementTests

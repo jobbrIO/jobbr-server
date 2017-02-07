@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jobbr.Tests.Execution
+namespace Jobbr.Tests.Integration.Execution
 {
     [TestClass]
     public class DefaultJobExecutorTests

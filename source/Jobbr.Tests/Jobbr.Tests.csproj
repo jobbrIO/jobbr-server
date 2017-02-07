@@ -51,14 +51,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Execution\DefaultJobExecutorTests.cs" />
+    <Compile Include="Integration\Execution\DefaultJobExecutorTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\Extensions.cs" />
-    <Compile Include="Management\JobManagementTests.cs" />
-    <Compile Include="Builder\BadEnvironmentTests.cs" />
-    <Compile Include="Builder\ConfigurationTests.cs" />
-    <Compile Include="Scheduler\ExposeAllServicesComponent.cs" />
-    <Compile Include="Scheduler\RunningJobbrServerTestBase.cs" />
-    <Compile Include="Scheduler\SchedulerTests.cs" />
+    <Compile Include="Integration\Management\JobManagementTests.cs" />
+    <Compile Include="Components\Builder\BadEnvironmentTests.cs" />
+    <Compile Include="Components\Builder\ConfigurationTests.cs" />
+    <Compile Include="Integration\Scheduler\ExposeAllServicesComponent.cs" />
+    <Compile Include="Integration\Scheduler\RunningJobbrServerTestBase.cs" />
+    <Compile Include="Integration\Scheduler\SchedulerTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\FaultyJobStorageProvider.cs" />
     <Compile Include="Infrastructure\StorageProvider\InMemoryJobStorageProvider.cs" />
     <Compile Include="Infrastructure\StorageProvider\NotImplementedJobStorageProvider.cs" />

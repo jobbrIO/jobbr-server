@@ -3,7 +3,7 @@ using System.Threading;
 using Jobbr.Server;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jobbr.Tests.Builder
+namespace Jobbr.Tests.Components.Builder
 {
     [TestClass]
     public class BadEnvironmentTests

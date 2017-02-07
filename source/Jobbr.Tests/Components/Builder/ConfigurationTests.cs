@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jobbr.Tests.Builder
+namespace Jobbr.Tests.Components.Builder
 {
     [TestClass]
     public class ConfigurationTests

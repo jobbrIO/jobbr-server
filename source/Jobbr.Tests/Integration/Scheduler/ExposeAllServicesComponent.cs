@@ -4,7 +4,7 @@ using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Registration;
 
-namespace Jobbr.Tests.Scheduler
+namespace Jobbr.Tests.Integration.Scheduler
 {
     /// <summary>
     /// This component consumes all services provided by a standard JobbrServer instance and makes them available by separate properties
