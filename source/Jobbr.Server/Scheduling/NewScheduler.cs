@@ -151,8 +151,42 @@ namespace Jobbr.Server.Scheduling
 
         public void OnJobRunEnded(Guid uniqueId)
         {
+            Logger.Info($"A JobRun has ended. Reevaluating triggers that did not yet schedule a run");
+
             // Remove from in memory plan to not publish this in future
             this.currentPlan.RemoveAll(e => e.UniqueId == uniqueId);
+
+            var additonalItems = new List<ScheduledPlanItem>();
+
+            // If a trigger was blocked previously, it might be a candidate to schedule now
+            var activeTriggers = this.repository.GetActiveTriggers();
+
+            foreach (var trigger in activeTriggers)
+            {
+                if (this.currentPlan.Any(p => p.TriggerId == trigger.Id))
+                {
+                    continue;
+                }
+
+                PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
+
+                if (planResult.Action == PlanAction.Possible)
+                {
+                    var scheduledItem = this.CreateNew(planResult, trigger);
+
+                    additonalItems.Add(scheduledItem);
+                }
+            }
+
+            if (additonalItems.Any())
+            {
+                this.currentPlan.AddRange(additonalItems);
+                Logger.Info($"The completion of a previous job caused {additonalItems.Count} scheduled items");
+            }
+            else
+            {
+                Logger.Debug($"There was no possibility to scheduled new items after the completion of job with it '{uniqueId}'.");
+            }
         }
 
         private ScheduledPlanItem CreateNew(PlanResult planResult, JobTriggerBase trigger)
