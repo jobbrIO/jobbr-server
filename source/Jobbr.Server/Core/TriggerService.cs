@@ -96,7 +96,8 @@ namespace Jobbr.Server.Core
 
             recurringTrigger.Definition = definition;
 
-            this.jobbrRepository.SaveUpdateTrigger(triggerId, trigger, out bool hadChanges);
+            bool hadChanges = false;
+            this.jobbrRepository.SaveUpdateTrigger(triggerId, trigger, out hadChanges);
 
             if (hadChanges)
             {
@@ -118,7 +119,8 @@ namespace Jobbr.Server.Core
 
             recurringTrigger.StartDateTimeUtc = startDateTimeUtc;
 
-            this.jobbrRepository.SaveUpdateTrigger(triggerId, trigger, out bool hadChanges);
+            var hadChanges = false;
+            this.jobbrRepository.SaveUpdateTrigger(triggerId, trigger, out hadChanges);
 
             if (hadChanges)
             {
