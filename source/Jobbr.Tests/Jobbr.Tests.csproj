@@ -36,6 +36,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Moq, Version=4.5.30.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.5.30\lib\net45\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -46,11 +54,14 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Components\SchedulerTests.cs" />
     <Compile Include="Integration\Execution\DefaultJobExecutorTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\Extensions.cs" />
     <Compile Include="Integration\Management\JobManagementTests.cs" />
@@ -74,6 +85,10 @@
       <Project>{183F7730-D805-405C-92B4-84BB151C2371}</Project>
       <Name>Jobbr.ComponentModel.ArtefactStorage</Name>
     </ProjectReference>
+    <ProjectReference Include="..\submodules\jobbr-cm-execution\source\Jobbr.ComponentModel.Execution\Jobbr.ComponentModel.Execution.csproj">
+      <Project>{60E632D9-B2BE-4701-991E-C7113689FBF0}</Project>
+      <Name>Jobbr.ComponentModel.Execution</Name>
+    </ProjectReference>
     <ProjectReference Include="..\submodules\jobbr-cm-jobstorage\source\Jobbr.ComponentModel.JobStorage\Jobbr.ComponentModel.JobStorage.csproj">
       <Project>{375FFCCA-E278-4744-96DD-D4AB92186C66}</Project>
       <Name>Jobbr.ComponentModel.JobStorage</Name>
@@ -89,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

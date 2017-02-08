@@ -182,6 +182,8 @@ namespace Jobbr.Server.Scheduling
             {
                 this.currentPlan.AddRange(additonalItems);
                 Logger.Info($"The completion of a previous job caused {additonalItems.Count} scheduled items");
+
+                this.PublishCurrentPlan();
             }
             else
             {
