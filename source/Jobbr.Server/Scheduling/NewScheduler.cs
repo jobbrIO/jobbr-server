@@ -154,7 +154,7 @@ namespace Jobbr.Server.Scheduling
             Logger.Info($"A JobRun has ended. Reevaluating triggers that did not yet schedule a run");
 
             // Remove from in memory plan to not publish this in future
-            this.currentPlan.RemoveAll(e => e.UniqueId == uniqueId);
+            var numbertOfDeletedItems = this.currentPlan.RemoveAll(e => e.UniqueId == uniqueId);
 
             var additonalItems = new List<ScheduledPlanItem>();
 
@@ -178,16 +178,44 @@ namespace Jobbr.Server.Scheduling
                 }
             }
 
-            if (additonalItems.Any())
+            if (additonalItems.Any() || numbertOfDeletedItems > 0)
             {
+                Logger.Info($"The completion of a previous job caused the addition of {additonalItems.Count} and removal of {numbertOfDeletedItems} scheduled items");
                 this.currentPlan.AddRange(additonalItems);
-                Logger.Info($"The completion of a previous job caused {additonalItems.Count} scheduled items");
 
                 this.PublishCurrentPlan();
             }
             else
             {
                 Logger.Debug($"There was no possibility to scheduled new items after the completion of job with it '{uniqueId}'.");
+            }
+        }
+
+        private void EvaluateRecurringTriggers()
+        {
+            // Re-evaluate recurring triggers every n seconds
+            var activeTriggers = this.repository.GetActiveTriggers().Where(t => t.GetType() == typeof(RecurringTrigger));
+
+            var additonalItems = new List<ScheduledPlanItem>();
+
+            foreach (RecurringTrigger trigger in activeTriggers.Cast<RecurringTrigger>())
+            {
+                PlanResult planResult = this.GetPlanResult(trigger, false);
+
+                if (planResult.Action == PlanAction.Possible)
+                {
+                    var scheduledItem = this.CreateNew(planResult, trigger);
+
+                    additonalItems.Add(scheduledItem);
+                }
+            }
+
+            if (additonalItems.Any())
+            {
+                Logger.Info($"The re-evaluation of recuring triggers caused the addition of {additonalItems.Count} scheduled items");
+                this.currentPlan.AddRange(additonalItems);
+
+                this.PublishCurrentPlan();
             }
         }
 

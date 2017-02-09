@@ -87,13 +87,15 @@ namespace Jobbr.Tests.Components
             Assert.AreEqual(1, jobRuns.Count, "A scheduled trigger should create exact one jobrun when added");
             Assert.AreEqual(scheduledTrigger.Id, jobRuns.Single().TriggerId, "The jobrun should reference the trigger that cause the job to run");
         }
+        [TestMethod]
         public void ScheduledTrigger_HasCompletedJobRun_DoesNotTriggerNewOne()
         {
-            var scheduledTrigger = new ScheduledTrigger { JobId = DemoJob2Id, StartDateTimeUtc = DateTime.UtcNow.AddSeconds(10), IsActive = true };
-            this.repository.SaveAddTrigger(scheduledTrigger);
-            this.scheduler.OnTriggerAdded(scheduledTrigger.Id);
+            // Note: The Scheduled Trigger needs to be in the past in order to invalidate the job reliable in this testing scenario (Issues with NCrunch, no issues with R# and VS-Runners)
+            var scheduledTrigger = new ScheduledTrigger { JobId = this.demoJob1Id, StartDateTimeUtc = DateTime.UtcNow.AddSeconds(-1), IsActive = true };
+            this.AddAndSignalNewTrigger(scheduledTrigger);
 
-            var jobRunByScheduledTrigger = this.repository.GetNextJobRunByTriggerId(scheduledTrigger.Id);
+            // Simulate Job Completeness
+            var jobRunByScheduledTrigger = this.repository.GetLastJobRunByTriggerId(scheduledTrigger.Id);
             jobRunByScheduledTrigger.State = JobRunStates.Completed;
             this.repository.Update(jobRunByScheduledTrigger);
 
