@@ -17,6 +17,7 @@ namespace Jobbr.Server.Scheduling
         private readonly IJobbrRepository repository;
         private readonly IJobExecutor executor;
         private readonly IPeriodicTimer periodicTimer;
+        private readonly IDateTimeProvider dateTimeProvider;
 
         private readonly InstantJobRunPlaner instantJobRunPlaner;
         private readonly ScheduledJobRunPlaner scheduledJobRunPlaner;
@@ -25,7 +26,7 @@ namespace Jobbr.Server.Scheduling
 
         private List<ScheduledPlanItem> currentPlan = new List<ScheduledPlanItem>();
 
-        public NewScheduler(IJobbrRepository repository, IJobExecutor executor, InstantJobRunPlaner instantJobRunPlaner, ScheduledJobRunPlaner scheduledJobRunPlaner, RecurringJobRunPlaner recurringJobRunPlaner, DefaultSchedulerConfiguration configuration)
+        public NewScheduler(IJobbrRepository repository, IJobExecutor executor, InstantJobRunPlaner instantJobRunPlaner, ScheduledJobRunPlaner scheduledJobRunPlaner, RecurringJobRunPlaner recurringJobRunPlaner, DefaultSchedulerConfiguration configuration, IPeriodicTimer periodicTimer, IDateTimeProvider dateTimeProvider)
         {
             this.repository = repository;
             this.executor = executor;
@@ -36,6 +37,7 @@ namespace Jobbr.Server.Scheduling
 
             this.configuration = configuration;
             this.periodicTimer = periodicTimer;
+            this.dateTimeProvider = dateTimeProvider;
 
             this.periodicTimer.Setup(this.EvaluateRecurringTriggers);
         }
@@ -356,7 +358,9 @@ namespace Jobbr.Server.Scheduling
             }
 
             // Was the change too close before the execution date?
-            if (DateTime.UtcNow.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) >= calculatedNextRun)
+            var utcNow = this.dateTimeProvider.GetUtcNow();
+
+            if (utcNow.AddSeconds(this.configuration.AllowChangesBeforeStartInSec) >= calculatedNextRun)
             {
                 Logger.WarnFormat(
                     "The planned startdate '{0}' has changed to '{1}'. This change was done too close (less than {2} seconds) to the next planned run and cannot be adjusted",

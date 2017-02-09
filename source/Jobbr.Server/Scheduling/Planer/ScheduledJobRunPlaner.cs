@@ -5,7 +5,14 @@ namespace Jobbr.Server.Scheduling.Planer
 {
     public class ScheduledJobRunPlaner
     {
-        internal PlanResult Plan(ScheduledTrigger trigger)
+        private readonly IDateTimeProvider dateTimeProvider;
+
+        public ScheduledJobRunPlaner(IDateTimeProvider dateTimeProvider)
+        {
+            this.dateTimeProvider = dateTimeProvider;
+        }
+
+        internal PlanResult Plan(ScheduledTrigger trigger, bool isNew)
         {
             if (!trigger.IsActive)
             {
@@ -14,7 +21,7 @@ namespace Jobbr.Server.Scheduling.Planer
 
             var calculatedNextRun = trigger.StartDateTimeUtc;
 
-            if (calculatedNextRun < DateTime.UtcNow)
+            if (calculatedNextRun < this.dateTimeProvider.GetUtcNow() && !isNew)
             {
                 return PlanResult.FromAction(PlanAction.Obsolete);
             }

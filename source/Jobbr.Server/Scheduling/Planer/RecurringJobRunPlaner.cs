@@ -9,12 +9,13 @@ namespace Jobbr.Server.Scheduling.Planer
     public class RecurringJobRunPlaner
     {
         private static readonly ILog Logger = LogProvider.For<NewScheduler>();
-
         private readonly JobbrRepository jobbrRepository;
+        private readonly IDateTimeProvider dateTimeProvider;
 
-        public RecurringJobRunPlaner(JobbrRepository jobbrRepository)
+        public RecurringJobRunPlaner(JobbrRepository repository, IDateTimeProvider dateTimeProvider)
         {
-            this.jobbrRepository = jobbrRepository;
+            this.jobbrRepository = repository;
+            this.dateTimeProvider = dateTimeProvider;
         }
 
         internal PlanResult Plan(RecurringTrigger trigger)
@@ -46,13 +47,13 @@ namespace Jobbr.Server.Scheduling.Planer
             DateTime baseTime;
 
             // Calculate the next occurance
-            if (trigger.StartDateTimeUtc.HasValue && trigger.StartDateTimeUtc.Value > DateTime.UtcNow)
+            if (trigger.StartDateTimeUtc.HasValue && trigger.StartDateTimeUtc.Value > this.dateTimeProvider.GetUtcNow())
             {
                 baseTime = trigger.StartDateTimeUtc.Value;
             }
             else
             {
-                baseTime = DateTime.UtcNow;
+                baseTime = this.dateTimeProvider.GetUtcNow();
             }
 
             var schedule = CrontabSchedule.Parse(trigger.Definition);

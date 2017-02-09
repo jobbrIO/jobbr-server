@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Jobbr.ComponentModel.Registration;
 
 namespace Jobbr.Server.Scheduling
@@ -20,6 +19,7 @@ namespace Jobbr.Server.Scheduling
             builder.Add<DefaultSchedulerConfiguration>(defaultConfig);
 
             builder.Register<IPeriodicTimer>(typeof(FixedMinuteTimer));
+            builder.Register<IDateTimeProvider>(typeof(UtcNowTimeProvider));
             builder.Register<IJobScheduler>(typeof(NewScheduler));
         }
     }

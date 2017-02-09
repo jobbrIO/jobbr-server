@@ -16,27 +16,29 @@ namespace Jobbr.Tests.Components
     [TestClass]
     public class SchedulerTests
     {
-        private long DemoJob1Id = 1;
+        private readonly long demoJob1Id = 1;
 
         private readonly JobbrRepository repository;
         private readonly NewScheduler scheduler;
 
         private List<PlannedJobRun> lastIssuedPlan;
         private readonly PeriodicTimerMock periodicTimer;
+        private readonly ManualTimeProvider currentTimeProvider;
 
         public SchedulerTests()
         {
             this.repository = new JobbrRepository(new InMemoryJobStorageProvider());
 
             var executorMock = new Mock<IJobExecutor>();
-
             executorMock.Setup(e => e.OnPlanChanged(It.IsNotNull<List<PlannedJobRun>>())).Callback<List<PlannedJobRun>>(p => this.lastIssuedPlan = p);
 
-            this.DemoJob1Id = this.repository.AddJob(new Job());
             this.periodicTimer = new PeriodicTimerMock();
 
+            this.currentTimeProvider = new ManualTimeProvider();
 
-            this.scheduler = new NewScheduler(this.repository, executorMock.Object, new InstantJobRunPlaner(), new ScheduledJobRunPlaner(), new RecurringJobRunPlaner(this.repository), new DefaultSchedulerConfiguration());
+            this.demoJob1Id = this.repository.AddJob(new Job());
+
+            this.scheduler = new NewScheduler(this.repository, executorMock.Object, new InstantJobRunPlaner(this.currentTimeProvider), new ScheduledJobRunPlaner(this.currentTimeProvider), new RecurringJobRunPlaner(this.repository, this.currentTimeProvider), new DefaultSchedulerConfiguration(), this.periodicTimer, this.currentTimeProvider);
 
             this.scheduler.Start();
         }
@@ -132,6 +134,36 @@ namespace Jobbr.Tests.Components
             Assert.AreEqual(expectedTime, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc, "The startdate should match the StartDateTimeUtc + 1 Minute");
             Assert.AreEqual(jobRun.UniqueId, this.lastIssuedPlan.Single().UniqueId, "The startdate should be considered in the plan");
         }
+
+        [TestMethod]
+        public void RecurringTrigger_AfterTwoMinutes_IsPlannedMultipleTimes()
+        {
+            var dateTimeUtc = new DateTime(2017, 02, 09, 14, 00, 00);
+
+            this.currentTimeProvider.Set(dateTimeUtc);
+
+            var scheduledTrigger = new RecurringTrigger() { Definition = "* * * * *", JobId = this.demoJob1Id, StartDateTimeUtc = dateTimeUtc, IsActive = true };
+            this.AddAndSignalNewTrigger(scheduledTrigger);
+
+            this.currentTimeProvider.AddMinute();
+            this.periodicTimer.CallbackOnce();
+
+            this.currentTimeProvider.AddMinute();
+            this.periodicTimer.CallbackOnce();
+
+            var jobRuns = this.repository.GetAllJobRuns();
+
+            var expectedTime1 = dateTimeUtc.AddMinutes(1);
+            var expectedTime2 = dateTimeUtc.AddMinutes(2);
+            var expectedTime3 = dateTimeUtc.AddMinutes(3);
+
+            Assert.AreEqual(3, jobRuns.Count);
+
+            Assert.AreEqual(expectedTime1, this.lastIssuedPlan[0].PlannedStartDateTimeUtc, "The startdate should match the StartDateTimeUtc + 1 Minute");
+            Assert.AreEqual(expectedTime2, this.lastIssuedPlan[1].PlannedStartDateTimeUtc, "The startdate should match the StartDateTimeUtc + 1 Minute");
+            Assert.AreEqual(expectedTime3, this.lastIssuedPlan[2].PlannedStartDateTimeUtc, "The startdate should match the StartDateTimeUtc + 1 Minute");
+        }
+
         [TestMethod]
         public void ScheduledTrigger_HasCompletedJobRun_DoesNotTriggerNewOne()
         {
@@ -145,7 +177,7 @@ namespace Jobbr.Tests.Components
             this.repository.Update(jobRunByScheduledTrigger);
 
             this.scheduler.OnJobRunEnded(jobRunByScheduledTrigger.UniqueId);
-
+            
             Assert.AreEqual(0, this.lastIssuedPlan.Count, "A scheduled trigger should not cause any additional jobruns after completion");
         }
 

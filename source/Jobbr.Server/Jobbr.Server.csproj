@@ -105,6 +105,7 @@
     <Compile Include="Scheduling\DefaultSchedulerConfiguration.cs" />
     <Compile Include="JobbrState.cs" />
     <Compile Include="Scheduling\FixedMinuteTimer.cs" />
+    <Compile Include="Scheduling\IDateTimeProvider.cs" />
     <Compile Include="Scheduling\IJobScheduler.cs" />
     <Compile Include="Scheduling\IPeriodicTimer.cs" />
     <Compile Include="Scheduling\Planer\InstantJobRunPlaner.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="Scheduling\Planer\RecurringJobRunPlaner.cs" />
     <Compile Include="Scheduling\Planer\ScheduledJobRunPlaner.cs" />
     <Compile Include="Scheduling\ScheduledPlanItem.cs" />
+    <Compile Include="Scheduling\UtcNowTimeProvider.cs" />
     <Compile Include="Storage\InMemoryArtefactsStorage.cs" />
     <Compile Include="Scheduling\NewScheduler.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
