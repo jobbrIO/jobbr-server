@@ -40,7 +40,53 @@ namespace Jobbr.Tests.Components
             this.scheduler.Start();
         }
 
+        private void AddAndSignalNewTrigger(InstantTrigger trigger)
+        {
+            this.repository.SaveAddTrigger(trigger);
+            this.scheduler.OnTriggerAdded(trigger.Id);
+        }
+
+        private void AddAndSignalNewTrigger(ScheduledTrigger trigger)
+        {
+            this.repository.SaveAddTrigger(trigger);
+            this.scheduler.OnTriggerAdded(trigger.Id);
+        }
+
+        private void AddAndSignalNewTrigger(RecurringTrigger trigger)
+        {
+            this.repository.SaveAddTrigger(trigger);
+            this.scheduler.OnTriggerAdded(trigger.Id);
+        }
+
         [TestMethod]
+        public void NewScheduledTrigger_IsAdded_WillBePlanned()
+        {
+            var scheduledTrigger = new ScheduledTrigger { JobId = this.demoJob1Id, StartDateTimeUtc = DateTime.UtcNow.AddSeconds(-1), IsActive = true };
+            this.AddAndSignalNewTrigger(scheduledTrigger);
+
+            Assert.AreEqual(1, this.lastIssuedPlan.Count, "A scheduled trigger should cause one item in the plan");
+        }
+
+        [TestMethod]
+        public void NewInstantTrigger_IsAdded_WillBePlanned()
+        {
+            var scheduledTrigger = new InstantTrigger() { JobId = this.demoJob1Id, IsActive = true };
+            this.AddAndSignalNewTrigger(scheduledTrigger);
+
+            Assert.AreEqual(1, this.lastIssuedPlan.Count, "A instant trigger should cause one item in the plan");
+        }
+
+        [TestMethod]
+        public void NewScheduledTrigger_IsAdded_CreatesANewJobRun()
+        {
+            var scheduledTrigger = new ScheduledTrigger { JobId = this.demoJob1Id, StartDateTimeUtc = DateTime.UtcNow.AddSeconds(-1), IsActive = true };
+            this.AddAndSignalNewTrigger(scheduledTrigger);
+
+            var jobRuns = this.repository.GetAllJobRuns();
+
+            Assert.AreEqual(1, jobRuns.Count, "A scheduled trigger should create exact one jobrun when added");
+            Assert.AreEqual(scheduledTrigger.Id, jobRuns.Single().TriggerId, "The jobrun should reference the trigger that cause the job to run");
+        }
         public void ScheduledTrigger_HasCompletedJobRun_DoesNotTriggerNewOne()
         {
             var scheduledTrigger = new ScheduledTrigger { JobId = DemoJob2Id, StartDateTimeUtc = DateTime.UtcNow.AddSeconds(10), IsActive = true };
