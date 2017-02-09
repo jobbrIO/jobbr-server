@@ -23,6 +23,7 @@ namespace Jobbr.Tests.Components
         private readonly NewScheduler scheduler;
 
         private List<PlannedJobRun> lastIssuedPlan;
+        private readonly PeriodicTimerMock periodicTimer;
 
         public SchedulerTests()
         {
@@ -34,6 +35,8 @@ namespace Jobbr.Tests.Components
 
             this.DemoJob1Id = this.repository.AddJob(new Job());
             this.DemoJob2Id = this.repository.AddJob(new Job());
+            this.periodicTimer = new PeriodicTimerMock();
+
 
             this.scheduler = new NewScheduler(this.repository, executorMock.Object, new InstantJobRunPlaner(), new ScheduledJobRunPlaner(), new RecurringJobRunPlaner(this.repository), new DefaultSchedulerConfiguration());
 
