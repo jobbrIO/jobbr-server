@@ -150,34 +150,39 @@ namespace Jobbr.Tests.Components
 
         [TestMethod]
         public void NoParallelExecutionDisabled_ForceNewPlanWhileJobIsStillRunning_NextJobRunIsCreated()
+        [TestMethod]
+        public void RecurringTrigger_WithNoTriggerOrJobChanges_DoesTriggerNewOnes()
         {
-            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = DemoJob1Id, IsActive = true, NoParallelExecution = false, StartDateTimeUtc = DateTime.UtcNow.AddDays(-1) };
-            this.repository.SaveAddTrigger(recurringTrigger);
-            this.scheduler.OnTriggerAdded(recurringTrigger.Id);
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false, StartDateTimeUtc = DateTime.UtcNow };
+            
+            // This triggers the first jobrun
+            this.AddAndSignalNewTrigger(recurringTrigger);
 
-            var scheduledTrigger = new ScheduledTrigger { JobId = DemoJob2Id, StartDateTimeUtc = DateTime.UtcNow.AddSeconds(10), IsActive = true };
-            this.repository.SaveAddTrigger(scheduledTrigger);
-            this.scheduler.OnTriggerAdded(scheduledTrigger.Id);
+            // wait for additional jobrun
+            this.periodicTimer.CallbackOnce();
 
-            // Let's simulate that the JobRun by the Recurring Trigger has now started
-            var firstJobRunByTheRecurringTrigger = this.repository.GetLastJobRunByTriggerId(recurringTrigger.Id);
-            firstJobRunByTheRecurringTrigger.State = JobRunStates.Processing;
-            this.repository.Update(firstJobRunByTheRecurringTrigger);
+            var jobRun = this.repository.GetAllJobRuns();
 
-            // Let's manually force the scheduler to do a re-evaluation of the whole plan after a job has ended
-            var firsJobRunByScheduledtrigger = this.repository.GetLastJobRunByTriggerId(scheduledTrigger.Id);
-            firsJobRunByScheduledtrigger.State = JobRunStates.Completed;
-            this.repository.Update(firsJobRunByScheduledtrigger);
-            this.scheduler.OnJobRunEnded(firsJobRunByScheduledtrigger.UniqueId);
+            Assert.AreEqual(2, jobRun.Count, "Trigger should continue trigger additional jobruns");
+            Assert.AreEqual(2, this.lastIssuedPlan.Count, "The plan should contain items for all 3 triggers");
+        }
 
-            var jobRunsTriggeredByRecurringTrigger = this.repository.GetAllJobRuns().Where(jr => jr.TriggerId == recurringTrigger.Id).OrderBy(jr => jr.Id).ToList();
+        [TestMethod]
+        public void NoParallelExecutionDisabled_ForceNewPlanWhileJobIsStillRunning_NextJobRunIsCreated()
+        {
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false, StartDateTimeUtc = DateTime.UtcNow };
+            this.AddAndSignalNewTrigger(recurringTrigger);
 
-            Assert.AreEqual(2, jobRunsTriggeredByRecurringTrigger.Count);
-            Assert.AreEqual(2, this.lastIssuedPlan.Count, "Since one JobRun has completed, there should be only 2 jobs in the upcoming plan, even if the recurring trigger already issued a new run");
-            Assert.AreEqual(3, this.repository.GetAllJobRuns().Count, "The recurring trigger should should have triggered 2 JobRuns, while the scheduled trigger should also have contributed 1 run");
+            this.periodicTimer.CallbackOnce();
 
-            Assert.AreEqual(jobRunsTriggeredByRecurringTrigger[0].UniqueId, this.lastIssuedPlan[0].UniqueId);
-            Assert.AreEqual(jobRunsTriggeredByRecurringTrigger[1].UniqueId, this.lastIssuedPlan[1].UniqueId);
+            var jobRuns = this.repository.GetAllJobRuns();
+
+            Assert.AreEqual(2, jobRuns.Count);
+            Assert.AreEqual(2, this.lastIssuedPlan.Count, "Since one JobRun has completed, there should be now 2 jobruns");
+            Assert.AreEqual(2, this.repository.GetAllJobRuns().Count, "The recurring trigger should should have triggered 2");
+
+            Assert.AreEqual(jobRuns[0].UniqueId, this.lastIssuedPlan[0].UniqueId);
+            Assert.AreEqual(jobRuns[1].UniqueId, this.lastIssuedPlan[1].UniqueId);
         }
 
         [TestMethod]

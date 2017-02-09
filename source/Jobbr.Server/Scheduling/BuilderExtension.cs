@@ -19,6 +19,7 @@ namespace Jobbr.Server.Scheduling
 
             builder.Add<DefaultSchedulerConfiguration>(defaultConfig);
 
+            builder.Register<IPeriodicTimer>(typeof(FixedMinuteTimer));
             builder.Register<IJobScheduler>(typeof(NewScheduler));
         }
     }

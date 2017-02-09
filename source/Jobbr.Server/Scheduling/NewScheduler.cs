@@ -16,6 +16,7 @@ namespace Jobbr.Server.Scheduling
 
         private readonly IJobbrRepository repository;
         private readonly IJobExecutor executor;
+        private readonly IPeriodicTimer periodicTimer;
 
         private readonly InstantJobRunPlaner instantJobRunPlaner;
         private readonly ScheduledJobRunPlaner scheduledJobRunPlaner;
@@ -34,6 +35,9 @@ namespace Jobbr.Server.Scheduling
             this.recurringJobRunPlaner = recurringJobRunPlaner;
 
             this.configuration = configuration;
+            this.periodicTimer = periodicTimer;
+
+            this.periodicTimer.Setup(this.EvaluateRecurringTriggers);
         }
 
         public void Dispose()
@@ -43,6 +47,8 @@ namespace Jobbr.Server.Scheduling
         public void Start()
         {
             this.CreateInitialPlan();
+
+            this.periodicTimer.Start();
         }
 
         public void Stop()
