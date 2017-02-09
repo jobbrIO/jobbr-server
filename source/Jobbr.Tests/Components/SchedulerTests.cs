@@ -87,6 +87,50 @@ namespace Jobbr.Tests.Components
             Assert.AreEqual(1, jobRuns.Count, "A scheduled trigger should create exact one jobrun when added");
             Assert.AreEqual(scheduledTrigger.Id, jobRuns.Single().TriggerId, "The jobrun should reference the trigger that cause the job to run");
         }
+
+        [TestMethod]
+        public void NewScheduledTrigger_IsAdded_IsPlannedOnTime()
+        {
+            var dateTimeUtc = DateTime.UtcNow.AddHours(10);
+
+            var scheduledTrigger = new ScheduledTrigger { JobId = this.demoJob1Id, StartDateTimeUtc = dateTimeUtc, IsActive = true };
+            this.AddAndSignalNewTrigger(scheduledTrigger);
+
+            var jobRun = this.repository.GetAllJobRuns().Single();
+
+            Assert.AreEqual(dateTimeUtc, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc, "The startdate should be considered in the plan");
+            Assert.AreEqual(jobRun.UniqueId, this.lastIssuedPlan.Single().UniqueId, "The startdate should be considered in the plan");
+        }
+
+        [TestMethod]
+        public void NewRecurringTriggerWithoutSeconds_IsAdded_IsPlannedOnTime()
+        {
+            var dateTimeUtc = new DateTime(DateTime.UtcNow.Year + 1, 09, 02, 17, 00, 00);
+
+            var scheduledTrigger = new RecurringTrigger() { Definition = "* * * * *", JobId = this.demoJob1Id, StartDateTimeUtc = dateTimeUtc, IsActive = true };
+            this.AddAndSignalNewTrigger(scheduledTrigger);
+
+            var jobRun = this.repository.GetAllJobRuns().Single();
+
+            var expectedTime = dateTimeUtc.AddMinutes(1);
+            Assert.AreEqual(expectedTime, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc, "The startdate should match the StartDateTimeUtc + 1 Minute");
+            Assert.AreEqual(jobRun.UniqueId, this.lastIssuedPlan.Single().UniqueId, "The startdate should be considered in the plan");
+        }
+
+        [TestMethod]
+        public void NewRecurringTriggerWithSeconds_IsAdded_DoesNotContainsSecondInTrigger()
+        {
+            var dateTimeUtc = new DateTime(DateTime.UtcNow.Year + 1, 02, 09, 17, 00, 15);
+
+            var scheduledTrigger = new RecurringTrigger() { Definition = "* * * * *", StartDateTimeUtc = dateTimeUtc, JobId = this.demoJob1Id, IsActive = true };
+            this.AddAndSignalNewTrigger(scheduledTrigger);
+
+            var jobRun = this.repository.GetAllJobRuns().Single();
+
+            var expectedTime = dateTimeUtc.AddMinutes(1).AddSeconds(-15);
+            Assert.AreEqual(expectedTime, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc, "The startdate should match the StartDateTimeUtc + 1 Minute");
+            Assert.AreEqual(jobRun.UniqueId, this.lastIssuedPlan.Single().UniqueId, "The startdate should be considered in the plan");
+        }
         [TestMethod]
         public void ScheduledTrigger_HasCompletedJobRun_DoesNotTriggerNewOne()
         {
