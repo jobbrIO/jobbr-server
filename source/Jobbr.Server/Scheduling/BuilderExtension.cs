@@ -8,10 +8,10 @@ namespace Jobbr.Server.Scheduling
     {
         public static void AddDefaultScheduler(this IJobbrBuilder builder)
         {
-            AddForkedExecution(builder, configuration => { });
+            AddDefaultScheduler(builder, configuration => { });
         }
 
-        public static void AddForkedExecution(this IJobbrBuilder builder, Action<DefaultSchedulerConfiguration> config)
+        public static void AddDefaultScheduler(this IJobbrBuilder builder, Action<DefaultSchedulerConfiguration> config)
         {
             var defaultConfig = new DefaultSchedulerConfiguration();
 
