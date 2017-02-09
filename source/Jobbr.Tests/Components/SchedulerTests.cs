@@ -149,7 +149,24 @@ namespace Jobbr.Tests.Components
         }
 
         [TestMethod]
-        public void NoParallelExecutionDisabled_ForceNewPlanWhileJobIsStillRunning_NextJobRunIsCreated()
+        public void RecurringTrigger_HasCompletedJobRun_TriggerNewOne()
+        {
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false, StartDateTimeUtc = DateTime.UtcNow };
+            this.AddAndSignalNewTrigger(recurringTrigger);
+
+            // Simulate Job Completeness
+            var jobRunByScheduledTrigger = this.repository.GetLastJobRunByTriggerId(recurringTrigger.Id);
+            jobRunByScheduledTrigger.State = JobRunStates.Completed;
+            this.repository.Update(jobRunByScheduledTrigger);
+
+            this.scheduler.OnJobRunEnded(jobRunByScheduledTrigger.UniqueId);
+
+            var jobRun = this.repository.GetAllJobRuns();
+
+            Assert.AreEqual(2, jobRun.Count, "Trigger should have triggered an additional job after completion of the first");
+            Assert.AreEqual(1, this.lastIssuedPlan.Count, "A scheduled trigger should not cause any additional jobruns after completion");
+        }
+
         [TestMethod]
         public void RecurringTrigger_WithNoTriggerOrJobChanges_DoesTriggerNewOnes()
         {
@@ -188,7 +205,18 @@ namespace Jobbr.Tests.Components
         [TestMethod]
         public void NoParallelExecutionEnabled_TriggerWhileJobIsStillRunning_NextJobRunIsPrevented()
         {
-        }
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = true, StartDateTimeUtc = DateTime.UtcNow };
 
+            // This triggers the first jobrun
+            this.AddAndSignalNewTrigger(recurringTrigger);
+
+            this.periodicTimer.CallbackOnce();
+            this.periodicTimer.CallbackOnce();
+
+            var jobRuns = this.repository.GetAllJobRuns();
+
+            Assert.AreEqual(1, jobRuns.Count, "Creating new jobruns should be prevented if a JobRun is not yet completed for the trigger");
+            Assert.AreEqual(1, this.lastIssuedPlan.Count, "It doesn't mather how often the Callback for recurring trigger scheduling is called, as long as there is a job running, there shoulnd be any additional jobs");
+        }
     }
 }
