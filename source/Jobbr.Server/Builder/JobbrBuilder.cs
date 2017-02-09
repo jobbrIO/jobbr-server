@@ -64,13 +64,13 @@ namespace Jobbr.Server.Builder
         public void Add<T>(object instance)
         {
             var featureConfiguration = instance as IFeatureConfiguration;
-            StandardKernel container1 = new DefaultContainer();
+
             if (featureConfiguration != null)
             {
-                container1.Bind<IFeatureConfiguration>().ToConstant((IFeatureConfiguration)instance);
+                this.container.Bind<IFeatureConfiguration>().ToConstant((IFeatureConfiguration)instance);
             }
 
-            container1.Bind<T>().ToConstant((T)instance);
+            this.container.Bind<T>().ToConstant((T)instance);
         }
     }
 }
