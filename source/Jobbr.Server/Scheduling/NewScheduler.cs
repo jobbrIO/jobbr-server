@@ -53,6 +53,7 @@ namespace Jobbr.Server.Scheduling
 
         public void Stop()
         {
+            this.periodicTimer.Stop();
         }
 
         public void OnTriggerDefinitionUpdated(long triggerId)
@@ -376,7 +377,7 @@ namespace Jobbr.Server.Scheduling
 
         // ReSharper disable once UnusedParameter.Local
         // Reason: Parameter is used by dynamic overload
-        private PlanResult GetPlanResult(ScheduledTrigger trigger, bool isNew = false) => this.scheduledJobRunPlaner.Plan(trigger);
+        private PlanResult GetPlanResult(ScheduledTrigger trigger, bool isNew = false) => this.scheduledJobRunPlaner.Plan(trigger, isNew);
 
         // ReSharper disable once UnusedParameter.Local
         // Reason: Parameter is used by dynamic overload

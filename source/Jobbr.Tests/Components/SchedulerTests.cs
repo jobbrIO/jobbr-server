@@ -17,7 +17,6 @@ namespace Jobbr.Tests.Components
     public class SchedulerTests
     {
         private long DemoJob1Id = 1;
-        private long DemoJob2Id = 2;
 
         private readonly JobbrRepository repository;
         private readonly NewScheduler scheduler;
@@ -34,7 +33,6 @@ namespace Jobbr.Tests.Components
             executorMock.Setup(e => e.OnPlanChanged(It.IsNotNull<List<PlannedJobRun>>())).Callback<List<PlannedJobRun>>(p => this.lastIssuedPlan = p);
 
             this.DemoJob1Id = this.repository.AddJob(new Job());
-            this.DemoJob2Id = this.repository.AddJob(new Job());
             this.periodicTimer = new PeriodicTimerMock();
 
 

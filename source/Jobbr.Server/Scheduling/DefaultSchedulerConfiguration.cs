@@ -1,4 +1,5 @@
-﻿using Jobbr.ComponentModel.Registration;
+﻿using System;
+using Jobbr.ComponentModel.Registration;
 
 namespace Jobbr.Server.Scheduling
 {
