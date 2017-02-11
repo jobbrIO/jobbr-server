@@ -40,12 +40,7 @@ namespace Jobbr.Server.ComponentServices.Execution
             this.mapper.Map(trigger, info);
             this.mapper.Map(jobRun, info);
 
-            return new JobRunInfo()
-            {
-                JobId = jobRun.Id,
-                
-                // TODO
-            };
+            return info;
         }
     }
 }
