@@ -1,10 +1,11 @@
 ﻿using System.Threading;
 using Jobbr.ComponentModel.ArtefactStorage;
+using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Registration;
 
-namespace Jobbr.Tests.Integration.Scheduler
+namespace Jobbr.Tests.Integration
 {
     /// <summary>
     /// This component consumes all services provided by a standard JobbrServer instance and makes them available by separate properties
@@ -17,7 +18,7 @@ namespace Jobbr.Tests.Integration.Scheduler
 
         private static ThreadLocal<ExposeAllServicesComponent> instancesPerThread = new ThreadLocal<ExposeAllServicesComponent>();
 
-        public ExposeAllServicesComponent(IJobbrServiceProvider serviceProvider, IArtefactsStorageProvider artefactsStorageProvider, IJobStorageProvider jobStorageProvider, IJobManagementService jobManagementService, IQueryService queryService, IServerManagementService managementService)
+        public ExposeAllServicesComponent(IJobbrServiceProvider serviceProvider, IArtefactsStorageProvider artefactsStorageProvider, IJobStorageProvider jobStorageProvider, IJobManagementService jobManagementService, IQueryService queryService, IServerManagementService managementService, IJobRunInformationService informationService, IJobRunProgressChannel progressChannel)
         {
             this.ServiceProvider = serviceProvider;
             this.ArtefactsStorageProvider = artefactsStorageProvider;
@@ -25,6 +26,9 @@ namespace Jobbr.Tests.Integration.Scheduler
             this.JobManagementService = jobManagementService;
             this.QueryService = queryService;
             this.ManagementService = managementService;
+            this.InformationService = informationService;
+            this.ProgressChannel = progressChannel;
+
             instancesPerThread.Value = this;
         }
 
@@ -40,6 +44,8 @@ namespace Jobbr.Tests.Integration.Scheduler
 
         public IServerManagementService ManagementService { get; }
 
+        public IJobRunInformationService InformationService { get; }
+        public IJobRunProgressChannel ProgressChannel { get; }
         public void Dispose()
         {
             instancesPerThread.Value = null;

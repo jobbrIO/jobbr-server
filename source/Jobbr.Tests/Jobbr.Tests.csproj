@@ -66,11 +66,12 @@
     <Compile Include="Components\SchedulerTests.cs" />
     <Compile Include="Integration\Execution\DefaultJobExecutorTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\Extensions.cs" />
+    <Compile Include="Integration\Execution\JobRunInformationServiceTests.cs" />
     <Compile Include="Integration\Management\JobManagementTests.cs" />
     <Compile Include="Components\Builder\BadEnvironmentTests.cs" />
     <Compile Include="Components\Builder\ConfigurationTests.cs" />
-    <Compile Include="Integration\Scheduler\ExposeAllServicesComponent.cs" />
-    <Compile Include="Integration\Scheduler\RunningJobbrServerTestBase.cs" />
+    <Compile Include="Integration\ExposeAllServicesComponent.cs" />
+    <Compile Include="Integration\RunningJobbrServerTestBase.cs" />
     <Compile Include="Integration\Scheduler\SchedulerTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\FaultyJobStorageProvider.cs" />
     <Compile Include="Infrastructure\StorageProvider\InMemoryJobStorageProvider.cs" />

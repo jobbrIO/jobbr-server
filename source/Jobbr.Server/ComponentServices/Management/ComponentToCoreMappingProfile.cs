@@ -16,6 +16,8 @@ namespace Jobbr.Server.ComponentServices.Management
 
             this.CreateMap<InstantTrigger, InstantTriggerModel>()
                 .ForMember(d => d.CreatedDateTimeUtc, cgf => cgf.Ignore());
+
+            this.CreateMap<Job, JobModel>();
         }
     }
 }
