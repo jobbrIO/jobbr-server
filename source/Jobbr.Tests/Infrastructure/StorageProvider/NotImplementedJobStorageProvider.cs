@@ -7,6 +7,13 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
 {
     public class NotImplementedJobStorageProvider : IJobStorageProvider
     {
+        public static NotImplementedJobStorageProvider Instance { get; private set; }
+
+        public NotImplementedJobStorageProvider()
+        {
+            Instance = this;
+        }
+
         public virtual List<Job> GetJobs()
         {
             throw new NotImplementedException();

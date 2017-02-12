@@ -7,9 +7,16 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
 {
     public class FaultyJobStorageProvider : IJobStorageProvider
     {
+        public static FaultyJobStorageProvider Instance { get; private set; }
+
         private readonly IJobStorageProvider inMemoryVersion = new InMemoryJobStorageProvider();
 
         private bool failAll;
+
+        public FaultyJobStorageProvider()
+        {
+            Instance = this;
+        }
 
         public List<Job> GetJobs()
         {

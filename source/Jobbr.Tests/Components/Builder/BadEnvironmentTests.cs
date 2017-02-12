@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading;
+using Jobbr.ComponentModel.JobStorage;
 using Jobbr.Server;
+using Jobbr.Server.Builder;
+using Jobbr.Tests.Infrastructure.StorageProvider;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Components.Builder
@@ -11,50 +14,41 @@ namespace Jobbr.Tests.Components.Builder
         [TestMethod]
         public void StartJobbr_WithFaultyStorageProvider_RemainsStarting()
         {
-            Assert.Fail("This test needs to be re-implemented!");
+            var builder = new JobbrBuilder();
+            builder.Register<IJobStorageProvider>(typeof(NotImplementedJobStorageProvider));
 
-            //var jobbr = new JobbrServer(new DefaultJobbrConfiguration()
-            //{
-            //    JobStorageProvider = new NotImplementedJobStorageProvider(),
-            //    ArtefactStorageProvider = new FileSystemArtefactsStorageProvider(AppDomain.CurrentDomain.BaseDirectory),
-            //    JobRunnerExeResolver = () => @"C:\Windows\System32\cmd.exe"
-            //});
+            var jobbr = builder.Create();
 
-            //var isStarted = jobbr.Start(1000);
+            var isStarted = jobbr.Start(1000);
 
-            //Assert.AreEqual(JobbrState.Starting, jobbr.State);
-            //Assert.IsFalse(isStarted);
+            Assert.AreEqual(JobbrState.Starting, jobbr.State);
+            Assert.IsFalse(isStarted);
         }
 
         [TestMethod]
         public void StartingJobber_GetsRunning_WhenStorageProviderTurnsHealthy()
         {
-            Assert.Fail("This test needs to be re-implemented!");
+            var builder = new JobbrBuilder();
+            builder.Register<IJobStorageProvider>(typeof(FaultyJobStorageProvider));
 
-            //var faultyJobStorageProvider = new FaultyJobStorageProvider();
+            var jobbr = builder.Create();
+            var faultyJobStorageProvider = FaultyJobStorageProvider.Instance;
 
-            //var jobbr = new JobbrServer(new DefaultJobbrConfiguration()
-            //{
-            //    JobStorageProvider = faultyJobStorageProvider,
-            //    ArtefactStorageProvider = new FileSystemArtefactsStorageProvider(AppDomain.CurrentDomain.BaseDirectory),
-            //    JobRunnerExeResolver = () => @"C:\Windows\System32\cmd.exe"
-            //});
+            faultyJobStorageProvider.DisableImplementation();
+            jobbr.Start(1000);
 
-            //faultyJobStorageProvider.DisableImplementation();
-            //jobbr.Start(1000);
+            faultyJobStorageProvider.EnableImplementation();
 
-            //faultyJobStorageProvider.EnableImplementation();
+            this.WaitForStatusChange(() => jobbr.State, 5000);
 
-            //this.WaitForStatusChange(() => jobbr.State, 5000);
-
-            //Assert.AreEqual(JobbrState.Running, jobbr.State);
+            Assert.AreEqual(JobbrState.Running, jobbr.State);
         }
 
         private void WaitForStatusChange(Func<JobbrState> state, int timeout)
         {
             var initialState = state();
 
-            for (int i = 0; i < timeout / 500; i++)
+            for (var i = 0; i < timeout / 500; i++)
             {
                 var newState = state();
 
