@@ -8,7 +8,7 @@ namespace Jobbr.Tests.Integration.Startup
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void NewJobbr_WithNoStorageProvider_FailsOnStart()
+        public void NewJobbr_WithNoStorageProvider_IssuesWarnInLog()
         {
             Assert.Fail("This test needs to be re-implemented!");
 
@@ -22,7 +22,7 @@ namespace Jobbr.Tests.Integration.Startup
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void NewJobbr_WithNoArtefactsProvider_FailsOnStart()
+        public void NewJobbr_WithNoArtefactsProvider_IssuesWarnInLog()
         {
             Assert.Fail("This test needs to be re-implemented!");
 
@@ -32,6 +32,15 @@ namespace Jobbr.Tests.Integration.Startup
             //var jobbr = new JobbrServer(config);
 
             //jobbr.Start(1000);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void NewJobbr_WithNoExecutor_IssuesWarnInLog()
+        {
+            Assert.Fail("This test needs to be implemented!");
+
+            //var config = new CompleteJobberConfiguration();
         }
 
         ////[TestMethod]
