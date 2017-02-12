@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using JobRunStates = Jobbr.ComponentModel.JobStorage.Model.JobRunStates;
 
-namespace Jobbr.Tests.Components
+namespace Jobbr.Tests.Components.Scheduler
 {
     [TestClass]
     public class SchedulerTests

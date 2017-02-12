@@ -1,7 +1,7 @@
 using System;
 using Jobbr.Server.Scheduling;
 
-namespace Jobbr.Tests.Components
+namespace Jobbr.Tests.Components.Scheduler
 {
     public class PeriodicTimerMock : IPeriodicTimer
     {
