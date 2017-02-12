@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Jobbr.ComponentModel.Management.Model;
-using Jobbr.Tests.Integration.Scheduler;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Execution
@@ -39,7 +35,7 @@ namespace Jobbr.Tests.Integration.Execution
                 UniqueName = "UniqueTestJobName"
             });
 
-            this.Services.JobManagementService.AddTrigger(new InstantTrigger()
+            var trigger = new InstantTrigger()
             {
                 JobId = job.Id,
                 Comment = "Comment",
@@ -48,7 +44,9 @@ namespace Jobbr.Tests.Integration.Execution
                 UserName = "UserName",
                 Parameters = "triggerParams",
                 IsActive = true
-            });
+            };
+
+            this.Services.JobManagementService.AddTrigger(trigger);
 
             WaitFor.HasElements(this.Services.JobStorageProvider.GetJobRuns().ToList, 1500);
 
@@ -59,6 +57,12 @@ namespace Jobbr.Tests.Integration.Execution
             Assert.IsNotNull(result);
             Assert.AreEqual(job.Id, result.JobId);
             Assert.AreEqual(job.Type, result.Type);
+            Assert.AreEqual(job.Parameters, result.JobParameters);
+
+            Assert.AreEqual(trigger.Parameters, result.InstanceParameters);
+            Assert.AreEqual(trigger.UserId, result.UserId);
+            Assert.AreEqual(trigger.UserName, result.Username);
+
             Assert.AreEqual(job.Parameters, result.JobParameters);
             Assert.AreEqual(createdJobRun.InstanceParameters, result.InstanceParameters);
         }
