@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -204,88 +205,79 @@ namespace Jobbr.Tests.Integration.Startup
     [TestClass]
     public class ConfigurationTests
     {
-        private static object syncRoot = new object();
-        private CaptureInMemoryLogProvider captureInMemoryLogProvider;
+        //static ConfigurationTests()
+        //{
+        //    var lp = new CaptureLogProvider();
+        //    LogProvider.SetCurrentLogProvider(lp);
+        //}
 
-        public ConfigurationTests()
+        [ClassInitialize]
+        public static void Setup(TestContext context)
         {
-            LogProvider.LogProviderResolvers.Clear();
+            var lp = new CaptureLogProvider();
+            LogProvider.SetCurrentLogProvider(lp);
 
-            this.captureInMemoryLogProvider = new CaptureInMemoryLogProvider();
-            LogProvider.LogProviderResolvers.Clear();
-            LogProvider.SetCurrentLogProvider(captureInMemoryLogProvider);
+            // Seems to be an issue if this is set via static constructor
+            // LogProvider.SetCurrentLogProvider(new CaptureLogProvider());
         }
 
-        [TestCleanup]
-        public void CleanUp()
+        [ClassCleanup]
+        public static void Cleanup()
         {
-            // Set the default logger back
             LogProvider.SetCurrentLogProvider(null);
         }
+
+
 
         [TestMethod]
         public void NewJobber_OwnLogger_GetsMessages1()
         {
-            Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId} NewJobber_OwnLogger_GetsMessages started");
-            var builder = new JobbrBuilder();
+            using (LogProvider.OpenNestedConext(nameof(NewJobber_OwnLogger_GetsMessages1)))
+            {
+                var builder = new JobbrBuilder();
 
-            //Thread.Sleep(new Random().Next(1, 2500));
-            builder.Create();
+                builder.Create();
 
-            //Thread.Sleep(new Random().Next(1, 2500));
-
-            var allLogEntries = captureInMemoryLogProvider.GetLogsFromThread();
-            Assert.IsTrue(allLogEntries.Any());
-            Console.WriteLine("NewJobber_OwnLogger_GetsMessages ended");
+                var allLogEntries = CaptureLogProvider.ContextLogs;
+                Assert.IsTrue(allLogEntries.Any());
+            }
         }
 
         [TestMethod]
         public void NewJobber_OwnLogger_GetsMessages2()
         {
-            Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId} NewJobber_OwnLogger_GetsMessages started");
-            var builder = new JobbrBuilder();
+            using (LogProvider.OpenNestedConext(nameof(NewJobber_OwnLogger_GetsMessages2)))
+            {
+                var builder = new JobbrBuilder();
 
-            //Thread.Sleep(new Random().Next(1, 2500));
-            builder.Create();
+                builder.Create();
 
-            //Thread.Sleep(new Random().Next(1, 2500));
-            var allLogEntries = captureInMemoryLogProvider.GetLogsFromThread();
-            Assert.IsTrue(allLogEntries.Any());
-            Console.WriteLine("NewJobber_OwnLogger_GetsMessages ended");
+                var allLogEntries = CaptureLogProvider.ContextLogs;
+                Assert.IsTrue(allLogEntries.Any());
+            }
         }
 
-        //[TestMethod]
-        //public void NewJobbr_WithNoStorageProvider_IssuesErrorInLog()
-        //{
-        //    Console.WriteLine("NewJobbr_WithNoStorageProvider_IssuesErrorInLog started");
+        [TestMethod]
+        public void NewJobbr_WithNoStorageProvider_IssuesErrorInLog()
+        {
+            using (LogProvider.OpenNestedConext(nameof(NewJobbr_WithNoStorageProvider_IssuesErrorInLog)))
+            {
+                var builder = new JobbrBuilder();
 
-        //    // Assert.Fail("This test needs to be re-implemented!");
+                // Register only Artefacts and Executor
+                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArfetacstStorageProvider));
+                builder.Register<IJobExecutor>(typeof(PseudoExecutor));
 
-        //    var builder = new JobbrBuilder();
+                builder.Create();
 
-        //    // Register only Artefacts and Executor
-        //    builder.Register<IArtefactsStorageProvider>(typeof(PseudoArfetacstStorageProvider));
-        //    builder.Register<IJobExecutor>(typeof(PseudoExecutor));
+                var allLogs = CaptureLogProvider.ContextLogs;
+                var storageWarnLogs = allLogs.Where(l => l.LogLevel == LogLevel.Error && l.Message.Contains("JobStorageProvider")).ToList();
 
-        //    builder.Create();
+                Assert.IsTrue(allLogs.Any());
 
-        //    //WaitFor.HasElements(() => captureInMemoryLogProvider.GetLogs(), 1000);
-
-        //    var allLogs = captureInMemoryLogProvider.GetLogsFromThread();
-        //    var storageWarnLogs = allLogs.Where(l => l.LogLevel == LogLevel.Error && l.Message.Contains("JobStorageProvider")).ToList();
-
-        //    Assert.IsTrue(allLogs.Any());
-
-        //    Assert.AreEqual(1, storageWarnLogs.Count);
-        //    //var config = new CompleteJobberConfiguration();
-        //    //config.JobStorageProvider = null;
-
-        //    //var jobbr = new JobbrServer(config);
-
-        //    //jobbr.Start(1000);
-        //    Console.WriteLine("NewJobbr_WithNoStorageProvider_IssuesErrorInLog ended");
-
-        //}
+                Assert.AreEqual(1, storageWarnLogs.Count);
+            }
+        }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -353,41 +345,8 @@ namespace Jobbr.Tests.Integration.Startup
         ////}
     }
 
-    public class CaptureInMemoryLogProvider : ILogProvider
-    {
-        private readonly ThreadLocal<MemoryLogger> memLoggersForThreads = new ThreadLocal<MemoryLogger>();
-        private MemoryLogger logger;
 
-        public CaptureInMemoryLogProvider()
-        {
-            logger = new MemoryLogger();
-            this.memLoggersForThreads.Value = new MemoryLogger();
-        }
-
-        public ILog GetLogger(string name)
-        {
-            //return this.memLoggersForThreads.Value;
-            return logger;
-   ;     }
-
-        public List<MemoryLogger.MemoryLoggerEntry> GetLogsFromThread()
-        {
-            //return this.memLoggersForThreads.Value.Store.ToList();
-            return logger.Store;
-        }
-
-        public IDisposable OpenNestedContext(string message)
-        {
-            return null;
-        }
-
-        public IDisposable OpenMappedContext(string key, string value)
-        {
-            return null;
-        }
-    }
-
-    public class MemoryLogger : ILog
+    public class CaptureLogProvider : ILogProvider
     {
         public class MemoryLoggerEntry
         {
@@ -398,35 +357,78 @@ namespace Jobbr.Tests.Integration.Startup
             public string Message { get; set; }
         }
 
-        List<MemoryLoggerEntry> store = new List<MemoryLoggerEntry>();
-
-        public List<MemoryLoggerEntry> Store
+        public class MemoryLogger : ILog
         {
-            get { return this.store; }
+            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception = null, params object[] formatParameters)
+            {
+                lock (this)
+                {
+                    if (messageFunc == null)
+                    {
+                        return true;
+                    }
+
+                    var dateTimeUtc = DateTime.Today;
+
+                    var text = messageFunc();
+
+                    if (formatParameters != null)
+                    {
+                        text = string.Format(text, formatParameters);
+                    }
+
+                    Console.WriteLine($"[PID{Process.GetCurrentProcess().Id}] [T{Thread.CurrentThread.ManagedThreadId}] [C '{contextName}'] Message: '{text}'");
+
+                    var item = new MemoryLoggerEntry() { DateTimeUtc = dateTimeUtc, LogLevel = logLevel, Message = text };
+
+                    logs.AddOrUpdate(contextName, d => new List<MemoryLoggerEntry>(new[] { item }), (key, oldValues) => oldValues.Union(new List<MemoryLoggerEntry>(new[] { item })).ToList());
+
+                    Console.WriteLine($"{dateTimeUtc:G} [{logLevel}] {text}");
+
+                    return true;
+                }
+            }
         }
 
-        public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception = null,
-            params object[] formatParameters)
+
+        private static ConcurrentDictionary<string, List<MemoryLoggerEntry>> logs = new ConcurrentDictionary<string, List<MemoryLoggerEntry>>();
+
+        private static string contextName = String.Empty;
+
+        private ILog logger = new MemoryLogger();
+
+        public static List<MemoryLoggerEntry> ContextLogs
         {
-            if (messageFunc == null)
+            get
             {
-                return true;
+                if (logs.ContainsKey(contextName))
+                {
+                    return logs[contextName];
+                }
+
+                return new List<MemoryLoggerEntry>();
             }
-
-            var dateTimeUtc = DateTime.Today;
-
-            var text = messageFunc();
-
-            if (formatParameters != null)
-            {
-                text = string.Format(text, formatParameters);
-            }
-
-            this.store.Add(new MemoryLoggerEntry() {DateTimeUtc = dateTimeUtc, LogLevel = logLevel, Message = text});
-
-            Console.WriteLine($"{dateTimeUtc:G} [{logLevel}] {text}");
-
-            return true;
         }
+
+        public ILog GetLogger(string name) => this.logger;
+
+        public IDisposable OpenNestedContext(string message)
+        {
+            lock (this.logger)
+            {
+                contextName = message;
+
+                Console.WriteLine($"[PID{Process.GetCurrentProcess().Id}] [T{Thread.CurrentThread.ManagedThreadId}] OpenNestedContext({message})");
+
+                return new DestroyNextedContextOnDispose();
+            }
+        }
+
+        public class DestroyNextedContextOnDispose : IDisposable
+        {
+            public void Dispose() => contextName = string.Empty;
+        }
+
+        public IDisposable OpenMappedContext(string key, string value) => null;
     }
 }
