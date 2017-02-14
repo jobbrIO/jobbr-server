@@ -13,6 +13,7 @@ using JobRunStates = Jobbr.ComponentModel.JobStorage.Model.JobRunStates;
 
 namespace Jobbr.Tests.Integration.Startup
 {
+
     #region Emplty Implementatios
 
     public class PseudoJobStorageProvider : IJobStorageProvider
@@ -341,47 +342,5 @@ namespace Jobbr.Tests.Integration.Startup
                 Assert.IsFalse(warnings.Any(), "Got too manny warnings: \n\n * " + string.Join("\n * ", warnings));
             }
         }
-
-        ////[TestMethod]
-            ////[ExpectedException(typeof(ArgumentException))]
-            ////public void NewJobbr_WithNoJobRunDirectory_FailsOnStart()
-            ////{
-            ////    Assert.Fail("This test needs to be re-implemented!");
-
-            ////    //var config = new CompleteJobberConfiguration();
-            ////    //config.JobRunDirectory = null;
-
-            ////    //var jobbr = new JobbrServer(config);
-
-            ////    //jobbr.Start(1000);
-            ////}
-
-            ////[TestMethod]
-            ////[ExpectedException(typeof(ArgumentException))]
-            ////public void NewJobbr_WithNoJobRunnerExeResolver_FailsOnStart()
-            ////{
-            ////    Assert.Fail("This test needs to be re-implemented!");
-
-            ////    //var config = new CompleteJobberConfiguration();
-            ////    //config.JobRunnerExeResolver = null;
-
-            ////    //var jobbr = new JobbrServer(config);
-
-            ////    //jobbr.Start(1000);
-            ////}
-
-            ////[TestMethod]
-            ////[ExpectedException(typeof(ArgumentException))]
-            ////public void NewJobbr_WithNoBackendUrl_FailsOnStart()
-            ////{
-            ////    Assert.Fail("This test needs to be re-implemented!");
-
-            ////    //var config = new CompleteJobberConfiguration();
-            ////    //config.BackendAddress = string.Empty;
-
-            ////    //var jobbr = new JobbrServer(config);
-
-            ////    //jobbr.Start(1000);
-            ////}
-        }
     }
+}
