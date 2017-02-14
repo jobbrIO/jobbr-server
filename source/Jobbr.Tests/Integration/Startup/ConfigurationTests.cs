@@ -1,28 +1,25 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Builder;
-using Jobbr.Server.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JobRunStates = Jobbr.ComponentModel.JobStorage.Model.JobRunStates;
 
 namespace Jobbr.Tests.Integration.Startup
 {
+    #region Emplty Implementatios
+
     public class PseudoJobStorageProvider : IJobStorageProvider
     {
         public List<Job> GetJobs()
         {
-            return null;
+            return new List<Job>();
         }
 
         public long AddJob(Job job)
@@ -62,7 +59,7 @@ namespace Jobbr.Tests.Integration.Startup
 
         public List<JobTriggerBase> GetActiveTriggers()
         {
-            return null;
+            return new List<JobTriggerBase>();
         }
 
         public JobTriggerBase GetTriggerById(long triggerId)
@@ -202,65 +199,44 @@ namespace Jobbr.Tests.Integration.Startup
         }
     }
 
+    #endregion
+
     [TestClass]
     public class ConfigurationTests
     {
-        //static ConfigurationTests()
-        //{
-        //    var lp = new CaptureLogProvider();
-        //    LogProvider.SetCurrentLogProvider(lp);
-        //}
-
-        [ClassInitialize]
-        public static void Setup(TestContext context)
+        [TestMethod]
+        public void ConsoleCapturer_WhenActive_ContainsConsoleOut()
         {
-            var lp = new CaptureLogProvider();
-            LogProvider.SetCurrentLogProvider(lp);
+            using (var capture = new ConsoleCapturer())
+            {
+                Console.WriteLine("Hello World");
 
-            // Seems to be an issue if this is set via static constructor
-            // LogProvider.SetCurrentLogProvider(new CaptureLogProvider());
+                var allLogEntries = capture.GetLines().ToList();
+
+                Assert.IsTrue(allLogEntries.Any());
+                Assert.AreEqual("Hello World", allLogEntries[0]);
+                Assert.AreEqual(2, allLogEntries.Count);
+            }
         }
-
-        [ClassCleanup]
-        public static void Cleanup()
-        {
-            LogProvider.SetCurrentLogProvider(null);
-        }
-
-
 
         [TestMethod]
-        public void NewJobber_OwnLogger_GetsMessages1()
+        public void CreateJobber_WithConsoleCapturer_CaptureMessagesFromConsole()
         {
-            using (LogProvider.OpenNestedConext(nameof(NewJobber_OwnLogger_GetsMessages1)))
+            using (var capture = new ConsoleCapturer())
             {
                 var builder = new JobbrBuilder();
 
                 builder.Create();
 
-                var allLogEntries = CaptureLogProvider.ContextLogs;
+                var allLogEntries = capture.GetLines();
                 Assert.IsTrue(allLogEntries.Any());
             }
         }
 
         [TestMethod]
-        public void NewJobber_OwnLogger_GetsMessages2()
+        public void CreateJobbr_WithNoStorageProvider_IssuesError()
         {
-            using (LogProvider.OpenNestedConext(nameof(NewJobber_OwnLogger_GetsMessages2)))
-            {
-                var builder = new JobbrBuilder();
-
-                builder.Create();
-
-                var allLogEntries = CaptureLogProvider.ContextLogs;
-                Assert.IsTrue(allLogEntries.Any());
-            }
-        }
-
-        [TestMethod]
-        public void NewJobbr_WithNoStorageProvider_IssuesErrorInLog()
-        {
-            using (LogProvider.OpenNestedConext(nameof(NewJobbr_WithNoStorageProvider_IssuesErrorInLog)))
+            using (var capture = new ConsoleCapturer())
             {
                 var builder = new JobbrBuilder();
 
@@ -270,165 +246,142 @@ namespace Jobbr.Tests.Integration.Startup
 
                 builder.Create();
 
-                var allLogs = CaptureLogProvider.ContextLogs;
-                var storageWarnLogs = allLogs.Where(l => l.LogLevel == LogLevel.Error && l.Message.Contains("JobStorageProvider")).ToList();
+                var storageWarnLogs = capture.GetLines("ERROR", "JobStorageProvider").ToList();
 
-                Assert.IsTrue(allLogs.Any());
+                Assert.IsTrue(storageWarnLogs.Any());
 
                 Assert.AreEqual(1, storageWarnLogs.Count);
             }
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void NewJobbr_WithNoArtefactsProvider_IssuesWarnInLog()
+        public void CreateJobbr_WithNoArtefactsProvider_IssuesWarn()
         {
-            Assert.Fail("This test needs to be re-implemented!");
+            using (var capture = new ConsoleCapturer())
+            {
+                var builder = new JobbrBuilder();
 
-            //var config = new CompleteJobberConfiguration();
-            //config.ArtefactStorageProvider = null;
+                // Register only Executor and JobStorage
+                builder.Register<IJobExecutor>(typeof(PseudoExecutor));
+                builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
 
-            //var jobbr = new JobbrServer(config);
+                builder.Create();
 
-            //jobbr.Start(1000);
+                var artefactsWarnings = capture.GetLines("WARN", "Artefacts").ToList();
+
+                Assert.IsTrue(artefactsWarnings.Any());
+                Assert.AreEqual(1, artefactsWarnings.Count);
+            }
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void NewJobbr_WithNoExecutor_IssuesWarnInLog()
+        public void CreateJobbr_WithNoExecutor_IssuesError()
         {
-            Assert.Fail("This test needs to be implemented!");
+            using (var capture = new ConsoleCapturer())
+            {
+                var builder = new JobbrBuilder();
 
-            //var config = new CompleteJobberConfiguration();
+                // Register only Artefacts and JoStorage
+                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArfetacstStorageProvider));
+                builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
+
+                builder.Create();
+
+                var artefactsWarnings = capture.GetLines("ERROR", "Executor").ToList();
+
+                Assert.IsTrue(artefactsWarnings.Any());
+                Assert.AreEqual(1, artefactsWarnings.Count);
+            }
+        }
+
+        [TestMethod]
+        public void CreateJobbr_WithAllRequiredComponents_NoErrorNoWarn()
+        {
+            using (var capture = new ConsoleCapturer())
+            {
+                var builder = new JobbrBuilder();
+
+                // Register only Artefacts and JoStorage
+                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArfetacstStorageProvider));
+                builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
+                builder.Register<IJobExecutor>(typeof(PseudoExecutor));
+
+                builder.Create();
+
+                var errors = capture.GetLines("ERROR").ToList();
+                var warnings = capture.GetLines("WARN").ToList();
+
+                Assert.IsFalse(errors.Any());
+                Assert.IsFalse(warnings.Any());
+            }
+        }
+
+        [TestMethod]
+        public void StartJobbr_WithAllRequiredComponents_NoErrorNoWarn()
+        {
+            using (var capture = new ConsoleCapturer())
+            {
+                var builder = new JobbrBuilder();
+
+                // Register only Artefacts and JoStorage
+                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArfetacstStorageProvider));
+                builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
+                builder.Register<IJobExecutor>(typeof(PseudoExecutor));
+
+                var server = builder.Create();
+
+                server.Start();
+
+                var errors = capture.GetLines("ERROR").ToList();
+                var warnings = capture.GetLines("WARN").ToList();
+                var fatals = capture.GetLines("FATAL").ToList();
+
+                Assert.IsFalse(fatals.Any(), "Got too manny fatals: \n\n * " + string.Join("\n * ", fatals));
+                Assert.IsFalse(errors.Any(), "Got too manny errors: \n\n * " + string.Join("\n * ", errors));
+                Assert.IsFalse(warnings.Any(), "Got too manny warnings: \n\n * " + string.Join("\n * ", warnings));
+            }
         }
 
         ////[TestMethod]
-        ////[ExpectedException(typeof(ArgumentException))]
-        ////public void NewJobbr_WithNoJobRunDirectory_FailsOnStart()
-        ////{
-        ////    Assert.Fail("This test needs to be re-implemented!");
+            ////[ExpectedException(typeof(ArgumentException))]
+            ////public void NewJobbr_WithNoJobRunDirectory_FailsOnStart()
+            ////{
+            ////    Assert.Fail("This test needs to be re-implemented!");
 
-        ////    //var config = new CompleteJobberConfiguration();
-        ////    //config.JobRunDirectory = null;
+            ////    //var config = new CompleteJobberConfiguration();
+            ////    //config.JobRunDirectory = null;
 
-        ////    //var jobbr = new JobbrServer(config);
+            ////    //var jobbr = new JobbrServer(config);
 
-        ////    //jobbr.Start(1000);
-        ////}
+            ////    //jobbr.Start(1000);
+            ////}
 
-        ////[TestMethod]
-        ////[ExpectedException(typeof(ArgumentException))]
-        ////public void NewJobbr_WithNoJobRunnerExeResolver_FailsOnStart()
-        ////{
-        ////    Assert.Fail("This test needs to be re-implemented!");
+            ////[TestMethod]
+            ////[ExpectedException(typeof(ArgumentException))]
+            ////public void NewJobbr_WithNoJobRunnerExeResolver_FailsOnStart()
+            ////{
+            ////    Assert.Fail("This test needs to be re-implemented!");
 
-        ////    //var config = new CompleteJobberConfiguration();
-        ////    //config.JobRunnerExeResolver = null;
+            ////    //var config = new CompleteJobberConfiguration();
+            ////    //config.JobRunnerExeResolver = null;
 
-        ////    //var jobbr = new JobbrServer(config);
+            ////    //var jobbr = new JobbrServer(config);
 
-        ////    //jobbr.Start(1000);
-        ////}
+            ////    //jobbr.Start(1000);
+            ////}
 
-        ////[TestMethod]
-        ////[ExpectedException(typeof(ArgumentException))]
-        ////public void NewJobbr_WithNoBackendUrl_FailsOnStart()
-        ////{
-        ////    Assert.Fail("This test needs to be re-implemented!");
+            ////[TestMethod]
+            ////[ExpectedException(typeof(ArgumentException))]
+            ////public void NewJobbr_WithNoBackendUrl_FailsOnStart()
+            ////{
+            ////    Assert.Fail("This test needs to be re-implemented!");
 
-        ////    //var config = new CompleteJobberConfiguration();
-        ////    //config.BackendAddress = string.Empty;
+            ////    //var config = new CompleteJobberConfiguration();
+            ////    //config.BackendAddress = string.Empty;
 
-        ////    //var jobbr = new JobbrServer(config);
+            ////    //var jobbr = new JobbrServer(config);
 
-        ////    //jobbr.Start(1000);
-        ////}
+            ////    //jobbr.Start(1000);
+            ////}
+        }
     }
-
-
-    public class CaptureLogProvider : ILogProvider
-    {
-        public class MemoryLoggerEntry
-        {
-            public DateTime DateTimeUtc { get; set; }
-
-            public LogLevel LogLevel { get; set; }
-
-            public string Message { get; set; }
-        }
-
-        public class MemoryLogger : ILog
-        {
-            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception = null, params object[] formatParameters)
-            {
-                lock (this)
-                {
-                    if (messageFunc == null)
-                    {
-                        return true;
-                    }
-
-                    var dateTimeUtc = DateTime.Today;
-
-                    var text = messageFunc();
-
-                    if (formatParameters != null)
-                    {
-                        text = string.Format(text, formatParameters);
-                    }
-
-                    Console.WriteLine($"[PID{Process.GetCurrentProcess().Id}] [T{Thread.CurrentThread.ManagedThreadId}] [C '{contextName}'] Message: '{text}'");
-
-                    var item = new MemoryLoggerEntry() { DateTimeUtc = dateTimeUtc, LogLevel = logLevel, Message = text };
-
-                    logs.AddOrUpdate(contextName, d => new List<MemoryLoggerEntry>(new[] { item }), (key, oldValues) => oldValues.Union(new List<MemoryLoggerEntry>(new[] { item })).ToList());
-
-                    Console.WriteLine($"{dateTimeUtc:G} [{logLevel}] {text}");
-
-                    return true;
-                }
-            }
-        }
-
-
-        private static ConcurrentDictionary<string, List<MemoryLoggerEntry>> logs = new ConcurrentDictionary<string, List<MemoryLoggerEntry>>();
-
-        private static string contextName = String.Empty;
-
-        private ILog logger = new MemoryLogger();
-
-        public static List<MemoryLoggerEntry> ContextLogs
-        {
-            get
-            {
-                if (logs.ContainsKey(contextName))
-                {
-                    return logs[contextName];
-                }
-
-                return new List<MemoryLoggerEntry>();
-            }
-        }
-
-        public ILog GetLogger(string name) => this.logger;
-
-        public IDisposable OpenNestedContext(string message)
-        {
-            lock (this.logger)
-            {
-                contextName = message;
-
-                Console.WriteLine($"[PID{Process.GetCurrentProcess().Id}] [T{Thread.CurrentThread.ManagedThreadId}] OpenNestedContext({message})");
-
-                return new DestroyNextedContextOnDispose();
-            }
-        }
-
-        public class DestroyNextedContextOnDispose : IDisposable
-        {
-            public void Dispose() => contextName = string.Empty;
-        }
-
-        public IDisposable OpenMappedContext(string key, string value) => null;
-    }
-}

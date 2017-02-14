@@ -76,6 +76,7 @@
     <Compile Include="Infrastructure\StorageProvider\FaultyJobStorageProvider.cs" />
     <Compile Include="Infrastructure\StorageProvider\InMemoryJobStorageProvider.cs" />
     <Compile Include="Infrastructure\StorageProvider\NotImplementedJobStorageProvider.cs" />
+    <Compile Include="Integration\Startup\ConsoleCapturer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WaitFor.cs" />
   </ItemGroup>
