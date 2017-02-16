@@ -157,6 +157,11 @@ namespace Jobbr.Tests.Integration.Startup
         {
             return false;
         }
+
+        public JobRun GetJobRunById(Guid uniqueId)
+        {
+            return null;
+        }
     }
 
     public class PseudoArfetacstStorageProvider : IArtefactsStorageProvider
