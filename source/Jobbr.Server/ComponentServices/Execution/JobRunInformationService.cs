@@ -19,6 +19,13 @@ namespace Jobbr.Server.ComponentServices.Execution
 
         public JobRunInfo GetByUniqueId(Guid uniqueId)
         {
+            var jobRun = this.jobbrRepository.GetJobRunById(uniqueId);
+
+            if (jobRun == null)
+            {
+                return null;
+            }
+
             throw new NotImplementedException();
         }
 

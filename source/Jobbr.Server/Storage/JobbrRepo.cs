@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
@@ -51,6 +52,8 @@ namespace Jobbr.Server.Storage
         void Update(JobRun jobRun);
 
         JobRun GetJobRunById(long jobRunId);
+
+        JobRun GetJobRunById(Guid uniqueId);
 
         JobTriggerBase GetTriggerById(long triggerId);
 
@@ -308,6 +311,11 @@ namespace Jobbr.Server.Storage
         public JobRun GetJobRunById(long jobRunId)
         {
             return this.storageProvider.GetJobRunById(jobRunId);
+        }
+
+        public JobRun GetJobRunById(Guid uniqueId)
+        {
+            return this.storageProvider.GetJobRunById(uniqueId);
         }
 
         public JobTriggerBase GetTriggerById(long triggerId)
