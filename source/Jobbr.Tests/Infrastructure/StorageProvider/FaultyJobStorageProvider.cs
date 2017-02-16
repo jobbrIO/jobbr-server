@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
@@ -130,6 +131,12 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRunById(id);
+        }
+
+        public JobRun GetJobRunById(Guid uniqueId)
+        {
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobRunById(uniqueId);
         }
 
         public List<JobRun> GetJobRunsForUserId(long userId)

@@ -109,6 +109,11 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             throw new NotImplementedException();
         }
 
+        public JobRun GetJobRunById(Guid uniqueId)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual List<JobRun> GetJobRunsForUserId(long userId)
         {
             throw new NotImplementedException();

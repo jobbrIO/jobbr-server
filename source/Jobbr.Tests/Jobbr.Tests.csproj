@@ -64,7 +64,6 @@
     <Compile Include="Components\Scheduler\ManualTimeProvider.cs" />
     <Compile Include="Components\Scheduler\PeriodicTimerMock.cs" />
     <Compile Include="Components\Scheduler\SchedulerTests.cs" />
-    <Compile Include="Integration\Execution\DefaultJobExecutorTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\Extensions.cs" />
     <Compile Include="Integration\Execution\JobRunInformationServiceTests.cs" />
     <Compile Include="Integration\Management\JobManagementTests.cs" />
