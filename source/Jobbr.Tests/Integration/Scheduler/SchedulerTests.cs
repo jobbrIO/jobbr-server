@@ -47,6 +47,41 @@ namespace Jobbr.Tests.Integration.Scheduler
         }
 
         [TestMethod]
+        public void JobRunIsScheduled_ScheduledTriggerGetsUpdated_JobRunScheduleIsAdjusted()
+        {
+            var jobManagementService = this.Services.JobManagementService;
+            var storageProvider = this.Services.JobStorageProvider;
+
+            var demoJob = new Job();
+            storageProvider.AddJob(demoJob);
+
+            var futureDate1 = DateTime.UtcNow.AddHours(1);
+            var futureDate2 = DateTime.UtcNow.AddHours(10);
+
+            var recurringTrigger = new ScheduledTrigger() { JobId = 1, StartDateTimeUtc = futureDate1, IsActive = true };
+            jobManagementService.AddTrigger(recurringTrigger);
+
+            // Wait for the scheduler to do his work
+            WaitFor.HasElements(() => storageProvider.GetJobRuns());
+
+            var createdJobRun = storageProvider.GetJobRuns().FirstOrDefault();
+
+            // Base Assertions
+            Assert.IsNotNull(createdJobRun, "There should be exact one JobRun which is not null");
+            Assert.IsTrue(createdJobRun.PlannedStartDateTimeUtc >= DateTime.UtcNow, "The job run needs to be in the future");
+            Assert.AreEqual(futureDate1, createdJobRun.PlannedStartDateTimeUtc);
+
+            jobManagementService.UpdatetriggerStartTime(recurringTrigger.Id, futureDate2);
+
+            // Wait for the scheduler to do his work
+            WaitFor.HasElements(() => storageProvider.GetJobRuns().Where(r => r.PlannedStartDateTimeUtc == futureDate2).ToList());
+
+            var updatedJobRun = storageProvider.GetJobRuns().FirstOrDefault();
+
+            Assert.AreEqual(futureDate2, updatedJobRun.PlannedStartDateTimeUtc, "As per updated startddate, the job should now start on a different point in time");
+        }
+
+        [TestMethod]
         public void JobRunIsScheduler_WhenTriggerGetsDisabled_JobRunWillBeRemoved()
         {
             var jobManagementService = this.Services.JobManagementService;
