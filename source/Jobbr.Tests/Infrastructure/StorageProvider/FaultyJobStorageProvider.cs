@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
+using Jobbr.Server.Storage;
 
 namespace Jobbr.Tests.Infrastructure.StorageProvider
 {
