@@ -8,11 +8,11 @@ namespace Jobbr.Server.Storage
 {
     public class InMemoryJobStorageProvider : IJobStorageProvider
     {
-        List<JobTriggerBase> localTriggers = new List<JobTriggerBase>();
+        private readonly List<JobTriggerBase> localTriggers = new List<JobTriggerBase>();
 
-        private List<Job> localJobs = new List<Job>();
+        private readonly List<Job> localJobs = new List<Job>();
 
-        private List<JobRun> localJobRuns = new List<JobRun>();
+        private readonly List<JobRun> localJobRuns = new List<JobRun>();
 
         public List<JobTriggerBase> GetActiveTriggers()
         {
