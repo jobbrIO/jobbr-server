@@ -47,7 +47,7 @@ namespace Jobbr.Tests.Integration.Scheduler
         }
 
         [TestMethod]
-        public void JobRunIsScheduler_JobRunWillBeRemoved_WhenTriggerGetsDisabled()
+        public void JobRunIsScheduler_WhenTriggerGetsDisabled_JobRunWillBeRemoved()
         {
             var jobManagementService = this.Services.JobManagementService;
             var storageProvider = this.Services.JobStorageProvider;
@@ -79,7 +79,7 @@ namespace Jobbr.Tests.Integration.Scheduler
         }
 
         [TestMethod]
-        public void JobRunIsScheduler_JobRunWillBeScheduled_WhenTriggerIsEnabled()
+        public void JobRunIsScheduler_WhenTriggerIsEnabled_JobRunWillBeScheduled()
         {
             var jobManagementService = this.Services.JobManagementService;
             var storageProvider = this.Services.JobStorageProvider;
