@@ -305,8 +305,9 @@ Causes a trigger to be updated. Right now, only the Definition (for RecurringJob
 
 ## Authors
 * Michael Schnyder
+* Oliver Zürcher
 * Peter Gfader
 * Mark Odermatt
 
 # License
-This software cannot be licenced.
+This software is licenced under GPLv3. See [LICENSE](LICENSE)
