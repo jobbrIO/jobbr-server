@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
@@ -36,7 +37,14 @@ namespace Jobbr.Server.Builder
 
         private void AddAutoMapper()
         {
-            var profiles = Assembly.GetCallingAssembly().GetTypes().Where(t => typeof(Profile).IsAssignableFrom(t)).Select(t => (Profile)Activator.CreateInstance(t));
+            var profileTypes = this.GetType().Assembly.GetTypes().Where(t => typeof(Profile).IsAssignableFrom(t));
+            List<Profile> profiles = new List<Profile>();
+
+            foreach (var profileType in profileTypes)
+            {
+                var profile = (Profile)Activator.CreateInstance(profileType);
+                profiles.Add(profile);
+            }
 
             var config = new MapperConfiguration(cfg =>
             {
