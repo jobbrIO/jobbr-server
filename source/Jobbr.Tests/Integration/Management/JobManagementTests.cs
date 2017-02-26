@@ -1,72 +1,54 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Jobbr.ComponentModel.JobStorage.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Management
 {
     [TestClass]
-    public class JobManagementTests
+    public class JobManagementTests : InitializedJobbrServerTestBase
     {
         [TestMethod]
-        public void JobService_ScheduledTriggerIsUpdated_UpdateIsPersisted()
+        public void JobService_ExistingScheduledTriggerIsUpdated_UpdateIsPersisted()
         {
-            Assert.Fail("This test needs to be re-implemented!");
+            var demoJob = new Job();
+            var storageProvider = this.Services.JobStorageProvider;
+            storageProvider.AddJob(demoJob);
 
-            //var storageProvider = new InMemoryJobStorageProvider();
-            //var configuration = new CompleteJobberConfiguration();
+            var futureDate1 = DateTime.UtcNow.AddHours(2);
+            var futureDate2 = DateTime.UtcNow.AddHours(5);
 
-            //var demoJob = new Job();
-            //storageProvider.AddJob(demoJob);
+            var initialTrigger = new ScheduledTrigger { JobId = demoJob.Id, StartDateTimeUtc = futureDate1, IsActive = true };
+            storageProvider.AddTrigger(initialTrigger);
 
-            //var futureDate1 = DateTime.UtcNow.AddHours(2);
-            //var futureDate2 = DateTime.UtcNow.AddHours(5);
+            var updatedTrigger = new ScheduledTrigger { Id = initialTrigger.Id, JobId = demoJob.Id, StartDateTimeUtc = futureDate2, IsActive = true };
 
-            //var trigger = new ScheduledTrigger { JobId = demoJob.Id, StartDateTimeUtc = futureDate1, IsActive = true };
+            this.Services.JobManagementService.UpdatetriggerStartTime(updatedTrigger.Id, updatedTrigger.StartDateTimeUtc);
 
-            //storageProvider.AddTrigger(trigger);
+            var assertTrigger = (ScheduledTrigger)storageProvider.GetTriggerById(initialTrigger.Id);
 
-            //var jobbrRepository = new JobbrRepository(storageProvider);
-            //var stateService = new StateService(configuration, jobbrRepository);
-            //var service = new JobManagementService(jobbrRepository, stateService);
-
-            //var triggerCopy = (ScheduledTrigger)storageProvider.GetTriggerById(trigger.Id).Clone();
-            //triggerCopy.StartDateTimeUtc = futureDate2;
-
-            //service.UpdateTrigger(triggerCopy.Id, triggerCopy);
-
-            //var assertTrigger = (ScheduledTrigger)storageProvider.GetTriggerById(trigger.Id).Clone();
-
-            //Assert.AreEqual(futureDate2, assertTrigger.StartDateTimeUtc);
+            Assert.AreEqual(futureDate2, assertTrigger.StartDateTimeUtc);
         }
 
         [TestMethod]
-        public void JobService_RecurringTriggerIsUpdated_UpdateIsPersisted()
+        public void JobService_ExistingRecurringTriggerIsUpdated_UpdateIsPersisted()
         {
-            Assert.Fail("This test needs to be re-implemented!");
+            var demoJob = new Job();
+            var storageProvider = this.Services.JobStorageProvider;
+            storageProvider.AddJob(demoJob);
 
-            //var storageProvider = new InMemoryJobStorageProvider();
-            //var configuration = new CompleteJobberConfiguration();
+            var definition1 = "1 1 1 1 1";
+            var definition2 = "1 1 1 1 3";
 
-            //var demoJob = new Job();
-            //storageProvider.AddJob(demoJob);
+            var initialTrigger = new RecurringTrigger() { JobId = demoJob.Id, Definition = definition1, IsActive = true };
+            storageProvider.AddTrigger(initialTrigger);
 
-            //var definition1 = "1 1 1 1 1";
-            //var definition2 = "1 1 1 1 1";
+            var updatedTrigger = new RecurringTrigger() { Id = initialTrigger.Id, JobId = demoJob.Id, Definition = definition2, IsActive = true };
 
-            //var trigger = new RecurringTrigger() { JobId = demoJob.Id, Definition = definition1, IsActive = true };
+            this.Services.JobManagementService.UpdateTriggerDefinition(updatedTrigger.Id, updatedTrigger.Definition);
 
-            //storageProvider.AddTrigger(trigger);
+            var assertTrigger = (RecurringTrigger)storageProvider.GetTriggerById(initialTrigger.Id);
 
-            //var jobbrRepository = new JobbrRepository(storageProvider);
-            //var stateService = new StateService(configuration, jobbrRepository);
-            //var service = new JobManagementService(jobbrRepository, stateService);
-
-            //var triggerCopy = (RecurringTrigger)storageProvider.GetTriggerById(trigger.Id).Clone();
-            //triggerCopy.Definition = definition2;
-
-            //service.UpdateTrigger(triggerCopy.Id, triggerCopy);
-
-            //var assertTrigger = (RecurringTrigger)storageProvider.GetTriggerById(trigger.Id).Clone();
-
-            //Assert.AreEqual(definition2, assertTrigger.Definition);
+            Assert.AreEqual(definition2, assertTrigger.Definition);
         }
     }
 }
