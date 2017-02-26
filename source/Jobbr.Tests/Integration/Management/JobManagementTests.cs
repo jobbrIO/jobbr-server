@@ -22,7 +22,7 @@ namespace Jobbr.Tests.Integration.Management
 
             var updatedTrigger = new ScheduledTrigger { Id = initialTrigger.Id, JobId = demoJob.Id, StartDateTimeUtc = futureDate2, IsActive = true };
 
-            this.Services.JobManagementService.UpdatetriggerStartTime(updatedTrigger.Id, updatedTrigger.StartDateTimeUtc);
+            this.Services.JobManagementService.UpdateTriggerStartTime(updatedTrigger.Id, updatedTrigger.StartDateTimeUtc);
 
             var assertTrigger = (ScheduledTrigger)storageProvider.GetTriggerById(initialTrigger.Id);
 

@@ -71,7 +71,7 @@ namespace Jobbr.Tests.Integration.Scheduler
             Assert.IsTrue(createdJobRun.PlannedStartDateTimeUtc >= DateTime.UtcNow, "The job run needs to be in the future");
             Assert.AreEqual(futureDate1, createdJobRun.PlannedStartDateTimeUtc);
 
-            jobManagementService.UpdatetriggerStartTime(recurringTrigger.Id, futureDate2);
+            jobManagementService.UpdateTriggerStartTime(recurringTrigger.Id, futureDate2);
 
             // Wait for the scheduler to do his work
             WaitFor.HasElements(() => storageProvider.GetJobRuns().Where(r => r.PlannedStartDateTimeUtc == futureDate2).ToList());

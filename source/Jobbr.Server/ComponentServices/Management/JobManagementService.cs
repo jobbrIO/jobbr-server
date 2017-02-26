@@ -81,17 +81,17 @@ namespace Jobbr.Server.ComponentServices.Management
             this.triggerService.Update(triggerId, definition);
         }
 
-        public void UpdatetriggerStartTime(long triggerId, DateTime startDateTimeUtc)
+        public void UpdateTriggerStartTime(long triggerId, DateTime startDateTimeUtc)
         {
             this.triggerService.Update(triggerId, startDateTimeUtc);
         }
 
-        public List<JobArtefact> GetArtefactForJob(JobRun jobRun)
+        public List<JobArtefact> GetArtefactForJob(Guid jobRunUniqueId)
         {
             throw new NotImplementedException();
         }
 
-        public Stream GetArtefactAsStream(JobRun jobRun, string filename)
+        public Stream GetArtefactAsStream(Guid jobRunUniqueId, string filename)
         {
             throw new NotImplementedException();
         }
