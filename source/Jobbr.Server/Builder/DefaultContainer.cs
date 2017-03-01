@@ -39,7 +39,7 @@ namespace Jobbr.Server.Builder
 
         private void AddAutoMapper()
         {
-            var profileTypes = this.GetType().Assembly.GetTypes().Where(t => typeof(Profile).IsAssignableFrom(t) && !t.IsAbstract);
+            var profileTypes = this.GetType().Assembly.GetTypes().Where(t => t.Module == this.GetType().Module && typeof(Profile).IsAssignableFrom(t) && !t.IsAbstract);
             var profiles = new List<Profile>();
 
             Logger.Debug($"Found {profileTypes} types that need to be registered in internal AutoMapper.");
