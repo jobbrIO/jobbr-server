@@ -26,7 +26,7 @@ build:
 after_build:
   - cmd: nuget install ILMerge -ExcludeVersion
   - cmd: mkdir ilmerged
-  - cmd: ILMerge\tools\ILMerge.exe /out:ilmerged/Jobbr.Server.dll source/Jobbr.Server/bin/Release/*.dll /target:library /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /wildcards /internalize:internalize_exclude.txt 
+  - cmd: ILMerge\tools\ILMerge.exe /out:ilmerged/Jobbr.Server.dll source/Jobbr.Server/bin/Release/*.dll /target:library /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /wildcards /internalize:internalize_exclude.txt /allowDup:HttpRequestMessageExtensions /allowDup:MediaTypeFormatterExtensions
   - cmd: nuget pack source\Jobbr.Server.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
   - cmd: appveyor PushArtifact "Jobbr.Server.%GitVersion_NuGetVersion%.nupkg"
 
