@@ -14,7 +14,7 @@ using JobRunStates = Jobbr.ComponentModel.JobStorage.Model.JobRunStates;
 namespace Jobbr.Tests.Integration.Startup
 {
 
-    #region Emplty Implementatios
+    #region Empty Implementations
 
     public class PseudoJobStorageProvider : IJobStorageProvider
     {
