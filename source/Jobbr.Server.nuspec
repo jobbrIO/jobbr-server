@@ -12,7 +12,7 @@
     <copyright>Copyright 2017</copyright>
   </metadata>
   <files>
-    <file src="../tools/Jobbr.Server.dll" target="lib\net45"/>
-    <file src="../tools/Jobbr.Server.pdb" target="lib\net45"/>
+    <file src="../ilmerged/Jobbr.Server.dll" target="lib\net45"/>
+    <file src="../ilmerged/Jobbr.Server.pdb" target="lib\net45"/>
   </files>
 </package>
