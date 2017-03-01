@@ -37,6 +37,26 @@
     <Reference Include="AutoMapper, Version=5.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="Jobbr.ComponentModel.ArtefactStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable16\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc3\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jobbr.ComponentModel.Management, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-unstable10\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jobbr.ComponentModel.Registration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.Registration.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.Registration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Owin">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
@@ -46,11 +66,12 @@
     <Reference Include="Microsoft.Owin.Hosting">
       <HintPath>..\packages\Microsoft.Owin.Hosting.3.0.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
     </Reference>
-    <Reference Include="NCrontab">
-      <HintPath>..\packages\ncrontab.2.0.0\lib\net20\NCrontab.dll</HintPath>
+    <Reference Include="NCrontab, Version=3.2.20120.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ncrontab.3.3.0\lib\net35\NCrontab.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Ninject">
@@ -138,28 +159,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\submodules\jobbr-cm-artefactstorage\source\Jobbr.ComponentModel.ArtefactStorage\Jobbr.ComponentModel.ArtefactStorage.csproj">
-      <Project>{183F7730-D805-405C-92B4-84BB151C2371}</Project>
-      <Name>Jobbr.ComponentModel.ArtefactStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\submodules\jobbr-cm-execution\source\Jobbr.ComponentModel.Execution\Jobbr.ComponentModel.Execution.csproj">
-      <Project>{f3083433-365e-4a70-a76f-78f27aefb7b4}</Project>
-      <Name>Jobbr.ComponentModel.Execution</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\submodules\jobbr-cm-jobstorage\source\Jobbr.ComponentModel.JobStorage\Jobbr.ComponentModel.JobStorage.csproj">
-      <Project>{375FFCCA-E278-4744-96DD-D4AB92186C66}</Project>
-      <Name>Jobbr.ComponentModel.JobStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\submodules\jobbr-cm-management\source\Jobbr.ComponentModel.Management\Jobbr.ComponentModel.Management.csproj">
-      <Project>{44c1e5b0-5802-48fa-910e-17665587979d}</Project>
-      <Name>Jobbr.ComponentModel.Management</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\submodules\jobbr-cm-registration\source\Jobbr.ComponentModel.Registration\Jobbr.ComponentModel.Registration.csproj">
-      <Project>{0718496b-04f3-4197-9ed6-f2ecb73ecc03}</Project>
-      <Name>Jobbr.ComponentModel.Registration</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Desktop.Analyzers.1.1.0\analyzers\dotnet\cs\Desktop.Analyzers.dll" />

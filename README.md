@@ -1,4 +1,4 @@
-# Jobbr
+# Jobbr [![Build status](https://ci.appveyor.com/api/projects/status/akvsehv0wvwbo08a?svg=true)](https://ci.appveyor.com/project/Jobbr/jobbr-server)
 Jobbr is a .NET JobServer. Unless other JobServer-Frameworks Jobbr explicitly solves the following problems
 * Isolation of Jobs on process-level (JobRunner)
 * Restful API to manage and trigger Jobs and watch the execution state

@@ -1,4 +1,10 @@
 next-version: 1.0.0
-branches: {}
+legacy-semver-padding: 0
+build-metadata-padding: 0
+branches:
+  develop:
+    tag: unstable
+  release:
+    tag: rc
 ignore:
   sha: []

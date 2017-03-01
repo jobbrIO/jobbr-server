@@ -1,0 +1,39 @@
+branches:
+  only:
+    - master
+    - develop
+    - /release/.*/
+    - /hotfix/.*/
+    - /feature/.*/
+
+install:
+  - choco install gitversion.portable -pre -y
+
+assembly_info:
+  patch: false
+
+before_build:
+  - nuget restore source/Jobbr.Server.sln
+  - ps: C:\ProgramData\chocolatey\lib\GitVersion.Portable\tools\GitVersion.exe /l console /output buildserver /updateAssemblyInfo
+
+platform: Any CPU
+configuration: Release
+
+build:
+  parallel: true 
+  project: source/Jobbr.Server.sln
+
+after_build:
+  - cmd: nuget install ILMerge -ExcludeVersion
+  - cmd: mkdir ilmerged
+  - cmd: ILMerge\tools\ILMerge.exe /out:ilmerged/Jobbr.Server.dll source/Jobbr.Server/bin/Release/*.dll /target:library /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /wildcards /internalize:internalize_exclude.txt 
+  - cmd: nuget pack source\Jobbr.Client.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
+  - cmd: appveyor PushArtifact "Jobbr.Server.%GitVersion_NuGetVersion%.nupkg"
+
+deploy:
+- provider: NuGet
+  server: https://nuget.org
+  api_key:
+    secure: j72cUd21tWzX9uqbVmqha+x5i83cBkg20Q10MXgT25T7vtrCEdygmdePZbXG25C2
+  on:
+    appveyor_repo_tag: true

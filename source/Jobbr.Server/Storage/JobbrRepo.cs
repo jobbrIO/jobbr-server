@@ -53,8 +53,6 @@ namespace Jobbr.Server.Storage
 
         JobRun GetJobRunById(long jobRunId);
 
-        JobRun GetJobRunById(Guid uniqueId);
-
         JobTriggerBase GetTriggerById(long triggerId);
 
         List<JobTriggerBase> GetTriggersByJobId(long jobId);
@@ -311,11 +309,6 @@ namespace Jobbr.Server.Storage
         public JobRun GetJobRunById(long jobRunId)
         {
             return this.storageProvider.GetJobRunById(jobRunId);
-        }
-
-        public JobRun GetJobRunById(Guid uniqueId)
-        {
-            return this.storageProvider.GetJobRunById(uniqueId);
         }
 
         public JobTriggerBase GetTriggerById(long triggerId)

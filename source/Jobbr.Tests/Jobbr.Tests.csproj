@@ -36,12 +36,32 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Moq, Version=4.5.30.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\packages\Moq.4.5.30\lib\net45\Moq.dll</HintPath>
+    <Reference Include="Jobbr.ComponentModel.ArtefactStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable16\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc3\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jobbr.ComponentModel.Management, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-unstable10\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jobbr.ComponentModel.Registration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.Registration.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.Registration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Moq, Version=4.7.1.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.7.1\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -82,26 +102,6 @@
     <ProjectReference Include="..\..\source\Jobbr.Server\Jobbr.Server.csproj">
       <Project>{a45f729d-8629-4c7a-96b8-29eaa8d52919}</Project>
       <Name>Jobbr.Server</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\submodules\jobbr-cm-artefactstorage\source\Jobbr.ComponentModel.ArtefactStorage\Jobbr.ComponentModel.ArtefactStorage.csproj">
-      <Project>{183F7730-D805-405C-92B4-84BB151C2371}</Project>
-      <Name>Jobbr.ComponentModel.ArtefactStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\submodules\jobbr-cm-execution\source\Jobbr.ComponentModel.Execution\Jobbr.ComponentModel.Execution.csproj">
-      <Project>{60E632D9-B2BE-4701-991E-C7113689FBF0}</Project>
-      <Name>Jobbr.ComponentModel.Execution</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\submodules\jobbr-cm-jobstorage\source\Jobbr.ComponentModel.JobStorage\Jobbr.ComponentModel.JobStorage.csproj">
-      <Project>{375FFCCA-E278-4744-96DD-D4AB92186C66}</Project>
-      <Name>Jobbr.ComponentModel.JobStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\submodules\jobbr-cm-management\source\Jobbr.ComponentModel.Management\Jobbr.ComponentModel.Management.csproj">
-      <Project>{C83448F5-759D-4322-ACFE-B447D1ABF9EC}</Project>
-      <Name>Jobbr.ComponentModel.Management</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\submodules\jobbr-cm-registration\source\Jobbr.ComponentModel.Registration\Jobbr.ComponentModel.Registration.csproj">
-      <Project>{DA63448E-F6CD-4519-9284-09028659AD28}</Project>
-      <Name>Jobbr.ComponentModel.Registration</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

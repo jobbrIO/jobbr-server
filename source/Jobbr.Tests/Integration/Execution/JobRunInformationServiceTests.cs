@@ -17,14 +17,6 @@ namespace Jobbr.Tests.Integration.Execution
         }
 
         [TestMethod]
-        public void RunningServer_GetInfoByRandomGuid_ReturnsNull()
-        {
-            var result = this.Services.InformationService.GetByUniqueId(new Guid());
-
-            Assert.IsNull(result);
-        }
-
-        [TestMethod]
         public void ExistingJobWithRun_GetInfoById_MatchesConfiguration()
         {
             var job = this.Services.JobManagementService.AddJob(new Job()

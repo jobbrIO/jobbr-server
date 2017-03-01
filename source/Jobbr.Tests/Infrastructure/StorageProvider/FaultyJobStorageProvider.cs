@@ -134,12 +134,6 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             return this.inMemoryVersion.GetJobRunById(id);
         }
 
-        public JobRun GetJobRunById(Guid uniqueId)
-        {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunById(uniqueId);
-        }
-
         public List<JobRun> GetJobRunsForUserId(long userId)
         {
             this.CheckFailAll();
