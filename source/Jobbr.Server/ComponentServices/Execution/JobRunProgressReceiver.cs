@@ -24,7 +24,7 @@ namespace Jobbr.Server.ComponentServices.Execution
             }
 
             // TODO: More generic publish for all the other states
-            //TODO: this.stateService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
+            // TODO: this.stateService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
         }
 
         public void PublishProgressUpdate(JobRunInfo jobRunInfo, double progress)

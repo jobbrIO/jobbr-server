@@ -13,7 +13,7 @@ namespace Jobbr.Server.Builder
     public class JobbrBuilder : IJobbrBuilder
     {
         private static readonly ILog Logger = LogProvider.For<JobbrBuilder>();
-        private StandardKernel container;
+        private readonly StandardKernel container;
 
         public JobbrBuilder()
         {
