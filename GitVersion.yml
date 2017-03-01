@@ -4,6 +4,7 @@ build-metadata-padding: 0
 branches:
   develop:
     tag: unstable
+    mode: ContinuousDelivery
   release:
     tag: rc
 ignore:
