@@ -1,1 +1,1 @@
-Jobbr.*
+^Jobbr\.((?!ComponentModel).)*$
