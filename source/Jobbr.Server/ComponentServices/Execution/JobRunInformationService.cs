@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.Server.Logging;
