@@ -1,5 +1,4 @@
-﻿using System;
-using TinyMessenger;
+﻿using TinyMessenger;
 
 namespace Jobbr.Server.Core
 {
@@ -12,9 +11,9 @@ namespace Jobbr.Server.Core
             this.messengerHub = messengerHub;
         }
 
-        public void Done(Guid uniqueId, bool isSuccessful)
+        public void Done(long id, bool isSuccessful)
         {
-            this.messengerHub.Publish(new JobRunCompletedMessage(this) { UniqueId = uniqueId, IsSuccessful = isSuccessful });
+            this.messengerHub.Publish(new JobRunCompletedMessage(this) { Id = id, IsSuccessful = isSuccessful });
         }
     }
 
@@ -24,7 +23,7 @@ namespace Jobbr.Server.Core
         {
         }
 
-        public Guid UniqueId { get; set; }
+        public long Id { get; set; }
 
         public bool IsSuccessful { get; set; }
     }

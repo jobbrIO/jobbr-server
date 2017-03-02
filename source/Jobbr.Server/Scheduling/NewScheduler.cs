@@ -158,12 +158,12 @@ namespace Jobbr.Server.Scheduling
             this.PublishCurrentPlan();
         }
 
-        public void OnJobRunEnded(Guid uniqueId)
+        public void OnJobRunEnded(long id)
         {
             Logger.Info($"A JobRun has ended. Reevaluating triggers that did not yet schedule a run");
 
             // Remove from in memory plan to not publish this in future
-            var numbertOfDeletedItems = this.currentPlan.RemoveAll(e => e.UniqueId == uniqueId);
+            var numbertOfDeletedItems = this.currentPlan.RemoveAll(e => e.Id == id);
 
             var additonalItems = new List<ScheduledPlanItem>();
 
@@ -196,7 +196,7 @@ namespace Jobbr.Server.Scheduling
             }
             else
             {
-                Logger.Debug($"There was no possibility to scheduled new items after the completion of job with it '{uniqueId}'.");
+                Logger.Debug($"There was no possibility to scheduled new items after the completion of job with it '{id}'.");
             }
         }
 
@@ -246,7 +246,7 @@ namespace Jobbr.Server.Scheduling
             var newItem = new ScheduledPlanItem
             {
                 TriggerId = trigger.Id,
-                UniqueId = newJobRun.UniqueId,
+                Id = newJobRun.Id,
                 PlannedStartDateTimeUtc = newJobRun.PlannedStartDateTimeUtc
             };
 
@@ -302,7 +302,7 @@ namespace Jobbr.Server.Scheduling
                     newPlan.Add(new ScheduledPlanItem()
                     {
                         TriggerId = trigger.Id,
-                        UniqueId = dependentJobRun.UniqueId,
+                        Id = dependentJobRun.Id,
                         PlannedStartDateTimeUtc = dependentJobRun.PlannedStartDateTimeUtc
                     });
                 }
@@ -319,7 +319,7 @@ namespace Jobbr.Server.Scheduling
         {
             Logger.Info($"Publishing new plan for upcoming jobs to the executor. Number of Items: {this.currentPlan.Count}");
 
-            var clone = this.currentPlan.Select(e => new PlannedJobRun() { PlannedStartDateTimeUtc = e.PlannedStartDateTimeUtc, UniqueId = e.UniqueId }).ToList();
+            var clone = this.currentPlan.Select(e => new PlannedJobRun { PlannedStartDateTimeUtc = e.PlannedStartDateTimeUtc, Id = e.Id }).ToList();
 
             try
             {

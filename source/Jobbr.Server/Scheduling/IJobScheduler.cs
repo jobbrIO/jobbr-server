@@ -14,6 +14,6 @@ namespace Jobbr.Server.Scheduling
 
         void OnTriggerAdded(long triggerId);
 
-        void OnJobRunEnded(Guid uniqueId);
+        void OnJobRunEnded(long id);
     }
 }

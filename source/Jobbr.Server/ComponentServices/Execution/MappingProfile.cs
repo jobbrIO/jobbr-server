@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.ComponentModel.JobStorage.Model;
 
@@ -21,12 +16,10 @@ namespace Jobbr.Server.ComponentServices.Execution
                 .ForMember(d => d.Id, c => c.Ignore())
                 .ForMember(d => d.InstanceParameters, c => c.Ignore())
                 .ForMember(d => d.TriggerId, c => c.Ignore())
-                .ForMember(d => d.UniqueId, c => c.Ignore())
 
                 // Mapped from trigger
                 .ForMember(d => d.UserId, c => c.Ignore())
-                .ForMember(d => d.Username, c => c.Ignore())
-                ;
+                .ForMember(d => d.Username, c => c.Ignore());
 
             this.CreateMap<JobRun, JobRunInfo>()
                 .ForMember(d => d.InstanceParameters, c => c.MapFrom(s => s.InstanceParameters))
@@ -50,10 +43,7 @@ namespace Jobbr.Server.ComponentServices.Execution
 
                 // Mapped from JobRun
                 .ForMember(d => d.InstanceParameters, c => c.Ignore())
-                .ForMember(d => d.UniqueId, c => c.Ignore())
-                .ForMember(d => d.Type, c => c.Ignore())
-
-                ;
+                .ForMember(d => d.Type, c => c.Ignore());
         }
     }
 }

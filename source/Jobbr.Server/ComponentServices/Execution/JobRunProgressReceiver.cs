@@ -20,7 +20,7 @@ namespace Jobbr.Server.ComponentServices.Execution
             // TODO: Enum-Mapping needed and pass eveything to the service?
             if (state == JobRunStates.Completed || state == JobRunStates.Failed)
             {
-                this.jobRunService.Done(jobRunInfo.UniqueId, state == JobRunStates.Completed);
+                this.jobRunService.Done(jobRunInfo.Id, state == JobRunStates.Completed);
             }
 
             // TODO: More generic publish for all the other states
@@ -31,7 +31,7 @@ namespace Jobbr.Server.ComponentServices.Execution
         {
         }
 
-        public void PublicArtefact(Guid uniqueId, string fileName, Stream result)
+        public void PublishArtefact(long id, string fileName, Stream result)
         {
             throw new NotImplementedException();
         }

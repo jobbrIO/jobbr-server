@@ -102,7 +102,7 @@ namespace Jobbr.Tests.Components.Scheduler
             var jobRun = this.repository.GetAllJobRuns().Single();
 
             Assert.AreEqual(dateTimeUtc, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc, "The startdate should be considered in the plan");
-            Assert.AreEqual(jobRun.UniqueId, this.lastIssuedPlan.Single().UniqueId, "The startdate should be considered in the plan");
+            Assert.AreEqual(jobRun.Id, this.lastIssuedPlan.Single().Id, "The startdate should be considered in the plan");
         }
 
         [TestMethod]
@@ -117,7 +117,7 @@ namespace Jobbr.Tests.Components.Scheduler
 
             var expectedTime = dateTimeUtc.AddMinutes(1);
             Assert.AreEqual(expectedTime, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc, "The startdate should match the StartDateTimeUtc + 1 Minute");
-            Assert.AreEqual(jobRun.UniqueId, this.lastIssuedPlan.Single().UniqueId, "The startdate should be considered in the plan");
+            Assert.AreEqual(jobRun.Id, this.lastIssuedPlan.Single().Id, "The startdate should be considered in the plan");
         }
 
         [TestMethod]
@@ -132,7 +132,7 @@ namespace Jobbr.Tests.Components.Scheduler
 
             var expectedTime = dateTimeUtc.AddMinutes(1).AddSeconds(-15);
             Assert.AreEqual(expectedTime, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc, "The startdate should match the StartDateTimeUtc + 1 Minute");
-            Assert.AreEqual(jobRun.UniqueId, this.lastIssuedPlan.Single().UniqueId, "The startdate should be considered in the plan");
+            Assert.AreEqual(jobRun.Id, this.lastIssuedPlan.Single().Id, "The startdate should be considered in the plan");
         }
 
         [TestMethod]
@@ -176,7 +176,7 @@ namespace Jobbr.Tests.Components.Scheduler
             jobRunByScheduledTrigger.State = JobRunStates.Completed;
             this.repository.Update(jobRunByScheduledTrigger);
 
-            this.scheduler.OnJobRunEnded(jobRunByScheduledTrigger.UniqueId);
+            this.scheduler.OnJobRunEnded(jobRunByScheduledTrigger.Id);
             
             Assert.AreEqual(0, this.lastIssuedPlan.Count, "A scheduled trigger should not cause any additional jobruns after completion");
         }
@@ -192,7 +192,7 @@ namespace Jobbr.Tests.Components.Scheduler
             jobRunByScheduledTrigger.State = JobRunStates.Completed;
             this.repository.Update(jobRunByScheduledTrigger);
 
-            this.scheduler.OnJobRunEnded(jobRunByScheduledTrigger.UniqueId);
+            this.scheduler.OnJobRunEnded(jobRunByScheduledTrigger.Id);
 
             var jobRun = this.repository.GetAllJobRuns();
 
@@ -231,8 +231,8 @@ namespace Jobbr.Tests.Components.Scheduler
             Assert.AreEqual(2, this.lastIssuedPlan.Count, "Since one JobRun has completed, there should be now 2 jobruns");
             Assert.AreEqual(2, this.repository.GetAllJobRuns().Count, "The recurring trigger should should have triggered 2");
 
-            Assert.AreEqual(jobRuns[0].UniqueId, this.lastIssuedPlan[0].UniqueId);
-            Assert.AreEqual(jobRuns[1].UniqueId, this.lastIssuedPlan[1].UniqueId);
+            Assert.AreEqual(jobRuns[0].Id, this.lastIssuedPlan[0].Id);
+            Assert.AreEqual(jobRuns[1].Id, this.lastIssuedPlan[1].Id);
         }
 
         [TestMethod]

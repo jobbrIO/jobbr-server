@@ -23,7 +23,7 @@ namespace Jobbr.Server.Builder
         {
         }
 
-        public bool OnJobRunCanceled(Guid uniqueId)
+        public bool OnJobRunCanceled(long id)
         {
             return false;
         }

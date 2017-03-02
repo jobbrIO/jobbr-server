@@ -4,7 +4,7 @@ namespace Jobbr.Server.Scheduling
 {
     internal class ScheduledPlanItem
     {
-        public Guid UniqueId { get; set; }
+        public long Id { get; set; }
 
         public DateTime PlannedStartDateTimeUtc { get; set; }
 

@@ -231,35 +231,35 @@ namespace Jobbr.Server.Scheduling
             throw new NotImplementedException();
         }
 
-        public void OnJobRunEnded(Guid uniqueId)
+        public void OnJobRunEnded(long id)
         {
             throw new NotImplementedException();
         }
 
-        //private void StateServiceOnTriggerUpdate(object sender, JobTriggerEventArgs args)
-        //{
-        //    Logger.Log(
-        //        LogLevel.Info,
-        //        () =>
-        //            {
-        //                var job = this.jobbrRepository.GetJob(args.Trigger.JobId);
-        //                return string.Format("Got new or updated trigger (Type: '{0}'. Id: '{1}', UserId: '{2}', UserName: '{3}' for job '{4}' (JobId: {5})", args.Trigger.TriggerType, args.Trigger.Id, args.Trigger.UserId, args.Trigger.UserName, job.UniqueName, job.Id);
-        //            });
+        ////private void StateServiceOnTriggerUpdate(object sender, JobTriggerEventArgs args)
+        ////{
+        ////    Logger.Log(
+        ////        LogLevel.Info,
+        ////        () =>
+        ////            {
+        ////                var job = this.jobbrRepository.GetJob(args.Trigger.JobId);
+        ////                return string.Format("Got new or updated trigger (Type: '{0}'. Id: '{1}', UserId: '{2}', UserName: '{3}' for job '{4}' (JobId: {5})", args.Trigger.TriggerType, args.Trigger.Id, args.Trigger.UserId, args.Trigger.UserName, job.UniqueName, job.Id);
+        ////            });
 
-        //    if (args.Trigger.IsActive)
-        //    {
-        //        this.CreateSchedule(args.Trigger);
-        //    }
-        //    else
-        //    {
-        //        this.RemoveSchedule(args.Trigger);
-        //    }
-        //}
+        ////    if (args.Trigger.IsActive)
+        ////    {
+        ////        this.CreateSchedule(args.Trigger);
+        ////    }
+        ////    else
+        ////    {
+        ////        this.RemoveSchedule(args.Trigger);
+        ////    }
+        ////}
 
-        //private void RemoveSchedule(JobTriggerBase trigger)
-        //{
-        //    var jobRun = this.jobbrRepository.GetNextJobRunByTriggerId(trigger.Id);
-        //    this.stateService.UpdateJobRunState(jobRun, JobRunState.Deleted);
-        //}
+        ////private void RemoveSchedule(JobTriggerBase trigger)
+        ////{
+        ////    var jobRun = this.jobbrRepository.GetNextJobRunByTriggerId(trigger.Id);
+        ////    this.stateService.UpdateJobRunState(jobRun, JobRunState.Deleted);
+        ////}
     }
 }

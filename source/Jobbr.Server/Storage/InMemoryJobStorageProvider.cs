@@ -141,11 +141,6 @@ namespace Jobbr.Server.Storage
             return this.localJobRuns.FirstOrDefault(j => j.Id == id).Clone();
         }
 
-        public JobRun GetJobRunById(Guid uniqueId)
-        {
-            return this.localJobRuns.FirstOrDefault(j => j.UniqueId == uniqueId).Clone();
-        }
-
         public List<JobRun> GetJobRunsForUserId(long userId)
         {
             var allTriggers = this.localTriggers.Where(t => t.UserId == userId).Select(t => t.Id);

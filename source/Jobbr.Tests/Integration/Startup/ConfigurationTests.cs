@@ -195,7 +195,7 @@ namespace Jobbr.Tests.Integration.Startup
         {
         }
 
-        public bool OnJobRunCanceled(Guid uniqueId)
+        public bool OnJobRunCanceled(long id)
         {
             return false;
         }
