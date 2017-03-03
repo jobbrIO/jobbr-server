@@ -15,20 +15,21 @@ namespace Jobbr.Server.ComponentServices.Execution
             this.jobRunService = jobRunService;
         }
 
-        public void PublishStatusUpdate(JobRunInfo jobRunInfo, JobRunStates state)
+        public void PublishStatusUpdate(long jobRunId, JobRunStates state)
         {
             // TODO: Enum-Mapping needed and pass eveything to the service?
             if (state == JobRunStates.Completed || state == JobRunStates.Failed)
             {
-                this.jobRunService.Done(jobRunInfo.Id, state == JobRunStates.Completed);
+                this.jobRunService.Done(jobRunId, state == JobRunStates.Completed);
             }
 
             // TODO: More generic publish for all the other states
             // TODO: this.stateService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
         }
 
-        public void PublishProgressUpdate(JobRunInfo jobRunInfo, double progress)
+        public void PublishProgressUpdate(long jobRunId, double progress)
         {
+            this.jobRunService.UpdateProgress(jobRunId, progress);
         }
 
         public void PublishArtefact(long id, string fileName, Stream result)

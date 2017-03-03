@@ -12,7 +12,7 @@
     <copyright>Copyright 2017</copyright>
     <dependencies>
       <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="1.0.0-rc1" />
-      <dependency id="Jobbr.ComponentModel.Execution" version="1.0.0-unstable19" />
+      <dependency id="Jobbr.ComponentModel.Execution" version="1.0.0-unstable20" />
       <dependency id="Jobbr.ComponentModel.JobStorage" version="1.0.0-rc3" />
       <dependency id="Jobbr.ComponentModel.Management" version="1.0.0-rc2" />
       <dependency id="Jobbr.ComponentModel.Registration" version="1.0.0-rc1" />

@@ -1,14 +1,22 @@
-﻿using TinyMessenger;
+﻿using Jobbr.Server.Storage;
+using TinyMessenger;
 
 namespace Jobbr.Server.Core
 {
     internal class JobRunService
     {
         private readonly ITinyMessengerHub messengerHub;
+        private readonly IJobbrRepository repository;
 
-        public JobRunService(ITinyMessengerHub messengerHub)
+        public JobRunService(ITinyMessengerHub messengerHub, IJobbrRepository repository)
         {
             this.messengerHub = messengerHub;
+            this.repository = repository;
+        }
+
+        public void UpdateProgress(long jobRunId, double progress)
+        {
+            this.repository.UpdateJobRunProgress(jobRunId, progress);
         }
 
         public void Done(long id, bool isSuccessful)
