@@ -86,12 +86,12 @@ namespace Jobbr.Server.ComponentServices.Management
             this.triggerService.Update(triggerId, startDateTimeUtc);
         }
 
-        public List<JobArtefact> GetArtefactForJob(Guid jobRunUniqueId)
+        public List<JobArtefact> GetArtefactForJob(long jobRunId)
         {
             throw new NotImplementedException();
         }
 
-        public Stream GetArtefactAsStream(Guid jobRunUniqueId, string filename)
+        public Stream GetArtefactAsStream(long jobRunId, string filename)
         {
             throw new NotImplementedException();
         }

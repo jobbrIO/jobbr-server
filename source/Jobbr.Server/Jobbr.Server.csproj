@@ -51,7 +51,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Management, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-unstable10\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
+      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-rc2\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Registration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
