@@ -34,6 +34,11 @@ namespace Jobbr.Server.Core
             var jobRun = this.repository.GetJobRunById(jobRunId);
             jobRun.State = this.mapper.Map<ComponentModel.JobStorage.Model.JobRunStates>(state);
 
+            if (state == JobRunStates.Started)
+            {
+                jobRun.ActualStartDateTimeUtc = DateTime.UtcNow;
+            }
+
             if (state == JobRunStates.Completed || state == JobRunStates.Failed)
             {
                 jobRun.ActualEndDateTimeUtc = DateTime.UtcNow;
@@ -45,11 +50,6 @@ namespace Jobbr.Server.Core
             {
                 this.messengerHub.Publish(new JobRunCompletedMessage(this) { Id = jobRunId, IsSuccessful = state == JobRunStates.Completed });
             }
-        }
-
-        public void Done(long id, bool isSuccessful)
-        {
-            this.messengerHub.Publish(new JobRunCompletedMessage(this) { Id = id, IsSuccessful = isSuccessful });
         }
     }
 
