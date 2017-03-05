@@ -82,6 +82,7 @@
     <Compile Include="ComponentServices\Execution\JobRunInformationService.cs" />
     <Compile Include="Builder\NoExecutor.cs" />
     <Compile Include="ComponentServices\Execution\MappingProfile.cs" />
+    <Compile Include="Core\Messaging\JobRunCompletedMessage.cs" />
     <Compile Include="Core\JobRunService.cs" />
     <Compile Include="ComponentServices\Management\ComponentToCoreMappingProfile.cs" />
     <Compile Include="Core\Models\JobModel.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoMapper;
+using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.Core.Models;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
@@ -51,16 +52,5 @@ namespace Jobbr.Server.Core
                 this.messengerHub.Publish(new JobRunCompletedMessage(this) { Id = jobRunId, IsSuccessful = state == JobRunStates.Completed });
             }
         }
-    }
-
-    internal class JobRunCompletedMessage : TinyMessageBase
-    {
-        public JobRunCompletedMessage(object sender) : base(sender)
-        {
-        }
-
-        public long Id { get; set; }
-
-        public bool IsSuccessful { get; set; }
     }
 }
