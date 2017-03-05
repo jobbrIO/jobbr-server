@@ -45,7 +45,7 @@ namespace Jobbr.Server.Storage
 
         long AddJob(Job job);
 
-        JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc);
+        JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime plannedStartDateTimeUtc);
 
         bool DisableTrigger(long triggerId);
 
@@ -270,7 +270,7 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.AddJob(job);
         }
 
-        public JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc)
+        public JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime plannedStartDateTimeUtc)
         {
             var jobRun = new JobRun
             {
@@ -280,7 +280,7 @@ namespace Jobbr.Server.Storage
                 InstanceParameters = trigger.Parameters,
                 UniqueId = Guid.NewGuid(),
                 State = JobRunStates.Scheduled,
-                PlannedStartDateTimeUtc = startDateTimeUtc
+                PlannedStartDateTimeUtc = plannedStartDateTimeUtc
             };
 
             jobRun.Id = this.storageProvider.AddJobRun(jobRun);
