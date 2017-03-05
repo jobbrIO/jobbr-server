@@ -48,6 +48,8 @@ namespace Jobbr.Tests.Components.JobRunService
 
             var fromRepo = this.repo.GetJobRunById(jobrun.Id);
 
+            Assert.IsNotNull(fromRepo.ActualStartDateTimeUtc);
+        }
         }
     }
 }
