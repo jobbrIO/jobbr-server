@@ -86,6 +86,7 @@
     <Compile Include="Core\Models\JobModel.cs" />
     <Compile Include="Core\Models\InstantTriggerModel.cs" />
     <Compile Include="Core\JobService.cs" />
+    <Compile Include="Core\Models\JobRunStates.cs" />
     <Compile Include="Core\Models\ModelToStorageMappingProfile.cs" />
     <Compile Include="ComponentServices\Management\ServerManagementService.cs" />
     <Compile Include="ConfigurationManager.cs" />
