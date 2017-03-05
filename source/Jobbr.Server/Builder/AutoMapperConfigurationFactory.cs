@@ -11,7 +11,7 @@ namespace Jobbr.Server.Builder
     {
         private static ILog Logger = LogProvider.For<AutoMapperConfigurationFactory>();
 
-        public MapperConfiguration CreateMapperConfiguration()
+        public MapperConfiguration GetNew()
         {
             var profileTypes = this.GetType().Assembly.GetTypes().Where(t => t.Namespace != null && t.Namespace.StartsWith("Jobbr.Server") && typeof(Profile).IsAssignableFrom(t) && !t.IsAbstract);
 

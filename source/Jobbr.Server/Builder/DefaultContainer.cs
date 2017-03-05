@@ -38,7 +38,7 @@ namespace Jobbr.Server.Builder
 
         private void AddAutoMapper()
         {
-            var config = this.autoMapperConfigurationFactory.CreateMapperConfiguration();
+            var config = this.autoMapperConfigurationFactory.GetNew();
 
             this.Bind<MapperConfiguration>().ToConstant(config);
             this.Bind<IMapper>().ToProvider<AutoMapperProvider>();

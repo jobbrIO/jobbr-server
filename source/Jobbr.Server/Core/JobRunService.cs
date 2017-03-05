@@ -29,6 +29,22 @@ namespace Jobbr.Server.Core
 
         public void UpdateState(long jobRunId, JobRunStates state)
         {
+            Logger.InfoFormat("[{0}] The JobRun with id: {0} has switched to the '{1}'-State", jobRunId, state);
+
+            var jobRun = this.repository.GetJobRunById(jobRunId);
+            jobRun.State = this.mapper.Map<ComponentModel.JobStorage.Model.JobRunStates>(state);
+
+            if (state == JobRunStates.Completed || state == JobRunStates.Failed)
+            {
+                jobRun.ActualEndDateTimeUtc = DateTime.UtcNow;
+            }
+
+            this.repository.Update(jobRun);
+
+            if (state == JobRunStates.Completed || state == JobRunStates.Failed)
+            {
+                this.messengerHub.Publish(new JobRunCompletedMessage(this) { Id = jobRunId, IsSuccessful = state == JobRunStates.Completed });
+            }
         }
 
         public void Done(long id, bool isSuccessful)

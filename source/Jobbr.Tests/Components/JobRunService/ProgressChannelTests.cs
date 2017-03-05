@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Jobbr.ComponentModel.JobStorage.Model;
+using Jobbr.Server.Builder;
 using Jobbr.Server.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TinyMessenger;
@@ -16,9 +17,11 @@ namespace Jobbr.Tests.Components.JobRunService
 
         public ProgressUpdateTests()
         {
+            var autoMapperConfig = new AutoMapperConfigurationFactory().GetNew();
+            
             this.repo = new JobbrRepository(new InMemoryJobStorageProvider());
 
-            this.service = new Server.Core.JobRunService(new TinyMessengerHub(), this.repo, null);
+            this.service = new Server.Core.JobRunService(new TinyMessengerHub(), this.repo, autoMapperConfig.CreateMapper());
         }
 
         [TestMethod]
@@ -27,7 +30,7 @@ namespace Jobbr.Tests.Components.JobRunService
             var job1 = new Job();
             this.repo.AddJob(job1);
 
-            var trigger = new InstantTrigger()
+            var trigger = new InstantTrigger
             {
                 JobId = job1.Id,
                 IsActive = true
