@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
-using Jobbr.ComponentModel.Management.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Execution
 {
     [TestClass]
-    public class JobRunInformationServiceTests : RunningJobbrServerTestBase
+    public class JobRunInformationServiceTests : JobRunExecutionTestBase
     {
         [TestMethod]
         public void RunningServer_GetInfoByRandomId_ReturnsNull()
@@ -19,30 +17,11 @@ namespace Jobbr.Tests.Integration.Execution
         [TestMethod]
         public void ExistingJobWithRun_GetInfoById_MatchesConfiguration()
         {
-            var job = this.Services.JobManagementService.AddJob(new Job()
-            {
-                Title = "TestJob",
-                Type = "JobType",
-                Parameters = "JobParams",
-                UniqueName = "UniqueTestJobName"
-            });
+            var job = this.CreateTestJob();
 
-            var trigger = new InstantTrigger()
-            {
-                JobId = job.Id,
-                Comment = "Comment",
-                UserDisplayName = "UserDisplayName",
-                UserId = 42,
-                UserName = "UserName",
-                Parameters = "triggerParams",
-                IsActive = true
-            };
+            var trigger = CreateInstantTrigger(job);
 
-            this.Services.JobManagementService.AddTrigger(trigger);
-
-            WaitFor.HasElements(this.Services.JobStorageProvider.GetJobRuns().ToList, 1500);
-
-            var createdJobRun = this.Services.JobStorageProvider.GetJobRuns().First();
+            var createdJobRun = this.TriggerNewJobbRun(trigger);
 
             var result = this.Services.InformationService.GetByJobRunId(createdJobRun.Id);
 
