@@ -40,6 +40,7 @@ namespace Jobbr.Tests.Integration.Execution
             Assert.AreEqual(50, jobRunFromDb.Progress);
         }
 
+        [TestMethod]
         public void StateUpdate_GetsPreparing_IsStored()
         {
             this.SimulateStateUpdate(JobRunStates.Preparing);
@@ -49,6 +50,7 @@ namespace Jobbr.Tests.Integration.Execution
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Preparing, actualState);
         }
 
+        [TestMethod]
         public void StateUpdate_GetsStarting_IsStored()
         {
             this.SimulateStateUpdate(JobRunStates.Starting);
@@ -58,6 +60,7 @@ namespace Jobbr.Tests.Integration.Execution
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Starting, actualState);
         }
 
+        [TestMethod]
         public void StateUpdate_GetsStarted_IsStored()
         {
             this.SimulateStateUpdate(JobRunStates.Started);
@@ -67,6 +70,7 @@ namespace Jobbr.Tests.Integration.Execution
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Started, actualState);
         }
 
+        [TestMethod]
         public void StateUpdate_GetsStarted_StartDateIsUpdated()
         {
             this.SimulateStateUpdate(JobRunStates.Started);
@@ -102,7 +106,7 @@ namespace Jobbr.Tests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsProcessing_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Initializing);
+            this.SimulateStateUpdate(JobRunStates.Processing);
 
             var actualState = this.GetActualStoredJobRunState();
 
@@ -112,7 +116,7 @@ namespace Jobbr.Tests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsFinishing_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Initializing);
+            this.SimulateStateUpdate(JobRunStates.Finishing);
 
             var actualState = this.GetActualStoredJobRunState();
 
@@ -123,7 +127,7 @@ namespace Jobbr.Tests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsCollecting_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Initializing);
+            this.SimulateStateUpdate(JobRunStates.Collecting);
 
             var actualState = this.GetActualStoredJobRunState();
 
@@ -133,7 +137,7 @@ namespace Jobbr.Tests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsCompleted_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Initializing);
+            this.SimulateStateUpdate(JobRunStates.Completed);
 
             var actualState = this.GetActualStoredJobRunState();
 
@@ -143,7 +147,7 @@ namespace Jobbr.Tests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsFailed_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Initializing);
+            this.SimulateStateUpdate(JobRunStates.Failed);
 
             var actualState = this.GetActualStoredJobRunState();
 
@@ -154,7 +158,6 @@ namespace Jobbr.Tests.Integration.Execution
         {
             return this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.TriggerId).Single().State;
         }
-
 
         private void SimulateStateUpdate(JobRunStates state)
         {
