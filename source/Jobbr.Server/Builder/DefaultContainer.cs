@@ -8,7 +8,6 @@ using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.ComponentServices.Execution;
 using Jobbr.Server.ComponentServices.Management;
 using Jobbr.Server.ComponentServices.Registration;
-using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
 using Ninject;
 using TinyMessenger;
@@ -20,7 +19,7 @@ namespace Jobbr.Server.Builder
     /// </summary>
     internal class DefaultContainer : StandardKernel
     {
-        private static ILog Logger = LogProvider.For<JobRunInformationService>();
+        private readonly AutoMapperConfigurationFactory autoMapperConfigurationFactory = new AutoMapperConfigurationFactory();
 
         public DefaultContainer()
         {
@@ -39,30 +38,7 @@ namespace Jobbr.Server.Builder
 
         private void AddAutoMapper()
         {
-            var profileTypes = this.GetType().Assembly.GetTypes().Where(t => t.Namespace != null && t.Namespace.StartsWith("Jobbr.Server") && typeof(Profile).IsAssignableFrom(t) && !t.IsAbstract);
-
-            var profiles = new List<Profile>();
-
-            Logger.Debug($"Found {profileTypes} types that need to be registered in internal AutoMapper.");
-
-            foreach (var profileType in profileTypes)
-            {
-                Logger.Debug($"Activating type {profileType.Name} in '{profileType.Namespace}' from '{profileType.Assembly}'");
-
-                // Don't try/catch here, better fail early (in the creation of Jobbr server)
-                var profile = (Profile)Activator.CreateInstance(profileType);
-                profiles.Add(profile);
-            }
-
-            var config = new MapperConfiguration(cfg =>
-            {
-                foreach (var profile in profiles)
-                {
-                    cfg.AddProfile(profile);
-                }
-            });
-
-            config.AssertConfigurationIsValid();
+            var config = this.autoMapperConfigurationFactory.CreateMapperConfiguration();
 
             this.Bind<MapperConfiguration>().ToConstant(config);
             this.Bind<IMapper>().ToProvider<AutoMapperProvider>();
