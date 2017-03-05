@@ -24,8 +24,7 @@ namespace Jobbr.Tests.Components.JobRunService
             this.service = new Server.Core.JobRunService(new TinyMessengerHub(), this.repo, autoMapperConfig.CreateMapper());
         }
 
-        [TestMethod]
-        public void JobRun_HasStarted_StartDateTimeIsStored()
+        private JobRun GivenAJobRun()
         {
             var job1 = new Job();
             this.repo.AddJob(job1);
@@ -37,8 +36,18 @@ namespace Jobbr.Tests.Components.JobRunService
             };
 
             var jobrun = this.repo.SaveNewJobRun(job1, trigger, DateTime.UtcNow);
+            return jobrun;
+        }
+
+        [TestMethod]
+        public void JobRun_HasStarted_StartDateTimeIsStored()
+        {
+            var jobrun = this.GivenAJobRun();
 
             this.service.UpdateState(jobrun.Id, JobRunStates.Started);
+
+            var fromRepo = this.repo.GetJobRunById(jobrun.Id);
+
         }
     }
 }
