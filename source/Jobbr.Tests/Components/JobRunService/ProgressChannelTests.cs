@@ -50,6 +50,29 @@ namespace Jobbr.Tests.Components.JobRunService
 
             Assert.IsNotNull(fromRepo.ActualStartDateTimeUtc);
         }
+
+        [TestMethod]
+        public void JobRun_HasCompleted_EndDateTimeIsStored()
+        {
+            var jobrun = this.GivenAJobRun();
+
+            this.service.UpdateState(jobrun.Id, JobRunStates.Completed);
+            var fromRepo = this.repo.GetJobRunById(jobrun.Id);
+
+            Assert.IsNotNull(fromRepo.ActualEndDateTimeUtc);
+        }
+
+        [TestMethod]
+        public void JobRun_HasFailed_EndDateTimeIsStored()
+        {
+            var jobrun = this.GivenAJobRun();
+
+            this.service.UpdateState(jobrun.Id, JobRunStates.Failed);
+            var fromRepo = this.repo.GetJobRunById(jobrun.Id);
+
+            Assert.IsNotNull(fromRepo.ActualEndDateTimeUtc);
+        }
+
         }
     }
 }
