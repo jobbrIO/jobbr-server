@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Threading;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Builder;
+using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TinyMessenger;
@@ -12,8 +12,9 @@ namespace Jobbr.Tests.Components.JobRunService
     [TestClass]
     public class ProgressUpdateTests
     {
-        private Server.Core.JobRunService service;
-        private JobbrRepository repo;
+        private readonly Server.Core.JobRunService service;
+        private readonly JobbrRepository repo;
+        private readonly TinyMessengerHub messengerHub;
 
         public ProgressUpdateTests()
         {
@@ -21,7 +22,9 @@ namespace Jobbr.Tests.Components.JobRunService
             
             this.repo = new JobbrRepository(new InMemoryJobStorageProvider());
 
-            this.service = new Server.Core.JobRunService(new TinyMessengerHub(), this.repo, autoMapperConfig.CreateMapper());
+            this.messengerHub = new TinyMessengerHub();
+
+            this.service = new Server.Core.JobRunService(this.messengerHub, this.repo, autoMapperConfig.CreateMapper());
         }
 
         private JobRun GivenAJobRun()
@@ -73,6 +76,32 @@ namespace Jobbr.Tests.Components.JobRunService
             Assert.IsNotNull(fromRepo.ActualEndDateTimeUtc);
         }
 
+        [TestMethod]
+        public void JobRun_HasCompleted_MessageIsIssued()
+        {
+            var jobrun = this.GivenAJobRun();
+            JobRunCompletedMessage message = null;
+
+            // Register for message
+            this.messengerHub.Subscribe<JobRunCompletedMessage>(m => message = m);
+
+            this.service.UpdateState(jobrun.Id, JobRunStates.Completed);
+
+            Assert.IsNotNull(message);
+        }
+
+        [TestMethod]
+        public void JobRun_HasFailed_MessageIsIssued()
+        {
+            var jobrun = this.GivenAJobRun();
+            JobRunCompletedMessage message = null;
+
+            // Register for message
+            this.messengerHub.Subscribe<JobRunCompletedMessage>(m => message = m);
+
+            this.service.UpdateState(jobrun.Id, JobRunStates.Failed);
+
+            Assert.IsNotNull(message);
         }
     }
 }

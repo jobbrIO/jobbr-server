@@ -2,7 +2,7 @@ using TinyMessenger;
 
 namespace Jobbr.Server.Core.Messaging
 {
-    internal class JobRunCompletedMessage : TinyMessageBase
+    public class JobRunCompletedMessage : TinyMessageBase
     {
         public JobRunCompletedMessage(object sender)
             : base(sender)
