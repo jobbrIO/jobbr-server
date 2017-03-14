@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Execution
 {
@@ -15,7 +14,7 @@ namespace Jobbr.Tests.Integration.Execution
         }
 
         [TestMethod]
-        public void ExistingJobWithRun_GetInfoById_MatchesConfiguration()
+        public void ExistingJobWithFirstRun_GetInfoById_MatchesConfiguration()
         {
             var job = this.CreateTestJob();
 
