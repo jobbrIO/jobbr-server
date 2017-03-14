@@ -36,5 +36,34 @@ namespace Jobbr.Tests.Integration.Execution
             Assert.AreEqual(job.Parameters, result.JobParameters);
             Assert.AreEqual(createdJobRun.InstanceParameters, result.InstanceParameters);
         }
+
+        [TestMethod]
+        public void ExistingJobWithSecondRun_GetInfoById_MatchesConfiguration()
+        {
+            var job = this.CreateTestJob();
+
+            // First run
+            this.TriggerNewJobbRun(CreateInstantTrigger(job));
+
+            // Second run
+            var secondTrigger = CreateInstantTrigger(job);
+
+            var secondJobRun = this.TriggerNewJobbRun(secondTrigger);
+
+            var result = this.Services.InformationService.GetByJobRunId(secondJobRun.Id);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(job.Id, result.JobId);
+            Assert.AreEqual(job.Type, result.Type);
+            Assert.AreEqual(job.Parameters, result.JobParameters);
+
+            Assert.AreEqual(secondTrigger.Parameters, result.InstanceParameters);
+            Assert.AreEqual(secondTrigger.UserId, result.UserId);
+            Assert.AreEqual(secondTrigger.UserName, result.Username);
+
+            Assert.AreEqual(job.Parameters, result.JobParameters);
+            Assert.AreEqual(secondJobRun.InstanceParameters, result.InstanceParameters);
+        }
+
     }
 }
