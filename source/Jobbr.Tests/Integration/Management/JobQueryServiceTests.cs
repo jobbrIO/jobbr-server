@@ -208,7 +208,7 @@ namespace Jobbr.Tests.Integration.Management
             // Act
             var trigger = this.QueryService.GetTriggerById(42);
 
-            Assert.IsNotNull(trigger);
+            Assert.IsNull(trigger);
         }
 
         [TestMethod]
