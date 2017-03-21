@@ -37,7 +37,7 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneJob_QueryJobByExistingId_ReturnsSingle()
         {
             // Arrange
-            var id =this.Services.JobStorageProvider.AddJob(new Job());
+            var id = this.Services.JobStorageProvider.AddJob(new Job());
 
             // Act
             var job = this.QueryService.GetJobById(id);
@@ -291,101 +291,89 @@ namespace Jobbr.Tests.Integration.Management
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserId_ReturnsListWithSingle()
         {
-            //// Arrange
-            //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
+            // Arrange
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
 
-            Assert.Inconclusive("Missing Property UserId on on JobRuns in Storage and Management Models");
-
-            //Assert.IsNotNull(runs);
-            //Assert.AreEqual(1, runs.Count);
-            //Assert.AreEqual(45, runs[0].UserId);
+            Assert.IsNotNull(runs);
+            Assert.AreEqual(1, runs.Count);
+            Assert.AreEqual(45, runs[0].UserId);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByInexistentUserId_ReturnsEmptyList()
         {
-            //// Arrange
-            //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
+            // Arrange
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
 
-            Assert.Inconclusive("Missing Property UserId on on JobRuns in Storage and Management Models");
-
-            //Assert.IsNotNull(runs);
-            //Assert.AreEqual(1, runs.Count);
-            //Assert.AreEqual(45, runs[0].UserId);
+            Assert.IsNotNull(runs);
+            Assert.AreEqual(1, runs.Count);
+            Assert.AreEqual(45, runs[0].UserId);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserId_ReturnsSortedListByIdDesc()
         {
-            //// Arrange
-            //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
-            //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 65, UserId = 45 });
+            // Arrange
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 65, UserId = 45 });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
 
-            Assert.Inconclusive("Missing Property UserId on on JobRuns in Storage and Management Models");
-
-            //Assert.IsNotNull(runs);
-            //Assert.AreEqual(2, runs.Count);
-            //Assert.AreEqual(65, runs[0].Id);
-            //Assert.AreEqual(98, runs[1].Id);
+            Assert.IsNotNull(runs);
+            Assert.AreEqual(2, runs.Count);
+            Assert.AreEqual(65, runs[0].Id);
+            Assert.AreEqual(98, runs[1].Id);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserName_ReturnsListWithSingle()
         {
-            //// Arrange
-            //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
+            // Arrange
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
 
-            Assert.Inconclusive("Missing Property UserName on on JobRuns in Storage and Management Models");
-
-            //Assert.IsNotNull(runs);
-            //Assert.AreEqual(1, runs.Count);
-            //Assert.AreEqual(45, runs[0].UserId);
+            Assert.IsNotNull(runs);
+            Assert.AreEqual(1, runs.Count);
+            Assert.AreEqual(45, runs[0].UserId);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByInexistentUserName_ReturnsEmptyList()
         {
-            //// Arrange
-            //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
+            // Arrange
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
 
-            Assert.Inconclusive("Missing Property UserName on on JobRuns in Storage and Management Models");
-
-            //Assert.IsNotNull(runs);
-            //Assert.AreEqual(1, runs.Count);
-            //Assert.AreEqual(45, runs[0].UserId);
+            Assert.IsNotNull(runs);
+            Assert.AreEqual(1, runs.Count);
+            Assert.AreEqual(45, runs[0].UserId);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserName_ReturnsSortedListByIdDesc()
         {
-            //// Arrange
-            //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
-            //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 65, UserName = "hans" });
+            // Arrange
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 65, UserName = "hans" });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
 
-            Assert.Inconclusive("Missing Property UserName on on JobRuns in Storage and Management Models");
-
-            //Assert.IsNotNull(runs);
-            //Assert.AreEqual(2, runs.Count);
-            //Assert.AreEqual(65, runs[0].Id);
-            //Assert.AreEqual(98, runs[1].Id);
+            Assert.IsNotNull(runs);
+            Assert.AreEqual(2, runs.Count);
+            Assert.AreEqual(65, runs[0].Id);
+            Assert.AreEqual(98, runs[1].Id);
         }
     }
 }
