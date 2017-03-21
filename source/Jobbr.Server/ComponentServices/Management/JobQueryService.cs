@@ -27,17 +27,23 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public Job GetJobById(long id)
         {
-            throw new NotImplementedException();
+            var job = this.jobStorageProvider.GetJobById(id);
+
+            return this.mapper.Map<Job>(job);
         }
 
         public Job GetJobByUniqueName(string uniqueName)
         {
-            throw new NotImplementedException();
+            var job = this.jobStorageProvider.GetJobByUniqueName(uniqueName);
+
+            return this.mapper.Map<Job>(job);
         }
 
         public IJobTrigger GetTriggerById(long triggerId)
         {
-            throw new NotImplementedException();
+            var trigger = this.jobStorageProvider.GetTriggerById(triggerId);
+
+            return this.mapper.Map<IJobTrigger>(trigger);
         }
 
         public List<IJobTrigger> GetTriggersByJobId(long jobId)

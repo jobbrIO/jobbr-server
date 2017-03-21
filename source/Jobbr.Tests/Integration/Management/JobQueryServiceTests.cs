@@ -18,7 +18,6 @@ namespace Jobbr.Tests.Integration.Management
             // Assert
             Assert.IsNotNull(jobs);
             Assert.AreEqual(0, jobs.Count);
-
         }
 
         [TestMethod]
@@ -38,13 +37,13 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneJob_QueryJobByExistingId_ReturnsSingle()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJob(new Job { Id = 13 });
+            var id =this.Services.JobStorageProvider.AddJob(new Job());
 
             // Act
-            var job = this.QueryService.GetJobById(13);
+            var job = this.QueryService.GetJobById(id);
 
             // Assert
-            Assert.AreEqual(13, job.Id);
+            Assert.AreEqual(id, job.Id);
         }
 
         [TestMethod]
