@@ -4,6 +4,7 @@ using AutoMapper;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Management.Model;
+using Jobbr.Server.Core.Models;
 
 namespace Jobbr.Server.ComponentServices.Management
 {
