@@ -90,12 +90,14 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public List<JobArtefact> GetArtefactForJob(long jobRunId)
         {
-            throw new NotImplementedException();
+            var artefacts = this.jobRunService.GetArtefactsByJobRunId(jobRunId);
+
+            return this.mapper.Map<List<JobArtefact>>(artefacts);
         }
 
         public Stream GetArtefactAsStream(long jobRunId, string filename)
         {
-            throw new NotImplementedException();
+            return this.jobRunService.GetArtefactAsStream(jobRunId, filename);
         }
     }
 }

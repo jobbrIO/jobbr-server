@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using AutoMapper;
+using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.Core.Models;
 using Jobbr.Server.Logging;
@@ -53,6 +56,34 @@ namespace Jobbr.Server.Core
             {
                 this.messengerHub.Publish(new JobRunCompletedMessage(this) { Id = jobRunId, IsSuccessful = state == JobRunStates.Completed });
             }
+        }
+
+        public List<JobArtefactModel> GetArtefactsByJobRunId(long jobRunId)
+        {
+            try
+            {
+                var artefacts = this.artefactsStorageProvider.GetArtefacts(jobRunId.ToString());
+                return this.mapper.Map<List<JobArtefactModel>>(artefacts);
+            }
+            catch
+            {
+
+            }
+
+            return new List<JobArtefactModel>();
+        }
+
+        public Stream GetArtefactAsStream(long jobRunId, string filename)
+        {
+            try
+            {
+                return this.artefactsStorageProvider.Load(jobRunId.ToString(), filename);
+            }
+            catch
+            {
+            }
+
+            return null;
         }
     }
 }
