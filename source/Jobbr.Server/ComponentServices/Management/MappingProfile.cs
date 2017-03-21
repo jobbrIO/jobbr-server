@@ -4,9 +4,21 @@ using Jobbr.Server.Core.Models;
 
 namespace Jobbr.Server.ComponentServices.Management
 {
-    internal class ComponentToCoreMappingProfile : Profile
+    internal class MappingProfile : Profile
     {
-        public ComponentToCoreMappingProfile()
+        public MappingProfile()
+        {
+            this.AddMappingFromComponentToInternalModel();
+
+            this.AddMappingFromStorageToComponentModel();
+        }
+
+        private void AddMappingFromStorageToComponentModel()
+        {
+            this.CreateMap<ComponentModel.JobStorage.Model.Job, Job>();
+        }
+
+        private void AddMappingFromComponentToInternalModel()
         {
             this.CreateMap<RecurringTrigger, RecurringTriggerModel>()
                 .ForMember(d => d.CreatedDateTimeUtc, cgf => cgf.Ignore());

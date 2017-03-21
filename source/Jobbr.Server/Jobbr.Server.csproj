@@ -84,7 +84,7 @@
     <Compile Include="ComponentServices\Execution\MappingProfile.cs" />
     <Compile Include="Core\Messaging\JobRunCompletedMessage.cs" />
     <Compile Include="Core\JobRunService.cs" />
-    <Compile Include="ComponentServices\Management\ComponentToCoreMappingProfile.cs" />
+    <Compile Include="ComponentServices\Management\MappingProfile.cs" />
     <Compile Include="Core\Models\JobModel.cs" />
     <Compile Include="Core\Models\InstantTriggerModel.cs" />
     <Compile Include="Core\JobService.cs" />
