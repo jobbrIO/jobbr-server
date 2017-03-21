@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
-using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Management.Model;
 using Jobbr.Server.Storage;
@@ -9,13 +8,11 @@ namespace Jobbr.Server.ComponentServices.Management
 {
     internal class JobQueryService : IQueryService
     {
-        private readonly IJobStorageProvider jobStorageProvider;
         private readonly IJobbrRepository repository;
         private readonly IMapper mapper;
 
-        public JobQueryService(IJobStorageProvider jobStorageProvider, IJobbrRepository repository, IMapper mapper)
+        public JobQueryService(IJobbrRepository repository, IMapper mapper)
         {
-            this.jobStorageProvider = jobStorageProvider;
             this.repository = repository;
             this.mapper = mapper;
         }
@@ -29,7 +26,7 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public Job GetJobById(long id)
         {
-            var job = this.jobStorageProvider.GetJobById(id);
+            var job = this.repository.GetJob(id);
 
             return this.mapper.Map<Job>(job);
         }
@@ -78,21 +75,21 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
-            var jobRun = this.jobStorageProvider.GetJobRunsByTriggerId(triggerId);
+            var jobRun = this.repository.GetJobRunsByTriggerId(triggerId);
 
             return this.mapper.Map<List<JobRun>>(jobRun);
         }
 
         public List<JobRun> GetJobRunsByUserIdOrderByIdDesc(long userId)
         {
-            var jobRun = this.jobStorageProvider.GetJobRunsForUserId(userId);
+            var jobRun = this.repository.GetJobRunsForUserId(userId);
 
             return this.mapper.Map<List<JobRun>>(jobRun);
         }
 
         public List<JobRun> GetJobRunsByUserNameOrderByIdDesc(string userName)
         {
-            var jobRun = this.jobStorageProvider.GetJobRunsForUserName(userName);
+            var jobRun = this.repository.GetJobRunsForUserName(userName);
 
             return this.mapper.Map<List<JobRun>>(jobRun);
         }

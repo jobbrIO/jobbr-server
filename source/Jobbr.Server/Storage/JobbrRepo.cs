@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
@@ -62,6 +61,9 @@ namespace Jobbr.Server.Storage
         Job GetJobByUniqueName(string identifier);
 
         void Delete(JobRun jobRun);
+        List<JobRun> GetJobRunsByTriggerId(long triggerId);
+        List<JobRun> GetJobRunsForUserId(long userId);
+        List<JobRun> GetJobRunsForUserName(string userName);
     }
 
     public class JobbrRepository : IJobbrRepository
@@ -311,6 +313,11 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetJobRunById(jobRunId);
         }
 
+        public List<JobRun> GetJobRunsByTriggerId(long triggerId)
+        {
+            return this.storageProvider.GetJobRunsByTriggerId(triggerId);
+        }
+
         public JobTriggerBase GetTriggerById(long triggerId)
         {
             return this.storageProvider.GetTriggerById(triggerId);
@@ -324,6 +331,16 @@ namespace Jobbr.Server.Storage
         public List<JobRun> GetAllJobRuns()
         {
             return this.storageProvider.GetJobRuns();
+        }
+
+        public List<JobRun> GetJobRunsForUserId(long userId)
+        {
+            return this.storageProvider.GetJobRunsForUserId(userId);
+        }
+
+        public List<JobRun> GetJobRunsForUserName(string userName)
+        {
+            return this.storageProvider.GetJobRunsForUserName(userName);
         }
 
         public Job GetJobByUniqueName(string identifier)
