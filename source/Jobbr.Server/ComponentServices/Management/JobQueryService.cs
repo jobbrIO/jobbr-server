@@ -35,21 +35,6 @@ namespace Jobbr.Server.ComponentServices.Management
             throw new NotImplementedException();
         }
 
-        public List<IJobTrigger> GetActiveTriggers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public JobRun GetJobRunById(long id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<JobRun> GetJobRuns()
-        {
-            throw new NotImplementedException();
-        }
-
         public IJobTrigger GetTriggerById(long triggerId)
         {
             throw new NotImplementedException();
@@ -60,12 +45,27 @@ namespace Jobbr.Server.ComponentServices.Management
             throw new NotImplementedException();
         }
 
-        public List<JobRun> GetJobRunsByUserOrderByIdDesc(long userId)
+        public List<IJobTrigger> GetActiveTriggers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRuns()
+        {
+            throw new NotImplementedException();
+        }
+
+        public JobRun GetJobRunById(long id)
         {
             throw new NotImplementedException();
         }
 
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRunsByUserOrderByIdDesc(long userId)
         {
             throw new NotImplementedException();
         }
