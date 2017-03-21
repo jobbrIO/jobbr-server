@@ -85,5 +85,10 @@ namespace Jobbr.Server.Core
 
             return null;
         }
+
+        public void AddArtefact(long jobRunId, string fileName, Stream result)
+        {
+            this.artefactsStorageProvider.Save(jobRunId.ToString(), fileName, result);
+        }
     }
 }

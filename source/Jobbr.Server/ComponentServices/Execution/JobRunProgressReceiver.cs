@@ -32,7 +32,7 @@ namespace Jobbr.Server.ComponentServices.Execution
 
         public void PublishArtefact(long id, string fileName, Stream result)
         {
-            throw new NotImplementedException();
+            this.jobRunService.AddArtefact(id, fileName, result);
         }
     }
 }
