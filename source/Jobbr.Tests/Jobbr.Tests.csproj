@@ -44,8 +44,7 @@
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.ArtefactStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc2\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable20\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
