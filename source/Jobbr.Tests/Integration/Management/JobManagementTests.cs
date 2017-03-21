@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -49,6 +50,44 @@ namespace Jobbr.Tests.Integration.Management
             var assertTrigger = (RecurringTrigger)storageProvider.GetTriggerById(initialTrigger.Id);
 
             Assert.AreEqual(definition2, assertTrigger.Definition);
+        }
+
+        [TestMethod]
+        public void JobRunWithArtefacts_WhenRetrieved_ReturnsAll()
+        {
+            // Arrange
+            this.Services.ArtefactsStorageProvider.Save("1", "file1.txt", new MemoryStream());
+            this.Services.ArtefactsStorageProvider.Save("1", "file3.txt", new MemoryStream());
+
+            // Act
+            var artefacts = this.Services.JobManagementService.GetArtefactForJob(1);
+
+            Assert.IsNotNull(artefacts);
+            Assert.AreEqual(2, artefacts.Count);
+        }
+
+        [TestMethod]
+        public void JobRunWithNoArtefacts_WhenRetrieved_ReturnsEmptyList()
+        {
+
+        }
+
+        [TestMethod]
+        public void JobRunWithArtefacts_GetByFileName_ReturnsSingle()
+        {
+
+        }
+
+        [TestMethod]
+        public void JobRunWithArtefacts_GetByNonExistentFileName_ReturnsSingle()
+        {
+
+        }
+
+        [TestMethod]
+        public void JobRunWithNoArtefacts_GetByFileName_ReturnsNull()
+        {
+
         }
     }
 }
