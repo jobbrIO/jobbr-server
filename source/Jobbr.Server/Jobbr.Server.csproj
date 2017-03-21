@@ -113,6 +113,7 @@
     <Compile Include="Scheduling\Planer\ScheduledJobRunPlaner.cs" />
     <Compile Include="Scheduling\ScheduledPlanItem.cs" />
     <Compile Include="Scheduling\UtcNowTimeProvider.cs" />
+    <Compile Include="Storage\IJobbrRepository.cs" />
     <Compile Include="Storage\InMemoryArtefactsStorage.cs" />
     <Compile Include="Scheduling\NewScheduler.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
@@ -124,7 +125,7 @@
     <Compile Include="JobRegistry\RegistryBuilder.cs" />
     <Compile Include="Core\IJobManagementService.cs" />
     <Compile Include="Core\IStateService.cs" />
-    <Compile Include="Storage\JobbrRepo.cs" />
+    <Compile Include="Storage\JobbrRepository.cs" />
     <Compile Include="Core\StateService.cs" />
     <Compile Include="ComponentServices\Registration\JobbrServiceProvider.cs" />
     <Compile Include="Scheduling\OldScheduler.cs" />
