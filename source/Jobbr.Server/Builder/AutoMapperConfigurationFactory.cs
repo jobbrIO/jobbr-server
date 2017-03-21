@@ -17,11 +17,11 @@ namespace Jobbr.Server.Builder
 
             var profiles = new List<Profile>();
 
-            Logger.Debug($"Found {profileTypes} types that need to be registered in internal AutoMapper.");
+            Logger.Debug($"Found {profileTypes.Count()} types that need to be registered in internal AutoMapper.");
 
             foreach (var profileType in profileTypes)
             {
-                Logger.Debug($"Activating type {profileType.Name} in '{profileType.Namespace}' from '{profileType.Assembly}'");
+                Logger.Debug($"Activating type '{profileType.Name}' from namespace '{profileType.Namespace}' in assembly '{profileType.Assembly}'");
 
                 // Don't try/catch here, better fail early (in the creation of Jobbr server)
                 var profile = (Profile) Activator.CreateInstance(profileType);
