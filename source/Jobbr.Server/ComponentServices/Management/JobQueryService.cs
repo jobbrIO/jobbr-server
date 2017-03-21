@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
+using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Management.Model;
 
@@ -7,9 +9,20 @@ namespace Jobbr.Server.ComponentServices.Management
 {
     internal class JobQueryService : IQueryService
     {
+        private readonly IJobStorageProvider jobStorageProvider;
+        private readonly IMapper mapper;
+
+        public JobQueryService(IJobStorageProvider jobStorageProvider, IMapper mapper)
+        {
+            this.jobStorageProvider = jobStorageProvider;
+            this.mapper = mapper;
+        }
+
         public List<Job> GetAllJobs()
         {
-            return new List<Job>();
+            var jobs = this.jobStorageProvider.GetJobs();
+
+            return this.mapper.Map<List<Job>>(jobs);
         }
 
         public Job GetJobById(long id)
