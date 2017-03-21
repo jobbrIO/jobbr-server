@@ -82,6 +82,7 @@
     <Compile Include="Core\Messaging\JobRunCompletedMessage.cs" />
     <Compile Include="Core\JobRunService.cs" />
     <Compile Include="ComponentServices\Management\MappingProfile.cs" />
+    <Compile Include="Core\Models\JobArtefactModel.cs" />
     <Compile Include="Core\Models\JobModel.cs" />
     <Compile Include="Core\Models\InstantTriggerModel.cs" />
     <Compile Include="Core\JobService.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Core\Messaging\TriggerAddedMessage.cs" />
     <Compile Include="Core\Models\RecurringTriggerModel.cs" />
     <Compile Include="Core\Models\ScheduledTriggerModel.cs" />
+    <Compile Include="Core\Models\StorageToModelMappingProfile.cs" />
     <Compile Include="Core\Models\TriggerModelBase.cs" />
     <Compile Include="Core\TriggerService.cs" />
     <Compile Include="Core\Messaging\TriggerStateChangedMessage.cs" />

@@ -11,6 +11,8 @@ namespace Jobbr.Server.ComponentServices.Management
             this.AddMappingFromComponentToInternalModel();
 
             this.AddMappingFromStorageToComponentModel();
+
+            this.AddMappingsFromInternalToComponentModel();
         }
 
         private void AddMappingFromStorageToComponentModel()
@@ -40,6 +42,12 @@ namespace Jobbr.Server.ComponentServices.Management
                 .ForMember(d => d.CreatedDateTimeUtc, cgf => cgf.Ignore());
 
             this.CreateMap<Job, JobModel>();
+        }
+
+        private void AddMappingsFromInternalToComponentModel()
+        {
+            this.CreateMap<JobArtefactModel, JobArtefact>()
+                .ForMember(d => d.Type, cfg => cfg.ResolveUsing(s => s.MimeType));
         }
     }
 }
