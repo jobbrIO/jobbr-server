@@ -49,12 +49,16 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public List<IJobTrigger> GetTriggersByJobId(long jobId)
         {
-            throw new NotImplementedException();
+            var triggers = this.jobStorageProvider.GetTriggersByJobId(jobId);
+
+            return this.mapper.Map<List<IJobTrigger>>(triggers);
         }
 
         public List<IJobTrigger> GetActiveTriggers()
         {
-            throw new NotImplementedException();
+            var triggers = this.jobStorageProvider.GetActiveTriggers();
+
+            return this.mapper.Map<List<IJobTrigger>>(triggers);
         }
 
         public List<JobRun> GetJobRuns()
