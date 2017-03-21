@@ -24,7 +24,7 @@ namespace Jobbr.Tests.Components.JobRunService
 
             this.messengerHub = new TinyMessengerHub();
 
-            this.service = new Server.Core.JobRunService(this.messengerHub, this.repo, autoMapperConfig.CreateMapper());
+            this.service = new Server.Core.JobRunService(this.messengerHub, this.repo, null, autoMapperConfig.CreateMapper());
         }
 
         private JobRun GivenAJobRun()

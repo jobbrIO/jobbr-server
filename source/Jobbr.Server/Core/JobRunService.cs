@@ -14,12 +14,14 @@ namespace Jobbr.Server.Core
 
         private readonly ITinyMessengerHub messengerHub;
         private readonly IJobbrRepository repository;
+        private readonly IArtefactsStorageProvider artefactsStorageProvider;
         private readonly IMapper mapper;
 
-        public JobRunService(ITinyMessengerHub messengerHub, IJobbrRepository repository, IMapper mapper)
+        public JobRunService(ITinyMessengerHub messengerHub, IJobbrRepository repository, IArtefactsStorageProvider artefactsStorageProvider, IMapper mapper)
         {
             this.messengerHub = messengerHub;
             this.repository = repository;
+            this.artefactsStorageProvider = artefactsStorageProvider;
             this.mapper = mapper;
         }
 

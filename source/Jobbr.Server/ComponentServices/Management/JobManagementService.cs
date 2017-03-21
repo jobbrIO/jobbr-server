@@ -16,13 +16,15 @@ namespace Jobbr.Server.ComponentServices.Management
     {
         private readonly TriggerService triggerService;
         private readonly JobService jobService;
+        private readonly JobRunService jobRunService;
 
         private readonly IMapper mapper;
 
-        public JobManagementService(TriggerService triggerService, JobService jobService, IMapper mapper)
+        public JobManagementService(TriggerService triggerService, JobService jobService, JobRunService jobRunService, IMapper mapper)
         {
             this.triggerService = triggerService;
             this.jobService = jobService;
+            this.jobRunService = jobRunService;
             this.mapper = mapper;
         }
 
