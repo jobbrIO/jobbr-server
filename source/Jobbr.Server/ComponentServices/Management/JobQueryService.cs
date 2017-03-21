@@ -65,12 +65,12 @@ namespace Jobbr.Server.ComponentServices.Management
             throw new NotImplementedException();
         }
 
-        public List<JobRun> GetJobRunsByUserOrderByIdDesc(long userId)
+        public List<JobRun> GetJobRunsByUserIdOrderByIdDesc(long userId)
         {
             throw new NotImplementedException();
         }
 
-        public List<JobRun> GetJobRunsByUserNameOrderOrderByIdDesc(string userName)
+        public List<JobRun> GetJobRunsByUserNameOrderByIdDesc(string userName)
         {
             throw new NotImplementedException();
         }

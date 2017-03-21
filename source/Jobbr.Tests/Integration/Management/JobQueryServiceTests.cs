@@ -296,7 +296,7 @@ namespace Jobbr.Tests.Integration.Management
             //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserOrderByIdDesc(45);
+            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
 
             Assert.Inconclusive("Missing Property UserId on on JobRuns in Storage and Management Models");
 
@@ -312,7 +312,7 @@ namespace Jobbr.Tests.Integration.Management
             //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserOrderByIdDesc(45);
+            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
 
             Assert.Inconclusive("Missing Property UserId on on JobRuns in Storage and Management Models");
 
@@ -329,7 +329,7 @@ namespace Jobbr.Tests.Integration.Management
             //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 65, UserId = 45 });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserOrderByIdDesc(45);
+            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
 
             Assert.Inconclusive("Missing Property UserId on on JobRuns in Storage and Management Models");
 
@@ -346,7 +346,7 @@ namespace Jobbr.Tests.Integration.Management
             //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserNameOrderOrderByIdDesc("hans");
+            var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
 
             Assert.Inconclusive("Missing Property UserName on on JobRuns in Storage and Management Models");
 
@@ -362,7 +362,7 @@ namespace Jobbr.Tests.Integration.Management
             //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserNameOrderOrderByIdDesc("hans");
+            var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
 
             Assert.Inconclusive("Missing Property UserName on on JobRuns in Storage and Management Models");
 
@@ -379,7 +379,7 @@ namespace Jobbr.Tests.Integration.Management
             //this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 65, UserName = "hans" });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserNameOrderOrderByIdDesc("hans");
+            var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
 
             Assert.Inconclusive("Missing Property UserName on on JobRuns in Storage and Management Models");
 
