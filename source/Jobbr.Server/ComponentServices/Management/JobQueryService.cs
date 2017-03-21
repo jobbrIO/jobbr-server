@@ -1,27 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoMapper;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Management.Model;
-using Jobbr.Server.Core.Models;
+using Jobbr.Server.Storage;
 
 namespace Jobbr.Server.ComponentServices.Management
 {
     internal class JobQueryService : IQueryService
     {
         private readonly IJobStorageProvider jobStorageProvider;
+        private readonly IJobbrRepository repository;
         private readonly IMapper mapper;
 
-        public JobQueryService(IJobStorageProvider jobStorageProvider, IMapper mapper)
+        public JobQueryService(IJobStorageProvider jobStorageProvider, IJobbrRepository repository, IMapper mapper)
         {
             this.jobStorageProvider = jobStorageProvider;
+            this.repository = repository;
             this.mapper = mapper;
         }
 
         public List<Job> GetAllJobs()
         {
-            var jobs = this.jobStorageProvider.GetJobs();
+            var jobs = this.repository.GetAllJobs();
 
             return this.mapper.Map<List<Job>>(jobs);
         }
@@ -35,42 +36,42 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public Job GetJobByUniqueName(string uniqueName)
         {
-            var job = this.jobStorageProvider.GetJobByUniqueName(uniqueName);
+            var job = this.repository.GetJobByUniqueName(uniqueName);
 
             return this.mapper.Map<Job>(job);
         }
 
         public IJobTrigger GetTriggerById(long triggerId)
         {
-            var trigger = this.jobStorageProvider.GetTriggerById(triggerId);
+            var trigger = this.repository.GetTriggerById(triggerId);
 
             return this.mapper.Map<IJobTrigger>(trigger);
         }
 
         public List<IJobTrigger> GetTriggersByJobId(long jobId)
         {
-            var triggers = this.jobStorageProvider.GetTriggersByJobId(jobId);
+            var triggers = this.repository.GetTriggersByJobId(jobId);
 
             return this.mapper.Map<List<IJobTrigger>>(triggers);
         }
 
         public List<IJobTrigger> GetActiveTriggers()
         {
-            var triggers = this.jobStorageProvider.GetActiveTriggers();
+            var triggers = this.repository.GetActiveTriggers();
 
             return this.mapper.Map<List<IJobTrigger>>(triggers);
         }
 
         public List<JobRun> GetJobRuns()
         {
-            var jobRuns = this.jobStorageProvider.GetJobRuns();
+            var jobRuns = this.repository.GetAllJobRuns();
 
             return this.mapper.Map<List<JobRun>>(jobRuns);
         }
 
         public JobRun GetJobRunById(long id)
         {
-            var jobRun = this.jobStorageProvider.GetJobRunById(id);
+            var jobRun = this.repository.GetJobRunById(id);
 
             return this.mapper.Map<JobRun>(jobRun);
         }
