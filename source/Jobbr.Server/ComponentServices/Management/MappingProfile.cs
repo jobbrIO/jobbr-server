@@ -24,6 +24,8 @@ namespace Jobbr.Server.ComponentServices.Management
             this.CreateMap<ComponentModel.JobStorage.Model.RecurringTrigger, IJobTrigger>().ConstructUsing(u => new RecurringTrigger());
             this.CreateMap<ComponentModel.JobStorage.Model.ScheduledTrigger, IJobTrigger>().ConstructUsing(u => new ScheduledTrigger());
             this.CreateMap<ComponentModel.JobStorage.Model.InstantTrigger, IJobTrigger>().ConstructUsing(u => new InstantTrigger());
+
+            this.CreateMap<ComponentModel.JobStorage.Model.JobRun, JobRun>();
         }
 
         private void AddMappingFromComponentToInternalModel()

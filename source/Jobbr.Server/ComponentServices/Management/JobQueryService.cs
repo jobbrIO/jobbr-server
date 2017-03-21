@@ -63,27 +63,37 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public List<JobRun> GetJobRuns()
         {
-            throw new NotImplementedException();
+            var jobRuns = this.jobStorageProvider.GetJobRuns();
+
+            return this.mapper.Map<List<JobRun>>(jobRuns);
         }
 
         public JobRun GetJobRunById(long id)
         {
-            throw new NotImplementedException();
+            var jobRun = this.jobStorageProvider.GetJobRunById(id);
+
+            return this.mapper.Map<JobRun>(jobRun);
         }
 
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
-            throw new NotImplementedException();
+            var jobRun = this.jobStorageProvider.GetJobRunsByTriggerId(triggerId);
+
+            return this.mapper.Map<List<JobRun>>(jobRun);
         }
 
         public List<JobRun> GetJobRunsByUserIdOrderByIdDesc(long userId)
         {
-            throw new NotImplementedException();
+            var jobRun = this.jobStorageProvider.GetJobRunsForUserId(userId);
+
+            return this.mapper.Map<List<JobRun>>(jobRun);
         }
 
         public List<JobRun> GetJobRunsByUserNameOrderByIdDesc(string userName)
         {
-            throw new NotImplementedException();
+            var jobRun = this.jobStorageProvider.GetJobRunsForUserName(userName);
+
+            return this.mapper.Map<List<JobRun>>(jobRun);
         }
     }
 }
