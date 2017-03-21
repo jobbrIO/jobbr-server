@@ -240,20 +240,20 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneJobRun_QueryJobByExistingId_ReturnsSingle()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98 });
+            var id = this.Services.JobStorageProvider.AddJobRun(new JobRun());
 
             // Act
-            var jobRun = this.QueryService.GetJobRunById(98);
+            var jobRun = this.QueryService.GetJobRunById(id);
 
             // Assert
-            Assert.AreEqual(98, jobRun.Id);
+            Assert.AreEqual(id, jobRun.Id);
         }
 
         [TestMethod]
         public void HasOneJobRun_QueryJobByWrongId_ReturnsNull()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98 });
+            var id = this.Services.JobStorageProvider.AddJobRun(new JobRun());
 
             // Act
             var job = this.QueryService.GetJobRunById(42);
@@ -265,14 +265,15 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneJobRun_QueryByExistingTriggerId_ReturnsListWithSingle()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, TriggerId = 34 });
+            var id = this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = 34 });
 
             // Act
             var runs = this.QueryService.GetJobRunsByTriggerId(34);
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(98, runs[0].Id);
+            Assert.AreEqual(id, runs[0].Id);
+            Assert.AreEqual(34, runs[0].TriggerId);
         }
 
         [TestMethod]
@@ -292,88 +293,96 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneMatchingJobRun_QueryJobByUserId_ReturnsListWithSingle()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
+            var triggerId = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserId = 45 });
+            var id = this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = triggerId });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(45, runs[0].UserId);
+            Assert.AreEqual(id, runs[0].Id);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByInexistentUserId_ReturnsEmptyList()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
+            var triggerId = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserId = 45 });
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = triggerId });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
+            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(88);
 
             Assert.IsNotNull(runs);
-            Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(45, runs[0].UserId);
+            Assert.AreEqual(0, runs.Count);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserId_ReturnsSortedListByIdDesc()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserId = 45 });
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 65, UserId = 45 });
+            var trigger1Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserId = 45 });
+            var trigger2Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserId = 45 });
+
+            var id1 = this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = trigger1Id });
+            var id2 =this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = trigger2Id });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(2, runs.Count);
-            Assert.AreEqual(65, runs[0].Id);
-            Assert.AreEqual(98, runs[1].Id);
+            Assert.AreEqual(id2, runs[0].Id);
+            Assert.AreEqual(id1, runs[1].Id);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserName_ReturnsListWithSingle()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
+            var trigger1Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserName = "hans" });
+            this.Services.JobStorageProvider.AddJobRun(new JobRun {TriggerId = trigger1Id });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(45, runs[0].UserId);
+            Assert.AreEqual(trigger1Id, runs[0].TriggerId);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByInexistentUserName_ReturnsEmptyList()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
+            var trigger1Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserName = "hans" });
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = trigger1Id });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
+            var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("blablablabl");
 
             Assert.IsNotNull(runs);
-            Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(45, runs[0].UserId);
+            Assert.AreEqual(0, runs.Count);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserName_ReturnsSortedListByIdDesc()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, UserName = "hans" });
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 65, UserName = "hans" });
+            var trigger1Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserName = "hans" });
+            var trigger2Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserName = "hans" });
+
+            var id1 = this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = trigger1Id });
+            var id2 = this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = trigger2Id });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(2, runs.Count);
-            Assert.AreEqual(65, runs[0].Id);
-            Assert.AreEqual(98, runs[1].Id);
+            Assert.AreEqual(id2, runs[0].Id);
+            Assert.AreEqual(id1, runs[1].Id);
         }
     }
 }
