@@ -145,14 +145,14 @@ namespace Jobbr.Server.Storage
         {
             var allTriggers = this.localTriggers.Where(t => t.UserId == userId).Select(t => t.Id);
 
-            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).ToList().Clone();
+            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
         }
 
         public List<JobRun> GetJobRunsForUserName(string userName)
         {
             var allTriggers = this.localTriggers.Where(t => t.UserName == userName).Select(t => t.Id);
 
-            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).ToList().Clone();
+            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
         }
 
         public bool Update(Job job)
