@@ -71,11 +71,11 @@ Jobbr is a .NET JobServer. Unless other JobServer-Frameworks Jobbr explicitly so
 # QuickStart
 There is a demo-solution with a ready to run application.
 
-## Installation
-Simply create a database (or use any existing) by executing the CreateSchemaAndTables.sql-File, located in source\Jobbr.Server.Dapper. The JobStorageProvider is Dapper-based and has been tested against SQL Server 2012.
+## Installation (Outdated see Demo-Project)
+UPDATE: Simply create a database (or use any existing) by executing the CreateSchemaAndTables.sql-File, located in source\Jobbr.Server.Dapper. The JobStorageProvider is Dapper-based and has been tested against SQL Server 2012.
 
-## Hosting a JobbrServer
-To host a JobbrServer simply define a Storage Provider for Jobs and JobArtefacts and initialize the JobServer:
+## Hosting a JobbrServer (Outdated see Demo-Project)
+UPDATE: To host a JobbrServer simply define a Storage Provider for Jobs and JobArtefacts and initialize the JobServer.
 
 ```c#
 var jobStorageProvider = new DapperStorageProvider(@"YourConnectionString");
@@ -130,7 +130,7 @@ var progress = (double)(i + 1) / iterations * 100;
 
 Console.WriteLine("##jobbr[progress percent='{0:0.00}']", progress);
 ``` 
-## Define Jobs
+## Define Jobs (Outdated see Demo-Project)
 Adding Jobs can be done via Database, RestAPI (see below) or via the FluentApi. A job consists at least of an ``UniqueName`` and a ``Type`` (which is basically the CLR-Type of the JobClass). To register Jobs on Startup, implement your own ``JobbrContiguration`` and override the ``OnRepositoryCreating``-Method.
 
 > **Note**
@@ -158,23 +158,30 @@ public class MyJobbrConfiguration : DefaultJobbrConfiguration
 
 ``` 
 
-## Rest API
-The JobbrServer exposes a Rest-API to define Jobs, Triggers and watch the status for running Jobs. Please see the section WebAPI for a complete reference
+## Features
 
-### Available Jobs
+### Restful API
+The JobbrServer exposes a Rest-API to define Jobs, Triggers and watch the status for running Jobs by the [WebAPI Extension](https://github.com/jobbrIO/jobbr-webapi).
+
+Please see the documentation of the [WebAPI Extension](https://github.com/jobbrIO/jobbr-webapi) for a full reference.
+
+#### List of available Jobs
 Take the following Endpoint
 
-	GET http://localhost/jobbr/api/jobs
+	GET http://localhost/jobbr/jobs
 
-### Trigger a Job to run (JobRun)
+#### Trigger a Job to run (JobRun)
 A job can be triggered by using the following Endpoint (JobId or UniqueId is required)
 
-	POST http://localhost/jobbr/api/jobs/{JobId}/trigger
-	POST http://localhost/jobbr/api/jobs/{UniqueId}/trigger
+	POST http://localhost/jobbr/jobs/{JobId}/trigger
+	POST http://localhost/jobbr/jobs/{UniqueId}/trigger
 
-There are 3 different modes 
+There are 3 different modes and please note that
+* DateTime Values are always UTC
+* UserId, UserName or UserDisplayName are optional
+* Parameters are an object
 
-#### 1. Instant
+##### 1. Instant
 
 	{
         "triggerType": "instant",
@@ -183,7 +190,7 @@ There are 3 different modes
 		"parameters": { "Param1": "test", "Param2" : 42 }
 	}
 
-#### 2. Scheduled
+##### 2. Scheduled
 
 	{
         "triggerType": "scheduled",
@@ -193,7 +200,7 @@ There are 3 different modes
 		"parameters": { "Param1": "test", "Param2" : 42 }
 	}
 
-#### 3. Recurring
+##### 3. Recurring
 
 	{
         "triggerType": "recurring",
@@ -205,27 +212,21 @@ There are 3 different modes
 		"parameters": { "Param1": "test", "Param2" : 42 }
 	}
 
-A definition is a cron definition as specified here: http://en.wikipedia.org/wiki/Cron 
+A definition is a cron definition as specified on wikipedia [http://en.wikipedia.org/wiki/Cron](http://en.wikipedia.org/wiki/Cron).
 
-Please note that
-* DateTime Values are always UTC
-* UserId, UserName or UserDisplayName are optional
-* Parameters are an object
-
-
-### List JobRuns By User
+#### List JobRuns By User
 A jobrun is triggered by a trigger. To get jobruns for a specific used, it required to provide at least a UserId or UserName for the trigger.
 
-	GET http://localhost/jobbr/api/jobruns/?userId=1234
+	GET http://localhost/api/jobruns/?userId=1234
 
 Or 
 
-	GET http://localhost/jobbr/api/jobruns/?userName=name
+	GET http://localhost/api/jobruns/?userName=name
 
-### Watch the Run-Status
+#### Watch the Run-Status
 To get a detailed view for a jobrun you have to know the JobRunId
 
-	GET http://localhost/jobbr/api/jobruns/{JobRunId}
+	GET http://localhost/api/jobruns/{JobRunId}
 
 Sample Response
 
@@ -247,12 +248,10 @@ Sample Response
 		"auctualEndUtc": "2015-03-11T11:23:34.48"
 	}
 
-### Getting Artefacts
+#### Getting Artefacts of a JobRun
 If there are any artefacts for a specific run, they are available under.
 
 	GET http://localhost/jobbr/api/jobruns/446/artefacts/{filename}
-
-#Features
 
 ## Logging
 Jobbr uses the LobLog library to detect your Logging-Framework of the Hosting Process. When using Jobbr, you don't introduce a new dependency to an existing Logging-Framework. See https://github.com/damianh/LibLog for details.
@@ -272,86 +271,17 @@ If you decide to use the RuntimeContext, you will have to implement a Dependency
 The JobbrRuntime will then register a instance of `RuntimeContex` after start but before the actual Job will be activated. Depending on your Depencency Container, this instance can then be injected to the Job-Instance.
 How-ever, you should not reference the JobbrRuntime from your Jobs-Assembly, but this can be handled with an additional indirection. See the Damo with the SpeciciedUser-Job for details.
 
-
-## Artefacts
+## Artefacts storage
 Everything you store in the Working-Directory is automatically collected and pushed to the Jobbr-Server 
 
 ## Service Messages
 At the moment, only progress is supported.
 
-## Rest API Reference
-
-### Get all Jobs
-Take the following Endpoint
-
-	GET http://localhost/jobbr/api/jobs
-
-With a sample return value
-
-	[
-		{
-			"id": 1,
-			"uniquename": "MyJob1",
-			"title": "My First Job",
-			"type": "MinimalJob",
-			"parameters": "{ \"param1\" : \"test\" }",
-			"createdDateTimeUtc": "2015-03-04T17:40:00"
-		},
-		{
-			"id": 3,
-			"uniquename": "MyJob2",
-			"title": "Second Job",
-			"type": "ParameterizedlJob",
-			"parameters": "{ \"param1\" : \"test\" }",
-			"createdDateTimeUtc": "2015-03-10T00:00:00"
-		},
-		{
-			"id": 7,
-			"uniquename": "MyJob3",
-			"title": "Third Job",
-			"type": "ProgressJob",
-			"createdDateTimeUtc": "2015-03-10T00:00:00"
-		}
-	]
-
-### Add Job
-Only the ``UniqueName`` and ``Type`` are required.
-
-	POST http://localhost/jobbr/api/jobs
-
-	{
-		"uniquename": "MyJob1",
-		"title": "My First Job",
-		"type": "MinimalJob",
-		"parameters": "{ \"param1\" : \"test\" }",
-		"createdDateTimeUtc": "2015-03-04T17:40:00"
-	}
-
-### Activate / Deactivate Trigger
-A Trigger and all scheduled JobRuns getting deactivated
-
-	PATCH http://localhost/jobbr/triggers/1234
-	
-		{
-	        "triggerType": "scheduled",
-	        "isActive": false,
-		}
-
-### Update Trigger
-Causes a trigger to be updated. Right now, only the Definition (for RecurringJobs) or the StartDateTimeUtc (for ScheduledJobs) can be updated.
-
-	PATCH http://localhost/jobbr/triggers/1234
-	
-		{
-	        "triggerType": "scheduled",
-	        "isActive": true,
-		}
-
-### ...
-...
+# License
+This software is licenced under GPLv3. See [LICENSE](LICENSE), please see the related licences of 3rd party libraries below.
 
 # Credits
- 
+
 ## Based On
 Jobbr Server is based on the following awesome libraries:
 * [AutoMapper](https://github.com/AutoMapper/AutoMapper]) [(MIT)](https://github.com/AutoMapper/AutoMapper/blob/master/LICENSE.txt)
@@ -367,6 +297,3 @@ This application was built by the following awesome developers:
 * Oliver Zürcher
 * Peter Gfader
 * Mark Odermatt
-
-# License
-This software is licenced under GPLv3. See [LICENSE](LICENSE), please see the related licences of 3rd party libraries above.
