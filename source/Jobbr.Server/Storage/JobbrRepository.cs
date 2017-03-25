@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
@@ -90,6 +91,11 @@ namespace Jobbr.Server.Storage
         public JobRun GetLastJobRunByTriggerId(long triggerId)
         {
             return this.storageProvider.GetLastJobRunByTriggerId(triggerId);
+        }
+
+        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime now)
+        {
+            return this.storageProvider.GetJobRunsByTriggerId(triggerId).FirstOrDefault(r => r.PlannedStartDateTimeUtc >= now);
         }
 
         public JobRun GetNextJobRunByTriggerId(long triggerId)

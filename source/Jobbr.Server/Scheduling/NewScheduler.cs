@@ -213,9 +213,14 @@ namespace Jobbr.Server.Scheduling
 
                 if (planResult.Action == PlanAction.Possible)
                 {
-                    var scheduledItem = this.CreateNew(planResult, trigger);
+                    // Check if there is already a run planned at this time
+                    var nextRunForTrigger = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
 
-                    additonalItems.Add(scheduledItem);
+                    if (nextRunForTrigger == null || !nextRunForTrigger.PlannedStartDateTimeUtc.Equals(planResult.ExpectedStartDateUtc))
+                    {
+                        var scheduledItem = this.CreateNew(planResult, trigger);
+                        additonalItems.Add(scheduledItem);
+                    }
                 }
             }
 

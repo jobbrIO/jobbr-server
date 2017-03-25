@@ -62,5 +62,6 @@ namespace Jobbr.Server.Storage
         List<JobRun> GetJobRunsByTriggerId(long triggerId);
         List<JobRun> GetJobRunsForUserId(long userId);
         List<JobRun> GetJobRunsForUserName(string userName);
+        JobRun GetNextJobRunByTriggerId(long triggerId, DateTime now);
     }
 }
