@@ -203,12 +203,16 @@ namespace Jobbr.Tests.Components.Scheduler
         [TestMethod]
         public void RecurringTrigger_WithNoTriggerOrJobChanges_DoesTriggerNewOnes()
         {
-            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false, StartDateTimeUtc = DateTime.UtcNow };
+            var initialDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(initialDate);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false};
             
             // This triggers the first jobrun
             this.AddAndSignalNewTrigger(recurringTrigger);
 
             // wait for additional jobrun
+            this.currentTimeProvider.Set(initialDate.AddHours(2));
             this.periodicTimer.CallbackOnce();
 
             var jobRun = this.repository.GetAllJobRuns();
