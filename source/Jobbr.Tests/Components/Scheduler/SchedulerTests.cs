@@ -251,5 +251,33 @@ namespace Jobbr.Tests.Components.Scheduler
             Assert.AreEqual(1, jobRuns.Count, "Creating new jobruns should be prevented if a JobRun is not yet completed for the trigger");
             Assert.AreEqual(1, this.lastIssuedPlan.Count, "It doesn't mather how often the Callback for recurring trigger scheduling is called, as long as there is a job running, there shoulnd be any additional jobs");
         }
+
+        [TestMethod]
+        public void RecurringTrigger_WhenAddedBeforeStart_ShouldTriggerOneRun()
+        {
+            this.scheduler.Stop();
+
+            var futureDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(futureDate);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = true };
+
+            // This triggers the first jobrun
+            this.repository.SaveAddTrigger(recurringTrigger);
+
+
+            this.scheduler.Start();
+            this.periodicTimer.CallbackOnce();
+            this.periodicTimer.CallbackOnce();
+            this.periodicTimer.CallbackOnce();
+
+            var jobRuns = this.repository.GetAllJobRuns();
+
+            Assert.AreEqual(1, jobRuns.Count, "There should only be one jobrun");
+            Assert.AreEqual(futureDate.Date, jobRuns[0].PlannedStartDateTimeUtc.Date);
+            Assert.AreEqual(futureDate.Hour, jobRuns[0].PlannedStartDateTimeUtc.Hour);
+            Assert.AreEqual(futureDate.Minute + 1, jobRuns[0].PlannedStartDateTimeUtc.Minute);
+            Assert.AreEqual(0, jobRuns[0].PlannedStartDateTimeUtc.Second);
+        }
     }
 }
