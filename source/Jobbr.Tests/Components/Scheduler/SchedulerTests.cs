@@ -284,5 +284,23 @@ namespace Jobbr.Tests.Components.Scheduler
             Assert.AreEqual(futureDate.Minute + 1, jobRuns[0].PlannedStartDateTimeUtc.Minute);
             Assert.AreEqual(0, jobRuns[0].PlannedStartDateTimeUtc.Second);
         }
+
+        [TestMethod]
+        public void RecurringTrigger_WhileRunIsIncomplete_ShouldNotRaiseNewRunsAtTheSameTime()
+        {
+            var futureDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(futureDate);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true};
+
+            // This triggers the first jobrun
+            this.AddAndSignalNewTrigger(recurringTrigger);
+
+            this.periodicTimer.CallbackOnce();
+
+            var jobRuns = this.repository.GetAllJobRuns();
+
+            Assert.AreEqual(1, jobRuns.Count, "The periodic callback should not create new jobruns if they would start at the same time (== planned starttime has not changed)");
+        }
     }
 }
