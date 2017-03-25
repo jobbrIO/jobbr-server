@@ -260,16 +260,12 @@ namespace Jobbr.Tests.Components.Scheduler
             var futureDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
             this.currentTimeProvider.Set(futureDate);
 
-            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = true };
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true };
 
             // This triggers the first jobrun
             this.repository.SaveAddTrigger(recurringTrigger);
 
-
             this.scheduler.Start();
-            this.periodicTimer.CallbackOnce();
-            this.periodicTimer.CallbackOnce();
-            this.periodicTimer.CallbackOnce();
 
             var jobRuns = this.repository.GetAllJobRuns();
 
