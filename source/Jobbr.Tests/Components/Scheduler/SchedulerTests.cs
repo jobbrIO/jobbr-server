@@ -300,6 +300,7 @@ namespace Jobbr.Tests.Components.Scheduler
             // This triggers the first jobrun
             this.AddAndSignalNewTrigger(recurringTrigger);
 
+            this.currentTimeProvider.AddSecond();
             this.periodicTimer.CallbackOnce();
 
             var jobRuns = this.repository.GetAllJobRuns();
