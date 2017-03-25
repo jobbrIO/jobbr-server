@@ -220,9 +220,14 @@ namespace Jobbr.Tests.Components.Scheduler
         [TestMethod]
         public void NoParallelExecutionDisabled_ForceNewPlanWhileJobIsStillRunning_NextJobRunIsCreated()
         {
-            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false, StartDateTimeUtc = DateTime.UtcNow };
+            var initialDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(initialDate);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false };
             this.AddAndSignalNewTrigger(recurringTrigger);
 
+            // Make sure the cron in the recurring trigger will base on an updated "now"
+            this.currentTimeProvider.Set(initialDate.AddHours(2));
             this.periodicTimer.CallbackOnce();
 
             var jobRuns = this.repository.GetAllJobRuns();
@@ -238,12 +243,16 @@ namespace Jobbr.Tests.Components.Scheduler
         [TestMethod]
         public void NoParallelExecutionEnabled_TriggerWhileJobIsStillRunning_NextJobRunIsPrevented()
         {
-            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = true, StartDateTimeUtc = DateTime.UtcNow };
+            var initialDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(initialDate);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = true };
 
             // This triggers the first jobrun
             this.AddAndSignalNewTrigger(recurringTrigger);
 
-            this.periodicTimer.CallbackOnce();
+            // Make sure the cron in the recurring trigger will base on an updated "now"
+            this.currentTimeProvider.Set(initialDate.AddHours(2));
             this.periodicTimer.CallbackOnce();
 
             var jobRuns = this.repository.GetAllJobRuns();
