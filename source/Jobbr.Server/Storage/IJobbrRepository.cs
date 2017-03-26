@@ -26,10 +26,6 @@ namespace Jobbr.Server.Storage
 
         void SaveAddTrigger(InstantTrigger trigger);
 
-        JobRun GetLastJobRunByTriggerId(long triggerId);
-
-        JobRun GetNextJobRunByTriggerId(long triggerId);
-
         bool EnableTrigger(long triggerId);
 
         List<JobTriggerBase> GetActiveTriggers();
@@ -62,6 +58,10 @@ namespace Jobbr.Server.Storage
         List<JobRun> GetJobRunsByTriggerId(long triggerId);
         List<JobRun> GetJobRunsForUserId(long userId);
         List<JobRun> GetJobRunsForUserName(string userName);
-        JobRun GetNextJobRunByTriggerId(long triggerId, DateTime now);
+
+        JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow);
+
+        JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow);
+
     }
 }
