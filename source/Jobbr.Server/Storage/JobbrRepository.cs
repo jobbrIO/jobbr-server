@@ -88,19 +88,14 @@ namespace Jobbr.Server.Storage
             trigger.Id = this.storageProvider.AddTrigger(trigger);
         }
 
-        public JobRun GetLastJobRunByTriggerId(long triggerId)
+        public JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
-            return this.storageProvider.GetLastJobRunByTriggerId(triggerId);
+            return this.storageProvider.GetLastJobRunByTriggerId(triggerId, utcNow);
         }
 
-        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime now)
+        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
-            return this.storageProvider.GetJobRunsByTriggerId(triggerId).FirstOrDefault(r => r.PlannedStartDateTimeUtc >= now);
-        }
-
-        public JobRun GetNextJobRunByTriggerId(long triggerId)
-        {
-            return this.storageProvider.GetFutureJobRunsByTriggerId(triggerId);
+            return this.storageProvider.GetNextJobRunByTriggerId(triggerId, utcNow);
         }
 
         public bool EnableTrigger(long triggerId)
@@ -281,12 +276,12 @@ namespace Jobbr.Server.Storage
 
         public List<JobRun> GetJobRunsForUserId(long userId)
         {
-            return this.storageProvider.GetJobRunsForUserId(userId);
+            return this.storageProvider.GetJobRunsByUserId(userId);
         }
 
         public List<JobRun> GetJobRunsForUserName(string userName)
         {
-            return this.storageProvider.GetJobRunsForUserName(userName);
+            return this.storageProvider.GetJobRunsByUserName(userName);
         }
 
         public Job GetJobByUniqueName(string identifier)
