@@ -46,7 +46,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc5\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
+      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc6\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Management, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-rc4\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
