@@ -172,7 +172,7 @@ namespace Jobbr.Tests.Components.Scheduler
             this.AddAndSignalNewTrigger(scheduledTrigger);
 
             // Simulate Job Completeness
-            var jobRunByScheduledTrigger = this.repository.GetLastJobRunByTriggerId(scheduledTrigger.Id);
+            var jobRunByScheduledTrigger = this.repository.GetAllJobRuns().Single(jr => jr.TriggerId == scheduledTrigger.Id);
             jobRunByScheduledTrigger.State = JobRunStates.Completed;
             this.repository.Update(jobRunByScheduledTrigger);
 
@@ -188,7 +188,7 @@ namespace Jobbr.Tests.Components.Scheduler
             this.AddAndSignalNewTrigger(recurringTrigger);
 
             // Simulate Job Completeness
-            var jobRunByScheduledTrigger = this.repository.GetLastJobRunByTriggerId(recurringTrigger.Id);
+            var jobRunByScheduledTrigger = this.repository.GetAllJobRuns().Single(jr => jr.TriggerId == recurringTrigger.Id);
             jobRunByScheduledTrigger.State = JobRunStates.Completed;
             this.repository.Update(jobRunByScheduledTrigger);
 

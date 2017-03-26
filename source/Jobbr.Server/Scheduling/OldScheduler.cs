@@ -72,7 +72,7 @@ namespace Jobbr.Server.Scheduling
             DateTime? calculatedNextRun = null;
 
             // Get the next occurence from database
-            var plannedNextRun = this.jobbrRepository.GetNextJobRunByTriggerId(trigger.Id);
+            var plannedNextRun = this.jobbrRepository.GetNextJobRunByTriggerId(trigger.Id, DateTime.UtcNow);
 
             // Calculate the next occurance for the trigger
             calculatedNextRun = this.GetNextTriggerDateTime(trigger as dynamic);

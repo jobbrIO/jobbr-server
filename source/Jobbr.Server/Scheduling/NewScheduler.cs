@@ -81,7 +81,7 @@ namespace Jobbr.Server.Scheduling
             }
 
             // Get the next occurence from database
-            var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id);
+            var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
 
             if (dependentJobRun == null)
             {
@@ -106,7 +106,7 @@ namespace Jobbr.Server.Scheduling
                 this.currentPlan.RemoveAll(e => e.TriggerId == triggerId);
 
                 // Set the JobRun to deleted if any
-                var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id);
+                var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                 if (dependentJobRun != null)
                 {
@@ -292,7 +292,7 @@ namespace Jobbr.Server.Scheduling
                     var dateTime = planResult.ExpectedStartDateUtc;
 
                     // Get the next occurence from database
-                    var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id);
+                    var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                     if (dependentJobRun != null)
                     {
