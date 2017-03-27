@@ -89,14 +89,14 @@ namespace Jobbr.Server.Storage
             return this.localTriggers.FirstOrDefault(t => t.Id == triggerId).Clone();
         }
 
-        public JobRun GetLastJobRunByTriggerId(long triggerId)
+        public JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
-            return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId).Clone();
+            return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId && jr.ActualEndDateTimeUtc < utcNow).Clone();
         }
 
-        public JobRun GetFutureJobRunsByTriggerId(long triggerId)
+        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
-            return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId && jr.PlannedStartDateTimeUtc >= DateTime.UtcNow).Clone();
+            return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId && jr.PlannedStartDateTimeUtc >= utcNow).Clone();
         }
 
         public int AddJobRun(JobRun jobRun)
@@ -141,18 +141,18 @@ namespace Jobbr.Server.Storage
             return this.localJobRuns.FirstOrDefault(j => j.Id == id).Clone();
         }
 
-        public List<JobRun> GetJobRunsForUserId(long userId)
+        public List<JobRun> GetJobRunsByUserId(long userId)
         {
             var allTriggers = this.localTriggers.Where(t => t.UserId == userId).Select(t => t.Id);
 
-            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).ToList().Clone();
+            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
         }
 
-        public List<JobRun> GetJobRunsForUserName(string userName)
+        public List<JobRun> GetJobRunsByUserName(string userName)
         {
             var allTriggers = this.localTriggers.Where(t => t.UserName == userName).Select(t => t.Id);
 
-            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).ToList().Clone();
+            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
         }
 
         public bool Update(Job job)

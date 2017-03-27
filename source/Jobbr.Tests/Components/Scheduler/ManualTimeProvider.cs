@@ -22,6 +22,11 @@ namespace Jobbr.Tests.Components.Scheduler
             this.currentTime = this.currentTime.AddMinutes(1);
         }
 
+        public void AddSecond()
+        {
+            this.currentTime = this.currentTime.AddSeconds(1);
+        }
+
         public void Set(DateTime dateTimeUtc)
         {
             this.currentTime = dateTimeUtc;

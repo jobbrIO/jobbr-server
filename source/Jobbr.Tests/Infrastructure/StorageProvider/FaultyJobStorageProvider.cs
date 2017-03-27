@@ -80,16 +80,16 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             return this.inMemoryVersion.GetTriggerById(triggerId);
         }
 
-        public JobRun GetLastJobRunByTriggerId(long triggerId)
+        public JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetLastJobRunByTriggerId(triggerId);
+            return this.inMemoryVersion.GetLastJobRunByTriggerId(triggerId, utcNow);
         }
 
-        public JobRun GetFutureJobRunsByTriggerId(long triggerId)
+        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetFutureJobRunsByTriggerId(triggerId);
+            return this.inMemoryVersion.GetNextJobRunByTriggerId(triggerId, utcNow);
         }
 
         public int AddJobRun(JobRun jobRun)
@@ -134,16 +134,16 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             return this.inMemoryVersion.GetJobRunById(id);
         }
 
-        public List<JobRun> GetJobRunsForUserId(long userId)
+        public List<JobRun> GetJobRunsByUserId(long userId)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsForUserId(userId);
+            return this.inMemoryVersion.GetJobRunsByUserId(userId);
         }
 
-        public List<JobRun> GetJobRunsForUserName(string userName)
+        public List<JobRun> GetJobRunsByUserName(string userName)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsForUserName(userName);
+            return this.inMemoryVersion.GetJobRunsByUserName(userName);
         }
 
         public bool Update(Job job)

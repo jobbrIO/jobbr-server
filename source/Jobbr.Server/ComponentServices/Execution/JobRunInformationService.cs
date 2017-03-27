@@ -8,7 +8,7 @@ namespace Jobbr.Server.ComponentServices.Execution
 {
     internal class JobRunInformationService : IJobRunInformationService
     {
-        private static ILog Logger = LogProvider.For<JobRunInformationService>();
+        private static readonly ILog Logger = LogProvider.For<JobRunInformationService>();
 
         private readonly IJobbrRepository jobbrRepository;
         private readonly IMapper mapper;
@@ -31,7 +31,7 @@ namespace Jobbr.Server.ComponentServices.Execution
             }
 
             var trigger = this.jobbrRepository.GetTriggerById(jobRun.TriggerId);
-            var job = this.jobbrRepository.GetJob(jobRun.Id);
+            var job = this.jobbrRepository.GetJob(jobRun.JobId);
 
             var info = new JobRunInfo();
 

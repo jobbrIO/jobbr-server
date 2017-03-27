@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq;
-using Jobbr.ComponentModel.Management.Model;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Execution
 {
     [TestClass]
-    public class JobRunInformationServiceTests : RunningJobbrServerTestBase
+    public class JobRunInformationServiceTests : JobRunExecutionTestBase
     {
         [TestMethod]
         public void RunningServer_GetInfoByRandomId_ReturnsNull()
@@ -17,32 +14,13 @@ namespace Jobbr.Tests.Integration.Execution
         }
 
         [TestMethod]
-        public void ExistingJobWithRun_GetInfoById_MatchesConfiguration()
+        public void ExistingJobWithFirstRun_GetInfoById_MatchesConfiguration()
         {
-            var job = this.Services.JobManagementService.AddJob(new Job()
-            {
-                Title = "TestJob",
-                Type = "JobType",
-                Parameters = "JobParams",
-                UniqueName = "UniqueTestJobName"
-            });
+            var job = this.CreateTestJob();
 
-            var trigger = new InstantTrigger()
-            {
-                JobId = job.Id,
-                Comment = "Comment",
-                UserDisplayName = "UserDisplayName",
-                UserId = 42,
-                UserName = "UserName",
-                Parameters = "triggerParams",
-                IsActive = true
-            };
+            var trigger = CreateInstantTrigger(job);
 
-            this.Services.JobManagementService.AddTrigger(trigger);
-
-            WaitFor.HasElements(this.Services.JobStorageProvider.GetJobRuns().ToList, 1500);
-
-            var createdJobRun = this.Services.JobStorageProvider.GetJobRuns().First();
+            var createdJobRun = this.TriggerNewJobbRun(trigger);
 
             var result = this.Services.InformationService.GetByJobRunId(createdJobRun.Id);
 
@@ -58,5 +36,34 @@ namespace Jobbr.Tests.Integration.Execution
             Assert.AreEqual(job.Parameters, result.JobParameters);
             Assert.AreEqual(createdJobRun.InstanceParameters, result.InstanceParameters);
         }
+
+        [TestMethod]
+        public void ExistingJobWithSecondRun_GetInfoById_MatchesConfiguration()
+        {
+            var job = this.CreateTestJob();
+
+            // First run
+            this.TriggerNewJobbRun(CreateInstantTrigger(job));
+
+            // Second run
+            var secondTrigger = CreateInstantTrigger(job);
+
+            var secondJobRun = this.TriggerNewJobbRun(secondTrigger);
+
+            var result = this.Services.InformationService.GetByJobRunId(secondJobRun.Id);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(job.Id, result.JobId);
+            Assert.AreEqual(job.Type, result.Type);
+            Assert.AreEqual(job.Parameters, result.JobParameters);
+
+            Assert.AreEqual(secondTrigger.Parameters, result.InstanceParameters);
+            Assert.AreEqual(secondTrigger.UserId, result.UserId);
+            Assert.AreEqual(secondTrigger.UserName, result.Username);
+
+            Assert.AreEqual(job.Parameters, result.JobParameters);
+            Assert.AreEqual(secondJobRun.InstanceParameters, result.InstanceParameters);
+        }
+
     }
 }

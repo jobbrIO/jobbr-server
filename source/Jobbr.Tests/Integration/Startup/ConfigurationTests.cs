@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Jobbr.ComponentModel.ArtefactStorage;
+using Jobbr.ComponentModel.ArtefactStorage.Model;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.ComponentModel.JobStorage;
@@ -68,12 +69,12 @@ namespace Jobbr.Tests.Integration.Startup
             return null;
         }
 
-        public JobRun GetLastJobRunByTriggerId(long triggerId)
+        public JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
             return null;
         }
 
-        public JobRun GetFutureJobRunsByTriggerId(long triggerId)
+        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
             return null;
         }
@@ -113,12 +114,12 @@ namespace Jobbr.Tests.Integration.Startup
             return null;
         }
 
-        public List<JobRun> GetJobRunsForUserId(long userId)
+        public List<JobRun> GetJobRunsByUserId(long userId)
         {
             return null;
         }
 
-        public List<JobRun> GetJobRunsForUserName(string userName)
+        public List<JobRun> GetJobRunsByUserName(string userName)
         {
             return null;
         }

@@ -1,65 +1,97 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Management.Model;
+using Jobbr.Server.Storage;
 
 namespace Jobbr.Server.ComponentServices.Management
 {
     internal class JobQueryService : IQueryService
     {
+        private readonly IJobbrRepository repository;
+        private readonly IMapper mapper;
+
+        public JobQueryService(IJobbrRepository repository, IMapper mapper)
+        {
+            this.repository = repository;
+            this.mapper = mapper;
+        }
+
         public List<Job> GetAllJobs()
         {
-            return new List<Job>();
+            var jobs = this.repository.GetAllJobs();
+
+            return this.mapper.Map<List<Job>>(jobs);
         }
 
         public Job GetJobById(long id)
         {
-            throw new NotImplementedException();
+            var job = this.repository.GetJob(id);
+
+            return this.mapper.Map<Job>(job);
         }
 
         public Job GetJobByUniqueName(string uniqueName)
         {
-            throw new NotImplementedException();
-        }
+            var job = this.repository.GetJobByUniqueName(uniqueName);
 
-        public List<IJobTrigger> GetActiveTriggers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public JobRun GetJobRunById(long id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<JobRun> GetJobRuns()
-        {
-            throw new NotImplementedException();
+            return this.mapper.Map<Job>(job);
         }
 
         public IJobTrigger GetTriggerById(long triggerId)
         {
-            throw new NotImplementedException();
+            var trigger = this.repository.GetTriggerById(triggerId);
+
+            return this.mapper.Map<IJobTrigger>(trigger);
         }
 
         public List<IJobTrigger> GetTriggersByJobId(long jobId)
         {
-            throw new NotImplementedException();
+            var triggers = this.repository.GetTriggersByJobId(jobId);
+
+            return this.mapper.Map<List<IJobTrigger>>(triggers);
         }
 
-        public List<JobRun> GetJobRunsByUserOrderByIdDesc(long userId)
+        public List<IJobTrigger> GetActiveTriggers()
         {
-            throw new NotImplementedException();
+            var triggers = this.repository.GetActiveTriggers();
+
+            return this.mapper.Map<List<IJobTrigger>>(triggers);
+        }
+
+        public List<JobRun> GetJobRuns()
+        {
+            var jobRuns = this.repository.GetAllJobRuns();
+
+            return this.mapper.Map<List<JobRun>>(jobRuns);
+        }
+
+        public JobRun GetJobRunById(long id)
+        {
+            var jobRun = this.repository.GetJobRunById(id);
+
+            return this.mapper.Map<JobRun>(jobRun);
         }
 
         public List<JobRun> GetJobRunsByTriggerId(long triggerId)
         {
-            throw new NotImplementedException();
+            var jobRun = this.repository.GetJobRunsByTriggerId(triggerId);
+
+            return this.mapper.Map<List<JobRun>>(jobRun);
         }
 
-        public List<JobRun> GetJobRunsByUserNameOrderOrderByIdDesc(string userName)
+        public List<JobRun> GetJobRunsByUserIdOrderByIdDesc(long userId)
         {
-            throw new NotImplementedException();
+            var jobRun = this.repository.GetJobRunsForUserId(userId);
+
+            return this.mapper.Map<List<JobRun>>(jobRun);
+        }
+
+        public List<JobRun> GetJobRunsByUserNameOrderByIdDesc(string userName)
+        {
+            var jobRun = this.repository.GetJobRunsForUserName(userName);
+
+            return this.mapper.Map<List<JobRun>>(jobRun);
         }
     }
 }

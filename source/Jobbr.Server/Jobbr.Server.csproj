@@ -39,20 +39,17 @@
       <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.ArtefactStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc2\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable20\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc3\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc6\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Management, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-rc2\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-rc4\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Registration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.Registration.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.Registration.dll</HintPath>
@@ -75,23 +72,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
+    <Compile Include="Builder\AutoMapperConfigurationFactory.cs" />
     <Compile Include="Builder\AutoMapperProvider.cs" />
     <Compile Include="Builder\DefaultContainer.cs" />
     <Compile Include="ComponentServices\Execution\JobRunProgressReceiver.cs" />
     <Compile Include="ComponentServices\Execution\JobRunInformationService.cs" />
     <Compile Include="Builder\NoExecutor.cs" />
     <Compile Include="ComponentServices\Execution\MappingProfile.cs" />
+    <Compile Include="Core\Messaging\JobRunCompletedMessage.cs" />
     <Compile Include="Core\JobRunService.cs" />
-    <Compile Include="ComponentServices\Management\ComponentToCoreMappingProfile.cs" />
+    <Compile Include="ComponentServices\Management\MappingProfile.cs" />
+    <Compile Include="Core\Models\JobArtefactModel.cs" />
     <Compile Include="Core\Models\JobModel.cs" />
     <Compile Include="Core\Models\InstantTriggerModel.cs" />
     <Compile Include="Core\JobService.cs" />
+    <Compile Include="Core\Models\JobRunStates.cs" />
     <Compile Include="Core\Models\ModelToStorageMappingProfile.cs" />
     <Compile Include="ComponentServices\Management\ServerManagementService.cs" />
     <Compile Include="ConfigurationManager.cs" />
     <Compile Include="Core\Messaging\TriggerAddedMessage.cs" />
     <Compile Include="Core\Models\RecurringTriggerModel.cs" />
     <Compile Include="Core\Models\ScheduledTriggerModel.cs" />
+    <Compile Include="Core\Models\StorageToModelMappingProfile.cs" />
     <Compile Include="Core\Models\TriggerModelBase.cs" />
     <Compile Include="Core\TriggerService.cs" />
     <Compile Include="Core\Messaging\TriggerStateChangedMessage.cs" />
@@ -112,6 +114,7 @@
     <Compile Include="Scheduling\Planer\ScheduledJobRunPlaner.cs" />
     <Compile Include="Scheduling\ScheduledPlanItem.cs" />
     <Compile Include="Scheduling\UtcNowTimeProvider.cs" />
+    <Compile Include="Storage\IJobbrRepository.cs" />
     <Compile Include="Storage\InMemoryArtefactsStorage.cs" />
     <Compile Include="Scheduling\NewScheduler.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
@@ -123,7 +126,7 @@
     <Compile Include="JobRegistry\RegistryBuilder.cs" />
     <Compile Include="Core\IJobManagementService.cs" />
     <Compile Include="Core\IStateService.cs" />
-    <Compile Include="Storage\JobbrRepo.cs" />
+    <Compile Include="Storage\JobbrRepository.cs" />
     <Compile Include="Core\StateService.cs" />
     <Compile Include="ComponentServices\Registration\JobbrServiceProvider.cs" />
     <Compile Include="Scheduling\OldScheduler.cs" />

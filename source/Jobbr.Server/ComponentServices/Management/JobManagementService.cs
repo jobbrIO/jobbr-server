@@ -16,13 +16,15 @@ namespace Jobbr.Server.ComponentServices.Management
     {
         private readonly TriggerService triggerService;
         private readonly JobService jobService;
+        private readonly JobRunService jobRunService;
 
         private readonly IMapper mapper;
 
-        public JobManagementService(TriggerService triggerService, JobService jobService, IMapper mapper)
+        public JobManagementService(TriggerService triggerService, JobService jobService, JobRunService jobRunService, IMapper mapper)
         {
             this.triggerService = triggerService;
             this.jobService = jobService;
+            this.jobRunService = jobRunService;
             this.mapper = mapper;
         }
 
@@ -88,12 +90,14 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public List<JobArtefact> GetArtefactForJob(long jobRunId)
         {
-            throw new NotImplementedException();
+            var artefacts = this.jobRunService.GetArtefactsByJobRunId(jobRunId);
+
+            return this.mapper.Map<List<JobArtefact>>(artefacts);
         }
 
         public Stream GetArtefactAsStream(long jobRunId, string filename)
         {
-            throw new NotImplementedException();
+            return this.jobRunService.GetArtefactAsStream(jobRunId, filename);
         }
     }
 }

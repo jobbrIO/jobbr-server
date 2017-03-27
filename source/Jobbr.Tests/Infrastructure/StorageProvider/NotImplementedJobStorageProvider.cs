@@ -64,12 +64,12 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             throw new NotImplementedException();
         }
 
-        public virtual JobRun GetLastJobRunByTriggerId(long triggerId)
+        public virtual JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
             throw new NotImplementedException();
         }
 
-        public virtual JobRun GetFutureJobRunsByTriggerId(long triggerId)
+        public virtual JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
             throw new NotImplementedException();
         }
@@ -114,12 +114,12 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             throw new NotImplementedException();
         }
 
-        public virtual List<JobRun> GetJobRunsForUserId(long userId)
+        public virtual List<JobRun> GetJobRunsByUserId(long userId)
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<JobRun> GetJobRunsForUserName(string userName)
+        public virtual List<JobRun> GetJobRunsByUserName(string userName)
         {
             throw new NotImplementedException();
         }

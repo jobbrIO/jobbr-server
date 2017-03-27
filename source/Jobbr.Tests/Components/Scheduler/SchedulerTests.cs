@@ -172,7 +172,7 @@ namespace Jobbr.Tests.Components.Scheduler
             this.AddAndSignalNewTrigger(scheduledTrigger);
 
             // Simulate Job Completeness
-            var jobRunByScheduledTrigger = this.repository.GetLastJobRunByTriggerId(scheduledTrigger.Id);
+            var jobRunByScheduledTrigger = this.repository.GetAllJobRuns().Single(jr => jr.TriggerId == scheduledTrigger.Id);
             jobRunByScheduledTrigger.State = JobRunStates.Completed;
             this.repository.Update(jobRunByScheduledTrigger);
 
@@ -188,7 +188,7 @@ namespace Jobbr.Tests.Components.Scheduler
             this.AddAndSignalNewTrigger(recurringTrigger);
 
             // Simulate Job Completeness
-            var jobRunByScheduledTrigger = this.repository.GetLastJobRunByTriggerId(recurringTrigger.Id);
+            var jobRunByScheduledTrigger = this.repository.GetAllJobRuns().Single(jr => jr.TriggerId == recurringTrigger.Id);
             jobRunByScheduledTrigger.State = JobRunStates.Completed;
             this.repository.Update(jobRunByScheduledTrigger);
 
@@ -203,12 +203,16 @@ namespace Jobbr.Tests.Components.Scheduler
         [TestMethod]
         public void RecurringTrigger_WithNoTriggerOrJobChanges_DoesTriggerNewOnes()
         {
-            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false, StartDateTimeUtc = DateTime.UtcNow };
+            var initialDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(initialDate);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false};
             
             // This triggers the first jobrun
             this.AddAndSignalNewTrigger(recurringTrigger);
 
             // wait for additional jobrun
+            this.currentTimeProvider.Set(initialDate.AddHours(2));
             this.periodicTimer.CallbackOnce();
 
             var jobRun = this.repository.GetAllJobRuns();
@@ -220,9 +224,14 @@ namespace Jobbr.Tests.Components.Scheduler
         [TestMethod]
         public void NoParallelExecutionDisabled_ForceNewPlanWhileJobIsStillRunning_NextJobRunIsCreated()
         {
-            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false, StartDateTimeUtc = DateTime.UtcNow };
+            var initialDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(initialDate);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false };
             this.AddAndSignalNewTrigger(recurringTrigger);
 
+            // Make sure the cron in the recurring trigger will base on an updated "now"
+            this.currentTimeProvider.Set(initialDate.AddHours(2));
             this.periodicTimer.CallbackOnce();
 
             var jobRuns = this.repository.GetAllJobRuns();
@@ -238,18 +247,65 @@ namespace Jobbr.Tests.Components.Scheduler
         [TestMethod]
         public void NoParallelExecutionEnabled_TriggerWhileJobIsStillRunning_NextJobRunIsPrevented()
         {
-            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = true, StartDateTimeUtc = DateTime.UtcNow };
+            var initialDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(initialDate);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = true };
 
             // This triggers the first jobrun
             this.AddAndSignalNewTrigger(recurringTrigger);
 
-            this.periodicTimer.CallbackOnce();
+            // Make sure the cron in the recurring trigger will base on an updated "now"
+            this.currentTimeProvider.Set(initialDate.AddHours(2));
             this.periodicTimer.CallbackOnce();
 
             var jobRuns = this.repository.GetAllJobRuns();
 
             Assert.AreEqual(1, jobRuns.Count, "Creating new jobruns should be prevented if a JobRun is not yet completed for the trigger");
             Assert.AreEqual(1, this.lastIssuedPlan.Count, "It doesn't mather how often the Callback for recurring trigger scheduling is called, as long as there is a job running, there shoulnd be any additional jobs");
+        }
+
+        [TestMethod]
+        public void RecurringTrigger_WhenAddedBeforeStart_ShouldTriggerOneRun()
+        {
+            this.scheduler.Stop();
+
+            var futureDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(futureDate);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true };
+
+            // This triggers the first jobrun
+            this.repository.SaveAddTrigger(recurringTrigger);
+
+            this.scheduler.Start();
+
+            var jobRuns = this.repository.GetAllJobRuns();
+
+            Assert.AreEqual(1, jobRuns.Count, "There should only be one jobrun");
+            Assert.AreEqual(futureDate.Date, jobRuns[0].PlannedStartDateTimeUtc.Date);
+            Assert.AreEqual(futureDate.Hour, jobRuns[0].PlannedStartDateTimeUtc.Hour);
+            Assert.AreEqual(futureDate.Minute + 1, jobRuns[0].PlannedStartDateTimeUtc.Minute);
+            Assert.AreEqual(0, jobRuns[0].PlannedStartDateTimeUtc.Second);
+        }
+
+        [TestMethod]
+        public void RecurringTrigger_WhileRunIsIncomplete_ShouldNotRaiseNewRunsAtTheSameTime()
+        {
+            var futureDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(futureDate);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true};
+
+            // This triggers the first jobrun
+            this.AddAndSignalNewTrigger(recurringTrigger);
+
+            this.currentTimeProvider.AddSecond();
+            this.periodicTimer.CallbackOnce();
+
+            var jobRuns = this.repository.GetAllJobRuns();
+
+            Assert.AreEqual(1, jobRuns.Count, "The periodic callback should not create new jobruns if they would start at the same time (== planned starttime has not changed)");
         }
     }
 }

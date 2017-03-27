@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Jobbr.ComponentModel.ArtefactStorage;
+using Jobbr.ComponentModel.ArtefactStorage.Model;
 
 namespace Jobbr.Server.Storage
 {

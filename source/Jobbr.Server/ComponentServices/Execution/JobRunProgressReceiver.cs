@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using AutoMapper;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.Server.Core;
@@ -9,22 +10,19 @@ namespace Jobbr.Server.ComponentServices.Execution
     internal class JobRunProgressReceiver : IJobRunProgressChannel
     {
         private readonly JobRunService jobRunService;
+        private readonly IMapper mapper;
 
-        public JobRunProgressReceiver(JobRunService jobRunService)
+        public JobRunProgressReceiver(JobRunService jobRunService, IMapper mapper)
         {
             this.jobRunService = jobRunService;
+            this.mapper = mapper;
         }
 
         public void PublishStatusUpdate(long jobRunId, JobRunStates state)
         {
-            // TODO: Enum-Mapping needed and pass eveything to the service?
-            if (state == JobRunStates.Completed || state == JobRunStates.Failed)
-            {
-                this.jobRunService.Done(jobRunId, state == JobRunStates.Completed);
-            }
+            var coreState = this.mapper.Map<Core.Models.JobRunStates>(state);
 
-            // TODO: More generic publish for all the other states
-            // TODO: this.stateService.SetJobRunStartTime(jobRun, DateTime.UtcNow);
+            this.jobRunService.UpdateState(jobRunId, coreState);
         }
 
         public void PublishProgressUpdate(long jobRunId, double progress)
@@ -34,7 +32,7 @@ namespace Jobbr.Server.ComponentServices.Execution
 
         public void PublishArtefact(long id, string fileName, Stream result)
         {
-            throw new NotImplementedException();
+            this.jobRunService.AddArtefact(id, fileName, result);
         }
     }
 }

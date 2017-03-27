@@ -36,24 +36,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=5.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.ArtefactStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc2\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable20\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc3\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc6\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Management, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-rc2\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-rc4\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Registration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.Registration.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.Registration.dll</HintPath>
@@ -79,12 +80,16 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Components\JobRunService\ProgressChannelTests.cs" />
     <Compile Include="Components\Scheduler\ManualTimeProvider.cs" />
     <Compile Include="Components\Scheduler\PeriodicTimerMock.cs" />
     <Compile Include="Components\Scheduler\SchedulerTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\Extensions.cs" />
+    <Compile Include="Integration\Execution\JobRunExecutionTestBase.cs" />
     <Compile Include="Integration\Execution\JobRunInformationServiceTests.cs" />
+    <Compile Include="Integration\Execution\ProgressChannelTests.cs" />
     <Compile Include="Integration\Management\JobManagementTests.cs" />
+    <Compile Include="Integration\Management\JobQueryServiceTests.cs" />
     <Compile Include="Integration\Startup\BadEnvironmentTests.cs" />
     <Compile Include="Integration\Startup\ConfigurationTests.cs" />
     <Compile Include="Integration\ExposeAllServicesComponent.cs" />

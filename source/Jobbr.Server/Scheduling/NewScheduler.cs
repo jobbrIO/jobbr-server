@@ -81,7 +81,7 @@ namespace Jobbr.Server.Scheduling
             }
 
             // Get the next occurence from database
-            var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id);
+            var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
 
             if (dependentJobRun == null)
             {
@@ -106,7 +106,7 @@ namespace Jobbr.Server.Scheduling
                 this.currentPlan.RemoveAll(e => e.TriggerId == triggerId);
 
                 // Set the JobRun to deleted if any
-                var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id);
+                var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                 if (dependentJobRun != null)
                 {
@@ -213,9 +213,14 @@ namespace Jobbr.Server.Scheduling
 
                 if (planResult.Action == PlanAction.Possible)
                 {
-                    var scheduledItem = this.CreateNew(planResult, trigger);
+                    // Check if there is already a run planned at this time
+                    var nextRunForTrigger = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
 
-                    additonalItems.Add(scheduledItem);
+                    if (nextRunForTrigger == null || !nextRunForTrigger.PlannedStartDateTimeUtc.Equals(planResult.ExpectedStartDateUtc))
+                    {
+                        var scheduledItem = this.CreateNew(planResult, trigger);
+                        additonalItems.Add(scheduledItem);
+                    }
                 }
             }
 
@@ -287,7 +292,7 @@ namespace Jobbr.Server.Scheduling
                     var dateTime = planResult.ExpectedStartDateUtc;
 
                     // Get the next occurence from database
-                    var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id);
+                    var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                     if (dependentJobRun != null)
                     {

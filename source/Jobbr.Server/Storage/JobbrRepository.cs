@@ -7,63 +7,6 @@ using Jobbr.Server.Logging;
 
 namespace Jobbr.Server.Storage
 {
-    public interface IJobbrRepository
-    {
-        List<Job> GetAllJobs();
-
-        Job GetJob(long id);
-
-        void UpdateJobRunProgress(long jobRunId, double progress);
-
-        void SetPidForJobRun(JobRun jobRun, int id);
-
-        JobRun GetJobRun(long id);
-
-        List<JobTriggerBase> GetTriggers(long jobId);
-
-        void SaveAddTrigger(RecurringTrigger trigger);
-
-        void UpdatePlannedStartDateTimeUtc(long jobRunId, DateTime plannedStartDateTimeUtc);
-
-        void SaveAddTrigger(ScheduledTrigger trigger);
-
-        void SaveAddTrigger(InstantTrigger trigger);
-
-        JobRun GetLastJobRunByTriggerId(long triggerId);
-
-        JobRun GetNextJobRunByTriggerId(long triggerId);
-
-        bool EnableTrigger(long triggerId);
-
-        List<JobTriggerBase> GetActiveTriggers();
-
-        JobTriggerBase SaveUpdateTrigger(long id, JobTriggerBase trigger, out bool hadChanges);
-
-        bool CheckParallelExecution(long triggerId);
-
-        List<JobRun> GetJobRunsByState(JobRunStates state);
-
-        long AddJob(Job job);
-
-        JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc);
-
-        bool DisableTrigger(long triggerId);
-
-        void Update(JobRun jobRun);
-
-        JobRun GetJobRunById(long jobRunId);
-
-        JobTriggerBase GetTriggerById(long triggerId);
-
-        List<JobTriggerBase> GetTriggersByJobId(long jobId);
-
-        List<JobRun> GetAllJobRuns();
-
-        Job GetJobByUniqueName(string identifier);
-
-        void Delete(JobRun jobRun);
-    }
-
     public class JobbrRepository : IJobbrRepository
     {
         private static readonly ILog Logger = LogProvider.For<JobbrRepository>();
@@ -145,14 +88,14 @@ namespace Jobbr.Server.Storage
             trigger.Id = this.storageProvider.AddTrigger(trigger);
         }
 
-        public JobRun GetLastJobRunByTriggerId(long triggerId)
+        public JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
-            return this.storageProvider.GetLastJobRunByTriggerId(triggerId);
+            return this.storageProvider.GetLastJobRunByTriggerId(triggerId, utcNow);
         }
 
-        public JobRun GetNextJobRunByTriggerId(long triggerId)
+        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
         {
-            return this.storageProvider.GetFutureJobRunsByTriggerId(triggerId);
+            return this.storageProvider.GetNextJobRunByTriggerId(triggerId, utcNow);
         }
 
         public bool EnableTrigger(long triggerId)
@@ -270,7 +213,7 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.AddJob(job);
         }
 
-        public JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime startDateTimeUtc)
+        public JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime plannedStartDateTimeUtc)
         {
             var jobRun = new JobRun
             {
@@ -280,7 +223,7 @@ namespace Jobbr.Server.Storage
                 InstanceParameters = trigger.Parameters,
                 UniqueId = Guid.NewGuid(),
                 State = JobRunStates.Scheduled,
-                PlannedStartDateTimeUtc = startDateTimeUtc
+                PlannedStartDateTimeUtc = plannedStartDateTimeUtc
             };
 
             jobRun.Id = this.storageProvider.AddJobRun(jobRun);
@@ -311,6 +254,11 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetJobRunById(jobRunId);
         }
 
+        public List<JobRun> GetJobRunsByTriggerId(long triggerId)
+        {
+            return this.storageProvider.GetJobRunsByTriggerId(triggerId);
+        }
+
         public JobTriggerBase GetTriggerById(long triggerId)
         {
             return this.storageProvider.GetTriggerById(triggerId);
@@ -324,6 +272,16 @@ namespace Jobbr.Server.Storage
         public List<JobRun> GetAllJobRuns()
         {
             return this.storageProvider.GetJobRuns();
+        }
+
+        public List<JobRun> GetJobRunsForUserId(long userId)
+        {
+            return this.storageProvider.GetJobRunsByUserId(userId);
+        }
+
+        public List<JobRun> GetJobRunsForUserName(string userName)
+        {
+            return this.storageProvider.GetJobRunsByUserName(userName);
         }
 
         public Job GetJobByUniqueName(string identifier)
