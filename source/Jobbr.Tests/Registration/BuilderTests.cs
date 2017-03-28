@@ -10,10 +10,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Jobbr.Tests.Registration
 {
     [TestClass]
-    public class ArtefactStorageProviderRegistrationTests
+    public class BuilderTests
     {
         [TestMethod]
-        public void BuilderHasCustomStorageProvider_AfterCreation_CorrectTypeIsActivated()
+        public void RegisterCustomStorageProvider_AfterCreation_CorrectTypeIsActivated()
         {
             var builder = new JobbrBuilder();
 
