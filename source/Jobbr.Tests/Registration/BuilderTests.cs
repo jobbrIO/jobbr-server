@@ -26,7 +26,8 @@ namespace Jobbr.Tests.Registration
             builder.Create();
 
             Assert.IsNotNull(ExposeAllServicesComponent.Instance.ArtefactsStorageProvider);
-            Assert.AreEqual(typeof(CustomArtefactStorageAdapter), ExposeAllServicesComponent.Instance.ArtefactsStorageProvider.GetType());
+            Assert.AreEqual(typeof(CustomArtefactStorageAdapter),
+                ExposeAllServicesComponent.Instance.ArtefactsStorageProvider.GetType());
         }
 
         [TestMethod]
@@ -40,7 +41,8 @@ namespace Jobbr.Tests.Registration
             builder.Create();
 
             Assert.IsNotNull(ExposeAllServicesComponent.Instance.ArtefactsStorageProvider);
-            Assert.AreEqual(typeof(CustomJobStorageProvider), ExposeAllServicesComponent.Instance.JobStorageProvider.GetType());
+            Assert.AreEqual(typeof(CustomJobStorageProvider),
+                ExposeAllServicesComponent.Instance.JobStorageProvider.GetType());
         }
     }
 
@@ -205,6 +207,7 @@ namespace Jobbr.Tests.Registration
             return false;
         }
     }
-    
 
-#endregion}
+}
+
+#endregion
