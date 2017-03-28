@@ -13,7 +13,7 @@
     <dependencies>
       <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="1.0.0-rc4" />
       <dependency id="Jobbr.ComponentModel.Execution" version="1.0.0-unstable20" />
-      <dependency id="Jobbr.ComponentModel.JobStorage" version="1.0.0-rc5" />
+      <dependency id="Jobbr.ComponentModel.JobStorage" version="1.0.0-rc6" />
       <dependency id="Jobbr.ComponentModel.Management" version="1.0.0-rc4" />
       <dependency id="Jobbr.ComponentModel.Registration" version="1.0.0-rc1" />
     </dependencies>
