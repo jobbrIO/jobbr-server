@@ -188,8 +188,9 @@ namespace Jobbr.Server
                     this.jobStorageProvider.GetJobs();
                     return;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Logger.ErrorException("Exception while connecting to database to get all Jobs on startup.", ex);
                     Thread.Sleep(1000);
                 }
             }
