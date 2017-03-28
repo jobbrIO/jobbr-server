@@ -53,7 +53,7 @@ namespace Jobbr.Server.Storage
         {
             var filesInContainer = this.GetFilesFromContainer(container);
 
-            return filesInContainer.Select(s => new JobbrArtefact { FileName = s.Name, Data = new MemoryStream(s.Data) }).ToList();
+            return filesInContainer.Select(s => new JobbrArtefact { FileName = s.Name }).ToList();
         }
 
         private IEnumerable<InMemoryFile> GetFilesFromContainer(string container)
