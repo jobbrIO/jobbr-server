@@ -107,7 +107,8 @@ namespace Jobbr.Server.Core
 
             recurringTrigger.StartDateTimeUtc = startDateTimeUtc;
 
-            this.jobbrRepository.SaveUpdateTrigger(jobId, trigger, out bool hadChanges);
+            bool hadChanges;
+            this.jobbrRepository.SaveUpdateTrigger(jobId, trigger, out hadChanges);
 
             if (hadChanges)
             {
