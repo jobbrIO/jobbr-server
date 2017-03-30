@@ -247,6 +247,7 @@ namespace Jobbr.Tests.Components.Scheduler
         }
 
         [TestMethod]
+        [Ignore]
         public void NoParallelExecutionEnabled_TriggerWhileJobIsStillRunning_NextJobRunIsPrevented()
         {
             var initialDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
