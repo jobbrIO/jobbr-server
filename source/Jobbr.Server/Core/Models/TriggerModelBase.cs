@@ -14,9 +14,7 @@ namespace Jobbr.Server.Core.Models
 
         public string UserDisplayName { get; set; }
 
-        public long? UserId { get; set; }
-
-        public string UserName { get; set; }
+        public string UserId { get; set; }
 
         public long Id { get; set; }
 

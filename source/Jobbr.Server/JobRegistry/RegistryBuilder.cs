@@ -63,11 +63,12 @@ namespace Jobbr.Server.JobRegistry
                     {
                         // Add new Job
                         Logger.InfoFormat("Adding job '{0}' of type '{1}'", jobDef.UniqueName, jobDef.ClrType);
-                        var jobId = storage.AddJob(new Job { UniqueName = jobDef.UniqueName, Type = jobDef.ClrType });
+                        var job = new Job { UniqueName = jobDef.UniqueName, Type = jobDef.ClrType };
+                        storage.AddJob(job);
 
                         foreach (var trigger in jobDef.Triggers)
                         {
-                            AddTrigger(storage, trigger, jobDef, jobId);
+                            AddTrigger(storage, trigger, jobDef, job.Id);
                             numberOfChanges++;
                         }
                     }
@@ -119,7 +120,7 @@ namespace Jobbr.Server.JobRegistry
                             foreach (var trigger in toDeactivateTriggers)
                             {
                                 Logger.InfoFormat("Deactivating trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.GetType().Name, jobDef.UniqueName, trigger.Id);
-                                storage.DisableTrigger(trigger.Id);
+                                storage.DisableTrigger(existentJob.Id, trigger.Id);
                                 numberOfChanges++;
                             }
                         }
@@ -142,13 +143,13 @@ namespace Jobbr.Server.JobRegistry
             var scheduledTrigger = trigger as ScheduledTrigger;
             if (scheduledTrigger != null)
             {
-                storage.AddTrigger(scheduledTrigger);
+                storage.AddTrigger(jobId, scheduledTrigger);
             }
 
             var recurringTrigger = trigger as RecurringTrigger;
             if (recurringTrigger != null)
             {
-                storage.AddTrigger(recurringTrigger);
+                storage.AddTrigger(jobId, recurringTrigger);
             }
         }
 

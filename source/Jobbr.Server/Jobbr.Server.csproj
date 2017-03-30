@@ -42,14 +42,13 @@
       <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc4\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable20\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable21\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc6\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
+      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc11\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Management, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-rc4\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
+      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-rc8\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Registration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.Registration.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.Registration.dll</HintPath>
@@ -82,6 +81,7 @@
     <Compile Include="Core\Messaging\JobRunCompletedMessage.cs" />
     <Compile Include="Core\JobRunService.cs" />
     <Compile Include="ComponentServices\Management\MappingProfile.cs" />
+    <Compile Include="Core\Messaging\TriggerKey.cs" />
     <Compile Include="Core\Models\JobArtefactModel.cs" />
     <Compile Include="Core\Models\JobModel.cs" />
     <Compile Include="Core\Models\InstantTriggerModel.cs" />

@@ -9,8 +9,7 @@ namespace Jobbr.Server.Core.Models
         {
             this.CreateMap<RecurringTriggerModel, RecurringTrigger>();
             this.CreateMap<ScheduledTriggerModel, ScheduledTrigger>();
-            this.CreateMap<InstantTriggerModel, InstantTrigger>()
-                .ForMember(d => d.CreatedAtUtc, cgf => cgf.MapFrom(s => s.CreatedDateTimeUtc));
+            this.CreateMap<InstantTriggerModel, InstantTrigger>();
 
             this.CreateMap<JobModel, Job>();
         }

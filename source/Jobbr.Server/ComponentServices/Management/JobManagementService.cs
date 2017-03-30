@@ -28,64 +28,62 @@ namespace Jobbr.Server.ComponentServices.Management
             this.mapper = mapper;
         }
 
-        public Job AddJob(Job job)
+        public void AddJob(Job job)
         {
             var model = this.mapper.Map<JobModel>(job);
 
             var newJOb = this.jobService.Add(model);
             job.Id = newJOb.Id;
-
-            return job;
         }
 
-        public long AddTrigger(RecurringTrigger trigger)
+        public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
             var model = this.mapper.Map<RecurringTriggerModel>(trigger);
 
-            var id = this.triggerService.Add(model);
-            trigger.Id = id;
+            this.triggerService.Add(jobId, model);
 
-            return trigger.Id;
+            trigger.Id = model.Id;
+            trigger.JobId = jobId;
         }
 
-        public long AddTrigger(ScheduledTrigger trigger)
+        public void AddTrigger(long jobId, ScheduledTrigger trigger)
         {
             var model = this.mapper.Map<ScheduledTriggerModel>(trigger);
 
-            var id = this.triggerService.Add(model);
-            trigger.Id = id;
+            this.triggerService.Add(jobId, model);
 
-            return trigger.Id;
+            trigger.Id = model.Id;
+            trigger.JobId = jobId;
         }
 
-        public long AddTrigger(InstantTrigger trigger)
+        public void AddTrigger(long jobId, InstantTrigger trigger)
         {
             var model = this.mapper.Map<InstantTriggerModel>(trigger);
 
-            var id = this.triggerService.Add(model);
-            trigger.Id = id;
+            this.triggerService.Add(jobId, model);
 
-            return trigger.Id;
+            trigger.Id = model.Id;
+            trigger.JobId = jobId;
         }
 
-        public bool DisableTrigger(long triggerId)
+        public void DisableTrigger(long jobId, long triggerId)
         {
-            return this.triggerService.Disable(triggerId);
+            this.triggerService.Disable(jobId, triggerId);
         }
 
-        public bool EnableTrigger(long triggerId)
+        public void EnableTrigger(long jobId, long triggerId)
         {
-            return this.triggerService.Enable(triggerId);
+            this.triggerService.Enable(jobId, triggerId);
         }
 
-        public void UpdateTriggerDefinition(long triggerId, string definition)
+        public void UpdateTriggerDefinition(long jobId, long triggerId, string definition)
         {
-            this.triggerService.Update(triggerId, definition);
+            this.triggerService.Update(jobId, triggerId, definition);
         }
 
-        public void UpdateTriggerStartTime(long triggerId, DateTime startDateTimeUtc)
+        public void UpdateTriggerStartTime(long jobId, long triggerId, DateTime startDateTimeUtc)
         {
-            this.triggerService.Update(triggerId, startDateTimeUtc);
+            this.triggerService.Update(jobId, triggerId, startDateTimeUtc);
         }
 
         public List<JobArtefact> GetArtefactForJob(long jobRunId)

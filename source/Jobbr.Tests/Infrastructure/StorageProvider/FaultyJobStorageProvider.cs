@@ -20,16 +20,16 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             Instance = this;
         }
 
-        public List<Job> GetJobs()
+        public List<Job> GetJobs(int page = 0, int pageSize = 50)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobs();
+            return this.inMemoryVersion.GetJobs(page, pageSize);
         }
 
-        public long AddJob(Job job)
+        public void AddJob(Job job)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.AddJob(job);
+            this.inMemoryVersion.AddJob(job);
         }
 
         public List<JobTriggerBase> GetTriggersByJobId(long jobId)
@@ -38,34 +38,34 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             return this.inMemoryVersion.GetTriggersByJobId(jobId);
         }
 
-        public long AddTrigger(RecurringTrigger trigger)
+        public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.AddTrigger(trigger);
+            this.inMemoryVersion.AddTrigger(jobId, trigger);
         }
 
-        public long AddTrigger(InstantTrigger trigger)
+        public void AddTrigger(long jobId, InstantTrigger trigger)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.AddTrigger(trigger);
+            this.inMemoryVersion.AddTrigger(jobId, trigger);
         }
 
-        public long AddTrigger(ScheduledTrigger trigger)
+        public void AddTrigger(long jobId, ScheduledTrigger trigger)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.AddTrigger(trigger);
+            this.inMemoryVersion.AddTrigger(jobId, trigger);
         }
 
-        public bool DisableTrigger(long triggerId)
+        public void DisableTrigger(long jobId, long triggerId)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.DisableTrigger(triggerId);
+            this.inMemoryVersion.DisableTrigger(jobId, triggerId);
         }
 
-        public bool EnableTrigger(long triggerId)
+        public void EnableTrigger(long jobId, long triggerId)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.EnableTrigger(triggerId);
+           this.inMemoryVersion.EnableTrigger(jobId, triggerId);
         }
 
         public List<JobTriggerBase> GetActiveTriggers()
@@ -74,46 +74,46 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             return this.inMemoryVersion.GetActiveTriggers();
         }
 
-        public JobTriggerBase GetTriggerById(long triggerId)
+        public JobTriggerBase GetTriggerById(long jobId, long triggerId)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetTriggerById(triggerId);
+            return this.inMemoryVersion.GetTriggerById(jobId, triggerId);
         }
 
-        public JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
+        public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetLastJobRunByTriggerId(triggerId, utcNow);
+            return this.inMemoryVersion.GetLastJobRunByTriggerId(jobId, triggerId, utcNow);
         }
 
-        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
+        public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetNextJobRunByTriggerId(triggerId, utcNow);
+            return this.inMemoryVersion.GetNextJobRunByTriggerId(jobId, triggerId, utcNow);
         }
 
-        public int AddJobRun(JobRun jobRun)
+        public void AddJobRun(JobRun jobRun)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.AddJobRun(jobRun);
+            this.inMemoryVersion.AddJobRun(jobRun);
         }
 
-        public List<JobRun> GetJobRuns()
+        public List<JobRun> GetJobRuns(long page = 0, long pageSize = 50)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRuns();
         }
 
-        public bool UpdateProgress(long jobRunId, double? progress)
+        public void UpdateProgress(long jobRunId, double? progress)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.UpdateProgress(jobRunId, progress);
+            this.inMemoryVersion.UpdateProgress(jobRunId, progress);
         }
 
-        public bool Update(JobRun jobRun)
+        public void Update(JobRun jobRun)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.Update(jobRun);
+            this.inMemoryVersion.Update(jobRun);
         }
 
         public Job GetJobById(long id)
@@ -134,58 +134,52 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             return this.inMemoryVersion.GetJobRunById(id);
         }
 
-        public List<JobRun> GetJobRunsByUserId(long userId)
+        public List<JobRun> GetJobRunsByUserId(string userId, long page = 0, long pageSize = 50)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByUserId(userId);
+            return this.inMemoryVersion.GetJobRunsByUserId(userId, page, pageSize);
         }
 
-        public List<JobRun> GetJobRunsByUserName(string userName)
+        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, long page = 0, long pageSize = 50)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByUserName(userName);
+            return this.inMemoryVersion.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize);
         }
 
-        public bool Update(Job job)
+        public void Update(Job job)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.Update(job);
+            this.inMemoryVersion.Update(job);
         }
 
-        public bool Update(InstantTrigger trigger)
+        public void Update(long jobId, InstantTrigger trigger)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.Update(trigger);
+            this.inMemoryVersion.Update(jobId, trigger);
         }
 
-        public bool Update(ScheduledTrigger trigger)
+        public void Update(long jobId, ScheduledTrigger trigger)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.Update(trigger);
+            this.inMemoryVersion.Update(jobId, trigger);
         }
 
-        public bool Update(RecurringTrigger trigger)
+        public void Update(long jobId, RecurringTrigger trigger)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.Update(trigger);
+            this.inMemoryVersion.Update(jobId, trigger);
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long triggerId)
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, long page = 0, long pageSize = 50)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByTriggerId(triggerId);
+            return this.inMemoryVersion.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize);
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state)
+        public List<JobRun> GetJobRunsByState(JobRunStates state, long page = 0, long pageSize = 50)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByState(state);
-        }
-
-        public bool CheckParallelExecution(long triggerId)
-        {
-            this.CheckFailAll();
-            return this.inMemoryVersion.CheckParallelExecution(triggerId);
+            return this.inMemoryVersion.GetJobRunsByState(state, page, pageSize);
         }
 
         public void DisableImplementation()
@@ -204,6 +198,11 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             {
                 throw new TargetException("This JobStorageProvider is currently not healthy!");
             }
+        }
+
+        public bool IsAvailable()
+        {
+            return true;
         }
     }
 }

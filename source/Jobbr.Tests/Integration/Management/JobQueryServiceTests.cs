@@ -13,7 +13,7 @@ namespace Jobbr.Tests.Integration.Management
         public void HasNoJobs_QueryAllJobs_ShouldReturnEmptyList()
         {
             // Act
-            var jobs = this.QueryService.GetAllJobs();
+            var jobs = this.QueryService.GetJobs();
 
             // Assert
             Assert.IsNotNull(jobs);
@@ -27,7 +27,7 @@ namespace Jobbr.Tests.Integration.Management
             this.Services.JobStorageProvider.AddJob(new Job());
 
             // Act
-            var jobs = this.QueryService.GetAllJobs();
+            var jobs = this.QueryService.GetJobs();
 
             // Assert
             Assert.AreEqual(1, jobs.Count);
@@ -37,13 +37,14 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneJob_QueryJobByExistingId_ReturnsSingle()
         {
             // Arrange
-            var id = this.Services.JobStorageProvider.AddJob(new Job());
+            var job = new Job();
+            this.Services.JobStorageProvider.AddJob(job);
 
             // Act
-            var job = this.QueryService.GetJobById(id);
+            var jobQueried = this.QueryService.GetJobById(job.Id);
 
             // Assert
-            Assert.AreEqual(id, job.Id);
+            Assert.AreEqual(job.Id, jobQueried.Id);
         }
 
         [TestMethod]
@@ -86,9 +87,12 @@ namespace Jobbr.Tests.Integration.Management
         public void HasTriggerWithJobId_QueryByMatchingJobId_ReturnsListWithSingle()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { IsActive = true, Id = 1, JobId = 100});
-            this.Services.JobStorageProvider.AddTrigger(new RecurringTrigger() { IsActive = true, Id = 2, JobId = 200});
-            this.Services.JobStorageProvider.AddTrigger(new ScheduledTrigger() { IsActive = true, Id = 3, JobId = 300});
+            var instantTrigger = new InstantTrigger { IsActive = true };
+            var recurringTrigger = new InstantTrigger { IsActive = true };
+            var scheduledTrigger = new ScheduledTrigger { IsActive = true };
+            this.Services.JobStorageProvider.AddTrigger(100, instantTrigger);
+            this.Services.JobStorageProvider.AddTrigger(200, recurringTrigger);
+            this.Services.JobStorageProvider.AddTrigger(300, scheduledTrigger);
 
             // Act
             var triggers = this.QueryService.GetTriggersByJobId(200);
@@ -96,21 +100,25 @@ namespace Jobbr.Tests.Integration.Management
             // Test
             Assert.IsNotNull(triggers);
             Assert.AreEqual(1, triggers.Count);
-            Assert.AreEqual(2, triggers[0].Id);
+            Assert.AreEqual(recurringTrigger.Id, triggers[0].Id);
         }
 
         [TestMethod]
-        public void HasDifferentTriggerTypes_QueryById_ReturnsCurrectType()
+        public void HasDifferentTriggerTypes_QueryById_ReturnsCorrectType()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { IsActive = true, Id = 1 });
-            this.Services.JobStorageProvider.AddTrigger(new RecurringTrigger() { IsActive = true, Id = 2 });
-            this.Services.JobStorageProvider.AddTrigger(new ScheduledTrigger() { IsActive = true, Id = 3 });
+            const long jobId = 1;
+            var instantTrigger = new InstantTrigger();
+            var recurringTrigger = new RecurringTrigger();
+            var scheduledTrigger = new ScheduledTrigger();
+            this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger);
+            this.Services.JobStorageProvider.AddTrigger(jobId, recurringTrigger);
+            this.Services.JobStorageProvider.AddTrigger(jobId, scheduledTrigger);
 
             // Act
-            var instantTypeTrigger = this.QueryService.GetTriggerById(1);
-            var recurringTypeTrigger = this.QueryService.GetTriggerById(2);
-            var scheduledTypeTrigger = this.QueryService.GetTriggerById(3);
+            var instantTypeTrigger = this.QueryService.GetTriggerById(jobId, instantTrigger.Id);
+            var recurringTypeTrigger = this.QueryService.GetTriggerById(jobId, recurringTrigger.Id);
+            var scheduledTypeTrigger = this.QueryService.GetTriggerById(jobId, scheduledTrigger.Id);
 
             // Test
             Assert.AreEqual(typeof(ComponentModel.Management.Model.InstantTrigger), instantTypeTrigger.GetType());
@@ -122,10 +130,12 @@ namespace Jobbr.Tests.Integration.Management
         [TestMethod]
         public void HasActiveTriggers_QueryActive_ReturnsAll()
         {
+            const long jobId = 1;
+
             // Arrange
-            this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { IsActive = true, Id = 1 });
-            this.Services.JobStorageProvider.AddTrigger(new RecurringTrigger() { IsActive = true, Id = 2 });
-            this.Services.JobStorageProvider.AddTrigger(new ScheduledTrigger() { IsActive = true, Id = 3 });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new InstantTrigger { IsActive = true });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new RecurringTrigger { IsActive = true });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new ScheduledTrigger { IsActive = true });
 
             // Act
             var triggers = this.QueryService.GetActiveTriggers();
@@ -137,13 +147,15 @@ namespace Jobbr.Tests.Integration.Management
         [TestMethod]
         public void HasActiveAndInactiveTriggers_QueryActive_ReturnsOnlyActive()
         {
+            const long jobId = 1;
+
             // Arrange
-            this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { IsActive = true, Id = 1 });
-            this.Services.JobStorageProvider.AddTrigger(new RecurringTrigger() { IsActive = true, Id = 2 });
-            this.Services.JobStorageProvider.AddTrigger(new ScheduledTrigger() { IsActive = true, Id = 3 });
-            this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { IsActive = false, Id = 4 });
-            this.Services.JobStorageProvider.AddTrigger(new RecurringTrigger() { IsActive = false, Id = 5 });
-            this.Services.JobStorageProvider.AddTrigger(new ScheduledTrigger() { IsActive = false, Id = 6 });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new InstantTrigger { IsActive = true });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new RecurringTrigger { IsActive = true });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new ScheduledTrigger { IsActive = true });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new InstantTrigger { IsActive = false });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new RecurringTrigger { IsActive = false });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new ScheduledTrigger { IsActive = false });
 
             // Act
             var triggers = this.QueryService.GetActiveTriggers();
@@ -155,15 +167,17 @@ namespace Jobbr.Tests.Integration.Management
         [TestMethod]
         public void HasActiveTriggers_QueryById_ReturnsSingle()
         {
+            const long jobId = 1;
+
             // Arrange
-            this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { IsActive = true, Id = 1 });
-            this.Services.JobStorageProvider.AddTrigger(new RecurringTrigger() { IsActive = true, Id = 2 });
-            this.Services.JobStorageProvider.AddTrigger(new ScheduledTrigger() { IsActive = true, Id = 3 });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new InstantTrigger { IsActive = true });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new RecurringTrigger { IsActive = true });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new ScheduledTrigger { IsActive = true });
 
             // Act
-            var instantTypeTrigger = this.QueryService.GetTriggerById(1);
-            var recurringTypeTrigger = this.QueryService.GetTriggerById(2);
-            var scheduledTypeTrigger = this.QueryService.GetTriggerById(3);
+            var instantTypeTrigger = this.QueryService.GetTriggerById(jobId, 1);
+            var recurringTypeTrigger = this.QueryService.GetTriggerById(jobId, 2);
+            var scheduledTypeTrigger = this.QueryService.GetTriggerById(jobId, 3);
 
             // Test
             Assert.IsNotNull(instantTypeTrigger);
@@ -178,15 +192,17 @@ namespace Jobbr.Tests.Integration.Management
         [TestMethod]
         public void HasInactiveTriggers_QueryById_ReturnsSingle()
         {
+            const long jobId = 1;
+
             // Arrange
-            this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { IsActive = false, Id = 1 });
-            this.Services.JobStorageProvider.AddTrigger(new RecurringTrigger() { IsActive = false, Id = 2 });
-            this.Services.JobStorageProvider.AddTrigger(new ScheduledTrigger() { IsActive = false, Id = 3 });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new InstantTrigger { IsActive = false });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new RecurringTrigger { IsActive = false });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new ScheduledTrigger { IsActive = false });
 
             // Act
-            var instantTypeTrigger = this.QueryService.GetTriggerById(1);
-            var recurringTypeTrigger = this.QueryService.GetTriggerById(2);
-            var scheduledTypeTrigger = this.QueryService.GetTriggerById(3);
+            var instantTypeTrigger = this.QueryService.GetTriggerById(jobId, 1);
+            var recurringTypeTrigger = this.QueryService.GetTriggerById(jobId, 2);
+            var scheduledTypeTrigger = this.QueryService.GetTriggerById(jobId, 3);
 
             // Test
             Assert.IsNotNull(instantTypeTrigger);
@@ -201,12 +217,14 @@ namespace Jobbr.Tests.Integration.Management
         [TestMethod]
         public void HasActiveTriggers_QueryByInExistentId_ReturnsNull()
         {
-            this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { IsActive = true, Id = 1 });
-            this.Services.JobStorageProvider.AddTrigger(new RecurringTrigger() { IsActive = true, Id = 2 });
-            this.Services.JobStorageProvider.AddTrigger(new ScheduledTrigger() { IsActive = true, Id = 3 });
+            const long jobId = 1;
+
+            this.Services.JobStorageProvider.AddTrigger(jobId, new InstantTrigger { IsActive = true });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new RecurringTrigger { IsActive = true });
+            this.Services.JobStorageProvider.AddTrigger(jobId, new ScheduledTrigger { IsActive = true });
 
             // Act
-            var trigger = this.QueryService.GetTriggerById(42);
+            var trigger = this.QueryService.GetTriggerById(jobId, 42);
 
             Assert.IsNull(trigger);
         }
@@ -227,7 +245,8 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneJobRun_QueryAll_ShouldReturnOne()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98 });
+            var jobRun = new JobRun();
+            this.Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
             var jobs = this.QueryService.GetJobRuns();
@@ -240,20 +259,22 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneJobRun_QueryJobByExistingId_ReturnsSingle()
         {
             // Arrange
-            var id = this.Services.JobStorageProvider.AddJobRun(new JobRun());
+            var jobRunToAdd = new JobRun();
+            this.Services.JobStorageProvider.AddJobRun(jobRunToAdd);
 
             // Act
-            var jobRun = this.QueryService.GetJobRunById(id);
+            var jobRun = this.QueryService.GetJobRunById(jobRunToAdd.Id);
 
             // Assert
-            Assert.AreEqual(id, jobRun.Id);
+            Assert.AreEqual(jobRunToAdd.Id, jobRun.Id);
         }
 
         [TestMethod]
         public void HasOneJobRun_QueryJobByWrongId_ReturnsNull()
         {
             // Arrange
-            var id = this.Services.JobStorageProvider.AddJobRun(new JobRun());
+            var jobRun = new JobRun();
+            this.Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
             var job = this.QueryService.GetJobRunById(42);
@@ -265,25 +286,27 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneJobRun_QueryByExistingTriggerId_ReturnsListWithSingle()
         {
             // Arrange
-            var id = this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = 34 });
+            var jobRun = new JobRun { JobId = 1337, TriggerId = 34 };
+            this.Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
-            var runs = this.QueryService.GetJobRunsByTriggerId(34);
+            var runs = this.QueryService.GetJobRunsByTriggerId(1337, 34);
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(id, runs[0].Id);
+            Assert.AreEqual(jobRun.Id, runs[0].Id);
             Assert.AreEqual(34, runs[0].TriggerId);
+            Assert.AreEqual(1337, runs[0].JobId);
         }
 
         [TestMethod]
         public void HasOneJobRun_QueryByInExistentTriggerId_ReturnsEmptyList()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { Id = 98, TriggerId = 34 });
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { JobId = 1000, TriggerId = 34 });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByTriggerId(-1);
+            var runs = this.QueryService.GetJobRunsByTriggerId(-1, -1);
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(0, runs.Count);
@@ -292,27 +315,34 @@ namespace Jobbr.Tests.Integration.Management
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserId_ReturnsListWithSingle()
         {
+            const long jobId = 1;
             // Arrange
-            var triggerId = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserId = 45 });
-            var id = this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = triggerId });
+            var instantTrigger = new InstantTrigger { UserId = "45" };
+            this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger);
+
+            var jobRun = new JobRun { TriggerId = instantTrigger.Id, JobId = jobId };
+            this.Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
+            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc("45");
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(id, runs[0].Id);
+            Assert.AreEqual(jobRun.Id, runs[0].Id);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByInexistentUserId_ReturnsEmptyList()
         {
+            const long jobId = 1;
+
             // Arrange
-            var triggerId = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserId = 45 });
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = triggerId });
+            var instantTrigger = new InstantTrigger { UserId = "45" };
+            this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger);
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = instantTrigger.Id, JobId = jobId });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(88);
+            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc("88");
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(0, runs.Count);
@@ -321,46 +351,62 @@ namespace Jobbr.Tests.Integration.Management
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserId_ReturnsSortedListByIdDesc()
         {
-            // Arrange
-            var trigger1Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserId = 45 });
-            var trigger2Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserId = 45 });
+            const long jobId = 1;
 
-            var id1 = this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = trigger1Id });
-            var id2 =this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = trigger2Id });
+            // Arrange
+            var instantTrigger1 = new InstantTrigger { UserId = "45" };
+            this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger1);
+
+            var instantTrigger2 = new InstantTrigger { UserId = "45" };
+            this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger2);
+
+            var jobRun1 = new JobRun { TriggerId = instantTrigger1.Id };
+            this.Services.JobStorageProvider.AddJobRun(jobRun1);
+
+            var jobRun2 = new JobRun { TriggerId = instantTrigger2.Id };
+            this.Services.JobStorageProvider.AddJobRun(jobRun2);
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc(45);
+            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc("45");
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(2, runs.Count);
-            Assert.AreEqual(id2, runs[0].Id);
-            Assert.AreEqual(id1, runs[1].Id);
+            Assert.AreEqual(jobRun2.Id, runs[0].Id);
+            Assert.AreEqual(jobRun1.Id, runs[1].Id);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserName_ReturnsListWithSingle()
         {
+            const long jobId = 1;
             // Arrange
-            var trigger1Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserName = "hans" });
-            this.Services.JobStorageProvider.AddJobRun(new JobRun {TriggerId = trigger1Id });
+            var instantTrigger = new InstantTrigger { UserDisplayName = "hans" };
+            this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger);
+
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { JobId = jobId, TriggerId = instantTrigger.Id });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
+            var runs = this.QueryService.GetJobRunsByUserDisplayNameOrderByIdDesc("hans");
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(trigger1Id, runs[0].TriggerId);
+            Assert.AreEqual(instantTrigger.Id, runs[0].TriggerId);
         }
 
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByInexistentUserName_ReturnsEmptyList()
         {
+            const long jobId = 1;
+
             // Arrange
-            var trigger1Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserName = "hans" });
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = trigger1Id });
+            var instantTrigger = new InstantTrigger { UserDisplayName = "hans" };
+            this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger);
+
+            var jobRun = new JobRun { JobId = jobId, TriggerId = instantTrigger.Id };
+            this.Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("blablablabl");
+            var runs = this.QueryService.GetJobRunsByUserDisplayNameOrderByIdDesc("blablablabl");
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(0, runs.Count);
@@ -369,20 +415,28 @@ namespace Jobbr.Tests.Integration.Management
         [TestMethod]
         public void HasOneMatchingJobRun_QueryJobByUserName_ReturnsSortedListByIdDesc()
         {
-            // Arrange
-            var trigger1Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserName = "hans" });
-            var trigger2Id = this.Services.JobStorageProvider.AddTrigger(new InstantTrigger() { UserName = "hans" });
+            const long jobId = 1;
 
-            var id1 = this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = trigger1Id });
-            var id2 = this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = trigger2Id });
+            // Arrange
+            var instantTrigger1 = new InstantTrigger { UserDisplayName = "hans" };
+            this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger1);
+
+            var instantTrigger2 = new InstantTrigger { UserDisplayName = "hans" };
+            this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger2);
+
+            var jobRun1 = new JobRun { TriggerId = instantTrigger1.Id };
+            this.Services.JobStorageProvider.AddJobRun(jobRun1);
+
+            var jobRun2 = new JobRun { TriggerId = instantTrigger2.Id };
+            this.Services.JobStorageProvider.AddJobRun(jobRun2);
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserNameOrderByIdDesc("hans");
+            var runs = this.QueryService.GetJobRunsByUserDisplayNameOrderByIdDesc("hans");
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(2, runs.Count);
-            Assert.AreEqual(id2, runs[0].Id);
-            Assert.AreEqual(id1, runs[1].Id);
+            Assert.AreEqual(jobRun2.Id, runs[0].Id);
+            Assert.AreEqual(jobRun1.Id, runs[1].Id);
         }
     }
 }

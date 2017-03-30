@@ -20,9 +20,8 @@ namespace Jobbr.Server.Core
         {
             var entity = this.mapper.Map<Job>(model);
 
-            var id = this.repository.AddJob(entity);
-
-            model.Id = id;
+            this.repository.AddJob(entity);
+            model.Id = entity.Id;
 
             return model;
         }

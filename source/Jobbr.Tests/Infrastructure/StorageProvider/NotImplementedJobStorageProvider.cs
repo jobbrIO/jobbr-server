@@ -14,147 +14,142 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             Instance = this;
         }
 
-        public virtual List<Job> GetJobs()
+        public void AddJob(Job job)
         {
             throw new NotImplementedException();
         }
 
-        public virtual long AddJob(Job job)
+        public List<Job> GetJobs(int page = 0, int pageSize = 50)
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<JobTriggerBase> GetTriggersByJobId(long jobId)
+        public Job GetJobById(long id)
         {
             throw new NotImplementedException();
         }
 
-        public virtual long AddTrigger(RecurringTrigger trigger)
+        public Job GetJobByUniqueName(string identifier)
         {
             throw new NotImplementedException();
         }
 
-        public virtual long AddTrigger(InstantTrigger trigger)
+        public void Update(Job job)
         {
             throw new NotImplementedException();
         }
 
-        public virtual long AddTrigger(ScheduledTrigger trigger)
+        public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
             throw new NotImplementedException();
         }
 
-        public virtual bool DisableTrigger(long triggerId)
+        public void AddTrigger(long jobId, InstantTrigger trigger)
         {
             throw new NotImplementedException();
         }
 
-        public virtual bool EnableTrigger(long triggerId)
+        public void AddTrigger(long jobId, ScheduledTrigger trigger)
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<JobTriggerBase> GetActiveTriggers()
+        public JobTriggerBase GetTriggerById(long jobId, long triggerId)
         {
             throw new NotImplementedException();
         }
 
-        public virtual JobTriggerBase GetTriggerById(long triggerId)
+        public List<JobTriggerBase> GetTriggersByJobId(long jobId)
         {
             throw new NotImplementedException();
         }
 
-        public virtual JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
+        public List<JobTriggerBase> GetActiveTriggers()
         {
             throw new NotImplementedException();
         }
 
-        public virtual JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
+        public void DisableTrigger(long jobId, long triggerId)
         {
             throw new NotImplementedException();
         }
 
-        public virtual int AddJobRun(JobRun jobRun)
+        public void EnableTrigger(long jobId, long triggerId)
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<JobRun> GetJobRuns()
+        public void Update(long jobId, InstantTrigger trigger)
         {
             throw new NotImplementedException();
         }
 
-        public bool UpdateProgress(long jobRunId, double? progress)
+        public void Update(long jobId, ScheduledTrigger trigger)
         {
             throw new NotImplementedException();
         }
 
-        public virtual bool Update(JobRun jobRun)
+        public void Update(long jobId, RecurringTrigger trigger)
         {
             throw new NotImplementedException();
         }
 
-        public virtual Job GetJobById(long id)
+        public void AddJobRun(JobRun jobRun)
         {
             throw new NotImplementedException();
         }
 
-        public virtual Job GetJobByUniqueName(string identifier)
+        public List<JobRun> GetJobRuns(long page = 0, long pageSize = 50)
         {
             throw new NotImplementedException();
         }
 
-        public virtual JobRun GetJobRunById(long id)
+        public JobRun GetJobRunById(long id)
         {
             throw new NotImplementedException();
         }
 
-        public JobRun GetJobRunById(Guid uniqueId)
+        public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<JobRun> GetJobRunsByUserId(long userId)
+        public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<JobRun> GetJobRunsByUserName(string userName)
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, long page = 0, long pageSize = 50)
         {
             throw new NotImplementedException();
         }
 
-        public virtual bool Update(Job job)
+        public List<JobRun> GetJobRunsByState(JobRunStates state, long page = 0, long pageSize = 50)
         {
             throw new NotImplementedException();
         }
 
-        public bool Update(InstantTrigger trigger)
+        public List<JobRun> GetJobRunsByUserId(string userId, long page = 0, long pageSize = 50)
         {
             throw new NotImplementedException();
         }
 
-        public bool Update(ScheduledTrigger trigger)
+        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, long page = 0, long pageSize = 50)
         {
             throw new NotImplementedException();
         }
 
-        public bool Update(RecurringTrigger trigger)
+        public void Update(JobRun jobRun)
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<JobRun> GetJobRunsByTriggerId(long triggerId)
+        public void UpdateProgress(long jobRunId, double? progress)
         {
             throw new NotImplementedException();
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool CheckParallelExecution(long triggerId)
+        public bool IsAvailable()
         {
             throw new NotImplementedException();
         }

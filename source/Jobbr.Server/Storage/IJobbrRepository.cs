@@ -6,7 +6,7 @@ namespace Jobbr.Server.Storage
 {
     public interface IJobbrRepository
     {
-        List<Job> GetAllJobs();
+        List<Job> GetJobs(int page = 0, int pageSize = 50);
 
         Job GetJob(long id);
 
@@ -18,50 +18,52 @@ namespace Jobbr.Server.Storage
 
         List<JobTriggerBase> GetTriggers(long jobId);
 
-        void SaveAddTrigger(RecurringTrigger trigger);
+        void SaveAddTrigger(long jobId, RecurringTrigger trigger);
 
         void UpdatePlannedStartDateTimeUtc(long jobRunId, DateTime plannedStartDateTimeUtc);
 
-        void SaveAddTrigger(ScheduledTrigger trigger);
+        void SaveAddTrigger(long jobId, ScheduledTrigger trigger);
 
-        void SaveAddTrigger(InstantTrigger trigger);
+        void SaveAddTrigger(long jobId, InstantTrigger trigger);
 
-        bool EnableTrigger(long triggerId);
+        void EnableTrigger(long jobId, long triggerId);
 
         List<JobTriggerBase> GetActiveTriggers();
 
-        JobTriggerBase SaveUpdateTrigger(long id, JobTriggerBase trigger, out bool hadChanges);
-
-        bool CheckParallelExecution(long triggerId);
+        JobTriggerBase SaveUpdateTrigger(long jobId, JobTriggerBase trigger, out bool hadChanges);
 
         List<JobRun> GetJobRunsByState(JobRunStates state);
 
-        long AddJob(Job job);
+        void AddJob(Job job);
 
         JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime plannedStartDateTimeUtc);
 
-        bool DisableTrigger(long triggerId);
+        void DisableTrigger(long jobId, long triggerId);
 
         void Update(JobRun jobRun);
 
         JobRun GetJobRunById(long jobRunId);
 
-        JobTriggerBase GetTriggerById(long triggerId);
+        JobTriggerBase GetTriggerById(long jobId, long triggerId);
 
         List<JobTriggerBase> GetTriggersByJobId(long jobId);
 
-        List<JobRun> GetAllJobRuns();
+        List<JobRun> GetJobRuns(int page = 0, int pageSize = 50);
 
         Job GetJobByUniqueName(string identifier);
 
         void Delete(JobRun jobRun);
-        List<JobRun> GetJobRunsByTriggerId(long triggerId);
-        List<JobRun> GetJobRunsForUserId(long userId);
-        List<JobRun> GetJobRunsForUserName(string userName);
 
-        JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow);
+        List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId);
 
-        JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow);
+        List<JobRun> GetJobRunsForUserId(string userId);
 
+        List<JobRun> GetJobRunsByUserDisplayName(string userName);
+
+        JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow);
+
+        JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow);
+
+        bool CheckParallelExecution(long triggerId);
     }
 }

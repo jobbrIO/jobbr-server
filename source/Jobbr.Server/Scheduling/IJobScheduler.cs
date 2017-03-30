@@ -8,11 +8,11 @@ namespace Jobbr.Server.Scheduling
 
         void Stop();
 
-        void OnTriggerDefinitionUpdated(long triggerId);
+        void OnTriggerDefinitionUpdated(long jobId, long triggerId);
 
-        void OnTriggerStateUpdated(long triggerId);
+        void OnTriggerStateUpdated(long jobId, long triggerId);
 
-        void OnTriggerAdded(long triggerId);
+        void OnTriggerAdded(long jobId, long triggerId);
 
         void OnJobRunEnded(long id);
     }

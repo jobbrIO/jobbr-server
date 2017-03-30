@@ -7,9 +7,9 @@ namespace Jobbr.Tests.Integration.Execution
 {
     public class JobRunExecutionTestBase : RunningJobbrServerTestBase
     {
-        protected JobRun TriggerNewJobbRun(InstantTrigger trigger)
+        protected JobRun TriggerNewJobRun(InstantTrigger trigger)
         {
-            this.Services.JobManagementService.AddTrigger(trigger);
+            this.Services.JobManagementService.AddTrigger(trigger.JobId, trigger);
 
             WaitFor.HasElements(this.Services.JobStorageProvider.GetJobRuns().Where(jr => jr.TriggerId == trigger.Id).ToList, 1500);
 
@@ -24,8 +24,7 @@ namespace Jobbr.Tests.Integration.Execution
                 JobId = job.Id,
                 Comment = "Comment",
                 UserDisplayName = "UserDisplayName",
-                UserId = 42,
-                UserName = "UserName",
+                UserId = "42",
                 Parameters = "triggerParams",
                 IsActive = true
             };
@@ -33,13 +32,17 @@ namespace Jobbr.Tests.Integration.Execution
 
         protected Job CreateTestJob()
         {
-            return this.Services.JobManagementService.AddJob(new Job()
+            var job = new Job()
             {
                 Title = "TestJob",
                 Type = "JobType",
                 Parameters = "JobParams",
                 UniqueName = "UniqueTestJobName"
-            });
+            };
+
+            this.Services.JobManagementService.AddJob(job);
+
+            return job;
         }
     }
 }

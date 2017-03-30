@@ -24,7 +24,7 @@ namespace Jobbr.Tests.Integration.Scheduler
             var futureMinute2 = (futureMinute + 2) % 60;
 
             var recurringTrigger = new RecurringTrigger { JobId = 1, Definition = futureMinute + " * * * *", IsActive = true };
-            jobManagementService.AddTrigger(recurringTrigger);
+            jobManagementService.AddTrigger(1, recurringTrigger);
 
             // Wait for the scheduler to do his work
             WaitFor.HasElements(() => storageProvider.GetJobRuns());
@@ -36,7 +36,7 @@ namespace Jobbr.Tests.Integration.Scheduler
             Assert.IsTrue(createdJobRun.PlannedStartDateTimeUtc >= DateTime.UtcNow, "The job run needs to be in the future");
             Assert.AreEqual(futureMinute, createdJobRun.PlannedStartDateTimeUtc.Minute);
 
-            jobManagementService.UpdateTriggerDefinition(recurringTrigger.Id, futureMinute2 + " * * * *");
+            jobManagementService.UpdateTriggerDefinition(1, recurringTrigger.Id, futureMinute2 + " * * * *");
 
             // Wait for the scheduler to do his work
             WaitFor.HasElements(() => storageProvider.GetJobRuns().Where(r => r.PlannedStartDateTimeUtc.Minute == futureMinute2).ToList());
@@ -59,7 +59,7 @@ namespace Jobbr.Tests.Integration.Scheduler
             var futureDate2 = DateTime.UtcNow.AddHours(10);
 
             var recurringTrigger = new ScheduledTrigger() { JobId = 1, StartDateTimeUtc = futureDate1, IsActive = true };
-            jobManagementService.AddTrigger(recurringTrigger);
+            jobManagementService.AddTrigger(1, recurringTrigger);
 
             // Wait for the scheduler to do his work
             WaitFor.HasElements(() => storageProvider.GetJobRuns());
@@ -71,7 +71,7 @@ namespace Jobbr.Tests.Integration.Scheduler
             Assert.IsTrue(createdJobRun.PlannedStartDateTimeUtc >= DateTime.UtcNow, "The job run needs to be in the future");
             Assert.AreEqual(futureDate1, createdJobRun.PlannedStartDateTimeUtc);
 
-            jobManagementService.UpdateTriggerStartTime(recurringTrigger.Id, futureDate2);
+            jobManagementService.UpdateTriggerStartTime(1, recurringTrigger.Id, futureDate2);
 
             // Wait for the scheduler to do his work
             WaitFor.HasElements(() => storageProvider.GetJobRuns().Where(r => r.PlannedStartDateTimeUtc == futureDate2).ToList());
@@ -93,7 +93,7 @@ namespace Jobbr.Tests.Integration.Scheduler
             var futureDate1 = DateTime.UtcNow.AddHours(2);
 
             var trigger = new ScheduledTrigger { JobId = demoJob.Id, StartDateTimeUtc = futureDate1, IsActive = true };
-            jobManagementService.AddTrigger(trigger);
+            jobManagementService.AddTrigger(demoJob.Id, trigger);
 
             // Wait for the scheduler to do his work
             WaitFor.HasElements(() => storageProvider.GetJobRuns());
@@ -103,7 +103,7 @@ namespace Jobbr.Tests.Integration.Scheduler
             Assert.IsTrue(createdJobRun.PlannedStartDateTimeUtc >= DateTime.UtcNow, "The job run needs to be in the future");
             Assert.AreEqual(futureDate1, createdJobRun.PlannedStartDateTimeUtc);
 
-            jobManagementService.DisableTrigger(trigger.Id);
+            jobManagementService.DisableTrigger(demoJob.Id, trigger.Id);
 
             // Wait for the scheduler to do his work
             WaitFor.HasElements(() => storageProvider.GetJobRuns().Where(r => r.State == ComponentModel.JobStorage.Model.JobRunStates.Deleted).ToList());
@@ -125,13 +125,13 @@ namespace Jobbr.Tests.Integration.Scheduler
             var futureDate1 = DateTime.UtcNow.AddHours(2);
 
             var trigger = new ScheduledTrigger { JobId = demoJob.Id, StartDateTimeUtc = futureDate1, IsActive = false };
-            jobManagementService.AddTrigger(trigger);
+            jobManagementService.AddTrigger(demoJob.Id, trigger);
 
             // Base asserts
             var createdJobRun = storageProvider.GetJobRuns().FirstOrDefault();
             Assert.IsNull(createdJobRun, "There should be exact no JobRun");
 
-            jobManagementService.EnableTrigger(trigger.Id);
+            jobManagementService.EnableTrigger(demoJob.Id, trigger.Id);
 
             // Wait for the scheduler to do his work
             WaitFor.HasElements(() => storageProvider.GetJobRuns());

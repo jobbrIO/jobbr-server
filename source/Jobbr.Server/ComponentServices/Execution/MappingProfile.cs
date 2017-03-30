@@ -16,10 +16,10 @@ namespace Jobbr.Server.ComponentServices.Execution
                 .ForMember(d => d.Id, c => c.Ignore())
                 .ForMember(d => d.InstanceParameters, c => c.Ignore())
                 .ForMember(d => d.TriggerId, c => c.Ignore())
+                .ForMember(d => d.UserDisplayName, c => c.Ignore())
 
                 // Mapped from trigger
-                .ForMember(d => d.UserId, c => c.Ignore())
-                .ForMember(d => d.Username, c => c.Ignore());
+                .ForMember(d => d.UserId, c => c.Ignore());
 
             this.CreateMap<JobRun, JobRunInfo>()
                 .ForMember(d => d.InstanceParameters, c => c.MapFrom(s => s.InstanceParameters))
@@ -29,7 +29,7 @@ namespace Jobbr.Server.ComponentServices.Execution
                 .ForMember(d => d.UniqueName, c => c.Ignore())
 
                 .ForMember(d => d.UserId, c => c.Ignore())
-                .ForMember(d => d.Username, c => c.Ignore())
+                .ForMember(d => d.UserDisplayName, c => c.Ignore())
                 ;
 
             this.CreateMap<JobTriggerBase, JobRunInfo>()

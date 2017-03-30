@@ -38,7 +38,7 @@ namespace Jobbr.Server.Scheduling.Planer
                         trigger.Id,
                         trigger.GetType().Name,
                         trigger.UserId,
-                        trigger.UserName);
+                        trigger.UserDisplayName);
 
                     return PlanResult.FromAction(PlanAction.Blocked);
                 }

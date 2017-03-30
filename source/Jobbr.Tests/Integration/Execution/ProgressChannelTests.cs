@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JobRunStates = Jobbr.ComponentModel.Execution.Model.JobRunStates;
@@ -19,7 +15,7 @@ namespace Jobbr.Tests.Integration.Execution
             var job = this.CreateTestJob();
             var trigger = CreateInstantTrigger(job);
 
-            this.currentRun = this.TriggerNewJobbRun(trigger);
+            this.currentRun = this.TriggerNewJobRun(trigger);
         }
 
         [TestMethod]
@@ -35,7 +31,7 @@ namespace Jobbr.Tests.Integration.Execution
                 
             progressService.PublishProgressUpdate(this.currentRun.Id, 50);
 
-            var jobRunFromDb = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.TriggerId).Single();
+            var jobRunFromDb = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.JobId, this.currentRun.TriggerId).Single();
 
             Assert.AreEqual(50, jobRunFromDb.Progress);
         }
@@ -75,7 +71,7 @@ namespace Jobbr.Tests.Integration.Execution
         {
             this.SimulateStateUpdate(JobRunStates.Started);
 
-            var actualJobRun = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.TriggerId).Single();
+            var actualJobRun = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.JobId, this.currentRun.TriggerId).Single();
 
             Assert.IsNotNull(actualJobRun.ActualStartDateTimeUtc);
         }
@@ -156,7 +152,7 @@ namespace Jobbr.Tests.Integration.Execution
 
         private ComponentModel.JobStorage.Model.JobRunStates GetActualStoredJobRunState()
         {
-            return this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.TriggerId).Single().State;
+            return this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.JobId, this.currentRun.TriggerId).Single().State;
         }
 
         private void SimulateStateUpdate(JobRunStates state)

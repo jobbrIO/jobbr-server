@@ -11,9 +11,9 @@ namespace Jobbr.Server.Core.Messaging
         {
             this.scheduler = scheduler;
 
-            messengerHub.Subscribe<TriggerAddedMessage>(m => this.scheduler.OnTriggerAdded(m.TriggerId));
-            messengerHub.Subscribe<TriggerUpdatedMessage>(m => this.scheduler.OnTriggerDefinitionUpdated(m.TriggerId));
-            messengerHub.Subscribe<TriggerStateChangedMessage>(m => this.scheduler.OnTriggerStateUpdated(m.TriggerId));
+            messengerHub.Subscribe<TriggerAddedMessage>(m => this.scheduler.OnTriggerAdded(m.JobId, m.TriggerId));
+            messengerHub.Subscribe<TriggerUpdatedMessage>(m => this.scheduler.OnTriggerDefinitionUpdated(m.JobId, m.TriggerId));
+            messengerHub.Subscribe<TriggerStateChangedMessage>(m => this.scheduler.OnTriggerStateUpdated(m.JobId, m.TriggerId));
 
             messengerHub.Subscribe<JobRunCompletedMessage>(m => this.scheduler.OnJobRunEnded(m.Id));
         }

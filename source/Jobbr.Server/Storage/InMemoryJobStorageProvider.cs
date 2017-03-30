@@ -19,23 +19,21 @@ namespace Jobbr.Server.Storage
             return this.localTriggers.Where(t => t.IsActive == true).ToList().Clone();
         }
 
-        public List<Job> GetJobs()
+        public List<Job> GetJobs(int page = 0, int pageSize = 50)
         {
             return this.localJobs.Clone();
         }
 
-        public List<JobRun> GetJobRuns()
+        public List<JobRun> GetJobRuns(long page = 0, long pageSize = 50)
         {
             return this.localJobRuns.Clone();
         }
 
-        public long AddJob(Job job)
+        public void AddJob(Job job)
         {
             var maxJobId = this.localJobs.Count + 1;
             job.Id = maxJobId;
             this.localJobs.Add(job);
-
-            return maxJobId;
         }
 
         public List<JobTriggerBase> GetTriggersByJobId(long jobId)
@@ -43,87 +41,76 @@ namespace Jobbr.Server.Storage
             return this.localTriggers.Where(t => t.JobId == jobId).ToList().Clone();
         }
 
-        public long AddTrigger(RecurringTrigger trigger)
+        public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
             var newTriggerId = this.localTriggers.Count + 1;
             trigger.Id = newTriggerId;
+            trigger.JobId = jobId;
             this.localTriggers.Add(trigger);
-
-            return newTriggerId;
         }
 
-        public long AddTrigger(InstantTrigger trigger)
+        public void AddTrigger(long jobId, InstantTrigger trigger)
         {
             var newTriggerId = this.localTriggers.Count + 1;
             trigger.Id = newTriggerId;
+            trigger.JobId = jobId;
             this.localTriggers.Add(trigger);
-
-            return newTriggerId;
         }
 
-        public long AddTrigger(ScheduledTrigger trigger)
+        public void AddTrigger(long jobId, ScheduledTrigger trigger)
         {
             var newTriggerId = this.localTriggers.Count + 1;
             trigger.Id = newTriggerId;
+            trigger.JobId = jobId;
             this.localTriggers.Add(trigger);
-
-            return newTriggerId;
         }
 
-        public bool DisableTrigger(long triggerId)
+        public void DisableTrigger(long jobId, long triggerId)
         {
             var trigger = this.localTriggers.Single(t => t.Id == triggerId);
             trigger.IsActive = false;
-            return true;
         }
 
-        public bool EnableTrigger(long triggerId)
+        public void EnableTrigger(long jobId, long triggerId)
         {
             var trigger = this.localTriggers.Single(t => t.Id == triggerId);
             trigger.IsActive = true;
-            return true;
         }
 
-        public JobTriggerBase GetTriggerById(long triggerId)
+        public JobTriggerBase GetTriggerById(long jobId, long triggerId)
         {
             return this.localTriggers.FirstOrDefault(t => t.Id == triggerId).Clone();
         }
 
-        public JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
+        public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId && jr.ActualEndDateTimeUtc < utcNow).Clone();
         }
 
-        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
+        public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId && jr.PlannedStartDateTimeUtc >= utcNow).Clone();
         }
 
-        public int AddJobRun(JobRun jobRun)
+        public void AddJobRun(JobRun jobRun)
         {
             var maxJobRunId = this.localJobRuns.Count + 1;
 
             jobRun.Id = maxJobRunId;
 
             this.localJobRuns.Add(jobRun);
-
-            return maxJobRunId;
         }
 
-        public bool Update(JobRun jobRun)
+        public void Update(JobRun jobRun)
         {
             this.localJobRuns.Remove(this.localJobRuns.FirstOrDefault(jr => jr.Id == jobRun.Id));
             this.localJobRuns.Add(jobRun);
-
-            return true;
         }
 
-        public bool UpdateProgress(long jobRunId, double? progress)
+        public void UpdateProgress(long jobRunId, double? progress)
         {
             var jobRun = this.localJobRuns.First(p => p.Id == jobRunId);
             jobRun.Progress = progress;
-
-            return true;
         }
 
         public Job GetJobById(long id)
@@ -141,65 +128,57 @@ namespace Jobbr.Server.Storage
             return this.localJobRuns.FirstOrDefault(j => j.Id == id).Clone();
         }
 
-        public List<JobRun> GetJobRunsByUserId(long userId)
+        public List<JobRun> GetJobRunsByUserId(string userId, long page = 0, long pageSize = 50)
         {
             var allTriggers = this.localTriggers.Where(t => t.UserId == userId).Select(t => t.Id);
 
             return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
         }
 
-        public List<JobRun> GetJobRunsByUserName(string userName)
+        public List<JobRun> GetJobRunsByUserDisplayName(string userName, long page = 0, long pageSize = 50)
         {
-            var allTriggers = this.localTriggers.Where(t => t.UserName == userName).Select(t => t.Id);
+            var allTriggers = this.localTriggers.Where(t => t.UserDisplayName == userName).Select(t => t.Id);
 
             return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
         }
 
-        public bool Update(Job job)
+        public void Update(Job job)
         {
             this.localJobs.Remove(this.localJobs.FirstOrDefault(j => j.Id == job.Id));
             this.localJobs.Add(job);
-
-            return true;
         }
 
-        public bool Update(InstantTrigger trigger)
+        public void Update(long jobId, InstantTrigger trigger)
         {
             this.localTriggers.Remove(this.localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
             this.localTriggers.Add(trigger);
-
-            return true;
         }
 
-        public bool Update(ScheduledTrigger trigger)
+        public void Update(long jobId, ScheduledTrigger trigger)
         {
             this.localTriggers.Remove(this.localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
             this.localTriggers.Add(trigger);
-
-            return true;
         }
 
-        public bool Update(RecurringTrigger trigger)
+        public void Update(long jobId, RecurringTrigger trigger)
         {
             this.localTriggers.Remove(this.localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
             this.localTriggers.Add(trigger);
-
-            return true;
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long triggerId)
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, long page = 0, long pageSize = 50)
         {
             return this.localJobRuns.Where(jr => jr.TriggerId == triggerId).ToList().Clone();
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state)
+        public List<JobRun> GetJobRunsByState(JobRunStates state, long page = 0, long pageSize = 50)
         {
             return this.localJobRuns.Where(jr => jr.State == state).ToList().Clone();
         }
 
-        public bool CheckParallelExecution(long triggerId)
+        public bool IsAvailable()
         {
-            return this.localJobRuns.Count(jr => jr.TriggerId == triggerId && jr.State < JobRunStates.Completed) == 0;
+            return true;
         }
     }
 }

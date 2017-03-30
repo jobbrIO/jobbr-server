@@ -2,13 +2,15 @@ using TinyMessenger;
 
 namespace Jobbr.Server.Core.Messaging
 {
-    public class TriggerUpdatedMessage : GenericTinyMessage<long>
+    public class TriggerUpdatedMessage : GenericTinyMessage<TriggerKey>
     {
-        public TriggerUpdatedMessage(object sender, long content)
+        public TriggerUpdatedMessage(object sender, TriggerKey content)
             : base(sender, content)
         {
         }
 
-        public long TriggerId => this.Content;
+        public long JobId => this.Content.JobId;
+
+        public long TriggerId => this.Content.TriggerId;
     }
 }

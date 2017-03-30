@@ -19,14 +19,13 @@ namespace Jobbr.Tests.Integration.Startup
 
     public class PseudoJobStorageProvider : IJobStorageProvider
     {
-        public List<Job> GetJobs()
+        public List<Job> GetJobs(int page = 0, int pageSize = 50)
         {
             return new List<Job>();
         }
 
-        public long AddJob(Job job)
+        public void AddJob(Job job)
         {
-            return 0;
         }
 
         public List<JobTriggerBase> GetTriggersByJobId(long jobId)
@@ -34,29 +33,24 @@ namespace Jobbr.Tests.Integration.Startup
             return null;
         }
 
-        public long AddTrigger(RecurringTrigger trigger)
+        public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
-            return 0;
         }
 
-        public long AddTrigger(InstantTrigger trigger)
+        public void AddTrigger(long jobId, InstantTrigger trigger)
         {
-            return 0;
         }
 
-        public long AddTrigger(ScheduledTrigger trigger)
+        public void AddTrigger(long jobId, ScheduledTrigger trigger)
         {
-            return 0;
         }
 
-        public bool DisableTrigger(long triggerId)
+        public void DisableTrigger(long jobId, long triggerId)
         {
-            return false;
         }
 
-        public bool EnableTrigger(long triggerId)
+        public void EnableTrigger(long jobId, long triggerId)
         {
-            return false;
         }
 
         public List<JobTriggerBase> GetActiveTriggers()
@@ -64,39 +58,36 @@ namespace Jobbr.Tests.Integration.Startup
             return new List<JobTriggerBase>();
         }
 
-        public JobTriggerBase GetTriggerById(long triggerId)
+        public JobTriggerBase GetTriggerById(long jobId, long triggerId)
         {
             return null;
         }
 
-        public JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
+        public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             return null;
         }
 
-        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
+        public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             return null;
         }
 
-        public int AddJobRun(JobRun jobRun)
+        public void AddJobRun(JobRun jobRun)
         {
-            return 0;
         }
 
-        public List<JobRun> GetJobRuns()
+        public List<JobRun> GetJobRuns(long page = 0, long pageSize = 50)
         {
             return null;
         }
 
-        public bool UpdateProgress(long jobRunId, double? progress)
+        public void UpdateProgress(long jobRunId, double? progress)
         {
-            return false;
         }
 
-        public bool Update(JobRun jobRun)
+        public void Update(JobRun jobRun)
         {
-            return false;
         }
 
         public Job GetJobById(long id)
@@ -114,54 +105,45 @@ namespace Jobbr.Tests.Integration.Startup
             return null;
         }
 
-        public List<JobRun> GetJobRunsByUserId(long userId)
+        public List<JobRun> GetJobRunsByUserId(string userId, long page = 0, long pageSize = 50)
         {
             return null;
         }
 
-        public List<JobRun> GetJobRunsByUserName(string userName)
+        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, long page = 0, long pageSize = 50)
         {
             return null;
         }
 
-        public bool Update(Job job)
+        public void Update(Job job)
         {
-            return false;
         }
 
-        public bool Update(InstantTrigger trigger)
+        public void Update(long jobId, InstantTrigger trigger)
         {
-            return false;
         }
 
-        public bool Update(ScheduledTrigger trigger)
+        public void Update(long jobId, ScheduledTrigger trigger)
         {
-            return false;
         }
 
-        public bool Update(RecurringTrigger trigger)
+        public void Update(long jobId, RecurringTrigger trigger)
         {
-            return false;
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long triggerId)
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, long page = 0, long pageSize = 50)
         {
             return null;
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state)
+        public List<JobRun> GetJobRunsByState(JobRunStates state, long page = 0, long pageSize = 50)
         {
             return null;
         }
 
-        public bool CheckParallelExecution(long triggerId)
+        public bool IsAvailable()
         {
-            return false;
-        }
-
-        public JobRun GetJobRunById(Guid uniqueId)
-        {
-            return null;
+            return true;
         }
     }
 

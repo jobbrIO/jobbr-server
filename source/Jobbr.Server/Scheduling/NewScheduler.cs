@@ -58,11 +58,11 @@ namespace Jobbr.Server.Scheduling
             this.periodicTimer.Stop();
         }
 
-        public void OnTriggerDefinitionUpdated(long triggerId)
+        public void OnTriggerDefinitionUpdated(long jobId, long triggerId)
         {
             Logger.Info($"The trigger with id '{triggerId}' has been updated. Reflecting changes to Plan if any.");
 
-            var trigger = this.repository.GetTriggerById(triggerId);
+            var trigger = this.repository.GetTriggerById(jobId, triggerId);
 
             PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
 
@@ -81,7 +81,7 @@ namespace Jobbr.Server.Scheduling
             }
 
             // Get the next occurence from database
-            var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
+            var dependentJobRun = this.repository.GetNextJobRunByTriggerId(jobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
 
             if (dependentJobRun == null)
             {
@@ -92,11 +92,11 @@ namespace Jobbr.Server.Scheduling
             this.UpdatePlannedJobRun(dependentJobRun, trigger, dateTime.Value);
         }
 
-        public void OnTriggerStateUpdated(long triggerId)
+        public void OnTriggerStateUpdated(long jobId, long triggerId)
         {
             Logger.Info($"The trigger with id '{triggerId}' has been changed its state. Reflecting changes to Plan if any.");
 
-            var trigger = this.repository.GetTriggerById(triggerId);
+            var trigger = this.repository.GetTriggerById(jobId, triggerId);
 
             PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
 
@@ -106,7 +106,7 @@ namespace Jobbr.Server.Scheduling
                 this.currentPlan.RemoveAll(e => e.TriggerId == triggerId);
 
                 // Set the JobRun to deleted if any
-                var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
+                var dependentJobRun = this.repository.GetNextJobRunByTriggerId(jobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                 if (dependentJobRun != null)
                 {
@@ -131,11 +131,11 @@ namespace Jobbr.Server.Scheduling
             }
         }
 
-        public void OnTriggerAdded(long triggerId)
+        public void OnTriggerAdded(long jobId, long triggerId)
         {
             Logger.Info($"The trigger with id '{triggerId}' has been added. Reflecting changes to the current plan.");
 
-            var trigger = this.repository.GetTriggerById(triggerId);
+            var trigger = this.repository.GetTriggerById(jobId, triggerId);
 
             PlanResult planResult = this.GetPlanResult(trigger as dynamic, true);
 
@@ -214,7 +214,7 @@ namespace Jobbr.Server.Scheduling
                 if (planResult.Action == PlanAction.Possible)
                 {
                     // Check if there is already a run planned at this time
-                    var nextRunForTrigger = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
+                    var nextRunForTrigger = this.repository.GetNextJobRunByTriggerId(trigger.JobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                     if (nextRunForTrigger == null || !nextRunForTrigger.PlannedStartDateTimeUtc.Equals(planResult.ExpectedStartDateUtc))
                     {
@@ -269,9 +269,9 @@ namespace Jobbr.Server.Scheduling
 
                 if (planResult.Action == PlanAction.Obsolete)
                 {
-                    Logger.WarnFormat($"Disabling trigger with id '{trigger.Id}', because startdate is in the past. (Type: '{trigger.GetType().Name}', userId: '{trigger.UserId}', userName: '{trigger.UserName}')");
+                    Logger.WarnFormat($"Disabling trigger with id '{trigger.Id}', because startdate is in the past. (Type: '{trigger.GetType().Name}', userId: '{trigger.UserId}', userName: '{trigger.UserDisplayName}')");
 
-                    this.repository.DisableTrigger(trigger.Id);
+                    this.repository.DisableTrigger(trigger.JobId, trigger.Id);
                     continue;
                 }
 
@@ -292,7 +292,7 @@ namespace Jobbr.Server.Scheduling
                     var dateTime = planResult.ExpectedStartDateUtc;
 
                     // Get the next occurence from database
-                    var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.Id, this.dateTimeProvider.GetUtcNow());
+                    var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.JobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                     if (dependentJobRun != null)
                     {
@@ -357,7 +357,7 @@ namespace Jobbr.Server.Scheduling
                     trigger.Id,
                     trigger.GetType().Name,
                     trigger.UserId,
-                    trigger.UserName);
+                    trigger.UserDisplayName);
 
                 return;
             }

@@ -24,67 +24,55 @@ namespace Jobbr.Server.Core
             this.mapper = mapper;
         }
 
-        internal long Add(RecurringTriggerModel trigger)
+        internal void Add(long jobId, RecurringTriggerModel trigger)
         {
             var triggerEntity = this.mapper.Map<RecurringTrigger>(trigger);
 
-            this.jobbrRepository.SaveAddTrigger(triggerEntity);
+            this.jobbrRepository.SaveAddTrigger(jobId, triggerEntity);
             trigger.Id = triggerEntity.Id;
+            trigger.JobId = triggerEntity.JobId;
 
-            this.messengerHub.PublishAsync(new TriggerAddedMessage(this, triggerEntity.Id));
-
-            return trigger.Id;
+            this.messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
         }
 
-        internal long Add(ScheduledTriggerModel trigger)
+        internal void Add(long jobId, ScheduledTriggerModel trigger)
         {
             var triggerEntity = this.mapper.Map<ScheduledTrigger>(trigger);
 
-            this.jobbrRepository.SaveAddTrigger(triggerEntity);
+            this.jobbrRepository.SaveAddTrigger(jobId, triggerEntity);
             trigger.Id = triggerEntity.Id;
+            trigger.JobId = triggerEntity.JobId;
 
-            this.messengerHub.PublishAsync(new TriggerAddedMessage(this, triggerEntity.Id));
-
-            return trigger.Id;
+            this.messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
         }
 
-        internal long Add(InstantTriggerModel trigger)
+        internal void Add(long jobId, InstantTriggerModel trigger)
         {
             var triggerEntity = this.mapper.Map<InstantTrigger>(trigger);
 
-            this.jobbrRepository.SaveAddTrigger(triggerEntity);
+            this.jobbrRepository.SaveAddTrigger(jobId, triggerEntity);
             trigger.Id = triggerEntity.Id;
+            trigger.JobId = triggerEntity.JobId;
 
-            this.messengerHub.PublishAsync(new TriggerAddedMessage(this, triggerEntity.Id));
-
-            return trigger.Id;
+            this.messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
         }
 
-        internal bool Disable(long triggerId)
+        internal void Disable(long jobId, long triggerId)
         {
-            if (this.jobbrRepository.DisableTrigger(triggerId))
-            {
-                this.messengerHub.PublishAsync(new TriggerStateChangedMessage(this, triggerId));
-                return true;
-            }
-
-            return false;
+            this.jobbrRepository.DisableTrigger(jobId, triggerId);
+            this.messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
         }
 
-        internal bool Enable(long triggerId)
+        internal void Enable(long jobId, long triggerId)
         {
-            if (this.jobbrRepository.EnableTrigger(triggerId))
-            {
-                this.messengerHub.PublishAsync(new TriggerStateChangedMessage(this, triggerId));
-                return true;
-            }
+            this.jobbrRepository.EnableTrigger(jobId, triggerId);
 
-            return false;
+            this.messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
         }
 
-        internal void Update(long triggerId, string definition)
+        internal void Update(long jobId, long triggerId, string definition)
         {
-            var trigger = this.jobbrRepository.GetTriggerById(triggerId);
+            var trigger = this.jobbrRepository.GetTriggerById(jobId, triggerId);
 
             var recurringTrigger = trigger as RecurringTrigger;
 
@@ -97,17 +85,17 @@ namespace Jobbr.Server.Core
             recurringTrigger.Definition = definition;
 
             bool hadChanges;
-            this.jobbrRepository.SaveUpdateTrigger(triggerId, trigger, out hadChanges);
+            this.jobbrRepository.SaveUpdateTrigger(jobId, trigger, out hadChanges);
 
             if (hadChanges)
             {
-                this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, triggerId));
+                this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
             }
         }
 
-        internal void Update(long triggerId, DateTime startDateTimeUtc)
+        internal void Update(long jobId, long triggerId, DateTime startDateTimeUtc)
         {
-            var trigger = this.jobbrRepository.GetTriggerById(triggerId);
+            var trigger = this.jobbrRepository.GetTriggerById(jobId, triggerId);
 
             var recurringTrigger = trigger as ScheduledTrigger;
 
@@ -119,12 +107,11 @@ namespace Jobbr.Server.Core
 
             recurringTrigger.StartDateTimeUtc = startDateTimeUtc;
 
-            bool hadChanges;
-            this.jobbrRepository.SaveUpdateTrigger(triggerId, trigger, out hadChanges);
+            this.jobbrRepository.SaveUpdateTrigger(jobId, trigger, out bool hadChanges);
 
             if (hadChanges)
             {
-                this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, triggerId));
+                this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
             }
         }
     }

@@ -7,7 +7,7 @@ namespace Jobbr.Server.Scheduling
     {
         private Action callback;
 
-        private Timer timer;
+        private readonly Timer timer;
 
         public FixedMinuteTimer()
         {

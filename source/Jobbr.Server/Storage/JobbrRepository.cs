@@ -18,9 +18,9 @@ namespace Jobbr.Server.Storage
             this.storageProvider = storageProvider;
         }
 
-        public List<Job> GetAllJobs()
+        public List<Job> GetJobs(int page = 0, int pageSize = 50)
         {
-            return this.storageProvider.GetJobs();
+            return this.storageProvider.GetJobs(page, pageSize);
         }
 
         public Job GetJob(long id)
@@ -50,14 +50,9 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetTriggersByJobId(jobId);
         }
 
-        public void SaveAddTrigger(RecurringTrigger trigger)
+        public void SaveAddTrigger(long jobId, RecurringTrigger trigger)
         {
-            if (trigger.JobId == 0)
-            {
-                throw new ArgumentException("JobId is required", "trigger.JobId");
-            }
-
-            trigger.Id = this.storageProvider.AddTrigger(trigger);
+            this.storageProvider.AddTrigger(jobId, trigger);
         }
 
         public void UpdatePlannedStartDateTimeUtc(long jobRunId, DateTime plannedStartDateTimeUtc)
@@ -68,48 +63,32 @@ namespace Jobbr.Server.Storage
             this.Update(jobRun);
         }
 
-        public void SaveAddTrigger(ScheduledTrigger trigger)
+        public void SaveAddTrigger(long jobId, ScheduledTrigger trigger)
         {
-            if (trigger.JobId == 0)
-            {
-                throw new ArgumentException("JobId is required", "trigger.JobId");
-            }
-
-            trigger.Id = this.storageProvider.AddTrigger(trigger);
+            this.storageProvider.AddTrigger(jobId, trigger);
         }
 
-        public void SaveAddTrigger(InstantTrigger trigger)
+        public void SaveAddTrigger(long jobId, InstantTrigger trigger)
         {
-            if (trigger.JobId == 0)
-            {
-                throw new ArgumentException("JobId is required", "trigger.JobId");
-            }
-
-            trigger.Id = this.storageProvider.AddTrigger(trigger);
+            this.storageProvider.AddTrigger(jobId, trigger);
         }
 
-        public JobRun GetLastJobRunByTriggerId(long triggerId, DateTime utcNow)
+        public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
-            return this.storageProvider.GetLastJobRunByTriggerId(triggerId, utcNow);
+            return this.storageProvider.GetLastJobRunByTriggerId(jobId, triggerId, utcNow);
         }
 
-        public JobRun GetNextJobRunByTriggerId(long triggerId, DateTime utcNow)
+        public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
-            return this.storageProvider.GetNextJobRunByTriggerId(triggerId, utcNow);
+            return this.storageProvider.GetNextJobRunByTriggerId(jobId, triggerId, utcNow);
         }
 
-        public bool EnableTrigger(long triggerId)
+        public void EnableTrigger(long jobId, long triggerId)
         {
             // TODO: Move this logic to the storage adapter which can implement this more efficient
-            var trigger = this.storageProvider.GetTriggerById(triggerId);
+            var trigger = this.storageProvider.GetTriggerById(jobId, triggerId);
 
-            if (trigger.IsActive)
-            {
-                return false;
-            }
-
-            this.storageProvider.EnableTrigger(triggerId);
-            return true;
+            this.storageProvider.EnableTrigger(jobId, triggerId);
         }
 
         public List<JobTriggerBase> GetActiveTriggers()
@@ -126,9 +105,9 @@ namespace Jobbr.Server.Storage
             }
         }
 
-        public JobTriggerBase SaveUpdateTrigger(long id, JobTriggerBase trigger, out bool hadChanges)
+        public JobTriggerBase SaveUpdateTrigger(long jobId, JobTriggerBase trigger, out bool hadChanges)
         {
-            var triggerFromDb = this.storageProvider.GetTriggerById(id);
+            var triggerFromDb = this.storageProvider.GetTriggerById(jobId, trigger.Id);
 
             hadChanges = false;
 
@@ -145,17 +124,17 @@ namespace Jobbr.Server.Storage
             {
                 if (trigger is InstantTrigger)
                 {
-                    this.storageProvider.Update(trigger as InstantTrigger);
+                    this.storageProvider.Update(jobId, trigger as InstantTrigger);
                 }
 
                 if (trigger is ScheduledTrigger)
                 {
-                    this.storageProvider.Update(trigger as ScheduledTrigger);
+                    this.storageProvider.Update(jobId, trigger as ScheduledTrigger);
                 }
 
                 if (trigger is RecurringTrigger)
                 {
-                    this.storageProvider.Update(trigger as RecurringTrigger);
+                    this.storageProvider.Update(jobId, trigger as RecurringTrigger);
                 }
             }
             return triggerFromDb;
@@ -198,19 +177,14 @@ namespace Jobbr.Server.Storage
             return false;
         }
 
-        public bool CheckParallelExecution(long triggerId)
-        {
-            return this.storageProvider.CheckParallelExecution(triggerId);
-        }
-
         public List<JobRun> GetJobRunsByState(JobRunStates state)
         {
             return this.storageProvider.GetJobRunsByState(state);
         }
 
-        public long AddJob(Job job)
+        public void AddJob(Job job)
         {
-            return this.storageProvider.AddJob(job);
+            this.storageProvider.AddJob(job);
         }
 
         public JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime plannedStartDateTimeUtc)
@@ -221,27 +195,18 @@ namespace Jobbr.Server.Storage
                 TriggerId = trigger.Id,
                 JobParameters = job.Parameters,
                 InstanceParameters = trigger.Parameters,
-                UniqueId = Guid.NewGuid(),
                 State = JobRunStates.Scheduled,
                 PlannedStartDateTimeUtc = plannedStartDateTimeUtc
             };
 
-            jobRun.Id = this.storageProvider.AddJobRun(jobRun);
+            this.storageProvider.AddJobRun(jobRun);
+
             return jobRun;
         }
 
-        public bool DisableTrigger(long triggerId)
+        public void DisableTrigger(long jobId, long triggerId)
         {
-            // TODO: Move this logic to the storage adapter which can implement this more efficient
-            var trigger = this.storageProvider.GetTriggerById(triggerId);
-
-            if (!trigger.IsActive)
-            {
-                return false;
-            }
-
-            this.storageProvider.DisableTrigger(triggerId);
-            return true;
+            this.storageProvider.DisableTrigger(jobId, triggerId);
         }
 
         public void Update(JobRun jobRun)
@@ -254,14 +219,14 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetJobRunById(jobRunId);
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long triggerId)
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId)
         {
-            return this.storageProvider.GetJobRunsByTriggerId(triggerId);
+            return this.storageProvider.GetJobRunsByTriggerId(jobId, triggerId);
         }
 
-        public JobTriggerBase GetTriggerById(long triggerId)
+        public JobTriggerBase GetTriggerById(long jobId, long triggerId)
         {
-            return this.storageProvider.GetTriggerById(triggerId);
+            return this.storageProvider.GetTriggerById(jobId, triggerId);
         }
 
         public List<JobTriggerBase> GetTriggersByJobId(long jobId)
@@ -269,19 +234,19 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetTriggersByJobId(jobId);
         }
 
-        public List<JobRun> GetAllJobRuns()
+        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50)
         {
             return this.storageProvider.GetJobRuns();
         }
 
-        public List<JobRun> GetJobRunsForUserId(long userId)
+        public List<JobRun> GetJobRunsForUserId(string userId)
         {
             return this.storageProvider.GetJobRunsByUserId(userId);
         }
 
-        public List<JobRun> GetJobRunsForUserName(string userName)
+        public List<JobRun> GetJobRunsByUserDisplayName(string userName)
         {
-            return this.storageProvider.GetJobRunsByUserName(userName);
+            return this.storageProvider.GetJobRunsByUserDisplayName(userName);
         }
 
         public Job GetJobByUniqueName(string identifier)
@@ -295,6 +260,11 @@ namespace Jobbr.Server.Storage
 
             jobRunFromStorage.State = JobRunStates.Deleted;
             this.storageProvider.Update(jobRunFromStorage);
+        }
+
+        public bool CheckParallelExecution(long triggerId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

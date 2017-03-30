@@ -19,7 +19,7 @@ namespace Jobbr.Server.Scheduling.Planer
                 return PlanResult.FromAction(PlanAction.Obsolete);
             }
 
-            var baseDateTimeUtc = trigger.CreatedAtUtc;
+            var baseDateTimeUtc = trigger.CreatedDateTimeUtc;
             var calculatedNextRun = baseDateTimeUtc.AddMinutes(trigger.DelayedMinutes);
 
             if (calculatedNextRun < this.dateTimeProvider.GetUtcNow() && !isNew)

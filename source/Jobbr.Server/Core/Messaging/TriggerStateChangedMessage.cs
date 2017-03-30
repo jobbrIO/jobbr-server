@@ -2,13 +2,15 @@
 
 namespace Jobbr.Server.Core.Messaging
 {
-    public class TriggerStateChangedMessage : GenericTinyMessage<long>
+    public class TriggerStateChangedMessage : GenericTinyMessage<TriggerKey>
     {
-        public TriggerStateChangedMessage(object sender, long content)
+        public TriggerStateChangedMessage(object sender, TriggerKey content)
             : base(sender, content)
         {
         }
 
-        public long TriggerId => this.Content;
+        public long JobId => this.Content.JobId;
+
+        public long TriggerId => this.Content.TriggerId;
     }
 }

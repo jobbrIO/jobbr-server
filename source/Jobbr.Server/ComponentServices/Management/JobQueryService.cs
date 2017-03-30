@@ -17,9 +17,9 @@ namespace Jobbr.Server.ComponentServices.Management
             this.mapper = mapper;
         }
 
-        public List<Job> GetAllJobs()
+        public List<Job> GetJobs(int page = 0, int pageSize = 50)
         {
-            var jobs = this.repository.GetAllJobs();
+            var jobs = this.repository.GetJobs();
 
             return this.mapper.Map<List<Job>>(jobs);
         }
@@ -38,9 +38,9 @@ namespace Jobbr.Server.ComponentServices.Management
             return this.mapper.Map<Job>(job);
         }
 
-        public IJobTrigger GetTriggerById(long triggerId)
+        public IJobTrigger GetTriggerById(long jobId, long triggerId)
         {
-            var trigger = this.repository.GetTriggerById(triggerId);
+            var trigger = this.repository.GetTriggerById(jobId, triggerId);
 
             return this.mapper.Map<IJobTrigger>(trigger);
         }
@@ -59,9 +59,9 @@ namespace Jobbr.Server.ComponentServices.Management
             return this.mapper.Map<List<IJobTrigger>>(triggers);
         }
 
-        public List<JobRun> GetJobRuns()
+        public List<JobRun> GetJobRuns(long page = 0, long pageSize = 50)
         {
-            var jobRuns = this.repository.GetAllJobRuns();
+            var jobRuns = this.repository.GetJobRuns();
 
             return this.mapper.Map<List<JobRun>>(jobRuns);
         }
@@ -73,23 +73,23 @@ namespace Jobbr.Server.ComponentServices.Management
             return this.mapper.Map<JobRun>(jobRun);
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long triggerId)
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId)
         {
-            var jobRun = this.repository.GetJobRunsByTriggerId(triggerId);
+            var jobRun = this.repository.GetJobRunsByTriggerId(jobId, triggerId);
 
             return this.mapper.Map<List<JobRun>>(jobRun);
         }
 
-        public List<JobRun> GetJobRunsByUserIdOrderByIdDesc(long userId)
+        public List<JobRun> GetJobRunsByUserIdOrderByIdDesc(string userId)
         {
             var jobRun = this.repository.GetJobRunsForUserId(userId);
 
             return this.mapper.Map<List<JobRun>>(jobRun);
         }
 
-        public List<JobRun> GetJobRunsByUserNameOrderByIdDesc(string userName)
+        public List<JobRun> GetJobRunsByUserDisplayNameOrderByIdDesc(string userName)
         {
-            var jobRun = this.repository.GetJobRunsForUserName(userName);
+            var jobRun = this.repository.GetJobRunsByUserDisplayName(userName);
 
             return this.mapper.Map<List<JobRun>>(jobRun);
         }

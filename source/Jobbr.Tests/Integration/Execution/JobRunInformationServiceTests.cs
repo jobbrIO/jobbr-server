@@ -20,7 +20,7 @@ namespace Jobbr.Tests.Integration.Execution
 
             var trigger = CreateInstantTrigger(job);
 
-            var createdJobRun = this.TriggerNewJobbRun(trigger);
+            var createdJobRun = this.TriggerNewJobRun(trigger);
 
             var result = this.Services.InformationService.GetByJobRunId(createdJobRun.Id);
 
@@ -31,7 +31,7 @@ namespace Jobbr.Tests.Integration.Execution
 
             Assert.AreEqual(trigger.Parameters, result.InstanceParameters);
             Assert.AreEqual(trigger.UserId, result.UserId);
-            Assert.AreEqual(trigger.UserName, result.Username);
+            Assert.AreEqual(trigger.UserDisplayName, result.UserDisplayName);
 
             Assert.AreEqual(job.Parameters, result.JobParameters);
             Assert.AreEqual(createdJobRun.InstanceParameters, result.InstanceParameters);
@@ -43,12 +43,12 @@ namespace Jobbr.Tests.Integration.Execution
             var job = this.CreateTestJob();
 
             // First run
-            this.TriggerNewJobbRun(CreateInstantTrigger(job));
+            this.TriggerNewJobRun(CreateInstantTrigger(job));
 
             // Second run
             var secondTrigger = CreateInstantTrigger(job);
 
-            var secondJobRun = this.TriggerNewJobbRun(secondTrigger);
+            var secondJobRun = this.TriggerNewJobRun(secondTrigger);
 
             var result = this.Services.InformationService.GetByJobRunId(secondJobRun.Id);
 
@@ -59,7 +59,7 @@ namespace Jobbr.Tests.Integration.Execution
 
             Assert.AreEqual(secondTrigger.Parameters, result.InstanceParameters);
             Assert.AreEqual(secondTrigger.UserId, result.UserId);
-            Assert.AreEqual(secondTrigger.UserName, result.Username);
+            Assert.AreEqual(secondTrigger.UserDisplayName, result.UserDisplayName);
 
             Assert.AreEqual(job.Parameters, result.JobParameters);
             Assert.AreEqual(secondJobRun.InstanceParameters, result.InstanceParameters);
