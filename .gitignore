@@ -185,3 +185,4 @@ FakesAssemblies/
 # output of ilmerge & nuget package
 tools/Jobbr.Server.*
 *.ncrunchproject
+docs/_build/
