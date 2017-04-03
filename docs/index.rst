@@ -1,7 +1,8 @@
 Welcome to the Jobbr Documentation
 ====================================
 
-This guide is split in the following chapters:
+Thank you for your interest on Jobbr, the .NET JobServer. Please head to the 
+[GitHub Organisation Page](https://github.com/JobbrIO) to find the main repo and extensions.
 
 .. toctree::
    :maxdepth: 2
@@ -13,13 +14,13 @@ This guide is split in the following chapters:
    
 .. toctree::
    :maxdepth: 2
-   :caption: User Documentation
+   :caption: Library Documentation
 
    use/first-start
 
 .. toctree::
    :maxdepth: 2
-   :caption: Development
+   :caption: Developer Documentation
 
    dev/contribution
    dev/setup
@@ -27,13 +28,17 @@ This guide is split in the following chapters:
 
 .. toctree::
    :maxdepth: 2
-   :glob:
    :caption: Project
 
    proj/project
-   proj/workmode
-   proj/meetings/*
 
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   :caption: Meeting Notes
+
+   proj/meetings/*
+    
 
 Indices and tables
 ==================
