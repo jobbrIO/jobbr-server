@@ -180,5 +180,12 @@ namespace Jobbr.Server.Storage
         {
             return true;
         }
+
+#pragma warning disable CA1024 // Use properties where appropriate.
+        public long GetJobsCount()
+#pragma warning restore CA1024 // Use properties where appropriate.
+        {
+            return this.localJobs.Count;
+        }
     }
 }
