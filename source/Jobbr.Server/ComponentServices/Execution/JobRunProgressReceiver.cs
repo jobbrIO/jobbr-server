@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using AutoMapper;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
@@ -28,6 +27,11 @@ namespace Jobbr.Server.ComponentServices.Execution
         public void PublishProgressUpdate(long jobRunId, double progress)
         {
             this.jobRunService.UpdateProgress(jobRunId, progress);
+        }
+
+        public void PublishPid(long jobRunId, int pid, string host)
+        {
+            // TODO: Implement this
         }
 
         public void PublishArtefact(long id, string fileName, Stream result)
