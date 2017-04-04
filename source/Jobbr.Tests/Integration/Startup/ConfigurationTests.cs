@@ -19,6 +19,11 @@ namespace Jobbr.Tests.Integration.Startup
 
     public class PseudoJobStorageProvider : IJobStorageProvider
     {
+        public long GetJobsCount()
+        {
+            return 0;
+        }
+
         public List<Job> GetJobs(int page = 0, int pageSize = 50)
         {
             return new List<Job>();
@@ -77,7 +82,7 @@ namespace Jobbr.Tests.Integration.Startup
         {
         }
 
-        public List<JobRun> GetJobRuns(long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50)
         {
             return null;
         }
@@ -105,12 +110,12 @@ namespace Jobbr.Tests.Integration.Startup
             return null;
         }
 
-        public List<JobRun> GetJobRunsByUserId(string userId, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50)
         {
             return null;
         }
 
-        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 0, int pageSize = 50)
         {
             return null;
         }
@@ -131,12 +136,12 @@ namespace Jobbr.Tests.Integration.Startup
         {
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 0, int pageSize = 50)
         {
             return null;
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50)
         {
             return null;
         }

@@ -206,6 +206,36 @@ namespace Jobbr.Tests.Registration
         {
             throw new NotImplementedException();
         }
+
+        public long GetJobsCount()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 0, int pageSize = 50)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 0, int pageSize = 50)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

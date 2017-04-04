@@ -24,7 +24,7 @@ namespace Jobbr.Server.Storage
             return this.localJobs.Clone();
         }
 
-        public List<JobRun> GetJobRuns(long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50)
         {
             return this.localJobRuns.Clone();
         }
@@ -128,14 +128,14 @@ namespace Jobbr.Server.Storage
             return this.localJobRuns.FirstOrDefault(j => j.Id == id).Clone();
         }
 
-        public List<JobRun> GetJobRunsByUserId(string userId, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50)
         {
             var allTriggers = this.localTriggers.Where(t => t.UserId == userId).Select(t => t.Id);
 
             return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
         }
 
-        public List<JobRun> GetJobRunsByUserDisplayName(string userName, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByUserDisplayName(string userName, int page = 0, int pageSize = 50)
         {
             var allTriggers = this.localTriggers.Where(t => t.UserDisplayName == userName).Select(t => t.Id);
 
@@ -166,12 +166,12 @@ namespace Jobbr.Server.Storage
             this.localTriggers.Add(trigger);
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 0, int pageSize = 50)
         {
             return this.localJobRuns.Where(jr => jr.TriggerId == triggerId).ToList().Clone();
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50)
         {
             return this.localJobRuns.Where(jr => jr.State == state).ToList().Clone();
         }

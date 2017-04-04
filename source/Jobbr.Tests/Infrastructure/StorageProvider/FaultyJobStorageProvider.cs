@@ -20,6 +20,12 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             Instance = this;
         }
 
+        public long GetJobsCount()
+        {
+            this.CheckFailAll();
+            return this.inMemoryVersion.GetJobsCount();
+        }
+
         public List<Job> GetJobs(int page = 0, int pageSize = 50)
         {
             this.CheckFailAll();
@@ -65,7 +71,7 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
         public void EnableTrigger(long jobId, long triggerId)
         {
             this.CheckFailAll();
-           this.inMemoryVersion.EnableTrigger(jobId, triggerId);
+            this.inMemoryVersion.EnableTrigger(jobId, triggerId);
         }
 
         public List<JobTriggerBase> GetActiveTriggers()
@@ -98,7 +104,7 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             this.inMemoryVersion.AddJobRun(jobRun);
         }
 
-        public List<JobRun> GetJobRuns(long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRuns();
@@ -134,13 +140,13 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             return this.inMemoryVersion.GetJobRunById(id);
         }
 
-        public List<JobRun> GetJobRunsByUserId(string userId, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRunsByUserId(userId, page, pageSize);
         }
 
-        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 0, int pageSize = 50)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize);
@@ -170,13 +176,13 @@ namespace Jobbr.Tests.Infrastructure.StorageProvider
             this.inMemoryVersion.Update(jobId, trigger);
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 0, int pageSize = 50)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize);
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state, long page = 0, long pageSize = 50)
+        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRunsByState(state, page, pageSize);
