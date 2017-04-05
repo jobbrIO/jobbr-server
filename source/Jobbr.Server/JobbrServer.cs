@@ -184,8 +184,7 @@ namespace Jobbr.Server
             {
                 try
                 {
-                    // TODO: Migrate to a health-check
-                    this.jobStorageProvider.GetJobs();
+                    this.jobStorageProvider.IsAvailable();
                     return;
                 }
                 catch (Exception ex)
