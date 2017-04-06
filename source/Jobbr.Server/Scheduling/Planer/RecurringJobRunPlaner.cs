@@ -25,6 +25,12 @@ namespace Jobbr.Server.Scheduling.Planer
                 return PlanResult.FromAction(PlanAction.Obsolete);
             }
 
+            if (trigger.EndDateTimeUtc.HasValue && trigger.EndDateTimeUtc.Value < this.dateTimeProvider.GetUtcNow())
+            {
+                // This jobrun is not valid anymore
+                return PlanResult.FromAction(PlanAction.Obsolete);
+            }
+
             if (trigger.NoParallelExecution)
             {
                 if (this.jobbrRepository.CheckParallelExecution(trigger.Id) == false)
