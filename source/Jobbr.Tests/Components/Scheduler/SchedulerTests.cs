@@ -232,6 +232,11 @@ namespace Jobbr.Tests.Components.Scheduler
             var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, NoParallelExecution = false };
             this.AddAndSignalNewTrigger(this.demoJob1Id, recurringTrigger);
 
+            // Simulate that the jobRun has started
+            var addedJobRun = this.repository.GetJobRunsByTriggerId(recurringTrigger.JobId, recurringTrigger.Id).Single();
+            addedJobRun.State = JobRunStates.Processing;
+            this.repository.Update(addedJobRun);
+
             // Make sure the cron in the recurring trigger will base on an updated "now"
             this.currentTimeProvider.Set(initialDate.AddHours(2));
             this.periodicTimer.CallbackOnce();
@@ -247,7 +252,6 @@ namespace Jobbr.Tests.Components.Scheduler
         }
 
         [TestMethod]
-        [Ignore]
         public void NoParallelExecutionEnabled_TriggerWhileJobIsStillRunning_NextJobRunIsPrevented()
         {
             var initialDate = new DateTime(2017, 02, 01, 15, 42, 12, DateTimeKind.Utc);
@@ -257,6 +261,11 @@ namespace Jobbr.Tests.Components.Scheduler
 
             // This triggers the first jobrun
             this.AddAndSignalNewTrigger(this.demoJob1Id, recurringTrigger);
+
+            // Simulate that the jobRun has started
+            var addedJobRun = this.repository.GetJobRunsByTriggerId(recurringTrigger.JobId, recurringTrigger.Id).Single();
+            addedJobRun.State = JobRunStates.Processing;
+            this.repository.Update(addedJobRun);
 
             // Make sure the cron in the recurring trigger will base on an updated "now"
             this.currentTimeProvider.Set(initialDate.AddHours(2));
