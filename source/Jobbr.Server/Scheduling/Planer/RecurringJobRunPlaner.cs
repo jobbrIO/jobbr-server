@@ -46,7 +46,7 @@ namespace Jobbr.Server.Scheduling.Planer
 
             DateTime baseTime;
 
-            // Calculate the next occurance
+            // Calculate the next occurance based on current time or possible future startdate
             if (trigger.StartDateTimeUtc.HasValue && trigger.StartDateTimeUtc.Value > this.dateTimeProvider.GetUtcNow())
             {
                 baseTime = trigger.StartDateTimeUtc.Value;
