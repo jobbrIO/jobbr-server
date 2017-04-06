@@ -209,7 +209,7 @@ namespace Jobbr.Server
 
         private void RegisterJobsFromRepository()
         {
-            Logger.Info("Addin jobs from the registry");
+            Logger.Info("Adding jobs from the registry");
 
             try
             {
