@@ -338,7 +338,8 @@ namespace Jobbr.Tests.Components.Scheduler
 
             var jobRuns = this.repository.GetJobRuns();
 
-            Assert.AreEqual(0, jobRuns.Count, "The trigger is not valid yet and should not trigger a run");
+            Assert.AreEqual(1, jobRuns.Count, "A startdate in the future should trigger the run");
+            Assert.AreEqual(currentNow.Date, jobRuns[0].PlannedStartDateTimeUtc.Date);
         }
 
         [TestMethod]
