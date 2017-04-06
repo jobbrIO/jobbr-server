@@ -310,5 +310,51 @@ namespace Jobbr.Tests.Components.Scheduler
 
             Assert.AreEqual(1, jobRuns.Count, "The periodic callback should not create new jobruns if they would start at the same time (== planned starttime has not changed)");
         }
+
+        [TestMethod]
+        public void RecurringTrigger_EndDateInPast_DoesNotTriggerRun()
+        {
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, EndDateTimeUtc = DateTime.UtcNow.AddDays(-1)};
+
+            // This triggers the first jobrun
+            this.AddAndSignalNewTrigger(this.demoJob1Id, recurringTrigger);
+
+            this.periodicTimer.CallbackOnce();
+
+            var jobRuns = this.repository.GetJobRuns();
+
+            Assert.AreEqual(0, jobRuns.Count, "The trigger is not valid anymore and should not trigger a run");
+        }
+
+        [TestMethod]
+        public void RecurringTrigger_StartDateInFuture_DoesNotTriggerRun()
+        {
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, StartDateTimeUtc = DateTime.UtcNow.AddDays(1) };
+
+            // This triggers the first jobrun
+            this.AddAndSignalNewTrigger(this.demoJob1Id, recurringTrigger);
+
+            this.periodicTimer.CallbackOnce();
+
+            var jobRuns = this.repository.GetJobRuns();
+
+            Assert.AreEqual(0, jobRuns.Count, "The trigger is not valid yet and should not trigger a run");
+        }
+
+        [TestMethod]
+        public void RecurringTrigger_StartAndEndDateCoversNow_DoesNotTriggerRun()
+        {
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, StartDateTimeUtc = DateTime.UtcNow.AddDays(-1), EndDateTimeUtc = DateTime.UtcNow.AddDays(1)};
+
+            // This triggers the first jobrun
+            this.AddAndSignalNewTrigger(this.demoJob1Id, recurringTrigger);
+
+            this.periodicTimer.CallbackOnce();
+
+            var jobRuns = this.repository.GetJobRuns();
+
+            Assert.AreEqual(1, jobRuns.Count, "The trigger should cause a job run because its valid right now");
+        }
+
     }
 }
