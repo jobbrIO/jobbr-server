@@ -1,6 +1,12 @@
 ﻿<SolutionConfiguration>
   <Settings>
     <AllowParallelTestExecution>False</AllowParallelTestExecution>
+    <MetricsExclusionList>
+      <Value>Jobbr.Server\Jobbr.Server.csproj\App_Packages</Value>
+      <Value>Jobbr.Tests\Jobbr.Tests.csproj</Value>
+      <Value>TinyMessenger.cs:Jobbr.Server\Jobbr.Server.csproj</Value>
+      <Value>Builder\NoExecutor.cs:Jobbr.Server\Jobbr.Server.csproj</Value>
+    </MetricsExclusionList>
     <SolutionConfigured>True</SolutionConfigured>
   </Settings>
 </SolutionConfiguration>
