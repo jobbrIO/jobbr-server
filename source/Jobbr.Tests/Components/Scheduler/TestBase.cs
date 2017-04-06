@@ -37,8 +37,6 @@ namespace Jobbr.Tests.Components.Scheduler
                 new InstantJobRunPlaner(this.currentTimeProvider), new ScheduledJobRunPlaner(this.currentTimeProvider),
                 new RecurringJobRunPlaner(this.repository, this.currentTimeProvider), new DefaultSchedulerConfiguration(),
                 this.periodicTimer, this.currentTimeProvider);
-
-            this.scheduler.Start();
         }
     }
 }
