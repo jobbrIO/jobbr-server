@@ -70,9 +70,11 @@ namespace Jobbr.Tests.Components.Scheduler
             this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Starting);
             this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Started);
             this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Started);
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Connected);
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Initializing);
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Processing);
             this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Finishing);
             this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Collecting);
-            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Connected);
 
             this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Completed);
 
@@ -80,7 +82,7 @@ namespace Jobbr.Tests.Components.Scheduler
 
             var failedJobRuns = this.repository.GetJobRunsByState(JobRunStates.Failed);
 
-            Assert.AreEqual(7, failedJobRuns.Count, $"Still have jobruns with the following states:\n {string.Join(", ", this.repository.GetJobRuns().Select(jr => jr.State))}");
+            Assert.AreEqual(9, failedJobRuns.Count, $"Still have jobruns with the following states:\n {string.Join(", ", this.repository.GetJobRuns().Select(jr => jr.State))}");
         }
     }
 }
