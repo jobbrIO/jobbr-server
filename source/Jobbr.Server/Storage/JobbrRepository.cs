@@ -261,20 +261,33 @@ namespace Jobbr.Server.Storage
             this.storageProvider.Update(jobRunFromStorage);
         }
 
-        public IEnumerable<JobRun> GetRunningJobs(long triggerJobId, long triggerId)
+        public IEnumerable<JobRun> GetRunningJobs()
         {
             var minState = (int)JobRunStates.Scheduled + 1;
             var maxState = (int)JobRunStates.Completed - 1;
 
-            var jobRunsByStateRange = this.GetJobRunsByStateRange(triggerJobId, triggerId, (JobRunStates)minState, (JobRunStates)maxState);
+            var jobRunsByStateRange = this.GetJobRunsByStateRange((JobRunStates)minState, (JobRunStates)maxState);
 
-            foreach (var jobRun1 in jobRunsByStateRange)
+            foreach (var jobRun in jobRunsByStateRange)
             {
-                yield return jobRun1;
+                yield return jobRun;
             }
         }
 
-        public IEnumerable<JobRun> GetJobRunsByStateRange(long triggerJobId, long triggerId, JobRunStates minState, JobRunStates maxState)
+        public IEnumerable<JobRun> GetRunningJobs(long triggerJobId, long triggerId)
+        {
+            var runningJobs = this.GetRunningJobs();
+
+            foreach (var jobRun in runningJobs)
+            {
+                if (jobRun.TriggerId == triggerId && jobRun.JobId == triggerJobId)
+                {
+                    yield return jobRun;
+                }
+            }
+        }
+
+        public IEnumerable<JobRun> GetJobRunsByStateRange(JobRunStates minState, JobRunStates maxState)
         {
             if (maxState < minState)
             {
@@ -289,10 +302,7 @@ namespace Jobbr.Server.Storage
 
                 foreach (var jobRun in jobRunsByState)
                 {
-                    if (jobRun.TriggerId == triggerId && jobRun.JobId == triggerJobId)
-                    {
-                        yield return jobRun;
-                    }
+                    yield return jobRun;
                 }
             }
         }

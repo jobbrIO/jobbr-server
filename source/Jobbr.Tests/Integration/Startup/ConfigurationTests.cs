@@ -143,7 +143,7 @@ namespace Jobbr.Tests.Integration.Startup
 
         public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50)
         {
-            return null;
+            return new List<JobRun>();
         }
 
         public bool IsAvailable()

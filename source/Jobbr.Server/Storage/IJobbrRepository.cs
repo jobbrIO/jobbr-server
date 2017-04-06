@@ -36,7 +36,9 @@ namespace Jobbr.Server.Storage
 
         IEnumerable<JobRun> GetRunningJobs(long triggerJobId, long triggerId);
 
-        IEnumerable<JobRun> GetJobRunsByStateRange(long triggerJobId, long triggerId, JobRunStates minState, JobRunStates maxState);
+        IEnumerable<JobRun> GetRunningJobs();
+
+        IEnumerable<JobRun> GetJobRunsByStateRange(JobRunStates minState, JobRunStates maxState);
 
         void AddJob(Job job);
 

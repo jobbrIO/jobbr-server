@@ -7,6 +7,7 @@ using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Scheduling.Planer;
 using Jobbr.Server.Storage;
+using JobRunStates = Jobbr.ComponentModel.JobStorage.Model.JobRunStates;
 
 namespace Jobbr.Server.Scheduling
 {
@@ -49,6 +50,8 @@ namespace Jobbr.Server.Scheduling
         public void Start()
         {
             this.SetScheduledJobRunsFromPastToOmitted();
+
+            this.SetRunningJobsToFailed();
 
             this.CreateInitialPlan();
 
@@ -267,6 +270,17 @@ namespace Jobbr.Server.Scheduling
             foreach (var jobRun in scheduledJobRuns)
             {
                 jobRun.State = JobRunStates.Omitted;
+                this.repository.Update(jobRun);
+            }
+        }
+
+        private void SetRunningJobsToFailed()
+        {
+            var runningJObRuns = this.repository.GetRunningJobs();
+
+            foreach (var jobRun in runningJObRuns)
+            {
+                jobRun.State = JobRunStates.Failed;
                 this.repository.Update(jobRun);
             }
         }
