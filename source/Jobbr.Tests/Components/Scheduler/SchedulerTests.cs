@@ -314,7 +314,10 @@ namespace Jobbr.Tests.Components.Scheduler
         [TestMethod]
         public void RecurringTrigger_EndDateInPast_DoesNotTriggerRun()
         {
-            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, EndDateTimeUtc = DateTime.UtcNow.AddDays(-1)};
+            var currentNow = new DateTime(2017, 02, 01, 15, 42, 00, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(currentNow);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, EndDateTimeUtc = currentNow.AddDays(-1)};
 
             // This triggers the first jobrun
             this.AddAndSignalNewTrigger(this.demoJob1Id, recurringTrigger);
@@ -327,9 +330,31 @@ namespace Jobbr.Tests.Components.Scheduler
         }
 
         [TestMethod]
-        public void RecurringTrigger_StartDateInFuture_DoesNotTriggerRun()
+        public void RecurringTrigger_StartDateInFuture_FirstRunIsAtStartDate()
         {
-            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, StartDateTimeUtc = DateTime.UtcNow.AddDays(1) };
+            var currentNow = new DateTime(2017, 02, 01, 15, 42, 00, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(currentNow);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, StartDateTimeUtc = currentNow.AddDays(1) };
+
+            // This triggers the first jobrun
+            this.AddAndSignalNewTrigger(this.demoJob1Id, recurringTrigger);
+
+            this.periodicTimer.CallbackOnce();
+
+            var jobRuns = this.repository.GetJobRuns();
+
+            Assert.AreEqual(1, jobRuns.Count, "A startdate in the future should trigger the run");
+            Assert.AreEqual(currentNow.AddDays(1).Date, jobRuns[0].PlannedStartDateTimeUtc.Date);
+        }
+
+        [TestMethod]
+        public void RecurringTrigger_StartDateInPast_FirstRunIsAtCurrentNow()
+        {
+            var currentNow = new DateTime(2017, 02, 01, 15, 42, 00, DateTimeKind.Utc);
+            this.currentTimeProvider.Set(currentNow);
+
+            var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true, StartDateTimeUtc = currentNow.AddDays(-1) };
 
             // This triggers the first jobrun
             this.AddAndSignalNewTrigger(this.demoJob1Id, recurringTrigger);
@@ -356,6 +381,5 @@ namespace Jobbr.Tests.Components.Scheduler
 
             Assert.AreEqual(1, jobRuns.Count, "The trigger should cause a job run because its valid right now");
         }
-
     }
 }
