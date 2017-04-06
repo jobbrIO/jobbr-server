@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
@@ -33,7 +34,10 @@ namespace Jobbr.Server.Scheduling.Planer
 
             if (trigger.NoParallelExecution)
             {
-                if (this.jobbrRepository.CheckParallelExecution(trigger.Id) == false)
+                // find jobs that are running right now based on this trigger
+                var hasRunningJob = this.jobbrRepository.GetRunningJobs(trigger.JobId, trigger.Id).Any();
+
+                if (hasRunningJob)
                 {
                     var job = this.jobbrRepository.GetJob(trigger.JobId);
 

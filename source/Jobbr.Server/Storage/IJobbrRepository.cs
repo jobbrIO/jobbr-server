@@ -34,6 +34,10 @@ namespace Jobbr.Server.Storage
 
         List<JobRun> GetJobRunsByState(JobRunStates state);
 
+        IEnumerable<JobRun> GetRunningJobs(long triggerJobId, long triggerId);
+
+        IEnumerable<JobRun> GetJobRunsByStateRange(long triggerJobId, long triggerId, JobRunStates minState, JobRunStates maxState);
+
         void AddJob(Job job);
 
         JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime plannedStartDateTimeUtc);
@@ -64,6 +68,5 @@ namespace Jobbr.Server.Storage
 
         JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow);
 
-        bool CheckParallelExecution(long triggerId);
     }
 }

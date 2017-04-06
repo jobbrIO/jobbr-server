@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
@@ -137,9 +136,9 @@ namespace Jobbr.Server.Storage
                     this.storageProvider.Update(jobId, trigger as RecurringTrigger);
                 }
             }
+
             return triggerFromDb;
         }
-
 
         private bool ApplyOtherChanges(RecurringTrigger fromDb, RecurringTrigger updatedOne)
         {
@@ -262,9 +261,40 @@ namespace Jobbr.Server.Storage
             this.storageProvider.Update(jobRunFromStorage);
         }
 
-        public bool CheckParallelExecution(long triggerId)
+        public IEnumerable<JobRun> GetRunningJobs(long triggerJobId, long triggerId)
         {
-            throw new NotImplementedException();
+            var minState = (int)JobRunStates.Scheduled + 1;
+            var maxState = (int)JobRunStates.Completed - 1;
+
+            var jobRunsByStateRange = this.GetJobRunsByStateRange(triggerJobId, triggerId, (JobRunStates)minState, (JobRunStates)maxState);
+
+            foreach (var jobRun1 in jobRunsByStateRange)
+            {
+                yield return jobRun1;
+            }
+        }
+
+        public IEnumerable<JobRun> GetJobRunsByStateRange(long triggerJobId, long triggerId, JobRunStates minState, JobRunStates maxState)
+        {
+            if (maxState < minState)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maxState), $"The parameter '{nameof(maxState)}' should not be lower than '{nameof(minState)}'");
+            }
+
+            for (var i = minState; i <= maxState; i++)
+            {
+                var currentState = (JobRunStates)i;
+
+                var jobRunsByState = this.GetJobRunsByState(currentState);
+
+                foreach (var jobRun in jobRunsByState)
+                {
+                    if (jobRun.TriggerId == triggerId && jobRun.JobId == triggerJobId)
+                    {
+                        yield return jobRun;
+                    }
+                }
+            }
         }
     }
 }
