@@ -57,7 +57,30 @@ namespace Jobbr.Tests.Components.Scheduler
             var schedulerJobRuns = this.repository.GetJobRunsByState(JobRunStates.Scheduled);
 
             Assert.AreEqual(1, schedulerJobRuns.Count, "A future scheduled jobrun should not be omitted");
+        }
 
+        [TestMethod]
+        public void SchedulerStarts_HasSRunningJobsFromPast_WillSetToFailed()
+        {
+            var currentTime = new DateTime(2017, 04, 06, 0, 0, 0);
+            this.currentTimeProvider.Set(currentTime);
+
+            // Add a couple of jobruns
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Preparing);
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Starting);
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Started);
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Started);
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Finishing);
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Collecting);
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Connected);
+
+            this.AddJobRun(currentTime.AddDays(-1), JobRunStates.Completed);
+
+            this.scheduler.Start();
+
+            var failedJobRuns = this.repository.GetJobRunsByState(JobRunStates.Failed);
+
+            Assert.AreEqual(7, failedJobRuns.Count, $"Still have jobruns with the following states:\n {string.Join(", ", this.repository.GetJobRuns().Select(jr => jr.State))}");
         }
     }
 }
