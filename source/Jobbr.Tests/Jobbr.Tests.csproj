@@ -82,7 +82,7 @@
     <Compile Include="Components\JobRunService\ProgressChannelTests.cs" />
     <Compile Include="Components\Scheduler\ManualTimeProvider.cs" />
     <Compile Include="Components\Scheduler\PeriodicTimerMock.cs" />
-    <Compile Include="Components\Scheduler\SchedulerTests.cs" />
+    <Compile Include="Components\Scheduler\PlanningTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\Extensions.cs" />
     <Compile Include="Integration\Execution\JobRunExecutionTestBase.cs" />
     <Compile Include="Integration\Execution\JobRunInformationServiceTests.cs" />

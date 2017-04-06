@@ -14,7 +14,7 @@ using JobRunStates = Jobbr.ComponentModel.JobStorage.Model.JobRunStates;
 namespace Jobbr.Tests.Components.Scheduler
 {
     [TestClass]
-    public class SchedulerTests
+    public class PlanningTests
     {
         private readonly long demoJob1Id = 1;
 
@@ -25,7 +25,7 @@ namespace Jobbr.Tests.Components.Scheduler
         private readonly PeriodicTimerMock periodicTimer;
         private readonly ManualTimeProvider currentTimeProvider;
 
-        public SchedulerTests()
+        public PlanningTests()
         {
             this.repository = new JobbrRepository(new InMemoryJobStorageProvider());
 
