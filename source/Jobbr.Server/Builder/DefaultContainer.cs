@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Registration;

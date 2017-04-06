@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Jobbr.Server.ComponentServices.Execution;
 using Jobbr.Server.Logging;
 
 namespace Jobbr.Server.Builder

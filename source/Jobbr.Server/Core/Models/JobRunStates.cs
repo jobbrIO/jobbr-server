@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Jobbr.Server.Core.Models
+﻿namespace Jobbr.Server.Core.Models
 {
     public enum JobRunStates
     {

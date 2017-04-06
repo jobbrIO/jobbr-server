@@ -1,4 +1,3 @@
-using System;
 using Jobbr.ComponentModel.JobStorage.Model;
 
 namespace Jobbr.Server.Scheduling.Planer

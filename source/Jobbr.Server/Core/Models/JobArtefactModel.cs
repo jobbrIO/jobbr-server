@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Jobbr.Server.Core.Models
+﻿namespace Jobbr.Server.Core.Models
 {
     public class JobArtefactModel
     {
