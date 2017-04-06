@@ -116,7 +116,6 @@ namespace Jobbr.Server
                 t =>
                     {
                         this.RegisterJobsFromRepository();
-                        this.SetScheduledJobsFromPastToOmitted();
                         this.StartInternalComponents();
                         this.StartOptionalComponents();
 
@@ -193,18 +192,6 @@ namespace Jobbr.Server
                     Thread.Sleep(1000);
                 }
             }
-        }
-
-        private void SetScheduledJobsFromPastToOmitted()
-        {
-            // TODO: Reimplement this
-            //var scheduledJobs = this.configuration.JobStorageProvider.GetJobRunsByState(JobRunState.Scheduled).Where(p => p.PlannedStartDateTimeUtc < DateTime.UtcNow);
-
-            //foreach (var job in scheduledJobs)
-            //{
-            //    job.State = JobRunState.Omitted;
-            //    this.configuration.JobStorageProvider.Update(job);
-            //}
         }
 
         private void RegisterJobsFromRepository()

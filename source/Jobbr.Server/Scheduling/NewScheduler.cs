@@ -48,6 +48,8 @@ namespace Jobbr.Server.Scheduling
 
         public void Start()
         {
+            this.SetScheduledJobRunsFromPastToOmitted();
+
             this.CreateInitialPlan();
 
             this.periodicTimer.Start();
@@ -256,6 +258,17 @@ namespace Jobbr.Server.Scheduling
             };
 
             return newItem;
+        }
+
+        private void SetScheduledJobRunsFromPastToOmitted()
+        {
+            var scheduledJobRuns = this.repository.GetJobRunsByState(JobRunStates.Scheduled).Where(p => p.PlannedStartDateTimeUtc < DateTime.UtcNow);
+
+            foreach (var jobRun in scheduledJobRuns)
+            {
+                jobRun.State = JobRunStates.Omitted;
+                this.repository.Update(jobRun);
+            }
         }
 
         private void CreateInitialPlan()
