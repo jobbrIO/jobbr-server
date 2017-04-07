@@ -5,6 +5,9 @@ branches:
     - /release/.*/
     - /hotfix/.*/
     - /feature/.*/
+skip_commits:
+  files:
+    - docs/*
 
 install:
   - choco install gitversion.portable -pre -y
