@@ -8,8 +8,9 @@ GitHub Organisation Page on https://github.com/JobbrIO to find the main repo and
    :maxdepth: 2
    :caption: Introduction
 
-   intro/yetanother
-   intro/concepts
+   intro/welcome
+   intro/features
+   intro/architecture
 
    
 .. toctree::
@@ -17,6 +18,12 @@ GitHub Organisation Page on https://github.com/JobbrIO to find the main repo and
    :caption: Library Documentation
 
    use/first-start
+   use/createJob
+   use/triggers
+   use/forked-execution
+   use/restApi
+   use/raven
+   use/recommondations
 
 .. toctree::
    :maxdepth: 2
@@ -38,12 +45,3 @@ GitHub Organisation Page on https://github.com/JobbrIO to find the main repo and
    :caption: Meeting Notes
 
    proj/meetings/*
-    
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
