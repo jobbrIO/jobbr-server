@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Build & Deploy Guide documentation build configuration file, created by
+# Jobbr documentation build configuration file, created by
 # sphinx-quickstart on Fri Nov  4 19:20:28 2016.
 #
 # This file is execfile()d with the current directory set to its
@@ -57,9 +57,9 @@ source_parsers = {
 master_doc = 'index'
 
 # General information about the project.
-# project = 'Jobbr'
-# copyright = '2017 Zühlke Engineering AG'
-# author = 'Tobias Zürcher, Michael Schnyder'
+project = 'Jobbr .NET JobServer'
+copyright = '2017 Zühlke Engineering AG'
+author = 'Michael Schnyder, Oliver Zürcher & Contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -142,7 +142,7 @@ html_theme = 'sphinx_rtd_theme'
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-# html_title = 'Build & Deploy Guide v1.0'
+# html_title = 'Doc'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #
@@ -242,7 +242,7 @@ html_static_path = ['_static']
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-# htmlhelp_basename = 'BuildDeployGuidedoc'
+# htmlhelp_basename = 'Jobbrdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -268,8 +268,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 # latex_documents = [
-#     (master_doc, 'BuildDeployGuide.tex', 'Build \\& Deploy Guide Documentation',
-#      'Tobias Zürcher, Michael Schnyder', 'manual'),
+#     (master_doc, 'Jobbr.tex', 'Jobbr Documentation',
+#      'Michael Schnyder, Oliver Zürcher', 'manual'),
 # ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -310,7 +310,7 @@ latex_elements = {
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 # man_pages = [
-#    (master_doc, 'builddeployguide', 'Build & Deploy Guide Documentation',
+#    (master_doc, 'jobbrdoc', 'Jobbr Documentation',
 #     [author], 1)
 #]
 
@@ -325,8 +325,8 @@ latex_elements = {
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 # texinfo_documents = [
-#     (master_doc, 'BuildDeployGuide', 'Build & Deploy Guide Documentation',
-#      author, 'BuildDeployGuide', 'One line description of project.',
+#     (master_doc, 'JobbrDoc', 'JobbrDoc',
+#      author, 'JobbrDoc', 'One line description of project.',
 #      'Miscellaneous'),
 # ]
 
