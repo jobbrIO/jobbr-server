@@ -265,7 +265,7 @@ namespace Jobbr.Server.Scheduling
 
         private void SetScheduledJobRunsFromPastToOmitted()
         {
-            var scheduledJobRuns = this.repository.GetJobRunsByState(JobRunStates.Scheduled).Where(p => p.PlannedStartDateTimeUtc < DateTime.UtcNow);
+            var scheduledJobRuns = this.repository.GetJobRunsByState(JobRunStates.Scheduled).Where(p => p.PlannedStartDateTimeUtc < this.dateTimeProvider.GetUtcNow());
 
             foreach (var jobRun in scheduledJobRuns)
             {
