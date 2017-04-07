@@ -11,6 +11,7 @@ GitHub Organisation Page on https://github.com/JobbrIO to find the main repo and
    intro/welcome
    intro/features
    intro/architecture
+   intro/status
 
    
 .. toctree::

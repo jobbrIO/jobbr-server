@@ -20,12 +20,6 @@ Please see all the other repositories for additional features like
 
 These projects follow their own release cycle and might also publish packages on NuGet. Hereby a short overview of current related projects
 
-## Issues
-The issues are split across the different repositories where they belong to. How-ever, the list if issues can still be aggregated for the while organisation:
-* [Open issues](https://github.com/issues?q=is%3Aopen+is%3Aissue+user%3AjobbrIO)
-* [Open issues for 1.0](https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+milestone%3A1.0+)
-* [List of open issues without milestone](https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+no%3Amilestone+)
-
 ## Related Projects
 
 ### [MSSQL Storage Provider](../../jobbr-storage-mssql) (jobbr-storage-mssql)
