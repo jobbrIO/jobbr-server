@@ -1,2 +1,0 @@
-# RavenDB / RavenFS
-dedd

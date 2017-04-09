@@ -21,9 +21,9 @@ GitHub Organisation Page on https://github.com/JobbrIO to find the main repo and
    use/first-start
    use/createJob
    use/triggers
-   use/forked-execution
+   use/execution
    use/restApi
-   use/raven
+   use/persistence
    use/recommondations
 
 .. toctree::

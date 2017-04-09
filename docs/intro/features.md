@@ -1,37 +1,40 @@
 # Features
 
-## Rest API
+## Management
 
-## Forked Execution
-Isolation of Jobs on process-level (JobRunner)
+### Rest API
 
+### Trigger Types
 
-## Non-Invasive
+### Non-Invasive
 
-## Jobrun Handling
-
-## Progress Reporting
-
-## Output Collection
-
-## Trigger Types
-
-## Fully typed client
+### Fully typed client
 
 ## Parameterization
 Both Job & Trigger (JobRun)
 
-## DI for Jobs
+
+## Job Execution
+
+### Forked Execution
+Isolation of Jobs on process-level (JobRunner)
+
+### Progress Reporting
+
+### Output Collection
+
+### DI for Jobs
 Optional
 
-## Logging
+### Logging
 
-## Artefactstores
 
-## RavenFS Store
+## Persistence
 
-## Filesystem Store
+### RavenFS Store
 
-## MSSQL JobStore
+### Filesystem Store
 
-## RavenDB JobStore
+### MSSQL JobStore
+
+### RavenDB JobStore
