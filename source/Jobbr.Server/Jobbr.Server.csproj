@@ -98,6 +98,7 @@
     <Compile Include="Core\TriggerService.cs" />
     <Compile Include="Core\Messaging\TriggerStateChangedMessage.cs" />
     <Compile Include="Core\Messaging\TriggerUpdatedMessage.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="JobRegistry\JobbrBuilderExtension.cs" />
     <Compile Include="Core\Messaging\MessageDispatcher.cs" />
     <Compile Include="Scheduling\BuilderExtension.cs" />
