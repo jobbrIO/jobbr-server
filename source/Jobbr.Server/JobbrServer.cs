@@ -49,12 +49,14 @@ namespace Jobbr.Server
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
             this.scheduler = scheduler;
+            this.executor = jobExecutor;
 
             this.components = components;
             this.configurationManager = configurationManager;
             this.registryBuilder = registryBuilder;
-            this.executor = jobExecutor;
             this.jobStorageProvider = jobStorageProvider;
+
+            messageDispatcher.WireuUp();
         }
 
         public bool IsRunning => this.isRunning;
