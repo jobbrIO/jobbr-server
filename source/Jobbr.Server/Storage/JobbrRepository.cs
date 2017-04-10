@@ -140,42 +140,6 @@ namespace Jobbr.Server.Storage
             return triggerFromDb;
         }
 
-        private bool ApplyOtherChanges(RecurringTrigger fromDb, RecurringTrigger updatedOne)
-        {
-            if (fromDb.Definition != updatedOne.Definition)
-            {
-                fromDb.Definition = updatedOne.Definition;
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool ApplyOtherChanges(ScheduledTrigger fromDb, ScheduledTrigger updatedOne)
-        {
-            if (fromDb.StartDateTimeUtc != updatedOne.StartDateTimeUtc)
-            {
-                fromDb.StartDateTimeUtc = updatedOne.StartDateTimeUtc;
-
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool ApplyOtherChanges(InstantTrigger fromDb, InstantTrigger updatedOne)
-        {
-            Logger.WarnFormat("Cannot change an instant trigger!");
-
-            return false;
-        }
-
-        private bool ApplyOtherChanges(object fromDb, object updatedOne)
-        {
-            Logger.WarnFormat("Unknown trigger types: From: {1}, To: {2}!", fromDb.GetType(), updatedOne.GetType());
-            return false;
-        }
-
         public List<JobRun> GetJobRunsByState(JobRunStates state)
         {
             return this.storageProvider.GetJobRunsByState(state);
@@ -305,6 +269,42 @@ namespace Jobbr.Server.Storage
                     yield return jobRun;
                 }
             }
+        }
+
+        private bool ApplyOtherChanges(RecurringTrigger fromDb, RecurringTrigger updatedOne)
+        {
+            if (fromDb.Definition != updatedOne.Definition)
+            {
+                fromDb.Definition = updatedOne.Definition;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ApplyOtherChanges(ScheduledTrigger fromDb, ScheduledTrigger updatedOne)
+        {
+            if (fromDb.StartDateTimeUtc != updatedOne.StartDateTimeUtc)
+            {
+                fromDb.StartDateTimeUtc = updatedOne.StartDateTimeUtc;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ApplyOtherChanges(InstantTrigger fromDb, InstantTrigger updatedOne)
+        {
+            Logger.WarnFormat("Cannot change an instant trigger!");
+
+            return false;
+        }
+
+        private bool ApplyOtherChanges(object fromDb, object updatedOne)
+        {
+            Logger.WarnFormat("Unknown trigger types: From: {1}, To: {2}!", fromDb.GetType(), updatedOne.GetType());
+            return false;
         }
     }
 }

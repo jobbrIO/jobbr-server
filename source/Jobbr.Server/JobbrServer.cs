@@ -34,17 +34,17 @@ namespace Jobbr.Server
 
         private readonly IJobStorageProvider jobStorageProvider;
 
-        private bool isRunning;
-
         private readonly List<IJobbrComponent> components;
 
         private readonly ConfigurationManager configurationManager;
         private readonly RegistryBuilder registryBuilder;
 
+        private bool isRunning;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        public JobbrServer(IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> components, MessageDispatcher MessageDispatcher, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
+        public JobbrServer(IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> components, MessageDispatcher messageDispatcher, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
         {
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
@@ -83,9 +83,6 @@ namespace Jobbr.Server
             return true;
         }
 
-        /// <summary>
-        /// The start.
-        /// </summary>
         public async Task<bool> StartAsync(CancellationToken cancellationToken)
         {
             this.State = JobbrState.Initializing;
@@ -130,6 +127,32 @@ namespace Jobbr.Server
             this.State = JobbrState.Running;
 
             return true;
+        }
+
+        /// <summary>
+        /// The stop.
+        /// </summary>
+        public void Stop()
+        {
+            Logger.Info("Attempt to shut down JobbrServer...");
+
+            this.components.ForEach(component => component.Stop());
+
+            this.scheduler.Stop();
+            this.executor.Stop();
+
+            Logger.Info("All components stopped.");
+        }
+
+        /// <summary>
+        /// The dispose.
+        /// </summary>
+        public void Dispose()
+        {
+            if (this.isRunning)
+            {
+                this.Stop();
+            }
         }
 
         private void StartInternalComponents()
@@ -208,32 +231,6 @@ namespace Jobbr.Server
             catch (Exception e)
             {
                 Logger.FatalException("Cannot register Jobs on startup. See Execption for details", e);
-            }
-        }
-
-        /// <summary>
-        /// The stop.
-        /// </summary>
-        public void Stop()
-        {
-            Logger.Info("Attempt to shut down JobbrServer...");
-
-            this.components.ForEach(component => component.Stop());
-
-            this.scheduler.Stop();
-            this.executor.Stop();
-
-            Logger.Info("All components stopped.");
-        }
-
-        /// <summary>
-        /// The dispose.
-        /// </summary>
-        public void Dispose()
-        {
-            if (this.isRunning)
-            {
-                this.Stop();
             }
         }
     }
