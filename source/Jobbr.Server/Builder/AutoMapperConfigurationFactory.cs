@@ -8,8 +8,9 @@ namespace Jobbr.Server.Builder
 {
     public class AutoMapperConfigurationFactory
     {
-        private static ILog Logger = LogProvider.For<AutoMapperConfigurationFactory>();
+        private static readonly ILog Logger = LogProvider.For<AutoMapperConfigurationFactory>();
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "We want to express the dynamic aspect of it")]
         public MapperConfiguration GetNew()
         {
             var profileTypes = this.GetType().Assembly.GetTypes().Where(t => t.Namespace != null && t.Namespace.StartsWith("Jobbr.Server") && typeof(Profile).IsAssignableFrom(t) && !t.IsAbstract);
