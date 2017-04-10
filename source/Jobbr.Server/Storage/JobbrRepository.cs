@@ -273,7 +273,7 @@ namespace Jobbr.Server.Storage
 
         private bool ApplyOtherChanges(RecurringTrigger fromDb, RecurringTrigger updatedOne)
         {
-            if (fromDb.Definition != updatedOne.Definition)
+            if (!string.Equals(fromDb.Definition, updatedOne.Definition, StringComparison.OrdinalIgnoreCase))
             {
                 fromDb.Definition = updatedOne.Definition;
                 return true;

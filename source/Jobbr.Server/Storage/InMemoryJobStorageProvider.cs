@@ -120,7 +120,7 @@ namespace Jobbr.Server.Storage
 
         public Job GetJobByUniqueName(string identifier)
         {
-            return this.localJobs.FirstOrDefault(j => j.UniqueName == identifier).Clone();
+            return this.localJobs.FirstOrDefault(j => string.Equals(j.UniqueName, identifier, StringComparison.OrdinalIgnoreCase)).Clone();
         }
 
         public JobRun GetJobRunById(long id)
@@ -130,14 +130,14 @@ namespace Jobbr.Server.Storage
 
         public List<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50)
         {
-            var allTriggers = this.localTriggers.Where(t => t.UserId == userId).Select(t => t.Id);
+            var allTriggers = this.localTriggers.Where(t => string.Equals(t.UserId, userId, StringComparison.OrdinalIgnoreCase)).Select(t => t.Id);
 
             return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
         }
 
         public List<JobRun> GetJobRunsByUserDisplayName(string userName, int page = 0, int pageSize = 50)
         {
-            var allTriggers = this.localTriggers.Where(t => t.UserDisplayName == userName).Select(t => t.Id);
+            var allTriggers = this.localTriggers.Where(t => string.Equals(t.UserDisplayName, userName, StringComparison.OrdinalIgnoreCase)).Select(t => t.Id);
 
             return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
         }

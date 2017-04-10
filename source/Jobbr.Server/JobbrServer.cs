@@ -168,7 +168,6 @@ namespace Jobbr.Server
                 this.executor.Start();
 
                 Logger.Info("All services (Scheduler, Executor) have been started sucessfully.");
-
             }
             catch (Exception e)
             {

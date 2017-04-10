@@ -5,9 +5,9 @@ namespace Jobbr.Server.Scheduling
 {
     internal class FixedMinuteTimer : IPeriodicTimer
     {
-        private Action callback;
-
         private readonly Timer timer;
+
+        private Action callback;
 
         public FixedMinuteTimer()
         {

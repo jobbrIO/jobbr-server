@@ -67,7 +67,7 @@ namespace Jobbr.Server.Core
             }
             catch
             {
-
+                // ignored
             }
 
             return new List<JobArtefactModel>();

@@ -25,7 +25,7 @@ namespace Jobbr.Server.Builder
                 Logger.Debug($"Activating type '{profileType.Name}' from namespace '{profileType.Namespace}' in assembly '{profileType.Assembly}'");
 
                 // Don't try/catch here, better fail early (in the creation of Jobbr server)
-                var profile = (Profile) Activator.CreateInstance(profileType);
+                var profile = (Profile)Activator.CreateInstance(profileType);
                 foundAutoMapperProfiles.Add(profile);
             }
 

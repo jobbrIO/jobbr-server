@@ -39,7 +39,7 @@ namespace Jobbr.Server.Storage
         {
             var filesInContainer = this.GetFilesFromContainer(container);
 
-            var file = filesInContainer.FirstOrDefault(p => p.Name == fileName);
+            var file = filesInContainer.FirstOrDefault(p => string.Equals(p.Name, fileName, StringComparison.OrdinalIgnoreCase));
 
             if (file == null)
             {

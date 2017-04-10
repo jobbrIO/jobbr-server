@@ -10,6 +10,7 @@ namespace Jobbr.Server.Core.Messaging
         }
 
         public long TriggerId => this.Content.TriggerId;
+
         public long JobId => this.Content.JobId;
     }
 }

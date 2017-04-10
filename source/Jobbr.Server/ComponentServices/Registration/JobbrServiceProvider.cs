@@ -45,7 +45,9 @@ namespace Jobbr.Server.ComponentServices.Registration
             return new List<object>(new[] { this.GetService(serviceType) });
         }
 
+        #pragma warning disable CA1024 // Use properties where appropriate.
         public IJobbrServiceProvider GetChild()
+        #pragma warning restore CA1024 // Use properties where appropriate.
         {
             // TODO: This might not be the right way to do
             return new JobbrServiceProvider(this.ninjectKernel);

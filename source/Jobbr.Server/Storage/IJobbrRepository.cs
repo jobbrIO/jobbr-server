@@ -69,6 +69,5 @@ namespace Jobbr.Server.Storage
         JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow);
 
         JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow);
-
     }
 }
