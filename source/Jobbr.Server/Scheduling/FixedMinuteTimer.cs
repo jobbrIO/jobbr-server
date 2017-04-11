@@ -3,9 +3,9 @@ using System.Threading;
 
 namespace Jobbr.Server.Scheduling
 {
-    internal class FixedMinuteTimer : IPeriodicTimer
+    internal class FixedMinuteTimer : IPeriodicTimer, IDisposable
     {
-        private readonly Timer timer;
+        private Timer timer;
 
         private Action callback;
 
@@ -27,6 +27,24 @@ namespace Jobbr.Server.Scheduling
         public void Stop()
         {
             this.timer.Change(int.MaxValue, int.MaxValue);
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool isDisposing)
+        {
+            if (isDisposing)
+            {
+                if (this.timer != null)
+                {
+                    this.timer.Dispose();
+                    this.timer = null;
+                }
+            }
         }
     }
 }
