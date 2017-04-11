@@ -109,9 +109,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Jobbr.Server\Jobbr.Server.csproj">
       <Project>{a45f729d-8629-4c7a-96b8-29eaa8d52919}</Project>
       <Name>Jobbr.Server</Name>
