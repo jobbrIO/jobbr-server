@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
@@ -10,9 +11,9 @@ using Ninject;
 
 namespace Jobbr.Server.Builder
 {
-    #pragma warning disable CA1001 // Don't implement IDisposable here because we cannot Dispose the container since the container is passed to the JobbrServer instance
+    [SuppressMessage("Design", "CA1001:Types that own disposable fields should be disposable", Justification = "Cannot disopose container, its used for the jobbr-server instance")]
+    [SuppressMessage("Design", "CA2213:Disposable fields should be disposed", Justification = "Cannot disopose container, its used for the jobbr-server instance")]
     public class JobbrBuilder : IJobbrBuilder
-    #pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
         private static readonly ILog Logger = LogProvider.For<JobbrBuilder>();
         private readonly StandardKernel container;
