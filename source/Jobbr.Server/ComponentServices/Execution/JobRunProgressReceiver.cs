@@ -31,7 +31,7 @@ namespace Jobbr.Server.ComponentServices.Execution
 
         public void PublishPid(long jobRunId, int pid, string host)
         {
-            // TODO: Implement this
+            this.jobRunService.UpdatePid(jobRunId, host, pid);
         }
 
         public void PublishArtefact(long id, string fileName, Stream result)

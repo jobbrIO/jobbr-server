@@ -28,12 +28,24 @@ namespace Jobbr.Tests.Integration.Execution
         public void ProgressUpdate_With50Percent_IsStored()
         {
             var progressService = this.Services.ProgressChannel;
-                
+
             progressService.PublishProgressUpdate(this.currentRun.Id, 50);
 
             var jobRunFromDb = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.JobId, this.currentRun.TriggerId).Single();
 
             Assert.AreEqual(50, jobRunFromDb.Progress);
+        }
+
+        [TestMethod]
+        public void PublishPid_WithRandomInt_IsStored()
+        {
+            var progressService = this.Services.ProgressChannel;
+
+            progressService.PublishPid(this.currentRun.Id, 42373, "host01");
+
+            var jobRunFromDb = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.JobId, this.currentRun.TriggerId).Single();
+
+            Assert.AreEqual(42373, jobRunFromDb.Pid);
         }
 
         [TestMethod]

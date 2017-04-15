@@ -90,5 +90,13 @@ namespace Jobbr.Server.Core
         {
             this.artefactsStorageProvider.Save(jobRunId.ToString(), fileName, result);
         }
+
+        public void UpdatePid(long jobRunId, string host, int pid)
+        {
+            var jobRun = this.repository.GetJobRunById(jobRunId);
+            jobRun.Pid = pid;
+
+            this.repository.Update(jobRun);
+        }
     }
 }
