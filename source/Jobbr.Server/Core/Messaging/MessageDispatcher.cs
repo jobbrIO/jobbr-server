@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using Jobbr.Server.Scheduling;
 using TinyMessenger;
 
 namespace Jobbr.Server.Core.Messaging
 {
+    [SuppressMessage("Design", "CA2213:Disposable fields should be disposed", Justification = "Cannot disopose scheduler, because it's an external dependency")]
     public class MessageDispatcher
     {
         private readonly ITinyMessengerHub messengerHub;
