@@ -56,7 +56,7 @@ namespace Jobbr.Server
             this.registryBuilder = registryBuilder;
             this.jobStorageProvider = jobStorageProvider;
 
-            messageDispatcher.WireuUp();
+            messageDispatcher.WireUp();
         }
 
         public bool IsRunning => this.isRunning;

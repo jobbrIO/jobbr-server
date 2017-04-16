@@ -14,7 +14,7 @@ namespace Jobbr.Server.Core.Messaging
             this.scheduler = scheduler;
         }
 
-        public void WireuUp()
+        public void WireUp()
         {
             this.messengerHub.Subscribe<TriggerAddedMessage>(m => this.scheduler.OnTriggerAdded(m.JobId, m.TriggerId));
             this.messengerHub.Subscribe<TriggerUpdatedMessage>(m => this.scheduler.OnTriggerDefinitionUpdated(m.JobId, m.TriggerId));
