@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Jobbr.ComponentModel.Registration;
 using Ninject;
 
@@ -8,6 +9,7 @@ namespace Jobbr.Server.ComponentServices.Registration
     /// <summary>
     /// The jobbr dependency resolver.
     /// </summary>
+    [SuppressMessage("Design", "CA2213:Disposable fields should be disposed", Justification = "Cannot disopose kernel, because it's an external dependency")]
     public class JobbrServiceProvider : IJobbrServiceProvider
     {
         /// <summary>
