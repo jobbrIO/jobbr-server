@@ -244,7 +244,7 @@ namespace Jobbr.Server.Scheduling
 
             if (!dateTime.HasValue)
             {
-                Logger.Warn($"Unable to gather an expected start date for trigger, skipping.");
+                Logger.Warn($"Unable to gather an expected start date for trigger with id {trigger.Id}, (JobId: {trigger.JobId}), skipping.");
 
                 return null;
             }
@@ -265,23 +265,43 @@ namespace Jobbr.Server.Scheduling
 
         private void SetScheduledJobRunsFromPastToOmitted()
         {
-            var scheduledJobRuns = this.repository.GetJobRunsByState(JobRunStates.Scheduled).Where(p => p.PlannedStartDateTimeUtc < this.dateTimeProvider.GetUtcNow());
+            var dateTime = this.dateTimeProvider.GetUtcNow();
+            var scheduledJobRuns = this.repository.GetJobRunsByState(JobRunStates.Scheduled).Where(p => p.PlannedStartDateTimeUtc < dateTime).ToList();
 
+            if (!scheduledJobRuns.Any())
+            {
+                Logger.Debug($"There were no jobs found that had been planned before {dateTime}");
+                return;
+            }
+
+            Logger.Info($"There were {scheduledJobRuns.Count} job runs that should have been started while the JobServer was not running. Need to omit them...");
             foreach (var jobRun in scheduledJobRuns)
             {
                 jobRun.State = JobRunStates.Omitted;
                 this.repository.Update(jobRun);
+                Logger.Debug($"Omitted JobRun with id {jobRun.Id} for job {jobRun.Id} that has been planned for {jobRun.PlannedStartDateTimeUtc}");
             }
         }
 
         private void SetRunningJobsToFailed()
         {
-            var runningJObRuns = this.repository.GetRunningJobs();
+            var runningJObRuns = this.repository.GetRunningJobs().ToList();
+
+            if (!runningJObRuns.Any())
+            {
+                Logger.Debug($"There were no uncompleted JobRuns while starting. The last shutdown seems to be healthy.");
+                return;
+            }
+
+            Logger.Warn($"{runningJObRuns.Count} JobRuns are still in the 'Running'-State. They which may have crashed after an unhealthy shutdown.");
+            Logger.Info($"Need to manually set {runningJObRuns.Count} JobRuns to the state 'Failed'...");
 
             foreach (var jobRun in runningJObRuns)
             {
                 jobRun.State = JobRunStates.Failed;
                 this.repository.Update(jobRun);
+
+                Logger.Debug($"Set JobRun with id {jobRun.Id} for job {jobRun.Id} to the state 'Failed'. Possible Reason: Unclean shutdown.");
             }
         }
 
