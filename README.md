@@ -71,66 +71,6 @@ By default Jobbr runs in memory, thus all data is lost when Jobbr is restarted. 
 ## Logging
 Jobbr uses the LibLog library to detect your Logging-Framework of the Hosting Process. When using Jobbr, you don't introduce a new dependency to an existing Logging-Framework. See https://github.com/damianh/LibLog for details.
 
-
-## Nuget Overview
-
-### Main Packages
-|                 Package                  |                           Stable                         |                           Pre-release                        |
-| :--------------------------------------- | :------------------------------------------------------: | :----------------------------------------------------------: |
-| **Jobbr.Server**                         | [![NuGet][server-badge]][server]                         | [![NuGet][server-pre-badge]][server]                         |
-| **Jobbr.Runtime.Console**                |   -                                                      | [![NuGet][runtime-pre-badge]][runtime]                       |
-| **Jobbr.Server.MsSql**                   |   -                                                      | [![NuGet][mssql-pre-badge]][mssql]                           |
-| **Jobbr.Execution.Forked**               |   -                                                      | [![NuGet][forked-pre-badge]][cm-artefactstorage]             |
-| **Jobbr.Execution.InMemory**             |   -                                                      | [![NuGet][inmemory-pre-badge]][inmemory]                     |
-| **Jobbr.WebAPI**                         |   -                                                      | [![NuGet][webapi-pre-badge]][webapi]                         |
-| **Jobbr.ArtefactStorage.FileSystem**     |   -                                                      | [![NuGet][filesystem-pre-badge]][filesystem]                 |
-
-### Component Models
-|                 Package                  |                           Stable                         |                           Pre-release                        |
-| :--------------------------------------- | :------------------------------------------------------: | :----------------------------------------------------------: |
-| **Jobbr.ComponentModel.Registration**    |   -                                                      | [![NuGet][cm-registration-pre-badge]][cm-registration]       |
-| **Jobbr.ComponentModel.Execution**       |   -                                                      | [![NuGet][cm-execution-pre-badge]][cm-execution]             |
-| **Jobbr.ComponentModel.Management**      |   -                                                      | [![NuGet][cm-management-pre-badge]][cm-management]           |
-| **Jobbr.ComponentModel.JobStorage**      |   -                                                      | [![NuGet][cm-jobstorage-pre-badge]][cm-jobstorage]           |
-| **Jobbr.ComponentModel.ArtefactStorage** |   -                                                      | [![NuGet][cm-artefactstorage-pre-badge]][cm-artefactstorage] |
-
-[server]:                         https://www.nuget.org/packages/Jobbr.Server
-[server-badge]:                   https://img.shields.io/nuget/v/Jobbr.Server.svg
-[server-pre-badge]:               https://img.shields.io/nuget/vpre/Jobbr.Server.svg
-[runtime]:                        https://www.nuget.org/packages/Jobbr.Runtime.Console
-[runtime-badge]:                  https://img.shields.io/nuget/v/Jobbr.Runtime.svg
-[runtime-pre-badge]:              https://img.shields.io/nuget/vpre/Jobbr.Runtime.Console.svg
-[mssql]:                          https://www.nuget.org/packages/Jobbr.Server.MsSql
-[mssql-badge]:                    https://img.shields.io/nuget/v/Jobbr.Server.MsSql.svg
-[mssql-pre-badge]:                https://img.shields.io/nuget/vpre/Jobbr.Server.MsSql.svg
-[forked]:                         https://www.nuget.org/packages/Jobbr.Execution.Forked
-[forked-badge]:                   https://img.shields.io/nuget/v/Jobbr.Execution.Forked.svg
-[forked-pre-badge]:               https://img.shields.io/nuget/vpre/Jobbr.Execution.Forked.svg
-[inmemory]:                       https://www.nuget.org/packages/Jobbr.Execution.InMemory
-[inmemory-badge]:                 https://img.shields.io/nuget/v/Jobbr.Execution.InMemory.svg
-[inmemory-pre-badge]:             https://img.shields.io/nuget/vpre/Jobbr.Execution.InMemory.svg
-[webapi]:                         https://www.nuget.org/packages/Jobbr.Server.WebAPI
-[webapi-badge]:                   https://img.shields.io/nuget/v/Jobbr.Server.WebAPI.svg
-[webapi-pre-badge]:               https://img.shields.io/nuget/vpre/Jobbr.Server.WebAPI.svg
-[filesystem]:                     https://www.nuget.org/packages/Jobbr.ArtefactStorage.FileSystem
-[filesystem-badge]:               https://img.shields.io/nuget/v/Jobbr.ArtefactStorage.FileSystem.svg
-[filesystem-pre-badge]:           https://img.shields.io/nuget/vpre/Jobbr.ArtefactStorage.FileSystem.svg
-[cm-registration]:                https://www.nuget.org/packages/Jobbr.ComponentModel.Registration
-[cm-registration-badge]:          https://img.shields.io/nuget/v/Jobbr.ComponentModel.Registration.svg
-[cm-registration-pre-badge]:      https://img.shields.io/nuget/vpre/Jobbr.ComponentModel.Registration.svg
-[cm-execution]:                   https://www.nuget.org/packages/Jobbr.ComponentModel.Execution
-[cm-execution-badge]:             https://img.shields.io/nuget/v/Jobbr.ComponentModel.Execution.svg
-[cm-execution-pre-badge]:         https://img.shields.io/nuget/vpre/Jobbr.ComponentModel.Execution.svg
-[cm-artefactstorage]:             https://www.nuget.org/packages/Jobbr.ComponentModel.ArtefactStorage
-[cm-artefactstorage-badge]:       https://img.shields.io/nuget/v/Jobbr.ComponentModel.ArtefactStorage.svg
-[cm-artefactstorage-pre-badge]:   https://img.shields.io/nuget/vpre/Jobbr.ComponentModel.ArtefactStorage.svg
-[cm-management]:                  https://www.nuget.org/packages/Jobbr.ComponentModel.Management
-[cm-management-badge]:            https://img.shields.io/nuget/v/Jobbr.ComponentModel.Management.svg
-[cm-management-pre-badge]:        https://img.shields.io/nuget/vpre/Jobbr.ComponentModel.Management.svg
-[cm-jobstorage]:                  https://www.nuget.org/packages/Jobbr.ComponentModel.JobStorage
-[cm-jobstorage-badge]:            https://img.shields.io/nuget/v/Jobbr.ComponentModel.JobStorage.svg
-[cm-jobstorage-pre-badge]:        https://img.shields.io/nuget/vpre/Jobbr.ComponentModel.JobStorage.svg
-
 ## License
 This software is licenced under GPLv3. See [LICENSE](LICENSE), please see the related licences of 3rd party libraries below.
 
