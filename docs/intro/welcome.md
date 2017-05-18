@@ -8,7 +8,7 @@ For those that wan't to compare Quartz.NET, Hangfire and Jobbr to each other, he
 
 **Quartz.NET** is a mature *Scheduling Framerwork* which delegates the execution of business logic into classes that need to follow the exact contract defined by the Frameworks interfaces. It's a scheduler and therefore does not care about collecting the files produced by your jobs or offers a restful API to steer the jobs and their execution.
 
-**Hangfire.io** is a primarly a task offloader built for large ASP.NET Web farms. It allows you to typical web background tasks triggered by some interactions on a web application. The programming model clearly focuses on one-time shots. Like Quartzs.NET, Hangfire does not provide a pluggable architecture where you just can add a restful API.
+**Hangfire.io** is a primarly a *task offloader* built for large ASP.NET Web farms. It allows you to typical web background tasks triggered by some interactions on a web application. The programming model clearly focuses on one-time shots. Like Quartzs.NET, Hangfire does not provide a pluggable architecture where you just can add a restful API.
 
 **Our goal** is to provide a library that allows you to host your own JobServer where ever you want and without any compromises regarding dependencies and versions, logger-abstractions, storage implementations, extendability and stability. At the bare-minimum a JobServer, it's execution engine and storage can be run in-memory. 
 
