@@ -1,9 +1,25 @@
-# Status & Versions
+Status & Versions
+*****************
+
 Please see the following badges for the project including all extensions
 
-## GitHub Project Status
+|logo|
 
-### Main Packages
+Main Packages
+#####################
+
+The following table shows the current versions of the main Jobbr Project and related feature packages.
+
++----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+| Component                                    | Build                                               | NuGet                                               |
++==============================================+=====================================================+=====================================================+
+| **Jobbr.Server**                             | djdjdjdj                                            | djdjdjdj                                            |
++----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+| `FileSystem Artefact Provider`_              | |artefact-fs-badge-build-master|_                   | djdjdjdj                                            |
+|                                              |                                                     |                                                     |
+|                                              | |artefact-fs-badge-build-develop|_                  | djdjdjdj                                            |
++----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+
 |                 Project                                             |                           Build                          |                           NuGet                              |
 | :-----------------------------------------                          | :------------------------------------------------------- | :----------------------------------------------------------- |
 | **Jobbr.Server**                                                    | -                         | -                        |
@@ -30,13 +46,16 @@ The issues are split across the different repositories where they belong to. How
 * [Open issues for 1.0](https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+milestone%3A1.0+)
 * [List of open issues without milestone](https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+no%3Amilestone+)
 
-[artefact-fs-link-repo]:             https://github.com/JobbrIO/jobbr-artefactstorage-filesystem        
-[artefact-fs-link-build]:            https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-filesystem         
-[artefact-fs-link-nuget]:            https://www.nuget.org/packages/Jobbr.ArtefactStorage.FileSystem
-[artefact-fs-badge-build-develop]:   https://img.shields.io/appveyor/ci/Jobbr/jobbr-artefactstorage-filesystem/develop.svg?label=develop
-[artefact-fs-badge-build-master]:    https://img.shields.io/appveyor/ci/Jobbr/jobbr-artefactstorage-filesystem/master.svg?label=master
-[artefact-fs-badge-nuget]:           https://img.shields.io/nuget/v/Jobbr.ArtefactStorage.FileSystem.svg?label=NuGet%20stable
-[artefact-fs-badge-nuget-pre]:       https://img.shields.io/nuget/vpre/Jobbr.ArtefactStorage.FileSystem.svg?label=NuGet%20pre
+.. _FileSystem Artefact Provider:    https://github.com/JobbrIO/jobbr-artefactstorage-filesystem
+.. _artefact-fs-link-repo:             https://github.com/JobbrIO/jobbr-artefactstorage-filesystem
+.. _artefact-fs-badge-build-develop:   https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-filesystem
+.. _artefact-fs-badge-build-master:    https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-filesystem
+.. _artefact-fs-link-nuget:            https://www.nuget.org/packages/Jobbr.ArtefactStorage.FileSystem
+
+.. |artefact-fs-badge-build-develop|  image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-artefactstorage-filesystem/develop.svg?label=develop
+.. |artefact-fs-badge-build-master|   image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-artefactstorage-filesystem/master.svg?label=master
+.. |artefact-fs-badge-nuget|          image::  https://img.shields.io/nuget/v/Jobbr.ArtefactStorage.FileSystem.svg?label=NuGet%20stable
+.. |artefact-fs-badge-nuget-pre|      image::  https://img.shields.io/nuget/vpre/Jobbr.ArtefactStorage.FileSystem.svg?label=NuGet%20pre
 
 [mssql-link-repo]:             https://github.com/JobbrIO/jobbr-storage-mssql         
 [mssql-link-build]:            https://ci.appveyor.com/project/Jobbr/jobbr-storage-mssql         

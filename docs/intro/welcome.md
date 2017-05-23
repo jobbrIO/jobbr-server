@@ -4,7 +4,7 @@ This is the documentation for the .NET JobServer Jobbr. Feel free to contribute 
 ## Why another JobServer?
 You might argue that there are already a couple of .NET JobServers out there. And you are right. [Quartz.NET](https://www.quartz-scheduler.net/) for instance, is very popular C# port of very popular open source Java job scheduling framework [Quartz](http://www.quartz-scheduler.org/). Another well known player is [Hangfire](https://www.hangfire.io/), an easy way to perform background processing in .NET and .NET Core applications. You could also use your favorite MessageBus or server-less framework to execute your code on a regular basis, and for sure there are a lot of stand-alone job server products that are able help you there.
 
-For those that wan't to compare Quartz.NET, Hangfire and Jobbr to each other, here are some hints
+For those that want to compare Quartz.NET, Hangfire and Jobbr to each other, here are some hints
 
 **Quartz.NET** is a mature *Scheduling Framerwork* which delegates the execution of business logic into classes that need to follow the exact contract defined by the Frameworks interfaces. It's a scheduler and therefore does not care about collecting the files produced by your jobs or offers a restful API to steer the jobs and their execution.
 
