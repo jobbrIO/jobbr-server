@@ -2,9 +2,14 @@
 
 With InMemory Version
 
-
-## Possible Problems and solutions / Limitations?
+## Limitations
+Possible Problems and solutions / Limitations?
 
 * Persistence --> See Mssql, Raven, Filestorage
+
+## Problems
+
+Possible Problems and solutions / Limitations?
+
 * Stability, Advanced Features --> ForkedExection
 
