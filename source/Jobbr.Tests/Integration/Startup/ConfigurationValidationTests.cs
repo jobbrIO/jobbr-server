@@ -14,7 +14,7 @@ namespace Jobbr.Tests.Integration.Startup
 
         public class DemoComponentValidator : IConfigurationValidator
         {
-            private readonly Action func;
+            private readonly Action<DemoSettings> func;
             private readonly bool validationShouldFail;
             private readonly bool throwExecption;
 
@@ -26,7 +26,7 @@ namespace Jobbr.Tests.Integration.Startup
                 this.throwExecption = throwExecption;
             }
 
-            public DemoComponentValidator(Action func)
+            public DemoComponentValidator(Action<DemoSettings> func)
             {
                 this.func = func;
             }
@@ -38,7 +38,7 @@ namespace Jobbr.Tests.Integration.Startup
                     throw new Exception("Exception from here");
                 }
 
-                this.func?.Invoke();
+                this.func?.Invoke((DemoSettings)configuration);
 
                 return !this.validationShouldFail;
             }
@@ -52,13 +52,33 @@ namespace Jobbr.Tests.Integration.Startup
             builder.Add<DemoSettings>(new DemoSettings());
             var isCalled = false;
 
-            builder.Add<IConfigurationValidator>(new DemoComponentValidator(() => isCalled = true));
+            builder.Add<IConfigurationValidator>(new DemoComponentValidator(s => isCalled = true));
 
             var jobbr = builder.Create();
 
             jobbr.Start();
 
             Assert.IsTrue(isCalled);
+        }
+
+        [TestMethod]
+        public void ValidatorForSettings_WhenCalled_SettingsIsPassedThrough()
+        {
+            var builder = new JobbrBuilder();
+
+            var demoSettings = new DemoSettings();
+            object settingsToValidate = null;
+
+            builder.Add<DemoSettings>(demoSettings);
+            
+            builder.Add<IConfigurationValidator>(new DemoComponentValidator(s => settingsToValidate = s));
+
+            var jobbr = builder.Create();
+
+            jobbr.Start();
+
+            Assert.IsNotNull(settingsToValidate);
+            Assert.AreSame(demoSettings, settingsToValidate);
         }
 
         [TestMethod]
