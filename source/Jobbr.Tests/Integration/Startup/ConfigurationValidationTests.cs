@@ -8,6 +8,21 @@ namespace Jobbr.Tests.Integration.Startup
     [TestClass]
     public class ConfigurationValidationTests
     {
+        public class DemoComponent : IJobbrComponent
+        {
+            public void Dispose()
+            {
+            }
+
+            public void Start()
+            {
+            }
+
+            public void Stop()
+            {
+            }
+        }
+
         public class DemoSettings
         {
         }
