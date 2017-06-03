@@ -9,8 +9,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Startup
 {
+    /// <summary>
+    /// Tests that makes sure that the builder issues warnings if not all required components are registered
+    /// </summary>
     [TestClass]
-    public class ConfigurationTests
+    public class SetupValidationTests
     {
         [TestMethod]
         public void ConsoleCapturer_WhenActive_ContainsConsoleOut()

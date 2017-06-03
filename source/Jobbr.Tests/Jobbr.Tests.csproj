@@ -93,7 +93,7 @@
     <Compile Include="Integration\Management\JobManagementTests.cs" />
     <Compile Include="Integration\Management\JobQueryServiceTests.cs" />
     <Compile Include="Integration\Startup\BadEnvironmentTests.cs" />
-    <Compile Include="Integration\Startup\ConfigurationTests.cs" />
+    <Compile Include="Integration\Startup\SetupValidationTests.cs" />
     <Compile Include="Integration\ExposeAllServicesComponent.cs" />
     <Compile Include="Integration\JobbrServerTestBase.cs" />
     <Compile Include="Integration\Scheduler\SchedulerTests.cs" />
