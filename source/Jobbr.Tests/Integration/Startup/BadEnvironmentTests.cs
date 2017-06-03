@@ -4,7 +4,7 @@ using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server;
 using Jobbr.Server.Builder;
-using Jobbr.Tests.Infrastructure.StorageProvider;
+using Jobbr.Tests.Infrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Startup

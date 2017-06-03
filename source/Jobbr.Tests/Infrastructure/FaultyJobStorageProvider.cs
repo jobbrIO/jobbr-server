@@ -5,7 +5,7 @@ using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Storage;
 
-namespace Jobbr.Tests.Infrastructure.StorageProvider
+namespace Jobbr.Tests.Infrastructure
 {
     public class FaultyJobStorageProvider : IJobStorageProvider
     {
