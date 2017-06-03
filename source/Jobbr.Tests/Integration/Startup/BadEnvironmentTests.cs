@@ -13,20 +13,6 @@ namespace Jobbr.Tests.Integration.Startup
     public class BadEnvironmentTests
     {
         [TestMethod]
-        public void StartJobbr_WithFaultyStorageProvider_RemainsStarting()
-        {
-            var builder = new JobbrBuilder();
-            builder.Register<IJobStorageProvider>(typeof(NotImplementedJobStorageProvider));
-
-            var jobbr = builder.Create();
-
-            var isStarted = jobbr.Start(1000);
-
-            Assert.AreEqual(JobbrState.Starting, jobbr.State);
-            Assert.IsFalse(isStarted);
-        }
-
-        [TestMethod]
         public void StartingJobber_GetsRunning_WhenStorageProviderTurnsHealthy()
         {
             var builder = new JobbrBuilder();

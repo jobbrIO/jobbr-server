@@ -98,7 +98,6 @@
     <Compile Include="Integration\JobbrServerTestBase.cs" />
     <Compile Include="Integration\Scheduler\SchedulerTests.cs" />
     <Compile Include="Infrastructure\StorageProvider\FaultyJobStorageProvider.cs" />
-    <Compile Include="Infrastructure\StorageProvider\NotImplementedJobStorageProvider.cs" />
     <Compile Include="Integration\Startup\ConsoleCapturer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registration\BuilderTests.cs" />
