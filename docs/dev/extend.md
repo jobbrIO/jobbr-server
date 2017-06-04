@@ -1,7 +1,7 @@
 # Extend Jobbr
 Jobbr comes with a comprehensive plugin system, based on the `JobbrBuilder`. It's used by all the plugins available on https://github.com/JobbrIO and can also be leveraged to implement custom additions to the server.
 
-## Own Components
+## Additional Functionality
 The simples way to create your own component is to immplement the `IJobbrComponent` interface and register the type to the `JobbrBuilder`. The interface is available in [Jobbr.ComponentModel.Registration](https://github.com/jobbrIO/jobbr-cm-registration). You don't need a dependency to Jobbr and thus should only have dependencies to Component Models.
 
 **Sample component**
@@ -175,18 +175,17 @@ Your validator is called for each instance of the specified `ConfigurationType`.
 If one validator fails (or returns false), the whole startup process is stopped and the server is in an unrecoverable Error-State.
 
 
-## Component Replacements
+## Core Functionality Replacements
 Jobbr defines a couple of interfaces that belong to the core functionality. These interfaces are specified in the corresponding component model repositories and packages.
 
 * **Execution**: Contract between an executor and the Jobbr-Server, fullfilled by both the server and a component.
 * **JobStorage**: Defines interfaces for storage access
 * **ArtefactStore**: Defines interfaces to store and retrieve job related artefacts
 
+These packages are build upon the component infrastructure introduced above. The only different is that you'll need to implement specific interfaces from these packages instead of the generic `IJobbrComponent`.
 
 There are additional component models that define functionality that is available to all components provided by the server implementation
 * **Registration**: Boostrapping services, Registration, Validation, Components
 * **Management**: Manage the server, Query Jobs, etc.
 
-
-[Link to all Component Models on GitHub](https://github.com/jobbrIO?q=cm)
-
+Plase also see [all Component Models on GitHub](https://github.com/jobbrIO?q=cm)
