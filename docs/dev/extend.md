@@ -1,7 +1,7 @@
 # Extend Jobbr
 Jobbr comes with a comprehensive plugin system, based on the `JobbrBuilder`. It's used by all the plugins available on https://github.com/JobbrIO and can also be leveraged to implement custom additions to the server.
 
-## Additional Functionality
+## Additional Custom Functionality
 The simples way to create your own component is to immplement the `IJobbrComponent` interface and register the type to the `JobbrBuilder`. The interface is available in [Jobbr.ComponentModel.Registration](https://github.com/jobbrIO/jobbr-cm-registration). You don't need a dependency to Jobbr and thus should only have dependencies to Component Models.
 
 **Sample component**
@@ -79,7 +79,7 @@ public class DemoComponent : IJobbrComponent
         Console.WriteLine($"There are {this.queryService.GetJobRuns().Count} jobruns in the system");
     }
 
-    /** ... */
+    /* ... */
 }
 ```
 
@@ -104,7 +104,7 @@ An instance of this class needs to be registed to the builder and the DemoCompon
 ```c#
 var configuration = new DemoComponentConfiguration()
 {
-    DatabaseConnection "foo"
+    DatabaseConnection = "foo"
 };
 
 builder.Add<DemoComponentConfiguration>(configuration));
@@ -175,7 +175,7 @@ Your validator is called for each instance of the specified `ConfigurationType`.
 If one validator fails (or returns false), the whole startup process is stopped and the server is in an unrecoverable Error-State.
 
 
-## Core Functionality Replacements
+## Replace Core Functionality
 Jobbr defines a couple of interfaces that belong to the core functionality. These interfaces are specified in the corresponding component model repositories and packages.
 
 * **Execution**: Contract between an executor and the Jobbr-Server, fullfilled by both the server and a component.
