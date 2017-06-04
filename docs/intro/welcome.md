@@ -22,7 +22,7 @@ Besides of that we've focused on clear responsibilities and unique features like
 * Easily testable supported by in-memory stores
 * No additional dependencies or version issues for your jobs
 * DI Container ready for your jobs
-* Extendable (jobstorage providers, artefact storage providers, execution etc)
+* [Extendable](../dev/extend.md) (jobstorage providers, artefact storage providers, execution etc)
 * Progress tracking via stdout (Console.WriteLine())
 
 
