@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Security.Policy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration
 {
     /// <summary>
     /// Tests that confirm that all members if JobRunStates do have same values if their name are equal
-    /// 
-    /// Note: There is no rule that the Server.Core.Model.JobRunStates-Enum is a superset of all known states available in all Component Models. 
+    /// In addition, it's ensured that all core members are known in component models and vice-versa
     /// </summary>
     [TestClass]
     public class JobRunEnumMappingTests
@@ -20,6 +21,12 @@ namespace Jobbr.Tests.Integration
 
         public JobRunEnumMappingTests()
         {
+            var componentModelAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Where(a => a.Name.Contains("ComponentModel"));
+            foreach (var assemblyName in componentModelAssemblies)
+            {
+                Assembly.Load(assemblyName);
+            }
+
             this.allComponentModelJobRunEnumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(asm => asm.GetTypes().Where(this.enumTypeMatcher));
             this.coreType = typeof(Server.Core.Models.JobRunStates);
         }
@@ -75,6 +82,40 @@ namespace Jobbr.Tests.Integration
             }
 
             Assert.AreEqual(0, errors.Count, $"Found different values for same enum names while comparing all component model against each other\n\n" + string.Join("\n", errors));
+        }
+
+        [TestMethod]
+        public void CoreRunStateNames_ForAllComponentModel_ShouldBeKnown()
+        {
+            var masterMembers = Enum.GetNames(this.coreType);
+
+            var errors = new List<string>();
+
+            foreach (var cmEnumType in this.allComponentModelJobRunEnumTypes)
+            {
+                var notFound = masterMembers.Except(Enum.GetNames(cmEnumType));
+
+                errors.AddRange(notFound.Select(e => $"{e} was not found on enum type {cmEnumType.FullName}"));
+            }
+
+            Assert.AreEqual(0, errors.Count, "There where Enum members that where unknown in component models! \n\n- " + string.Join("\n- ", errors));
+        }
+
+        [TestMethod]
+        public void ComponentModelStateNames_ComparedToCore_ShouldBeKnown()
+        {
+            var masterMembers = Enum.GetNames(this.coreType);
+
+            var errors = new List<string>();
+
+            foreach (var cmEnumType in this.allComponentModelJobRunEnumTypes)
+            {
+                var notFound = Enum.GetNames(cmEnumType).Except(masterMembers);
+
+                errors.AddRange(notFound.Select(e => $"{e} was not found on enum type {cmEnumType.FullName}"));
+            }
+
+            Assert.AreEqual(0, errors.Count, "There where Enum members that where unknown in core, but available in component models! \n\n- " + string.Join("\n- ", errors));
         }
 
         private static IEnumerable<string> FindDifferentValues(Type masterType, Type remoteType)
