@@ -48,7 +48,7 @@
       <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc4\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable22\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
+      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable23\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc13\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
