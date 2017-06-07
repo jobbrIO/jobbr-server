@@ -90,9 +90,9 @@
     <Compile Include="Integration\Execution\JobRunExecutionTestBase.cs" />
     <Compile Include="Integration\Execution\JobRunInformationServiceTests.cs" />
     <Compile Include="Integration\Execution\ProgressChannelTests.cs" />
+    <Compile Include="Integration\JobRunEnumMappingTests.cs" />
     <Compile Include="Integration\Management\JobManagementTests.cs" />
     <Compile Include="Integration\Management\JobQueryServiceTests.cs" />
-    <Compile Include="Integration\MappingTests.cs" />
     <Compile Include="Integration\Startup\BadEnvironmentTests.cs" />
     <Compile Include="Integration\Startup\ConfigurationValidationTests.cs" />
     <Compile Include="Integration\Startup\SetupValidationTests.cs" />
