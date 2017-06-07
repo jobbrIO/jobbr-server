@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Policy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration
