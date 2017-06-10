@@ -37,16 +37,20 @@ The following table shows the current versions of the main Jobbr Project and rel
 | **Jobbr.ComponentModel.ArtefactStorage** |   -                                                      | [![NuGet][cm-artefactstorage-pre-badge]][cm-artefactstorage] |
 
 
-Issue PLanning
-##############
+Roadmap
+########
 
 The issues are split across the different repositories where they belong to. How-ever, the list if issues can still be aggregated for the whole organisation:
 
 * `Open issues planned for 1.0`_
+* `Open issues planned for 1.1`_
+* `Open issues planned for vNext`_
 * `Unplanned Issues`_
 * `All open issues`_ (for all milestones)
 
 .. _Open issues planned for 1.0:        https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+milestone%3A1.0+
+.. _Open issues planned for 1.1:        https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+milestone%3A1.1+
+.. _Open issues planned for vNext:      https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+milestone%3AvNext+
 .. _Unplanned Issues:                   https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+no%3Amilestone+
 .. _All open issues:                    https://github.com/issues?q=is%3Aopen+is%3Aissue+user%3AjobbrIO
 
