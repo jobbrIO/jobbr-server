@@ -8,20 +8,56 @@ Main Packages
 
 The following table shows the current versions of the main Jobbr Project and related feature packages.
 
+.. ===================================================
+   NOTE: Please see the replacements after the table!
+   ===================================================
+
 +----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
-| Component                                    | Build                                               | NuGet                                               |
+| Component                                    | Build                                               | NuGet-Versions                                      |
 +==============================================+=====================================================+=====================================================+
 | **Jobbr.Server**                             | djdjdjdj                                            | djdjdjdj                                            |
 +----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
-| `FileSystem Artefact Provider`_              | | |artefact-fs-badge-build-master|_                 | djdjdjdj                                            |
-|                                              | | |artefact-fs-badge-build-develop|_                | djdjdjdj                                            |
+| `FileSystem Artefact Provider`_              | | |artefact-fs-badge-build-master|_                 | | |artefact-fs-badge-nuget|_                        |
+|                                              | | |artefact-fs-badge-build-develop|_                | | |artefact-fs-badge-nuget-pre|_                    |
 +----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+| `RavenFS Artefact Provider`_                 | | |artefact-ravenfs-badge-build-master|_            | | |artefact-ravenfs-badge-nuget|_                   |
+|                                              | | |artefact-ravenfs-badge-build-develop|_           | | |artefact-ravenfs-badge-nuget-pre|_               |
++----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+| `MS SQL JobStorage Provider`_                | | |artefact-ravenfs-badge-build-master|_            | | |artefact-ravenfs-badge-nuget|_                   |
+|                                              | | |artefact-ravenfs-badge-build-develop|_           | | |artefact-ravenfs-badge-nuget-pre|_               |
++----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+
+
+
+.. Images and Targets for the elements above
+
+.. _FileSystem Artefact Provider:           https://github.com/JobbrIO/jobbr-artefactstorage-filesystem
+.. _artefact-fs-badge-build-master:         https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-filesystem
+.. |artefact-fs-badge-build-master|         image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-artefactstorage-filesystem/master.svg?label=master%20
+.. _artefact-fs-badge-build-develop:        https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-filesystem
+.. |artefact-fs-badge-build-develop|        image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-artefactstorage-filesystem/develop.svg?label=develop
+.. _artefact-fs-badge-nuget:                https://www.nuget.org/packages/Jobbr.ArtefactStorage.FileSystem
+.. |artefact-fs-badge-nuget|                image::  https://img.shields.io/nuget/v/Jobbr.ArtefactStorage.FileSystem.svg?label=stable
+.. _artefact-fs-badge-nuget-pre:            https://www.nuget.org/packages/Jobbr.ArtefactStorage.FileSystem
+.. |artefact-fs-badge-nuget-pre|            image::  https://img.shields.io/nuget/vpre/Jobbr.ArtefactStorage.FileSystem.svg?label=pre%20%20%20%20
+
+
+.. _RavenFS Artefact Provider:              https://github.com/JobbrIO/jobbr-artefactstorage-ravenfs
+.. _artefact-ravenfs-badge-build-develop:   https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-ravenfs
+.. |artefact-ravenfs-badge-build-develop|   image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-artefactstorage-ravenfs/develop.svg?label=develop
+.. _artefact-ravenfs-badge-build-master:    https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-ravenfs
+.. |artefact-ravenfs-badge-build-master|    image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-artefactstorage-ravenfs/master.svg?label=master%20
+.. _artefact-ravenfs-badge-nuget:           https://www.nuget.org/packages/Jobbr.ArtefactStorage.RavenFS
+.. |artefact-ravenfs-badge-nuget|           image::  https://img.shields.io/nuget/v/Jobbr.ArtefactStorage.RavenFS.svg?label=stable
+.. _artefact-ravenfs-badge-nuget-pre:       https://www.nuget.org/packages/Jobbr.ArtefactStorage.RavenFS
+.. |artefact-ravenfs-badge-nuget-pre|       image::  https://img.shields.io/nuget/vpre/Jobbr.ArtefactStorage.RavenFS.svg?label=pre%20%20%20%20
+
 
 |                 Project                                             |                           Build                          |                           NuGet                              |
 | :-----------------------------------------                          | :------------------------------------------------------- | :----------------------------------------------------------- |
 | **Jobbr.Server**                                                    | -                         | -                        |
-| [**FileSystem Artefact Provider**][artefact-fs-link-repo]           | [![AppVeyor][artefact-fs-badge-build-master]][artefact-fs-link-build] [![AppVeyor][artefact-fs-badge-build-develop]][artefact-fs-link-build] | [![NuGet][artefact-fs-badge-nuget]][artefact-fs-link-nuget] [![NuGet][artefact-fs-badge-nuget-pre]][artefact-fs-link-nuget]
-| RavenFS Artefact Provider | | |
+
+
 | [**MS SQL Storage Provider**][mssql-link-repo]                       | [![AppVeyor][mssql-badge-build-master]][mssql-link-build] [![AppVeyor][mssql-badge-build-develop]][mssql-link-build]                                             | [![NuGet][mssql-badge-nuget]][mssql-link-nuget] [![NuGet][mssql-badge-nuget-pre]][mssql-link-nuget]      | 
 | RavenDB Storage Provider | | |
 | [**Forked Execution**][execution-forked-link-repo] | [![AppVeyor][execution-forked-badge-build-master]][execution-forked-link-build] [![AppVeyor][execution-forked-badge-build-develop]][execution-forked-link-build] | [![NuGet][execution-forked-server-badge-nuget]][execution-forked-server-link-nuget] [![NuGet][execution-forked-server-badge-nuget-pre]][execution-forked-server-link-nuget] <br/> [![NuGet][execution-forked-console-badge-nuget]][execution-forked-console-link-nuget] [![NuGet][execution-forked-console-badge-nuget-pre]][execution-forked-console-link-nuget]          |
@@ -54,17 +90,6 @@ The issues are split across the different repositories where they belong to. How
 .. _Unplanned Issues:                   https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+no%3Amilestone+
 .. _All open issues:                    https://github.com/issues?q=is%3Aopen+is%3Aissue+user%3AjobbrIO
 
-
-.. _FileSystem Artefact Provider:    https://github.com/JobbrIO/jobbr-artefactstorage-filesystem
-.. _artefact-fs-link-repo:             https://github.com/JobbrIO/jobbr-artefactstorage-filesystem
-.. _artefact-fs-badge-build-develop:   https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-filesystem
-.. _artefact-fs-badge-build-master:    https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-filesystem
-.. _artefact-fs-link-nuget:            https://www.nuget.org/packages/Jobbr.ArtefactStorage.FileSystem
-
-.. |artefact-fs-badge-build-develop|  image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-artefactstorage-filesystem/develop.svg?label=develop
-.. |artefact-fs-badge-build-master|   image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-artefactstorage-filesystem/master.svg?label=master
-.. |artefact-fs-badge-nuget|          image::  https://img.shields.io/nuget/v/Jobbr.ArtefactStorage.FileSystem.svg?label=NuGet%20stable
-.. |artefact-fs-badge-nuget-pre|      image::  https://img.shields.io/nuget/vpre/Jobbr.ArtefactStorage.FileSystem.svg?label=NuGet%20pre
 
 [mssql-link-repo]:             https://github.com/JobbrIO/jobbr-storage-mssql         
 [mssql-link-build]:            https://ci.appveyor.com/project/Jobbr/jobbr-storage-mssql         
