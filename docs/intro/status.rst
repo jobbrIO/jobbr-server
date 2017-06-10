@@ -3,8 +3,6 @@ Status & Versions
 
 Please see the following badges for the project including all extensions
 
-|logo|
-
 Main Packages
 #####################
 
