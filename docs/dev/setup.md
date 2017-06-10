@@ -14,6 +14,11 @@ The documentation is build by the readthedocs.org-Service. If you need to develo
 
 Build the documentation with `make clean&make html` and open the index in your browser.
 
+**Autobuild**
+We added a autobuild option the the make.bat but you need to install shpinx-autostart in order to work. Instructions: [GaretJax/sphinx-autobuild](https://github.com/GaretJax/sphinx-autobuild)
+
+When installed, you can just issue `make.bat livehtml` and point your browser to [http://localhost:8000](http://localhost:8000)
+
 ### Installation Guide for Windows
 1. Download and install [Phyton >= 3.5.2 from the official download location](https://www.python.org/downloads/). 
 
@@ -75,7 +80,16 @@ Build the documentation with `make clean&make html` and open the index in your b
     ...
     Successfully installed sphinx-rtd-theme-0.2.4
     ```    
+5. Auto-reload
+   There is a very useful extension that allow to host the documentation locally and refresh the browser on changes. 
 
-5. Further information
+   ```
+    C:\Users\michael>pip install sphinx-autobuild
+    ...
+    Successfully installed sphinx-autobuild
+    ```    
+
+6. Further information
 * Installing Sphinx by the official spinx documentation on [http://www.sphinx-doc.org/en/stable/install.html](http://www.sphinx-doc.org/en/stable/install.html)
-* http://blog.readthedocs.com/adding-markdown-support/
+* Adding markdown support to sphinx from [http://blog.readthedocs.com/adding-markdown-support/](http://blog.readthedocs.com/adding-markdown-support/)
+* Live reload extension from [https://github.com/GaretJax/sphinx-autobuild](https://github.com/GaretJax/sphinx-autobuild)
