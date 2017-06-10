@@ -17,7 +17,7 @@ Build the documentation with `make clean&make html` and open the index in your b
 **Autobuild**
 We added a autobuild option the the make.bat but you need to install shpinx-autostart in order to work. Instructions: [GaretJax/sphinx-autobuild](https://github.com/GaretJax/sphinx-autobuild)
 
-When installed, you can just issue `make.bat livehtml` and point your browser to [http://localhost:8000](http://localhost:8000)
+When installed, you can just issue `make livehtml` and point your browser to [http://localhost:8000](http://localhost:8000)
 
 ### Installation Guide for Windows
 1. Download and install [Phyton >= 3.5.2 from the official download location](https://www.python.org/downloads/). 
@@ -45,7 +45,8 @@ When installed, you can just issue `make.bat livehtml` and point your browser to
     * Make sure you have restarted you console
     * Install pip by the command `py get-pip.py`
 
-3.  Install Sphinx
+3. Install Sphinx
+
     Sphinx is the document rendering engine that is also used to generate jobbr.readthedocs.io. The following command will install Sphinx and all other related packages in your Phyton installation.
 
     ```
@@ -54,7 +55,7 @@ When installed, you can just issue `make.bat livehtml` and point your browser to
     Downloading Sphinx-1.6.2-py2.py3-none-any.whl (1.9MB)
         100% |████████████████████████████████| 1.9MB 618kB/s
     Collecting snowballstemmer>=1.1 (from sphinx)
-    
+
     ...
 
     Successfully installed Jinja2-2.9.6 MarkupSafe-1.0 Pygments-2.2.0 alabaster-0.7.10 babel-2.4.0 certifi-2017.4.17 
@@ -73,6 +74,7 @@ When installed, you can just issue `make.bat livehtml` and point your browser to
     ```
 
 5. Install the official ReadTheDocsTheme (`sphinx_rtd_theme `)
+
     The official ReadTheDocs Theme can also be unstalled locally in order to test the build.
 
     ```
@@ -80,7 +82,8 @@ When installed, you can just issue `make.bat livehtml` and point your browser to
     ...
     Successfully installed sphinx-rtd-theme-0.2.4
     ```    
-5. Auto-reload
+6. Auto-reload
+
    There is a very useful extension that allow to host the documentation locally and refresh the browser on changes. 
 
    ```
@@ -88,8 +91,8 @@ When installed, you can just issue `make.bat livehtml` and point your browser to
     ...
     Successfully installed sphinx-autobuild
     ```    
+7. Further information
 
-6. Further information
-* Installing Sphinx by the official spinx documentation on [http://www.sphinx-doc.org/en/stable/install.html](http://www.sphinx-doc.org/en/stable/install.html)
-* Adding markdown support to sphinx from [http://blog.readthedocs.com/adding-markdown-support/](http://blog.readthedocs.com/adding-markdown-support/)
-* Live reload extension from [https://github.com/GaretJax/sphinx-autobuild](https://github.com/GaretJax/sphinx-autobuild)
+    * Installing Sphinx by the official spinx documentation on [http://www.sphinx-doc.org/en/stable/install.html](http://www.sphinx-doc.org/en/stable/install.html)
+    * Adding markdown support to sphinx from [http://blog.readthedocs.com/adding-markdown-support/](http://blog.readthedocs.com/adding-markdown-support/)
+    * Live reload extension from [https://github.com/GaretJax/sphinx-autobuild](https://github.com/GaretJax/sphinx-autobuild)
