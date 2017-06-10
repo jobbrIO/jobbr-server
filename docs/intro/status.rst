@@ -37,11 +37,19 @@ The following table shows the current versions of the main Jobbr Project and rel
 | **Jobbr.ComponentModel.ArtefactStorage** |   -                                                      | [![NuGet][cm-artefactstorage-pre-badge]][cm-artefactstorage] |
 
 
-## Issue Lists
-The issues are split across the different repositories where they belong to. How-ever, the list if issues can still be aggregated for the while organisation:
-* [Open issues](https://github.com/issues?q=is%3Aopen+is%3Aissue+user%3AjobbrIO)
-* [Open issues for 1.0](https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+milestone%3A1.0+)
-* [List of open issues without milestone](https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+no%3Amilestone+)
+Issue PLanning
+##############
+
+The issues are split across the different repositories where they belong to. How-ever, the list if issues can still be aggregated for the whole organisation:
+
+* `Open issues planned for 1.0`_
+* `Unplanned Issues`_
+* `All open issues`_ (for all milestones)
+
+.. _Open issues planned for 1.0:        https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+milestone%3A1.0+
+.. _Unplanned Issues:                   https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+no%3Amilestone+
+.. _All open issues:                    https://github.com/issues?q=is%3Aopen+is%3Aissue+user%3AjobbrIO
+
 
 .. _FileSystem Artefact Provider:    https://github.com/JobbrIO/jobbr-artefactstorage-filesystem
 .. _artefact-fs-link-repo:             https://github.com/JobbrIO/jobbr-artefactstorage-filesystem
