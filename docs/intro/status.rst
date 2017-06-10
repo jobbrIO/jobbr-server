@@ -13,9 +13,8 @@ The following table shows the current versions of the main Jobbr Project and rel
 +==============================================+=====================================================+=====================================================+
 | **Jobbr.Server**                             | djdjdjdj                                            | djdjdjdj                                            |
 +----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
-| `FileSystem Artefact Provider`_              | |artefact-fs-badge-build-master|_                   | djdjdjdj                                            |
-|                                              |                                                     |                                                     |
-|                                              | |artefact-fs-badge-build-develop|_                  | djdjdjdj                                            |
+| `FileSystem Artefact Provider`_              | | |artefact-fs-badge-build-master|_                 | djdjdjdj                                            |
+|                                              | | |artefact-fs-badge-build-develop|_                | djdjdjdj                                            |
 +----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
 
 |                 Project                                             |                           Build                          |                           NuGet                              |
