@@ -17,19 +17,41 @@ The following table shows the current versions of the main Jobbr Project and rel
 +==============================================+=====================================================+=====================================================+
 | **Jobbr.Server**                             | djdjdjdj                                            | djdjdjdj                                            |
 +----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+| `MS SQL Storage Provider`_                   | | |storage-mssql-badge-build-master|_               | | |storage-mssql-badge-nuget|_                      |
+|                                              | | |storage-mssql-badge-build-develop|_              | | |storage-mssql-badge-nuget-pre|_                  |
++----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
 | `FileSystem Artefact Provider`_              | | |artefact-fs-badge-build-master|_                 | | |artefact-fs-badge-nuget|_                        |
 |                                              | | |artefact-fs-badge-build-develop|_                | | |artefact-fs-badge-nuget-pre|_                    |
++----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+| `RavenDB Storage Provider`_                  | tbd                                                 | tbd                                                 |
+|                                              |                                                     |                                                     |
 +----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
 | `RavenFS Artefact Provider`_                 | | |artefact-ravenfs-badge-build-master|_            | | |artefact-ravenfs-badge-nuget|_                   |
 |                                              | | |artefact-ravenfs-badge-build-develop|_           | | |artefact-ravenfs-badge-nuget-pre|_               |
 +----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
-| `MS SQL JobStorage Provider`_                | | |artefact-ravenfs-badge-build-master|_            | | |artefact-ravenfs-badge-nuget|_                   |
-|                                              | | |artefact-ravenfs-badge-build-develop|_           | | |artefact-ravenfs-badge-nuget-pre|_               |
+| `Forked Process Execution`_                  | tbd                                                 | tbd                                                 |
+|                                              |                                                     |                                                     |
++----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+| `InProcess Process Execution`_               | tbd                                                 | tbd                                                 |
+|                                              |                                                     |                                                     |
++----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+| `Web API Extension (+ Client)`_              | tbd                                                 | tbd                                                 |
+|                                              |                                                     |                                                     |
 +----------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
 
 
 
 .. Images and Targets for the elements above
+
+.. _MS SQL Storage Provider:                https://github.com/JobbrIO/jobbr-storage-mssql
+.. _storage-mssql-badge-build-develop:      https://ci.appveyor.com/project/Jobbr/jobbr-storage-mssql
+.. |storage-mssql-badge-build-develop|      image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-storage-mssql/develop.svg?label=develop
+.. _storage-mssql-badge-build-master:       https://ci.appveyor.com/project/Jobbr/jobbr-storage-mssql
+.. |storage-mssql-badge-build-master|       image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-storage-mssql/master.svg?label=master%20
+.. _storage-mssql-badge-nuget:              https://www.nuget.org/packages/Jobbr.Storage.MsSql
+.. |storage-mssql-badge-nuget|              image::  https://img.shields.io/nuget/v/Jobbr.Storage.MsSql.svg?label=stable
+.. _storage-mssql-badge-nuget-pre:          https://www.nuget.org/packages/Jobbr.Storage.MsSql
+.. |storage-mssql-badge-nuget-pre|          image::  https://img.shields.io/nuget/vpre/Jobbr.Storage.MsSql.svg?label=pre%20%20%20%20
 
 .. _FileSystem Artefact Provider:           https://github.com/JobbrIO/jobbr-artefactstorage-filesystem
 .. _artefact-fs-badge-build-master:         https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-filesystem
@@ -40,7 +62,6 @@ The following table shows the current versions of the main Jobbr Project and rel
 .. |artefact-fs-badge-nuget|                image::  https://img.shields.io/nuget/v/Jobbr.ArtefactStorage.FileSystem.svg?label=stable
 .. _artefact-fs-badge-nuget-pre:            https://www.nuget.org/packages/Jobbr.ArtefactStorage.FileSystem
 .. |artefact-fs-badge-nuget-pre|            image::  https://img.shields.io/nuget/vpre/Jobbr.ArtefactStorage.FileSystem.svg?label=pre%20%20%20%20
-
 
 .. _RavenFS Artefact Provider:              https://github.com/JobbrIO/jobbr-artefactstorage-ravenfs
 .. _artefact-ravenfs-badge-build-develop:   https://ci.appveyor.com/project/Jobbr/jobbr-artefactstorage-ravenfs
@@ -58,7 +79,6 @@ The following table shows the current versions of the main Jobbr Project and rel
 | **Jobbr.Server**                                                    | -                         | -                        |
 
 
-| [**MS SQL Storage Provider**][mssql-link-repo]                       | [![AppVeyor][mssql-badge-build-master]][mssql-link-build] [![AppVeyor][mssql-badge-build-develop]][mssql-link-build]                                             | [![NuGet][mssql-badge-nuget]][mssql-link-nuget] [![NuGet][mssql-badge-nuget-pre]][mssql-link-nuget]      | 
 | RavenDB Storage Provider | | |
 | [**Forked Execution**][execution-forked-link-repo] | [![AppVeyor][execution-forked-badge-build-master]][execution-forked-link-build] [![AppVeyor][execution-forked-badge-build-develop]][execution-forked-link-build] | [![NuGet][execution-forked-server-badge-nuget]][execution-forked-server-link-nuget] [![NuGet][execution-forked-server-badge-nuget-pre]][execution-forked-server-link-nuget] <br/> [![NuGet][execution-forked-console-badge-nuget]][execution-forked-console-link-nuget] [![NuGet][execution-forked-console-badge-nuget-pre]][execution-forked-console-link-nuget]          |
 | [**Web API Extension**][webapi-link-repo]                           | [![AppVeyor][webapi-badge-build-master]][webapi-link-build] [![AppVeyor][webapi-badge-build-develop]][webapi-link-build]          | [![NuGet][webapi-badge-nuget]][webapi-link-nuget] [![NuGet][webapi-badge-nuget-pre]][webapi-link-nuget]  |
@@ -90,14 +110,6 @@ The issues are split across the different repositories where they belong to. How
 .. _Unplanned Issues:                   https://github.com/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3AjobbrIO+no%3Amilestone+
 .. _All open issues:                    https://github.com/issues?q=is%3Aopen+is%3Aissue+user%3AjobbrIO
 
-
-[mssql-link-repo]:             https://github.com/JobbrIO/jobbr-storage-mssql         
-[mssql-link-build]:            https://ci.appveyor.com/project/Jobbr/jobbr-storage-mssql         
-[mssql-link-nuget]:            https://www.nuget.org/packages/Jobbr.Server.MsSql
-[mssql-badge-build-develop]:   https://img.shields.io/appveyor/ci/Jobbr/jobbr-storage-mssql/develop.svg?label=develop
-[mssql-badge-build-master]:    https://img.shields.io/appveyor/ci/Jobbr/jobbr-storage-mssql/master.svg?label=master
-[mssql-badge-nuget]:           https://img.shields.io/nuget/v/Jobbr.Server.MsSql.svg?label=NuGet%20stable
-[mssql-badge-nuget-pre]:       https://img.shields.io/nuget/vpre/Jobbr.Server.MsSql.svg?label=NuGet%20pre
 
 [execution-forked-link-repo]:                   https://github.com/JobbrIO/jobbr-execution-forked         
 [execution-forked-link-build]:                  https://ci.appveyor.com/project/Jobbr/jobbr-execution-forked         
