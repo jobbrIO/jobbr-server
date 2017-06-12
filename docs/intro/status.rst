@@ -55,8 +55,6 @@ The following table shows the current versions of the main Jobbr Project and rel
 |                                                                          |                                             | | |webapi-client-badge-nuget-pre|_         |
 +--------------------------------------------------------------------------+---------------------------------------------+--------------------------------------------+
 
-
-
 .. Images and Targets for the elements above
 
 .. _Jobbr Server:                           https://github.com/JobbrIO/jobbr-server
@@ -172,6 +170,56 @@ The following packages define the contracts between Jobbr and extensions
 | `Artefact Storage Component Model`_                                      | | |cm-artefactstorage-badge-build-master|_  | | |cm-artefactstorage-badge-nuget|_        |
 |                                                                          | | |cm-artefactstorage-badge-build-develop|  | | |cm-artefactstorage-badge-nuget-pre|_    |
 +--------------------------------------------------------------------------+---------------------------------------------+--------------------------------------------+
+
+.. _Jobbr Registration Component Model:      https://github.com/JobbrIO/jobbr-cm-registration
+.. _cm-registration-badge-build-master:      https://ci.appveyor.com/project/Jobbr/jobbr-cm-registration/branch/master
+.. |cm-registration-badge-build-master|      image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-cm-registration/master.svg?label=master%20
+.. _cm-registration-badge-build-develop:     https://ci.appveyor.com/project/Jobbr/jobbr-cm-registration/branch/develop
+.. |cm-registration-badge-build-develop|     image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-cm-registration/develop.svg?label=develop
+.. _cm-registration-badge-nuget:             https://www.nuget.org/packages/Jobbr.ComponentModel.Registration
+.. |cm-registration-badge-nuget|             image::  https://img.shields.io/nuget/v/Jobbr.ComponentModel.Registration.svg?label=stable
+.. _cm-registration-badge-nuget-pre:         https://www.nuget.org/packages/Jobbr.ComponentModel.Registration
+.. |cm-registration-badge-nuget-pre|         image::  https://img.shields.io/nuget/vpre/Jobbr.ComponentModel.Registration.svg?label=pre%20%20%20%20
+
+.. _Execution Component Model:               https://github.com/JobbrIO/jobbr-cm-execution
+.. _cm-execution-badge-build-master:         https://ci.appveyor.com/project/Jobbr/jobbr-cm-execution/branch/master
+.. |cm-execution-badge-build-master|         image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-cm-execution/master.svg?label=master%20
+.. _cm-execution-badge-build-develop:        https://ci.appveyor.com/project/Jobbr/jobbr-cm-execution/branch/develop
+.. |cm-execution-badge-build-develop|        image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-cm-execution/develop.svg?label=develop
+.. _cm-execution-badge-nuget:                https://www.nuget.org/packages/Jobbr.ComponentModel.Execution
+.. |cm-execution-badge-nuget|                image::  https://img.shields.io/nuget/v/Jobbr.ComponentModel.Execution.svg?label=stable
+.. _cm-execution-badge-nuget-pre:            https://www.nuget.org/packages/Jobbr.ComponentModel.Execution
+.. |cm-execution-badge-nuget-pre|            image::  https://img.shields.io/nuget/vpre/Jobbr.ComponentModel.Execution.svg?label=pre%20%20%20%20
+
+.. _Management Component Model:              https://github.com/JobbrIO/jobbr-cm-management
+.. _cm-management-badge-build-master:        https://ci.appveyor.com/project/Jobbr/jobbr-cm-management/branch/master
+.. |cm-management-badge-build-master|        image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-cm-management/master.svg?label=master%20
+.. _cm-management-badge-build-develop:       https://ci.appveyor.com/project/Jobbr/jobbr-cm-management/branch/develop
+.. |cm-management-badge-build-develop|       image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-cm-management/develop.svg?label=develop
+.. _cm-management-badge-nuget:               https://www.nuget.org/packages/Jobbr.ComponentModel.Management
+.. |cm-management-badge-nuget|               image::  https://img.shields.io/nuget/v/Jobbr.ComponentModel.Management.svg?label=stable
+.. _cm-management-badge-nuget-pre:           https://www.nuget.org/packages/Jobbr.ComponentModel.Management
+.. |cm-management-badge-nuget-pre|           image::  https://img.shields.io/nuget/vpre/Jobbr.ComponentModel.Management.svg?label=pre%20%20%20%20
+
+.. _JobStorage Component Model:              https://github.com/JobbrIO/jobbr-cm-jobstorage
+.. _cm-jobstorage-badge-build-master:        https://ci.appveyor.com/project/Jobbr/jobbr-cm-jobstorage/branch/master
+.. |cm-jobstorage-badge-build-master|        image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-cm-jobstorage/master.svg?label=master%20
+.. _cm-jobstorage-badge-build-develop:       https://ci.appveyor.com/project/Jobbr/jobbr-cm-jobstorage/branch/develop
+.. |cm-jobstorage-badge-build-develop|       image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-cm-jobstorage/develop.svg?label=develop
+.. _cm-jobstorage-badge-nuget:               https://www.nuget.org/packages/Jobbr.ComponentModel.JobStorage
+.. |cm-jobstorage-badge-nuget|               image::  https://img.shields.io/nuget/v/Jobbr.ComponentModel.JobStorage.svg?label=stable
+.. _cm-jobstorage-badge-nuget-pre:           https://www.nuget.org/packages/Jobbr.ComponentModel.JobStorage
+.. |cm-jobstorage-badge-nuget-pre|           image::  https://img.shields.io/nuget/vpre/Jobbr.ComponentModel.JobStorage.svg?label=pre%20%20%20%20
+
+.. _Artefact Storage Component Model:        https://github.com/JobbrIO/jobbr-cm-artefactstorage
+.. _cm-artefactstorage-badge-build-master:   https://ci.appveyor.com/project/Jobbr/jobbr-cm-artefactstorage/branch/master
+.. |cm-artefactstorage-badge-build-master|   image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-cm-artefactstorage/master.svg?label=master%20
+.. _cm-artefactstorage-badge-build-develop:  https://ci.appveyor.com/project/Jobbr/jobbr-cm-artefactstorage/branch/develop
+.. |cm-artefactstorage-badge-build-develop|  image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-cm-artefactstorage/develop.svg?label=develop
+.. _cm-artefactstorage-badge-nuget:          https://www.nuget.org/packages/Jobbr.ComponentModel.ArtefactStorage
+.. |cm-artefactstorage-badge-nuget|          image::  https://img.shields.io/nuget/v/Jobbr.ComponentModel.ArtefactStorage.svg?label=stable
+.. _cm-artefactstorage-badge-nuget-pre:      https://www.nuget.org/packages/Jobbr.ComponentModel.ArtefactStorage
+.. |cm-artefactstorage-badge-nuget-pre|      image::  https://img.shields.io/nuget/vpre/Jobbr.ComponentModel.ArtefactStorage.svg?label=pre%20%20%20%20
 
 
 Roadmap
