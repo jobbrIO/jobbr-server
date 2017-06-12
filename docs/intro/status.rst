@@ -44,7 +44,7 @@ The following table shows the current versions of the main Jobbr Project and rel
 |                                                                          |                                             | | |execution-forked-rt-badge-nuget|_       |
 |                                                                          |                                             | | |execution-forked-rt-badge-nuget-pre|_   |
 +--------------------------------------------------------------------------+---------------------------------------------+--------------------------------------------+
-| `InProcess Process Execution`_                                           | | |execution-inproc-build-master|           | | |execution-inproc-badge-nuget|           |
+| `InProcess Execution`_ (tba)                                             | | |execution-inproc-build-master|           | | |execution-inproc-badge-nuget|           |
 |                                                                          | | |execution-inproc-build-develop|          | | |execution-inproc-badge-nuget-pre|       |
 +--------------------------------------------------------------------------+---------------------------------------------+--------------------------------------------+
 | `Restful Web API (+ Client)`_                                            | | |webapi-gen-build-master|_                | | Server Extension:                        |
@@ -122,7 +122,7 @@ The following table shows the current versions of the main Jobbr Project and rel
 .. _execution-forked-rt-badge-nuget-pre:    https://www.nuget.org/packages/Jobbr.Runtime.ForkedExecution
 .. |execution-forked-rt-badge-nuget-pre|    image::  https://img.shields.io/nuget/vpre/Jobbr.Runtime.ForkedExecution.svg?label=pre%20%20%20%20
 
-.. _InProcess Process Execution:            https://github.com/JobbrIO/jobbr-execution-inproc 
+.. _InProcess Execution:                    https://github.com/JobbrIO/jobbr-execution-inproc 
 .. _execution-inproc-build-master:          https://ci.appveyor.com/project/Jobbr/jobbr-execution-inproc/branch/master   
 .. |execution-inproc-build-master|          image::  https://img.shields.io/appveyor/ci/Jobbr/jobbr-execution-inproc/master.svg?label=master%20
 .. _execution-inproc-build-develop:         https://ci.appveyor.com/project/Jobbr/jobbr-execution-inproc/branch/develop
