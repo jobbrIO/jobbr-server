@@ -6,7 +6,7 @@ Jobbr is a .NET job server. It is designed to reduce artifical complexity when a
 * Isolation of Jobs on process-level
 * REST API to manage and trigger Jobs and watch the execution state
 * Provides a typed client to consume the REST API
-* Persists created files from jobruns in an artefact store.
+* Persists created files from running jobs in an artefact store.
 * Supports CRON expressions for recurring triggers
 * Embeddable in your own C# application (JobServer and Runner)
 * Easily testable
