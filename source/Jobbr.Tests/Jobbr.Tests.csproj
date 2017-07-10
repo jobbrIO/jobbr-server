@@ -104,6 +104,7 @@
     <Compile Include="Infrastructure\PseudoArfetacstStorageProvider.cs" />
     <Compile Include="Infrastructure\PseudoExecutor.cs" />
     <Compile Include="Infrastructure\PseudoJobStorageProvider.cs" />
+    <Compile Include="PackagingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registration\BuilderTests.cs" />
     <Compile Include="WaitFor.cs" />
@@ -116,6 +117,10 @@
     <ProjectReference Include="..\Jobbr.Server\Jobbr.Server.csproj">
       <Project>{a45f729d-8629-4c7a-96b8-29eaa8d52919}</Project>
       <Name>Jobbr.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\submodules\devsupport\src\Jobbr.DevSupport.ReferencedVersionAsserter\Jobbr.DevSupport.ReferencedVersionAsserter.csproj">
+      <Project>{D7C78DBD-D440-4D0C-B9A9-AD8B7473364A}</Project>
+      <Name>Jobbr.DevSupport.ReferencedVersionAsserter</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
