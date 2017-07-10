@@ -27,7 +27,7 @@ namespace Jobbr.Tests
             }
             else
             {
-                asserter.Add(new AllowNonBreakingChanges("Jobbr.ComonentModel.*"));
+                asserter.Add(new AllowNonBreakingChangesRule("Jobbr.ComponentModel.*"));
             }
 
             asserter.Add(new VersionIsIncludedInRange("Jobbr.ComponentModel.*"));
