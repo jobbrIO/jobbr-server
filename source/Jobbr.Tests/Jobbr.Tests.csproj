@@ -48,7 +48,7 @@
       <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc4\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable22\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
+      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable23\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc13\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
@@ -86,20 +86,24 @@
     <Compile Include="Components\Scheduler\PlanningTests.cs" />
     <Compile Include="Components\Scheduler\SchedulerTests.cs" />
     <Compile Include="Components\Scheduler\TestBase.cs" />
-    <Compile Include="Infrastructure\StorageProvider\Extensions.cs" />
+    <Compile Include="Infrastructure\Extensions.cs" />
     <Compile Include="Integration\Execution\JobRunExecutionTestBase.cs" />
     <Compile Include="Integration\Execution\JobRunInformationServiceTests.cs" />
     <Compile Include="Integration\Execution\ProgressChannelTests.cs" />
+    <Compile Include="Integration\JobRunEnumMappingTests.cs" />
     <Compile Include="Integration\Management\JobManagementTests.cs" />
     <Compile Include="Integration\Management\JobQueryServiceTests.cs" />
     <Compile Include="Integration\Startup\BadEnvironmentTests.cs" />
-    <Compile Include="Integration\Startup\ConfigurationTests.cs" />
+    <Compile Include="Integration\Startup\ConfigurationValidationTests.cs" />
+    <Compile Include="Integration\Startup\SetupValidationTests.cs" />
     <Compile Include="Integration\ExposeAllServicesComponent.cs" />
     <Compile Include="Integration\JobbrServerTestBase.cs" />
     <Compile Include="Integration\Scheduler\SchedulerTests.cs" />
-    <Compile Include="Infrastructure\StorageProvider\FaultyJobStorageProvider.cs" />
-    <Compile Include="Infrastructure\StorageProvider\NotImplementedJobStorageProvider.cs" />
+    <Compile Include="Infrastructure\FaultyJobStorageProvider.cs" />
     <Compile Include="Integration\Startup\ConsoleCapturer.cs" />
+    <Compile Include="Infrastructure\PseudoArfetacstStorageProvider.cs" />
+    <Compile Include="Infrastructure\PseudoExecutor.cs" />
+    <Compile Include="Infrastructure\PseudoJobStorageProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registration\BuilderTests.cs" />
     <Compile Include="WaitFor.cs" />

@@ -73,6 +73,7 @@ namespace Jobbr.Server
             }
             catch (AggregateException e)
             {
+                this.State = JobbrState.Error;
                 throw e.InnerExceptions[0];
             }
 
@@ -198,6 +199,7 @@ namespace Jobbr.Server
             catch (Exception e)
             {
                 Logger.FatalException($"A least one service couldn't be started. Reason: {e}\n\n Please see the exception for details.", e.InnerException);
+                throw;
             }
         }
 

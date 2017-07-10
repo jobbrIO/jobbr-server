@@ -1,0 +1,13 @@
+
+/* Remove intend for cells that have multiple lines */
+.rst-content td > div.line-block {
+    margin-left: 0px;
+
+    /* Also  Override the rtd.io css */
+    margin-bottom: 0px;
+}
+
+/* Add spacing between multiple lines in a table cell */
+.rst-content td > div.line-block > div.line {
+    padding-bottom: 2px;
+}

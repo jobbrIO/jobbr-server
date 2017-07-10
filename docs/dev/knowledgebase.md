@@ -1,4 +1,8 @@
 # Knowledgebase
+
+## Using reStructuredText
+See http://docutils.sourceforge.net/docs/user/rst/quickref.html
+
 ## Add File to Git History
 Lets assume we would like to add a file after the first commit of the repo, which already has a comple of commits
 

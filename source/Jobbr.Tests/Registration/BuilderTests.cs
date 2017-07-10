@@ -46,6 +46,11 @@ namespace Jobbr.Tests.Registration
         }
     }
 
+    public interface IPriorizationStrategy: IComparable<JobRun>
+    {
+        
+    }
+
     #region Fake Implementations
 
     public class CustomArtefactStorageAdapter : IArtefactsStorageProvider
