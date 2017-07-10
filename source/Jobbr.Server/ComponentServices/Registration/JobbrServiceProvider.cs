@@ -51,7 +51,8 @@ namespace Jobbr.Server.ComponentServices.Registration
         public IJobbrServiceProvider GetChild()
         #pragma warning restore CA1024 // Use properties where appropriate.
         {
-            // TODO: This might not be the right way to do
+            // If you need a request scoped container, please file a issue in GitHub.
+            // Because the WebAPI is not request aware, we decided to keep this implementation
             return new JobbrServiceProvider(this.ninjectKernel);
         }
     }
