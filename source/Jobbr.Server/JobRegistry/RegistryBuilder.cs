@@ -10,9 +10,6 @@ namespace Jobbr.Server.JobRegistry
 {
     public class RegistryBuilder
     {
-        /// <summary>
-        /// The logger.
-        /// </summary>
         private static readonly ILog Logger = LogProvider.For<RegistryBuilder>();
 
         private readonly List<JobDefinition> definitions = new List<JobDefinition>();
