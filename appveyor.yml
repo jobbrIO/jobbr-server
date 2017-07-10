@@ -10,6 +10,7 @@ skip_commits:
     - docs/*
 
 install:
+  - git submodule update --init --recursive
   - choco install gitversion.portable -pre -y
 
 assembly_info:
