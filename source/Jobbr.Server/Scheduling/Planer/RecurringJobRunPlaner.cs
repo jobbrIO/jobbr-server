@@ -9,7 +9,7 @@ namespace Jobbr.Server.Scheduling.Planer
 {
     public class RecurringJobRunPlaner
     {
-        private static readonly ILog Logger = LogProvider.For<NewScheduler>();
+        private static readonly ILog Logger = LogProvider.For<DefaultScheduler>();
         private readonly JobbrRepository jobbrRepository;
         private readonly IDateTimeProvider dateTimeProvider;
 

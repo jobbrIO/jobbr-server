@@ -117,7 +117,7 @@
     <Compile Include="Scheduling\UtcNowTimeProvider.cs" />
     <Compile Include="Storage\IJobbrRepository.cs" />
     <Compile Include="Storage\InMemoryArtefactsStorage.cs" />
-    <Compile Include="Scheduling\NewScheduler.cs" />
+    <Compile Include="Scheduling\DefaultScheduler.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
     <Compile Include="Storage\ExtensionMethods.cs" />
