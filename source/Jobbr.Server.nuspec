@@ -11,11 +11,11 @@
     <description>Jobbr is a .NET JobServer</description>
     <copyright>Copyright 2017</copyright>
     <dependencies>
-      <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[1.0.0-rc4]" />
-      <dependency id="Jobbr.ComponentModel.Execution" version="[1.0.0-unstable23]" />
-      <dependency id="Jobbr.ComponentModel.JobStorage" version="[1.0.0-rc13]" />
-      <dependency id="Jobbr.ComponentModel.Management" version="[1.0.0-rc8]" />
-      <dependency id="Jobbr.ComponentModel.Registration" version="[1.0.0-rc1]" />
+      <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[1.0.0]" />
+      <dependency id="Jobbr.ComponentModel.Execution" version="[1.0.0]" />
+      <dependency id="Jobbr.ComponentModel.JobStorage" version="[1.0.0]" />
+      <dependency id="Jobbr.ComponentModel.Management" version="[1.0.0]" />
+      <dependency id="Jobbr.ComponentModel.Registration" version="[1.0.0]" />
     </dependencies>
   </metadata>
   <files>

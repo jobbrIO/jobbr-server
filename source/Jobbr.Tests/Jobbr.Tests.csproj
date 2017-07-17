@@ -45,20 +45,19 @@
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.ArtefactStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0-rc4\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
+      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.0\lib\net45\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0-unstable23\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
+      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.0\lib\net45\Jobbr.ComponentModel.Execution.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0-rc13\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
+      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.0.0\lib\net45\Jobbr.ComponentModel.JobStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Management, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0-rc8\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
+      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.0.0\lib\net45\Jobbr.ComponentModel.Management.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Registration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Registration.1.0.0-rc1\lib\net45\Jobbr.ComponentModel.Registration.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Jobbr.ComponentModel.Registration.1.0.0\lib\net45\Jobbr.ComponentModel.Registration.dll</HintPath>
     </Reference>
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.5.30\lib\net45\Moq.dll</HintPath>
