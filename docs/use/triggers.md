@@ -1,7 +1,0 @@
-# Triggers
-
-Instant
-
-Cron
-
-Scheduled
