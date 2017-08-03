@@ -1,0 +1,5 @@
+exclude:
+- /source/Jobbr.Server/App_Packages/LibLog.3.1/LibLog.cs
+component_depth: 1
+languages:
+- csharp
