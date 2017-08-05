@@ -125,10 +125,7 @@
     <Compile Include="ComponentServices\Management\JobQueryService.cs" />
     <Compile Include="JobRegistry\JobDefinition.cs" />
     <Compile Include="JobRegistry\RegistryBuilder.cs" />
-    <Compile Include="Core\IJobManagementService.cs" />
-    <Compile Include="Core\IStateService.cs" />
     <Compile Include="Storage\JobbrRepository.cs" />
-    <Compile Include="Core\StateService.cs" />
     <Compile Include="ComponentServices\Registration\JobbrServiceProvider.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
