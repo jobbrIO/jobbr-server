@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Core.Messaging;
+using Jobbr.Server.Extensions;
 using Jobbr.Server.JobRegistry;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Scheduling;
@@ -90,6 +94,8 @@ namespace Jobbr.Server
         {
             this.State = JobbrState.Initializing;
 
+            this.LogVersions();
+
             Logger.InfoFormat("The JobServer has been set-up by the following configurations");
             this.configurationManager.LogConfiguration();
 
@@ -130,6 +136,19 @@ namespace Jobbr.Server
             this.State = JobbrState.Running;
 
             return true;
+        }
+
+        private void LogVersions()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Version Information:");
+
+            var assemblies = new List<Assembly> { this.GetType().Assembly };
+            assemblies.AddRange(this.components.Select(component => component.GetType().Assembly));
+
+            assemblies.Distinct().ToList().ForEach(assembly => { sb.AppendLine($"{assembly.ManifestModule.Name} {assembly.GetVersion()}"); });
+
+            Logger.Info(sb.ToString().TrimEnd());
         }
 
         /// <summary>
