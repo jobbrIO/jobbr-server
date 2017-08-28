@@ -11,9 +11,9 @@ using JobRunStates = Jobbr.ComponentModel.JobStorage.Model.JobRunStates;
 
 namespace Jobbr.Server.Scheduling
 {
-    public class NewScheduler : IJobScheduler
+    public class DefaultScheduler : IJobScheduler
     {
-        private static readonly ILog Logger = LogProvider.For<NewScheduler>();
+        private static readonly ILog Logger = LogProvider.For<DefaultScheduler>();
 
         private readonly IJobbrRepository repository;
         private readonly IJobExecutor executor;
@@ -27,7 +27,7 @@ namespace Jobbr.Server.Scheduling
 
         private List<ScheduledPlanItem> currentPlan = new List<ScheduledPlanItem>();
 
-        public NewScheduler(IJobbrRepository repository, IJobExecutor executor, InstantJobRunPlaner instantJobRunPlaner, ScheduledJobRunPlaner scheduledJobRunPlaner, RecurringJobRunPlaner recurringJobRunPlaner, DefaultSchedulerConfiguration configuration, IPeriodicTimer periodicTimer, IDateTimeProvider dateTimeProvider)
+        public DefaultScheduler(IJobbrRepository repository, IJobExecutor executor, InstantJobRunPlaner instantJobRunPlaner, ScheduledJobRunPlaner scheduledJobRunPlaner, RecurringJobRunPlaner recurringJobRunPlaner, DefaultSchedulerConfiguration configuration, IPeriodicTimer periodicTimer, IDateTimeProvider dateTimeProvider)
         {
             this.repository = repository;
             this.executor = executor;

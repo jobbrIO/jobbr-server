@@ -13,7 +13,7 @@ namespace Jobbr.Tests.Components.Scheduler
     {
         protected long demoJob1Id = 1;
         protected JobbrRepository repository;
-        protected NewScheduler scheduler;
+        protected DefaultScheduler scheduler;
         protected List<PlannedJobRun> lastIssuedPlan;
         protected PeriodicTimerMock periodicTimer;
         protected ManualTimeProvider currentTimeProvider;
@@ -33,7 +33,7 @@ namespace Jobbr.Tests.Components.Scheduler
             this.repository.AddJob(job);
             this.demoJob1Id = job.Id;
 
-            this.scheduler = new NewScheduler(this.repository, executorMock.Object,
+            this.scheduler = new DefaultScheduler(this.repository, executorMock.Object,
                 new InstantJobRunPlaner(this.currentTimeProvider), new ScheduledJobRunPlaner(this.currentTimeProvider),
                 new RecurringJobRunPlaner(this.repository, this.currentTimeProvider), new DefaultSchedulerConfiguration(),
                 this.periodicTimer, this.currentTimeProvider);

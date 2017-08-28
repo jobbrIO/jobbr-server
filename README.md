@@ -71,13 +71,12 @@ By default Jobbr runs in memory, thus all data is lost when Jobbr is restarted. 
 ## Logging
 Jobbr uses the LibLog library to detect your Logging-Framework of the Hosting Process. When using Jobbr, you don't introduce a new dependency to an existing Logging-Framework. See https://github.com/damianh/LibLog for details.
 
-## License
+# License
 This software is licenced under GPLv3. See [LICENSE](LICENSE), please see the related licences of 3rd party libraries below.
 
-## Credits
+## Acknowledgements
 
-## Based On
-Jobbr Server is based on the following awesome libraries:
+Jobbr Server is based on following great open source projects:
 * [AutoMapper](https://github.com/AutoMapper/AutoMapper]) [(MIT)](https://github.com/AutoMapper/AutoMapper/blob/master/LICENSE.txt)
 * [LibLog](https://github.com/damianh/LibLog) [(MIT)](https://github.com/damianh/LibLog/blob/master/licence.txt)
 * [NCrontab](https://github.com/atifaziz/NCrontab) [(Apache-2.0)](https://github.com/atifaziz/NCrontab/blob/master/COPYING.txt)
@@ -85,7 +84,7 @@ Jobbr Server is based on the following awesome libraries:
 * [Ninject](https://github.com/ninject/Ninject) [(Apache-2.0)](https://github.com/ninject/ninject/blob/master/LICENSE.txt)
 * [TinyMessenger](https://github.com/grumpydev/TinyMessenger/blob/master/licence.txt) [(Ms-PL)](https://github.com/grumpydev/TinyMessenger/blob/master/licence.txt)
 
-## Authors
+## Credits
 This application was built by the following awesome developers:
 * Michael Schnyder
 * Oliver Zürcher

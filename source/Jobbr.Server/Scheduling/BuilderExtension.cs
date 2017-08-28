@@ -20,7 +20,7 @@ namespace Jobbr.Server.Scheduling
 
             builder.Register<IPeriodicTimer>(typeof(FixedMinuteTimer));
             builder.Register<IDateTimeProvider>(typeof(UtcNowTimeProvider));
-            builder.Register<IJobScheduler>(typeof(NewScheduler));
+            builder.Register<IJobScheduler>(typeof(DefaultScheduler));
         }
     }
 }

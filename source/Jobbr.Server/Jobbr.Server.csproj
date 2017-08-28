@@ -118,7 +118,7 @@
     <Compile Include="Scheduling\UtcNowTimeProvider.cs" />
     <Compile Include="Storage\IJobbrRepository.cs" />
     <Compile Include="Storage\InMemoryArtefactsStorage.cs" />
-    <Compile Include="Scheduling\NewScheduler.cs" />
+    <Compile Include="Scheduling\DefaultScheduler.cs" />
     <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
     <Compile Include="Builder\JobbrBuilder.cs" />
     <Compile Include="Storage\ExtensionMethods.cs" />
@@ -126,10 +126,7 @@
     <Compile Include="ComponentServices\Management\JobQueryService.cs" />
     <Compile Include="JobRegistry\JobDefinition.cs" />
     <Compile Include="JobRegistry\RegistryBuilder.cs" />
-    <Compile Include="Core\IJobManagementService.cs" />
-    <Compile Include="Core\IStateService.cs" />
     <Compile Include="Storage\JobbrRepository.cs" />
-    <Compile Include="Core\StateService.cs" />
     <Compile Include="ComponentServices\Registration\JobbrServiceProvider.cs" />
     <Compile Include="JobbrServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -144,9 +141,6 @@
     <Analyzer Include="..\packages\Desktop.Analyzers.1.1.0\analyzers\dotnet\cs\Desktop.CSharp.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.AnalyzerPowerPack.1.1.0\analyzers\dotnet\cs\Microsoft.AnalyzerPowerPack.Common.dll" />
     <Analyzer Include="..\packages\Microsoft.AnalyzerPowerPack.1.1.0\analyzers\dotnet\cs\Microsoft.AnalyzerPowerPack.CSharp.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
     <Analyzer Include="..\packages\System.Runtime.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.Analyzers.dll" />
     <Analyzer Include="..\packages\System.Runtime.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.CSharp.Analyzers.dll" />
     <Analyzer Include="..\packages\System.Runtime.InteropServices.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.InteropServices.Analyzers.dll" />
