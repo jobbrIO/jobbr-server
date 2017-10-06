@@ -1,5 +1,5 @@
-﻿<?xml version="1.0"?>
-<package >
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Jobbr.Server</id>
     <version>$version$</version>
@@ -9,6 +9,7 @@
     <licenseUrl>https://raw.githubusercontent.com/jobbrIO/jobbr-server/develop/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Jobbr is a non-invasive .NET JobServer</description>
+    <iconUrl>https://raw.githubusercontent.com/jobbrIO/artwork/master/build/icons/icon_detailed_256_dark.png</iconUrl>
     <copyright>Copyright 2017</copyright>
     <dependencies>
       <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[1.0.1]" />
