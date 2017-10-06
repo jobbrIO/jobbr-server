@@ -12,11 +12,11 @@
     <iconUrl>https://raw.githubusercontent.com/jobbrIO/artwork/master/build/icons/icon_detailed_256_dark.png</iconUrl>
     <copyright>Copyright 2017</copyright>
     <dependencies>
-      <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[1.0.1]" />
-      <dependency id="Jobbr.ComponentModel.Execution" version="[1.0.1]" />
-      <dependency id="Jobbr.ComponentModel.JobStorage" version="[1.0.1]" />
-      <dependency id="Jobbr.ComponentModel.Management" version="[1.0.1]" />
-      <dependency id="Jobbr.ComponentModel.Registration" version="[1.0.1]" />
+      <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[1,1.1)" />
+      <dependency id="Jobbr.ComponentModel.Execution" version="[1,1.1)" />
+      <dependency id="Jobbr.ComponentModel.JobStorage" version="[1,1.1)" />
+      <dependency id="Jobbr.ComponentModel.Management" version="[1,1.1)" />
+      <dependency id="Jobbr.ComponentModel.Registration" version="[1,1.1)" />
     </dependencies>
   </metadata>
   <files>

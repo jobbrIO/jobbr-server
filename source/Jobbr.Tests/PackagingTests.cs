@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Jobbr.DevSupport.ReferencedVersionAsserter;
+﻿using Jobbr.DevSupport.ReferencedVersionAsserter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests
@@ -7,8 +6,6 @@ namespace Jobbr.Tests
     [TestClass]
     public class PackagingTests
     {
-        private readonly bool isPre = Assembly.GetExecutingAssembly().GetInformalVersion().Contains("-");
-
         [TestMethod]
         public void Feature_NuSpec_IsCompliant()
         {
@@ -19,16 +16,6 @@ namespace Jobbr.Tests
             asserter.Add(new PackageExistsInBothRule("Jobbr.ComponentModel.JobStorage"));
             asserter.Add(new PackageExistsInBothRule("Jobbr.ComponentModel.Management"));
             asserter.Add(new PackageExistsInBothRule("Jobbr.ComponentModel.Registration"));
-
-            if (this.isPre)
-            {
-                // This rule is only valid for Pre-Release versions because we only need exact match on PreRelease Versions
-                asserter.Add(new ExactVersionMatchRule("Jobbr.ComponentModel.*"));
-            }
-            else
-            {
-                asserter.Add(new AllowNonBreakingChangesRule("Jobbr.ComponentModel.*"));
-            }
 
             asserter.Add(new VersionIsIncludedInRange("Jobbr.ComponentModel.*"));
             asserter.Add(new NoMajorChangesInNuSpec("Jobbr.*"));
