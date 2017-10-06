@@ -8,18 +8,18 @@
     <projectUrl>http://github.com/jobbrIO/jobbr-server</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/jobbrIO/jobbr-server/develop/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Jobbr is a .NET JobServer</description>
+    <description>Jobbr is a non-invasive .NET JobServer</description>
     <copyright>Copyright 2017</copyright>
     <dependencies>
-      <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[1.0.0]" />
-      <dependency id="Jobbr.ComponentModel.Execution" version="[1.0.0]" />
-      <dependency id="Jobbr.ComponentModel.JobStorage" version="[1.0.0]" />
-      <dependency id="Jobbr.ComponentModel.Management" version="[1.0.0]" />
-      <dependency id="Jobbr.ComponentModel.Registration" version="[1.0.0]" />
+      <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[1.0.1]" />
+      <dependency id="Jobbr.ComponentModel.Execution" version="[1.0.1]" />
+      <dependency id="Jobbr.ComponentModel.JobStorage" version="[1.0.1]" />
+      <dependency id="Jobbr.ComponentModel.Management" version="[1.0.1]" />
+      <dependency id="Jobbr.ComponentModel.Registration" version="[1.0.1]" />
     </dependencies>
   </metadata>
   <files>
-    <file src="../ilmerged/Jobbr.Server.dll" target="lib\net45"/>
-    <file src="../ilmerged/Jobbr.Server.pdb" target="lib\net45"/>
+    <file src="../ilmerged/Jobbr.Server.dll" target="lib\net462"/>
+    <file src="../ilmerged/Jobbr.Server.pdb" target="lib\net462"/>
   </files>
 </package>
