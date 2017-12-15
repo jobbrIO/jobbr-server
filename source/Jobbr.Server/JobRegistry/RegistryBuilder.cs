@@ -28,6 +28,18 @@ namespace Jobbr.Server.JobRegistry
             return this;
         }
 
+        public JobDefinition Define(string typeName)
+        {
+            var type = Type.GetType(typeName);
+
+            if (type == null)
+            {
+                throw new ArgumentException($"Could not load type '{typeName}'.");
+            }
+
+            return this.Define(type.Name, typeName);
+        }
+
         public JobDefinition Define(string uniqueName, string typeName)
         {
             var existing = this.definitions.FirstOrDefault(d => string.Equals(d.UniqueName, uniqueName, StringComparison.OrdinalIgnoreCase));
