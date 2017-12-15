@@ -21,22 +21,36 @@ namespace Jobbr.Server.JobRegistry
 
         internal List<JobTriggerBase> Triggers => this.triggers;
 
-        public JobDefinition WithTrigger(DateTime startDateTimeUtc)
+        public JobDefinition WithTrigger(DateTime startDateTimeUtc, object parameters = null)
         {
             this.hasTriggerDefinition = true;
 
-            this.triggers.Add(new ScheduledTrigger() { StartDateTimeUtc = startDateTimeUtc });
+            string parametersAsJson = null;
+
+            if (parameters != null)
+            {
+                parametersAsJson = JsonConvert.SerializeObject(parameters);
+            }
+
+            this.triggers.Add(new ScheduledTrigger { StartDateTimeUtc = startDateTimeUtc, Parameters = parametersAsJson });
 
             return this;
         }
 
-        public JobDefinition WithTrigger(string cronDefinition, DateTime? validFromDateTimeUtc = null, DateTime? validToDateTimeUtc = null, bool noParallelExecution = false)
+        public JobDefinition WithTrigger(string cronDefinition, DateTime? validFromDateTimeUtc = null, DateTime? validToDateTimeUtc = null, bool noParallelExecution = false, object parameters = null)
         {
             this.hasTriggerDefinition = true;
 
             NCrontab.CrontabSchedule.Parse(cronDefinition);
 
-            this.triggers.Add(new RecurringTrigger { StartDateTimeUtc = validFromDateTimeUtc, EndDateTimeUtc = validToDateTimeUtc, Definition = cronDefinition, NoParallelExecution = noParallelExecution });
+            string parametersAsJson = null;
+
+            if (parameters != null)
+            {
+                parametersAsJson = JsonConvert.SerializeObject(parameters);
+            }
+            
+            this.triggers.Add(new RecurringTrigger { StartDateTimeUtc = validFromDateTimeUtc, EndDateTimeUtc = validToDateTimeUtc, Definition = cronDefinition, NoParallelExecution = noParallelExecution, Parameters = parametersAsJson });
 
             return this;
         }
