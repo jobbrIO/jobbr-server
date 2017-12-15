@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Jobbr.ComponentModel.JobStorage.Model;
+using Newtonsoft.Json;
 
 namespace Jobbr.Server.JobRegistry
 {
@@ -15,6 +16,8 @@ namespace Jobbr.Server.JobRegistry
         internal string UniqueName { get; set; }
 
         internal string ClrType { get; set; }
+
+        internal string Parameter { get; set; }
 
         internal List<JobTriggerBase> Triggers => this.triggers;
 
@@ -34,6 +37,13 @@ namespace Jobbr.Server.JobRegistry
             NCrontab.CrontabSchedule.Parse(cronDefinition);
 
             this.triggers.Add(new RecurringTrigger { StartDateTimeUtc = validFromDateTimeUtc, EndDateTimeUtc = validToDateTimeUtc, Definition = cronDefinition, NoParallelExecution = noParallelExecution });
+
+            return this;
+        }
+
+        public JobDefinition WithParameter(object parameter)
+        {
+            this.Parameter = JsonConvert.SerializeObject(parameter);
 
             return this;
         }

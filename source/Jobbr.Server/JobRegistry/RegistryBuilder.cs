@@ -60,7 +60,7 @@ namespace Jobbr.Server.JobRegistry
                     {
                         // Add new Job
                         Logger.InfoFormat("Adding job '{0}' of type '{1}'", jobDef.UniqueName, jobDef.ClrType);
-                        var job = new Job { UniqueName = jobDef.UniqueName, Type = jobDef.ClrType };
+                        var job = new Job { UniqueName = jobDef.UniqueName, Type = jobDef.ClrType, Parameters = jobDef.Parameter };
                         storage.AddJob(job);
 
                         foreach (var trigger in jobDef.Triggers)
@@ -76,6 +76,7 @@ namespace Jobbr.Server.JobRegistry
                         {
                             Logger.InfoFormat("Updating type for Job '{0}' (Id: '{1}') from '{2}' to '{2}'", existentJob.UniqueName, existentJob.Id, existentJob.Type, jobDef.ClrType);
                             existentJob.Type = jobDef.ClrType;
+                            existentJob.Parameters = jobDef.Parameter;
 
                             storage.Update(existentJob);
 
