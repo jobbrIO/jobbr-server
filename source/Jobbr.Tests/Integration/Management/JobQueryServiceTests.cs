@@ -1,4 +1,6 @@
-﻿using Jobbr.ComponentModel.JobStorage.Model;
+﻿using System;
+using AutoMapper;
+using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.ComponentModel.Management;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -48,6 +50,21 @@ namespace Jobbr.Tests.Integration.Management
         }
 
         [TestMethod]
+        public void HasOneJobWithTrigger_QueryJobByExistingId_ReturnsJobWithTrigger()
+        {
+            // Arrange
+            var job = new Job();
+            this.Services.JobStorageProvider.AddJob(job);
+            
+            var trigger = new RecurringTrigger() { Definition = "* * * * *" };
+            this.Services.JobStorageProvider.AddTrigger(job.Id, trigger);
+
+            // Act
+            var result = this.QueryService.GetJobById(job.Id);
+            
+        }
+
+        [TestMethod]
         public void HasOneJob_QueryJobByWrongId_ReturnsNull()
         {
             // Arrange
@@ -88,19 +105,47 @@ namespace Jobbr.Tests.Integration.Management
         {
             // Arrange
             var instantTrigger = new InstantTrigger { IsActive = true };
-            var recurringTrigger = new InstantTrigger { IsActive = true };
+            var recurringTrigger = new RecurringTrigger() { IsActive = true };
             var scheduledTrigger = new ScheduledTrigger { IsActive = true };
+
             this.Services.JobStorageProvider.AddTrigger(100, instantTrigger);
             this.Services.JobStorageProvider.AddTrigger(200, recurringTrigger);
             this.Services.JobStorageProvider.AddTrigger(300, scheduledTrigger);
 
             // Act
             var triggers = this.QueryService.GetTriggersByJobId(200);
+            var assertingRecurringTrigger = triggers[0] as ComponentModel.Management.Model.RecurringTrigger;
 
             // Test
             Assert.IsNotNull(triggers);
             Assert.AreEqual(1, triggers.Count);
-            Assert.AreEqual(recurringTrigger.Id, triggers[0].Id);
+            Assert.AreEqual(recurringTrigger.Id, assertingRecurringTrigger.Id);
+        }
+
+        [TestMethod]
+        public void Recurring_Trigger_Properties_Mapped()
+        {
+            // Arrange
+            var recurringTrigger = new RecurringTrigger()
+            {
+                IsActive = true,
+                Definition = "* * * * *",
+                StartDateTimeUtc = DateTime.UtcNow,
+                EndDateTimeUtc = DateTime.UtcNow.AddHours(1),
+                NoParallelExecution = true,
+            };
+
+            this.Services.JobStorageProvider.AddTrigger(1000, recurringTrigger);
+
+            // Act
+            var result = this.QueryService.GetTriggersByJobId(1000)[0] as ComponentModel.Management.Model.RecurringTrigger;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(recurringTrigger.Definition, result.Definition);
+            Assert.AreEqual(recurringTrigger.StartDateTimeUtc, result.StartDateTimeUtc);
+            Assert.AreEqual(recurringTrigger.EndDateTimeUtc, result.EndDateTimeUtc);
+            Assert.AreEqual(recurringTrigger.NoParallelExecution, result.NoParallelExecution);
         }
 
         [TestMethod]
