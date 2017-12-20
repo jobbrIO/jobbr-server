@@ -145,7 +145,7 @@ namespace Jobbr.Server.JobRegistry
         {
             trigger.IsActive = true;
             trigger.JobId = jobId;
-            trigger.Parameters = jobDef.Parameter;
+            trigger.Parameters = trigger.Parameters;
 
             Logger.InfoFormat("Adding trigger (type: '{0}' to job '{1}' (JobId: '{2}')", trigger.GetType().Name, jobDef.UniqueName, jobId);
 
