@@ -154,8 +154,8 @@ namespace Jobbr.Server.Storage
         {
             var jobRun = new JobRun
             {
-                JobId = job.Id,
-                TriggerId = trigger.Id,
+                Job = job,
+                Trigger = trigger,
                 JobParameters = job.Parameters,
                 InstanceParameters = trigger.Parameters,
                 State = JobRunStates.Scheduled,
@@ -170,6 +170,11 @@ namespace Jobbr.Server.Storage
         public void DisableTrigger(long jobId, long triggerId)
         {
             this.storageProvider.DisableTrigger(jobId, triggerId);
+        }
+
+        public void DeleteTrigger(long jobId, long triggerId)
+        {
+            this.storageProvider.DeleteTrigger(jobId, triggerId);
         }
 
         public void Update(JobRun jobRun)
@@ -244,7 +249,7 @@ namespace Jobbr.Server.Storage
 
             foreach (var jobRun in runningJobs)
             {
-                if (jobRun.TriggerId == triggerId && jobRun.JobId == triggerJobId)
+                if (jobRun.Trigger.Id == triggerId && jobRun.Job.Id == triggerJobId)
                 {
                     yield return jobRun;
                 }

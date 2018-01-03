@@ -46,6 +46,8 @@ namespace Jobbr.Server.Storage
 
         void DisableTrigger(long jobId, long triggerId);
 
+        void DeleteTrigger(long jobId, long triggerId);
+
         void Update(JobRun jobRun);
 
         JobRun GetJobRunById(long jobRunId);

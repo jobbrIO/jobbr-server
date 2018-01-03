@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
+using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Scheduling;
@@ -23,7 +24,7 @@ namespace Jobbr.Server.Builder
             this.container = new DefaultContainer();
         }
 
-        public JobbrServer Create()
+        public JobbrServer Create(int maxConcurrentJobs = 4)
         {
             // Register default implementations if user did not specify any separate
             if (this.container.TryGet<IJobStorageProvider>() == null)
@@ -54,6 +55,17 @@ namespace Jobbr.Server.Builder
             {
                 // Don't warn because the internel Scheduler is usually in use
                 this.AddDefaultScheduler();
+            }
+
+            var serverManagementService = this.container.TryGet<IServerManagementService>();
+
+            if (serverManagementService != null)
+            {
+                serverManagementService.MaxConcurrentJobs = maxConcurrentJobs;
+            }
+            else
+            {
+                Logger.Error("No Server Management Service found.");
             }
 
             return this.container.Get<JobbrServer>();

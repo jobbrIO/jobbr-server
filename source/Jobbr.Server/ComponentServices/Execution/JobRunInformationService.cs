@@ -30,8 +30,8 @@ namespace Jobbr.Server.ComponentServices.Execution
                 return null;
             }
 
-            var trigger = this.jobbrRepository.GetTriggerById(jobRun.JobId, jobRun.TriggerId);
-            var job = this.jobbrRepository.GetJob(jobRun.JobId);
+            var trigger = this.jobbrRepository.GetTriggerById(jobRun.Job.Id, jobRun.Trigger.Id);
+            var job = this.jobbrRepository.GetJob(jobRun.Job.Id);
 
             var info = new JobRunInfo();
 

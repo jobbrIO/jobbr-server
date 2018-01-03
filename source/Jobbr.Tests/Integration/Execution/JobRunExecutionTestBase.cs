@@ -11,9 +11,9 @@ namespace Jobbr.Tests.Integration.Execution
         {
             this.Services.JobManagementService.AddTrigger(trigger.JobId, trigger);
 
-            WaitFor.HasElements(this.Services.JobStorageProvider.GetJobRuns().Where(jr => jr.TriggerId == trigger.Id).ToList, 1500);
+            WaitFor.HasElements(this.Services.JobStorageProvider.GetJobRuns().Where(jr => jr.Trigger.Id == trigger.Id).ToList, 1500);
 
-            var createdJobRun = this.Services.JobStorageProvider.GetJobRuns().First(jr => jr.TriggerId == trigger.Id);
+            var createdJobRun = this.Services.JobStorageProvider.GetJobRuns().First(jr => jr.Trigger.Id == trigger.Id);
             return createdJobRun;
         }
 

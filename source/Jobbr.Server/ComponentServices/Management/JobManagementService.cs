@@ -36,6 +36,14 @@ namespace Jobbr.Server.ComponentServices.Management
             job.Id = newJOb.Id;
         }
 
+        public void DeleteJob(long jobId)
+        {
+            // TODO: implement :)
+            // - terminate job if it is running
+            
+            throw new NotImplementedException();
+        }
+
         public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
             var model = this.mapper.Map<RecurringTriggerModel>(trigger);
@@ -74,6 +82,11 @@ namespace Jobbr.Server.ComponentServices.Management
         public void EnableTrigger(long jobId, long triggerId)
         {
             this.triggerService.Enable(jobId, triggerId);
+        }
+
+        public void DeleteTrigger(long jobId, long triggerId)
+        {
+            this.triggerService.Delete(jobId, triggerId);
         }
 
         public void UpdateTriggerDefinition(long jobId, long triggerId, string definition)

@@ -59,7 +59,7 @@ namespace Jobbr.Tests.Components.Scheduler
             var jobRuns = this.repository.GetJobRuns();
 
             Assert.AreEqual(1, jobRuns.Count, "A scheduled trigger should create exact one jobrun when added");
-            Assert.AreEqual(scheduledTrigger.Id, jobRuns.Single().TriggerId, "The jobrun should reference the trigger that cause the job to run");
+            Assert.AreEqual(scheduledTrigger.Id, jobRuns.Single().Trigger.Id, "The jobrun should reference the trigger that cause the job to run");
         }
 
         [TestMethod]
@@ -143,7 +143,7 @@ namespace Jobbr.Tests.Components.Scheduler
             this.AddAndSignalNewTrigger(this.demoJob1Id, scheduledTrigger);
 
             // Simulate Job Completeness
-            var jobRunByScheduledTrigger = this.repository.GetJobRuns().Single(jr => jr.TriggerId == scheduledTrigger.Id);
+            var jobRunByScheduledTrigger = this.repository.GetJobRuns().Single(jr => jr.Trigger.Id == scheduledTrigger.Id);
             jobRunByScheduledTrigger.State = JobRunStates.Completed;
             this.repository.Update(jobRunByScheduledTrigger);
 
@@ -159,7 +159,7 @@ namespace Jobbr.Tests.Components.Scheduler
             this.AddAndSignalNewTrigger(this.demoJob1Id, recurringTrigger);
 
             // Simulate Job Completeness
-            var jobRunByScheduledTrigger = this.repository.GetJobRuns().Single(jr => jr.TriggerId == recurringTrigger.Id);
+            var jobRunByScheduledTrigger = this.repository.GetJobRuns().Single(jr => jr.Trigger.Id == recurringTrigger.Id);
             jobRunByScheduledTrigger.State = JobRunStates.Completed;
             this.repository.Update(jobRunByScheduledTrigger);
 
@@ -215,9 +215,6 @@ namespace Jobbr.Tests.Components.Scheduler
             Assert.AreEqual(2, jobRuns.Count);
             Assert.AreEqual(2, this.lastIssuedPlan.Count, "Since one JobRun has completed, there should be now 2 jobruns");
             Assert.AreEqual(2, this.repository.GetJobRuns().Count, "The recurring trigger should should have triggered 2");
-
-            Assert.AreEqual(jobRuns[0].Id, this.lastIssuedPlan[0].Id);
-            Assert.AreEqual(jobRuns[1].Id, this.lastIssuedPlan[1].Id);
         }
 
         [TestMethod]

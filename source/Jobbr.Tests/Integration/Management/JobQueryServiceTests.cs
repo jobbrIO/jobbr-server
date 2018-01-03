@@ -331,7 +331,10 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneJobRun_QueryByExistingTriggerId_ReturnsListWithSingle()
         {
             // Arrange
-            var jobRun = new JobRun { JobId = 1337, TriggerId = 34 };
+            var job = new Job { Id = 1337 };
+            var trigger = new ScheduledTrigger { Id = 34 };
+            
+            var jobRun = new JobRun { Job = job, Trigger = trigger };
             this.Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
@@ -348,7 +351,9 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneJobRun_QueryByInExistentTriggerId_ReturnsEmptyList()
         {
             // Arrange
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { JobId = 1000, TriggerId = 34 });
+            var job = new Job { Id = 1000 };
+            var trigger = new ScheduledTrigger { Id = 34 };
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Job = job, Trigger = trigger });
 
             // Act
             var runs = this.QueryService.GetJobRunsByTriggerId(-1, -1);
@@ -361,11 +366,13 @@ namespace Jobbr.Tests.Integration.Management
         public void HasOneMatchingJobRun_QueryJobByUserId_ReturnsListWithSingle()
         {
             const long jobId = 1;
+
             // Arrange
+            var job = new Job { Id = jobId };
             var instantTrigger = new InstantTrigger { UserId = "45" };
             this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger);
 
-            var jobRun = new JobRun { TriggerId = instantTrigger.Id, JobId = jobId };
+            var jobRun = new JobRun { Trigger = instantTrigger, Job = job };
             this.Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
@@ -382,9 +389,10 @@ namespace Jobbr.Tests.Integration.Management
             const long jobId = 1;
 
             // Arrange
+            var job = new Job { Id = jobId };
             var instantTrigger = new InstantTrigger { UserId = "45" };
             this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger);
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { TriggerId = instantTrigger.Id, JobId = jobId });
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Trigger = instantTrigger, Job = job });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc("88");
@@ -399,16 +407,17 @@ namespace Jobbr.Tests.Integration.Management
             const long jobId = 1;
 
             // Arrange
+            var job = new Job { Id = jobId };
             var instantTrigger1 = new InstantTrigger { UserId = "45" };
             this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger1);
 
             var instantTrigger2 = new InstantTrigger { UserId = "45" };
             this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger2);
 
-            var jobRun1 = new JobRun { TriggerId = instantTrigger1.Id };
+            var jobRun1 = new JobRun { Job = job, Trigger = instantTrigger1 };
             this.Services.JobStorageProvider.AddJobRun(jobRun1);
 
-            var jobRun2 = new JobRun { TriggerId = instantTrigger2.Id };
+            var jobRun2 = new JobRun { Job = job, Trigger = instantTrigger2 };
             this.Services.JobStorageProvider.AddJobRun(jobRun2);
 
             // Act
@@ -426,9 +435,10 @@ namespace Jobbr.Tests.Integration.Management
             const long jobId = 1;
             // Arrange
             var instantTrigger = new InstantTrigger { UserDisplayName = "hans" };
+            var job = new Job { Id = jobId };
             this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger);
 
-            this.Services.JobStorageProvider.AddJobRun(new JobRun { JobId = jobId, TriggerId = instantTrigger.Id });
+            this.Services.JobStorageProvider.AddJobRun(new JobRun { Job = job, Trigger = instantTrigger });
 
             // Act
             var runs = this.QueryService.GetJobRunsByUserDisplayNameOrderByIdDesc("hans");
@@ -445,9 +455,10 @@ namespace Jobbr.Tests.Integration.Management
 
             // Arrange
             var instantTrigger = new InstantTrigger { UserDisplayName = "hans" };
+            var job = new Job { Id = jobId };
             this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger);
 
-            var jobRun = new JobRun { JobId = jobId, TriggerId = instantTrigger.Id };
+            var jobRun = new JobRun { Job = job, Trigger = instantTrigger };
             this.Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
@@ -469,10 +480,10 @@ namespace Jobbr.Tests.Integration.Management
             var instantTrigger2 = new InstantTrigger { UserDisplayName = "hans" };
             this.Services.JobStorageProvider.AddTrigger(jobId, instantTrigger2);
 
-            var jobRun1 = new JobRun { TriggerId = instantTrigger1.Id };
+            var jobRun1 = new JobRun { Trigger = instantTrigger1 };
             this.Services.JobStorageProvider.AddJobRun(jobRun1);
 
-            var jobRun2 = new JobRun { TriggerId = instantTrigger2.Id };
+            var jobRun2 = new JobRun { Trigger = instantTrigger2 };
             this.Services.JobStorageProvider.AddJobRun(jobRun2);
 
             // Act

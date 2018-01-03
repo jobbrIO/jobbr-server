@@ -101,9 +101,19 @@ namespace Jobbr.Server.Scheduling
         {
             Logger.Info($"The trigger with id '{triggerId}' has been changed its state. Reflecting changes to Plan if any.");
 
+            PlanResult planResult;
+
             var trigger = this.repository.GetTriggerById(jobId, triggerId);
 
-            PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
+            if (trigger == null)
+            {
+                // trigger has been deleted
+                planResult = PlanResult.FromAction(PlanAction.Obsolete);
+            }
+            else
+            {
+                planResult = this.GetPlanResult(trigger as dynamic, false);
+            }
 
             if (planResult.Action == PlanAction.Obsolete)
             {

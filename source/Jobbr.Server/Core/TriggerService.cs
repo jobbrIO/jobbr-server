@@ -63,6 +63,12 @@ namespace Jobbr.Server.Core
             this.messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
         }
 
+        internal void Delete(long jobId, long triggerId)
+        {
+            this.jobbrRepository.DeleteTrigger(jobId, triggerId);
+            this.messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
+        }
+
         internal void Enable(long jobId, long triggerId)
         {
             this.jobbrRepository.EnableTrigger(jobId, triggerId);

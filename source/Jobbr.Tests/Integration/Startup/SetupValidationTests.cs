@@ -141,8 +141,8 @@ namespace Jobbr.Tests.Integration.Startup
 
                 var server = builder.Create();
 
-                server.Start();
-
+                server.Start(20000);
+                
                 var errors = capture.GetLines("ERROR").ToList();
                 var warnings = capture.GetLines("WARN").ToList();
                 var fatals = capture.GetLines("FATAL").ToList();

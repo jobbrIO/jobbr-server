@@ -1,4 +1,6 @@
-﻿using Jobbr.ComponentModel.Management;
+﻿using System;
+using System.Diagnostics;
+using Jobbr.ComponentModel.Management;
 
 namespace Jobbr.Server.ComponentServices.Management
 {
@@ -7,5 +9,9 @@ namespace Jobbr.Server.ComponentServices.Management
         public void Shutdown()
         {
         }
+
+        public int MaxConcurrentJobs { get; set; }
+
+        public DateTime StartTime => Process.GetCurrentProcess().StartTime.ToUniversalTime();
     }
 }

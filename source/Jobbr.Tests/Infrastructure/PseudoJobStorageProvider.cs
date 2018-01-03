@@ -7,12 +7,16 @@ namespace Jobbr.Tests.Infrastructure
 {
     public class PseudoJobStorageProvider : IJobStorageProvider
     {
+        public void DeleteJob(long jobId)
+        {
+        }
+
         public long GetJobsCount()
         {
             return 0;
         }
 
-        public List<Job> GetJobs(int page = 0, int pageSize = 50)
+        public List<Job> GetJobs(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             return new List<Job>();
         }
@@ -24,6 +28,11 @@ namespace Jobbr.Tests.Infrastructure
         public List<JobTriggerBase> GetTriggersByJobId(long jobId)
         {
             return null;
+        }
+
+        public List<JobTriggerBase> GetActiveTriggers(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            return new List<JobTriggerBase>();
         }
 
         public void AddTrigger(long jobId, RecurringTrigger trigger)
@@ -43,6 +52,10 @@ namespace Jobbr.Tests.Infrastructure
         }
 
         public void EnableTrigger(long jobId, long triggerId)
+        {
+        }
+
+        public void DeleteTrigger(long jobId, long triggerId)
         {
         }
 
@@ -66,8 +79,33 @@ namespace Jobbr.Tests.Infrastructure
             return null;
         }
 
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 0, int pageSize = 50, params string[] sort)
+        {
+            return null;
+        }
+
+        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            return new List<JobRun>();
+        }
+
+        public List<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        {
+            return null;
+        }
+
+        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        {
+            return null;
+        }
+
         public void AddJobRun(JobRun jobRun)
         {
+        }
+
+        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            return null;
         }
 
         public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50)
@@ -98,16 +136,6 @@ namespace Jobbr.Tests.Infrastructure
             return null;
         }
 
-        public List<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50)
-        {
-            return null;
-        }
-
-        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 0, int pageSize = 50)
-        {
-            return null;
-        }
-
         public void Update(Job job)
         {
         }
@@ -122,16 +150,6 @@ namespace Jobbr.Tests.Infrastructure
 
         public void Update(long jobId, RecurringTrigger trigger)
         {
-        }
-
-        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 0, int pageSize = 50)
-        {
-            return null;
-        }
-
-        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50)
-        {
-            return new List<JobRun>();
         }
 
         public bool IsAvailable()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 
@@ -8,25 +9,191 @@ namespace Jobbr.Server.Storage
 {
     public class InMemoryJobStorageProvider : IJobStorageProvider
     {
+        private readonly IDictionary<string, Expression<Func<JobTriggerBase, object>>> TriggerOrderByMapping = new Dictionary<string, Expression<Func<JobTriggerBase, object>>>
+        {
+            {nameof(JobTriggerBase.UserDisplayName), e => e.UserDisplayName},
+            {nameof(JobTriggerBase.UserId), e => e.UserId},
+            {nameof(JobTriggerBase.Comment), e => e.Comment},
+            {nameof(JobTriggerBase.Parameters), e => e.Parameters},
+            {nameof(JobTriggerBase.Id), e => e.Id},
+            {nameof(JobTriggerBase.JobId), e => e.JobId},
+            {nameof(JobTriggerBase.CreatedDateTimeUtc), e => e.CreatedDateTimeUtc},
+        };
+
+        private readonly IDictionary<string, Expression<Func<Job, object>>> JobOrderByMapping = new Dictionary<string, Expression<Func<Job, object>>>
+        {
+            {nameof(Job.Id), e => e.Id},
+            {nameof(Job.Title), e => e.Title},
+            {nameof(Job.Type), e => e.Type},
+            {nameof(Job.UniqueName), e => e.UniqueName},
+            {nameof(Job.CreatedDateTimeUtc), e => e.CreatedDateTimeUtc},
+            {nameof(Job.UpdatedDateTimeUtc), e => e.UpdatedDateTimeUtc},
+        };
+
+        private readonly IDictionary<string, Expression<Func<JobRun, object>>> JobRunOrderByMapping = new Dictionary<string, Expression<Func<JobRun, object>>>
+        {
+            {nameof(JobRun.Id), e => e.Id},
+            {nameof(JobRun.ActualStartDateTimeUtc), e => e.ActualStartDateTimeUtc},
+            {nameof(JobRun.InstanceParameters), e => e.InstanceParameters},
+            {nameof(JobRun.JobParameters), e => e.JobParameters},
+            {nameof(JobRun.PlannedStartDateTimeUtc), e => e.PlannedStartDateTimeUtc},
+            {nameof(JobRun.ActualEndDateTimeUtc), e => e.ActualEndDateTimeUtc},
+            {nameof(JobRun.EstimatedEndDateTimeUtc), e => e.EstimatedEndDateTimeUtc},
+        };
+
         private readonly List<JobTriggerBase> localTriggers = new List<JobTriggerBase>();
 
         private readonly List<Job> localJobs = new List<Job>();
 
         private readonly List<JobRun> localJobRuns = new List<JobRun>();
 
-        public List<JobTriggerBase> GetActiveTriggers()
+        public List<JobTriggerBase> GetTriggersByJobId(long jobId)
         {
-            return this.localTriggers.Where(t => t.IsActive == true).ToList().Clone();
+            return this.localTriggers.Where(t => t.JobId == jobId).ToList().Clone();
         }
 
-        public List<Job> GetJobs(int page = 0, int pageSize = 50)
+        public List<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            return this.localJobs.Clone();
+            var enumerable = this.localTriggers.Where(t => t.IsActive);
+
+            enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, enumerable);
+
+            if (sort.Length == 0)
+            {
+                enumerable = enumerable.OrderByDescending(o => o.CreatedDateTimeUtc);
+            }
+            else
+            {
+                enumerable = ApplySorting(sort, enumerable, this.TriggerOrderByMapping);
+            }
+
+            return enumerable.ToList().Clone();
         }
 
-        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50)
+        public List<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            return this.localJobRuns.Clone();
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobRuns);
+
+            if (sort.Length == 0)
+            {
+                enumerable = enumerable.OrderByDescending(o => o.PlannedStartDateTimeUtc);
+            }
+            else
+            {
+                enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
+            }
+
+            return enumerable.ToList().Clone();
+        }
+
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
+        {
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, null, null, null, this.localJobRuns.Where(p => p.Trigger.Id == triggerId));
+
+            if (sort.Length == 0)
+            {
+                enumerable = enumerable.OrderByDescending(o => o.PlannedStartDateTimeUtc);
+            }
+            else
+            {
+                enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
+            }
+
+            return enumerable.ToList().Clone();
+        }
+
+        public JobTriggerBase GetTriggerById(long jobId, long triggerId)
+        {
+            return this.localTriggers.FirstOrDefault(t => t.Id == triggerId).Clone();
+        }
+
+        public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
+        {
+            return this.localJobRuns.FirstOrDefault(jr => jr.Trigger.Id == triggerId && jr.ActualEndDateTimeUtc < utcNow).Clone();
+        }
+
+        public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
+        {
+            return this.localJobRuns.FirstOrDefault(jr => jr.Trigger.Id == triggerId && jr.PlannedStartDateTimeUtc >= utcNow).Clone();
+        }
+
+        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobRuns.Where(p => p.State == state));
+
+            if (sort.Length == 0)
+            {
+                enumerable = enumerable.OrderByDescending(o => o.PlannedStartDateTimeUtc);
+            }
+            else
+            {
+                enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
+            }
+
+            return enumerable.ToList().Clone();
+        }
+
+        public List<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        {
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, this.localJobRuns.Where(p => string.Equals(p.Trigger.UserId, userId, StringComparison.OrdinalIgnoreCase)));
+
+            if (sort.Length == 0)
+            {
+                enumerable = enumerable.OrderByDescending(o => o.Id);
+            }
+            else
+            {
+                enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
+            }
+
+            return enumerable.ToList().Clone();
+        }
+
+        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        {
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, this.localJobRuns.Where(p => string.Equals(p.Trigger.UserDisplayName, userDisplayName, StringComparison.OrdinalIgnoreCase)));
+
+            if (sort.Length == 0)
+            {
+                enumerable = enumerable.OrderByDescending(o => o.Id);
+            }
+            else
+            {
+                enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
+            }
+
+            return enumerable.ToList().Clone();
+        }
+
+        public List<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobs);
+
+            if (sort.Length == 0)
+            {
+                enumerable = enumerable.OrderByDescending(o => o.CreatedDateTimeUtc);
+            }
+            else
+            {
+                enumerable = ApplySorting(sort, enumerable, this.JobOrderByMapping);
+            }
+
+            return enumerable.ToList().Clone();
+        }
+
+        public Job GetJobById(long id)
+        {
+            return this.localJobs.FirstOrDefault(j => j.Id == id).Clone();
+        }
+
+        public Job GetJobByUniqueName(string identifier)
+        {
+            return this.localJobs.FirstOrDefault(j => string.Equals(j.UniqueName, identifier, StringComparison.OrdinalIgnoreCase)).Clone();
+        }
+
+        public JobRun GetJobRunById(long id)
+        {
+            return this.localJobRuns.FirstOrDefault(j => j.Id == id).Clone();
         }
 
         public void AddJob(Job job)
@@ -34,11 +201,6 @@ namespace Jobbr.Server.Storage
             var maxJobId = this.localJobs.Count + 1;
             job.Id = maxJobId;
             this.localJobs.Add(job);
-        }
-
-        public List<JobTriggerBase> GetTriggersByJobId(long jobId)
-        {
-            return this.localTriggers.Where(t => t.JobId == jobId).ToList().Clone();
         }
 
         public void AddTrigger(long jobId, RecurringTrigger trigger)
@@ -65,6 +227,15 @@ namespace Jobbr.Server.Storage
             this.localTriggers.Add(trigger);
         }
 
+        public void AddJobRun(JobRun jobRun)
+        {
+            var maxJobRunId = this.localJobRuns.Count + 1;
+
+            jobRun.Id = maxJobRunId;
+
+            this.localJobRuns.Add(jobRun);
+        }
+
         public void DisableTrigger(long jobId, long triggerId)
         {
             var trigger = this.localTriggers.Single(t => t.Id == triggerId);
@@ -77,28 +248,14 @@ namespace Jobbr.Server.Storage
             trigger.IsActive = true;
         }
 
-        public JobTriggerBase GetTriggerById(long jobId, long triggerId)
+        public void DeleteTrigger(long jobId, long triggerId)
         {
-            return this.localTriggers.FirstOrDefault(t => t.Id == triggerId).Clone();
+            throw new NotImplementedException();
         }
 
-        public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
+        public void DeleteJob(long jobId)
         {
-            return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId && jr.ActualEndDateTimeUtc < utcNow).Clone();
-        }
-
-        public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
-        {
-            return this.localJobRuns.FirstOrDefault(jr => jr.TriggerId == triggerId && jr.PlannedStartDateTimeUtc >= utcNow).Clone();
-        }
-
-        public void AddJobRun(JobRun jobRun)
-        {
-            var maxJobRunId = this.localJobRuns.Count + 1;
-
-            jobRun.Id = maxJobRunId;
-
-            this.localJobRuns.Add(jobRun);
+            throw new NotImplementedException();
         }
 
         public void Update(JobRun jobRun)
@@ -111,35 +268,6 @@ namespace Jobbr.Server.Storage
         {
             var jobRun = this.localJobRuns.First(p => p.Id == jobRunId);
             jobRun.Progress = progress;
-        }
-
-        public Job GetJobById(long id)
-        {
-            return this.localJobs.FirstOrDefault(j => j.Id == id).Clone();
-        }
-
-        public Job GetJobByUniqueName(string identifier)
-        {
-            return this.localJobs.FirstOrDefault(j => string.Equals(j.UniqueName, identifier, StringComparison.OrdinalIgnoreCase)).Clone();
-        }
-
-        public JobRun GetJobRunById(long id)
-        {
-            return this.localJobRuns.FirstOrDefault(j => j.Id == id).Clone();
-        }
-
-        public List<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50)
-        {
-            var allTriggers = this.localTriggers.Where(t => string.Equals(t.UserId, userId, StringComparison.OrdinalIgnoreCase)).Select(t => t.Id);
-
-            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
-        }
-
-        public List<JobRun> GetJobRunsByUserDisplayName(string userName, int page = 0, int pageSize = 50)
-        {
-            var allTriggers = this.localTriggers.Where(t => string.Equals(t.UserDisplayName, userName, StringComparison.OrdinalIgnoreCase)).Select(t => t.Id);
-
-            return this.localJobRuns.Where(jr => allTriggers.Contains(jr.TriggerId)).OrderByDescending(r => r.Id).ToList().Clone();
         }
 
         public void Update(Job job)
@@ -166,16 +294,6 @@ namespace Jobbr.Server.Storage
             this.localTriggers.Add(trigger);
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 0, int pageSize = 50)
-        {
-            return this.localJobRuns.Where(jr => jr.TriggerId == triggerId).ToList().Clone();
-        }
-
-        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50)
-        {
-            return this.localJobRuns.Where(jr => jr.State == state).ToList().Clone();
-        }
-
         public bool IsAvailable()
         {
             return true;
@@ -186,6 +304,132 @@ namespace Jobbr.Server.Storage
 #pragma warning restore CA1024 // Use properties where appropriate.
         {
             return this.localJobs.Count;
+        }
+
+        private IEnumerable<JobTriggerBase> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<JobTriggerBase> enumerable)
+        {
+            enumerable = enumerable.Skip((page - 1) * pageSize);
+            enumerable = enumerable.Take(pageSize);
+
+            if (string.IsNullOrWhiteSpace(jobTypeFilter) == false)
+            {
+                var jobs = this.localJobs.Where(p => string.Equals(p.Type, jobTypeFilter, StringComparison.OrdinalIgnoreCase));
+                var jobIds = jobs.Select(s => s.Id).ToList();
+
+                enumerable = enumerable.Where(p => jobIds.Contains(p.JobId));
+            }
+
+            if (string.IsNullOrWhiteSpace(jobUniqueNameFilter) == false)
+            {
+                var jobs = this.localJobs.Where(p => string.Equals(p.UniqueName, jobTypeFilter, StringComparison.OrdinalIgnoreCase));
+                var jobIds = jobs.Select(s => s.Id).ToList();
+
+                enumerable = enumerable.Where(p => jobIds.Contains(p.JobId));
+            }
+
+            if (string.IsNullOrWhiteSpace(query) == false)
+            {
+                enumerable = enumerable.Where(p => p.Parameters.Contains(query) || p.UserDisplayName.Contains(query) || p.UserId.Contains(query));
+            }
+
+            return enumerable;
+        }
+
+        private IEnumerable<Job> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<Job> enumerable)
+        {
+            enumerable = enumerable.Skip((page - 1) * pageSize);
+            enumerable = enumerable.Take(pageSize);
+
+            if (string.IsNullOrWhiteSpace(jobTypeFilter) == false)
+            {
+                enumerable = enumerable.Where(p => string.Equals(p.Type, jobTypeFilter, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (string.IsNullOrWhiteSpace(jobUniqueNameFilter) == false)
+            {
+                enumerable = enumerable.Where(p => string.Equals(p.UniqueName, jobUniqueNameFilter, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (string.IsNullOrWhiteSpace(query) == false)
+            {
+                enumerable = enumerable.Where(p => p.Parameters.Contains(query) || p.Title.Contains(query) || p.Type.Contains(query) || p.UniqueName.Contains(query));
+            }
+
+            return enumerable;
+        }
+
+        private IEnumerable<JobRun> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<JobRun> enumerable)
+        {
+            enumerable = enumerable.Skip((page - 1) * pageSize);
+            enumerable = enumerable.Take(pageSize);
+
+            if (string.IsNullOrWhiteSpace(jobTypeFilter) == false)
+            {
+                enumerable = enumerable.Where(p => string.Equals(p.Job.Type, jobTypeFilter, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (string.IsNullOrWhiteSpace(jobUniqueNameFilter) == false)
+            {
+                enumerable = enumerable.Where(p => string.Equals(p.Job.UniqueName, jobUniqueNameFilter, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (string.IsNullOrWhiteSpace(query) == false)
+            {
+                enumerable = enumerable.Where(p => p.InstanceParameters.Contains(query) || p.JobParameters.Contains(query) || p.Job.Title.Contains(query) || p.Job.Type.Contains(query) || p.Job.UniqueName.Contains(query));
+            }
+
+            return enumerable;
+        }
+
+        private static IEnumerable<T> ApplySorting<T>(string[] sort, IEnumerable<T> enumerable, IDictionary<string, Expression<Func<T, object>>> mapping)
+        {
+            for (var i = 0; i < sort.Length; ++i)
+            {
+                var sortProperty = sort[i];
+                bool ascending = true;
+
+                if (sortProperty.StartsWith("-"))
+                {
+                    sortProperty = sortProperty.TrimStart('-');
+                    @ascending = false;
+                }
+
+                Expression<Func<T, object>> expression;
+
+                if (mapping.TryGetValue(sortProperty, out expression) == false)
+                {
+                    continue;
+                }
+
+                var compiled = expression.Compile();
+
+                if (i == 0)
+                {
+                    if (@ascending)
+                    {
+                        enumerable = enumerable.OrderBy(compiled);
+                    }
+                    else
+                    {
+                        enumerable = enumerable.OrderByDescending(compiled);
+                    }
+                }
+                else
+                {
+                    var orderedEnumerable = (IOrderedEnumerable<T>) enumerable;
+
+                    if (@ascending)
+                    {
+                        enumerable = orderedEnumerable.ThenBy(compiled);
+                    }
+                    else
+                    {
+                        enumerable = orderedEnumerable.ThenByDescending(compiled);
+                    }
+                }
+            }
+
+            return enumerable;
         }
     }
 }

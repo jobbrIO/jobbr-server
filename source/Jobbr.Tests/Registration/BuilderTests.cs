@@ -77,7 +77,17 @@ namespace Jobbr.Tests.Registration
             throw new NotImplementedException();
         }
 
+        public void DeleteJob(long jobId)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Job> GetJobs(int page = 0, int pageSize = 50)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Job> GetJobs(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             throw new NotImplementedException();
         }
@@ -122,6 +132,11 @@ namespace Jobbr.Tests.Registration
             throw new NotImplementedException();
         }
 
+        public List<JobTriggerBase> GetActiveTriggers(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<JobTriggerBase> GetActiveTriggers()
         {
             throw new NotImplementedException();
@@ -133,6 +148,11 @@ namespace Jobbr.Tests.Registration
         }
 
         public void EnableTrigger(long jobId, long triggerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteTrigger(long jobId, long triggerId)
         {
             throw new NotImplementedException();
         }
@@ -157,6 +177,11 @@ namespace Jobbr.Tests.Registration
             throw new NotImplementedException();
         }
 
+        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<JobRun> GetJobRuns(long page = 0, long pageSize = 50)
         {
             throw new NotImplementedException();
@@ -173,6 +198,26 @@ namespace Jobbr.Tests.Registration
         }
 
         public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 0, int pageSize = 50, params string[] sort)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
             throw new NotImplementedException();
         }
