@@ -28,16 +28,14 @@ namespace Jobbr.Server.JobRegistry
             return this;
         }
 
-        public JobDefinition Define(string typeName)
+        public JobDefinition Define(Type jobType)
         {
-            var type = Type.GetType(typeName);
-
-            if (type == null)
+            if (jobType == null)
             {
-                throw new ArgumentException($"Could not load type '{typeName}'.");
+                throw new ArgumentException($"Job Type can't be null.");
             }
 
-            return this.Define(type.Name, typeName);
+            return this.Define(jobType.Name, jobType.FullName);
         }
 
         public JobDefinition Define(string uniqueName, string typeName)
