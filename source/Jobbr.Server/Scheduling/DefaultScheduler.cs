@@ -226,7 +226,7 @@ namespace Jobbr.Server.Scheduling
                         Logger.Trace($"Comparing dates: '{nextRunForTrigger.PlannedStartDateTimeUtc:o}' vs '{planResult.ExpectedStartDateUtc.GetValueOrDefault():o}'");
                     }
 
-                    if (nextRunForTrigger == null || nextRunForTrigger.PlannedStartDateTimeUtc.Subtract(planResult.ExpectedStartDateUtc.GetValueOrDefault()) > TimeSpan.FromSeconds(1))
+                    if (nextRunForTrigger == null || nextRunForTrigger.PlannedStartDateTimeUtc.Subtract(planResult.ExpectedStartDateUtc.GetValueOrDefault()) >= TimeSpan.FromSeconds(1))
                     {
                         var scheduledItem = this.CreateNew(planResult, trigger);
                         additonalItems.Add(scheduledItem);
