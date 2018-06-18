@@ -25,6 +25,8 @@ namespace Jobbr.Server.Scheduling
         private readonly RecurringJobRunPlaner recurringJobRunPlaner;
         private readonly DefaultSchedulerConfiguration configuration;
 
+        private readonly object evaluateTriggersLock = new object();
+
         private List<ScheduledPlanItem> currentPlan = new List<ScheduledPlanItem>();
 
         public DefaultScheduler(IJobbrRepository repository, IJobExecutor executor, InstantJobRunPlaner instantJobRunPlaner, ScheduledJobRunPlaner scheduledJobRunPlaner, RecurringJobRunPlaner recurringJobRunPlaner, DefaultSchedulerConfiguration configuration, IPeriodicTimer periodicTimer, IDateTimeProvider dateTimeProvider)
@@ -65,176 +67,191 @@ namespace Jobbr.Server.Scheduling
 
         public void OnTriggerDefinitionUpdated(long jobId, long triggerId)
         {
-            Logger.Info($"The trigger with id '{triggerId}' has been updated. Reflecting changes to Plan if any.");
-
-            var trigger = this.repository.GetTriggerById(jobId, triggerId);
-
-            PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
-
-            if (planResult.Action != PlanAction.Possible)
+            lock (this.evaluateTriggersLock)
             {
-                Logger.Debug($"The trigger was not considered to be relevant to the plan, skipping. PlanResult was '{planResult.Action}'");
-                return;
+                Logger.Info($"The trigger with id '{triggerId}' has been updated. Reflecting changes to Plan if any.");
+
+                var trigger = this.repository.GetTriggerById(jobId, triggerId);
+
+                PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
+
+                if (planResult.Action != PlanAction.Possible)
+                {
+                    Logger.Debug($"The trigger was not considered to be relevant to the plan, skipping. PlanResult was '{planResult.Action}'");
+                    return;
+                }
+
+                var dateTime = planResult.ExpectedStartDateUtc;
+
+                if (!dateTime.HasValue)
+                {
+                    Logger.Warn($"Unable to gather an expected start date for trigger, skipping.");
+                    return;
+                }
+
+                // Get the next occurence from database
+                var dependentJobRun = this.repository.GetNextJobRunByTriggerId(jobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
+
+                if (dependentJobRun == null)
+                {
+                    Logger.Error($"Trigger was updated before job run has been created. Cannot apply update.");
+                    return;
+                }
+
+                this.UpdatePlannedJobRun(dependentJobRun, trigger, dateTime.Value);
             }
-
-            var dateTime = planResult.ExpectedStartDateUtc;
-
-            if (!dateTime.HasValue)
-            {
-                Logger.Warn($"Unable to gather an expected start date for trigger, skipping.");
-                return;
-            }
-
-            // Get the next occurence from database
-            var dependentJobRun = this.repository.GetNextJobRunByTriggerId(jobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
-
-            if (dependentJobRun == null)
-            {
-                Logger.Error($"Trigger was updated before job run has been created. Cannot apply update.");
-                return;
-            }
-
-            this.UpdatePlannedJobRun(dependentJobRun, trigger, dateTime.Value);
         }
 
         public void OnTriggerStateUpdated(long jobId, long triggerId)
         {
-            Logger.Info($"The trigger with id '{triggerId}' has been changed its state. Reflecting changes to Plan if any.");
-
-            var trigger = this.repository.GetTriggerById(jobId, triggerId);
-
-            PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
-
-            if (planResult.Action == PlanAction.Obsolete)
+            lock (this.evaluateTriggersLock)
             {
-                // Remove from in memory plan to not publish this in future
-                this.currentPlan.RemoveAll(e => e.TriggerId == triggerId);
+                Logger.Info($"The trigger with id '{triggerId}' has been changed its state. Reflecting changes to Plan if any.");
 
-                // Set the JobRun to deleted if any
-                var dependentJobRun = this.repository.GetNextJobRunByTriggerId(jobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
+                var trigger = this.repository.GetTriggerById(jobId, triggerId);
 
-                if (dependentJobRun != null)
+                PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
+
+                if (planResult.Action == PlanAction.Obsolete)
                 {
-                    this.repository.Delete(dependentJobRun);
-                }
+                    // Remove from in memory plan to not publish this in future
+                    this.currentPlan.RemoveAll(e => e.TriggerId == triggerId);
 
-                this.PublishCurrentPlan();
+                    // Set the JobRun to deleted if any
+                    var dependentJobRun = this.repository.GetNextJobRunByTriggerId(jobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
 
-                return;
-            }
-
-            if (planResult.Action == PlanAction.Possible)
-            {
-                var newItem = this.CreateNew(planResult, trigger);
-
-                if (newItem != null)
-                {
-                    this.currentPlan.Add(newItem);
+                    if (dependentJobRun != null)
+                    {
+                        this.repository.Delete(dependentJobRun);
+                    }
 
                     this.PublishCurrentPlan();
+
+                    return;
+                }
+
+                if (planResult.Action == PlanAction.Possible)
+                {
+                    var newItem = this.CreateNew(planResult, trigger);
+
+                    if (newItem != null)
+                    {
+                        this.currentPlan.Add(newItem);
+
+                        this.PublishCurrentPlan();
+                    }
                 }
             }
         }
 
         public void OnTriggerAdded(long jobId, long triggerId)
         {
-            Logger.Info($"The trigger with id '{triggerId}' has been added. Reflecting changes to the current plan.");
-
-            var trigger = this.repository.GetTriggerById(jobId, triggerId);
-
-            PlanResult planResult = this.GetPlanResult(trigger as dynamic, true);
-
-            if (planResult.Action != PlanAction.Possible)
+            lock (this.evaluateTriggersLock)
             {
-                Logger.Debug($"The trigger was not considered to be relevant to the plan, skipping. PlanResult was '{planResult.Action}'");
-                return;
+                Logger.Info($"The trigger with id '{triggerId}' has been added. Reflecting changes to the current plan.");
+
+                var trigger = this.repository.GetTriggerById(jobId, triggerId);
+
+                PlanResult planResult = this.GetPlanResult(trigger as dynamic, true);
+
+                if (planResult.Action != PlanAction.Possible)
+                {
+                    Logger.Debug($"The trigger was not considered to be relevant to the plan, skipping. PlanResult was '{planResult.Action}'");
+                    return;
+                }
+
+                var newItem = this.CreateNew(planResult, trigger);
+
+                if (newItem == null)
+                {
+                    Logger.Error($"Unable to create a new Planned Item with a JobRun.");
+                    return;
+                }
+
+                this.currentPlan.Add(newItem);
+
+                this.PublishCurrentPlan();
             }
-
-            var newItem = this.CreateNew(planResult, trigger);
-
-            if (newItem == null)
-            {
-                Logger.Error($"Unable to create a new Planned Item with a JobRun.");
-                return;
-            }
-
-            this.currentPlan.Add(newItem);
-
-            this.PublishCurrentPlan();
         }
 
         public void OnJobRunEnded(long id)
         {
-            Logger.Info($"A JobRun has ended. Reevaluating triggers that did not yet schedule a run");
-
-            // Remove from in memory plan to not publish this in future
-            var numbertOfDeletedItems = this.currentPlan.RemoveAll(e => e.Id == id);
-
-            var additonalItems = new List<ScheduledPlanItem>();
-
-            // If a trigger was blocked previously, it might be a candidate to schedule now
-            var activeTriggers = this.repository.GetActiveTriggers();
-
-            foreach (var trigger in activeTriggers)
+            lock (this.evaluateTriggersLock)
             {
-                if (this.currentPlan.Any(p => p.TriggerId == trigger.Id))
+                Logger.Info($"A JobRun has ended. Reevaluating triggers that did not yet schedule a run");
+
+                // Remove from in memory plan to not publish this in future
+                var numbertOfDeletedItems = this.currentPlan.RemoveAll(e => e.Id == id);
+
+                var additonalItems = new List<ScheduledPlanItem>();
+
+                // If a trigger was blocked previously, it might be a candidate to schedule now
+                var activeTriggers = this.repository.GetActiveTriggers();
+
+                foreach (var trigger in activeTriggers)
                 {
-                    continue;
+                    if (this.currentPlan.Any(p => p.TriggerId == trigger.Id))
+                    {
+                        continue;
+                    }
+
+                    PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
+
+                    if (planResult.Action == PlanAction.Possible)
+                    {
+                        var scheduledItem = this.CreateNew(planResult, trigger);
+
+                        additonalItems.Add(scheduledItem);
+                    }
                 }
 
-                PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
-
-                if (planResult.Action == PlanAction.Possible)
+                if (additonalItems.Any() || numbertOfDeletedItems > 0)
                 {
-                    var scheduledItem = this.CreateNew(planResult, trigger);
+                    Logger.Info($"The completion of a previous job caused the addition of {additonalItems.Count} and removal of {numbertOfDeletedItems} scheduled items");
+                    this.currentPlan.AddRange(additonalItems);
 
-                    additonalItems.Add(scheduledItem);
+                    this.PublishCurrentPlan();
                 }
-            }
-
-            if (additonalItems.Any() || numbertOfDeletedItems > 0)
-            {
-                Logger.Info($"The completion of a previous job caused the addition of {additonalItems.Count} and removal of {numbertOfDeletedItems} scheduled items");
-                this.currentPlan.AddRange(additonalItems);
-
-                this.PublishCurrentPlan();
-            }
-            else
-            {
-                Logger.Debug($"There was no possibility to scheduled new items after the completion of job with it '{id}'.");
+                else
+                {
+                    Logger.Debug($"There was no possibility to scheduled new items after the completion of job with it '{id}'.");
+                }
             }
         }
 
         private void EvaluateRecurringTriggers()
         {
-            // Re-evaluate recurring triggers every n seconds
-            var activeTriggers = this.repository.GetActiveTriggers().Where(t => t.GetType() == typeof(RecurringTrigger));
-
-            var additonalItems = new List<ScheduledPlanItem>();
-
-            foreach (RecurringTrigger trigger in activeTriggers.Cast<RecurringTrigger>())
+            lock (this.evaluateTriggersLock)
             {
-                PlanResult planResult = this.GetPlanResult(trigger, false);
+                // Re-evaluate recurring triggers every n seconds
+                var activeTriggers = this.repository.GetActiveTriggers().Where(t => t.GetType() == typeof(RecurringTrigger));
 
-                if (planResult.Action == PlanAction.Possible)
+                var additonalItems = new List<ScheduledPlanItem>();
+
+                foreach (RecurringTrigger trigger in activeTriggers.Cast<RecurringTrigger>())
                 {
-                    // Check if there is already a run planned at this time
-                    var nextRunForTrigger = this.repository.GetNextJobRunByTriggerId(trigger.JobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
+                    PlanResult planResult = this.GetPlanResult(trigger, false);
 
-                    if (nextRunForTrigger == null || !nextRunForTrigger.PlannedStartDateTimeUtc.Equals(planResult.ExpectedStartDateUtc))
+                    if (planResult.Action == PlanAction.Possible)
                     {
-                        var scheduledItem = this.CreateNew(planResult, trigger);
-                        additonalItems.Add(scheduledItem);
+                        // Check if there is already a run planned at this time
+                        var nextRunForTrigger = this.repository.GetNextJobRunByTriggerId(trigger.JobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
+
+                        if (nextRunForTrigger == null || !nextRunForTrigger.PlannedStartDateTimeUtc.Equals(planResult.ExpectedStartDateUtc))
+                        {
+                            var scheduledItem = this.CreateNew(planResult, trigger);
+                            additonalItems.Add(scheduledItem);
+                        }
                     }
                 }
-            }
 
-            if (additonalItems.Any())
-            {
-                Logger.Info($"The re-evaluation of recuring triggers caused the addition of {additonalItems.Count} scheduled items");
-                this.currentPlan.AddRange(additonalItems);
+                if (additonalItems.Any())
+                {
+                    Logger.Info($"The re-evaluation of recuring triggers caused the addition of {additonalItems.Count} scheduled items");
+                    this.currentPlan.AddRange(additonalItems);
 
-                this.PublishCurrentPlan();
+                    this.PublishCurrentPlan();
+                }
             }
         }
 
