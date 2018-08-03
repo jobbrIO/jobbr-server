@@ -44,11 +44,6 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetJobRunById(id);
         }
 
-        public List<JobTriggerBase> GetTriggers(long jobId)
-        {
-            return this.storageProvider.GetTriggersByJobId(jobId);
-        }
-
         public void SaveAddTrigger(long jobId, RecurringTrigger trigger)
         {
             this.storageProvider.AddTrigger(jobId, trigger);
@@ -193,6 +188,11 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetJobRunById(jobRunId);
         }
 
+        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
+        {
+            return this.storageProvider.GetJobRunsByJobId(jobId, page, pageSize, sort);
+        }
+
         public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
         {
             return this.storageProvider.GetJobRunsByTriggerId(jobId, triggerId);
@@ -203,9 +203,9 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetTriggerById(jobId, triggerId);
         }
 
-        public List<JobTriggerBase> GetTriggersByJobId(long jobId)
+        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50)
         {
-            return this.storageProvider.GetTriggersByJobId(jobId);
+            return this.storageProvider.GetTriggersByJobId(jobId, page, pageSize);
         }
 
         public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)

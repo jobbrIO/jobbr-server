@@ -36,6 +36,17 @@ namespace Jobbr.Tests.Infrastructure
             return null;
         }
 
+        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50)
+        {
+            return new PagedResult<JobTriggerBase>
+            {
+                Items = new List<JobTriggerBase>(),
+                TotalItems = 0,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
         public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             return new PagedResult<JobTriggerBase>
@@ -92,6 +103,17 @@ namespace Jobbr.Tests.Infrastructure
         }
 
         public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            return new PagedResult<JobRun>
+            {
+                Items = new List<JobRun>(),
+                TotalItems = 0,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
+        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
         {
             return new PagedResult<JobRun>
             {

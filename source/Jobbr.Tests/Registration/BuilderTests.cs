@@ -122,7 +122,7 @@ namespace Jobbr.Tests.Registration
             throw new NotImplementedException();
         }
 
-        public List<JobTriggerBase> GetTriggersByJobId(long jobId)
+        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50)
         {
             throw new NotImplementedException();
         }
@@ -168,6 +168,11 @@ namespace Jobbr.Tests.Registration
         }
 
         public PagedResult<JobRun> GetJobRuns(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
         {
             throw new NotImplementedException();
         }

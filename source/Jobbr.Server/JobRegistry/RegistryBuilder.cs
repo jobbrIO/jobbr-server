@@ -97,7 +97,7 @@ namespace Jobbr.Server.JobRegistry
                         {
                             // Setup triggers
                             var job = storage.GetJobByUniqueName(jobDef.UniqueName);
-                            var activeTriggers = storage.GetTriggersByJobId(job.Id).Where(t => t.IsActive).ToList();
+                            var activeTriggers = storage.GetTriggersByJobId(job.Id, 1, int.MaxValue).Items.Where(t => t.IsActive).ToList();
                             var toDeactivateTriggers = new List<JobTriggerBase>(activeTriggers.Where(t => !(t is InstantTrigger)));
 
                             if (jobDef.Triggers.Any())

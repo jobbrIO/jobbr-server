@@ -47,9 +47,23 @@ namespace Jobbr.Server.Storage
 
         private readonly List<JobRun> localJobRuns = new List<JobRun>();
 
-        public List<JobTriggerBase> GetTriggersByJobId(long jobId)
+        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50)
         {
-            return this.localTriggers.Where(t => t.JobId == jobId).ToList().Clone();
+            var enumerable = this.localTriggers.Where(t => t.JobId == jobId);
+
+            int totalItems;
+
+            enumerable = this.ApplyFiltersAndPaging(page, pageSize, null, null, null, enumerable, out totalItems);
+
+            var list = enumerable.ToList().Clone();
+
+            return new PagedResult<JobTriggerBase>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Items = list,
+                TotalItems = totalItems,
+            };
         }
 
         public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
@@ -85,6 +99,30 @@ namespace Jobbr.Server.Storage
             int totalItems;
 
             var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobRuns, out totalItems);
+
+            if (sort.Length == 0)
+            {
+                enumerable = enumerable.OrderByDescending(o => o.PlannedStartDateTimeUtc);
+            }
+            else
+            {
+                enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
+            }
+
+            return new PagedResult<JobRun>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Items = enumerable.ToList(),
+                TotalItems = totalItems,
+            };
+        }
+
+        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
+        {
+            int totalItems;
+
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, null, null, null, this.localJobRuns, out totalItems);
 
             if (sort.Length == 0)
             {

@@ -65,11 +65,17 @@ namespace Jobbr.Server.ComponentServices.Management
             return this.mapper.Map<IJobTrigger>(trigger);
         }
 
-        public List<IJobTrigger> GetTriggersByJobId(long jobId)
+        public PagedResult<IJobTrigger> GetTriggersByJobId(long jobId, int page, int pageSize = 50)
         {
-            var triggers = this.repository.GetTriggersByJobId(jobId);
+            var triggers = this.repository.GetTriggersByJobId(jobId, page, pageSize);
 
-            return this.mapper.Map<List<IJobTrigger>>(triggers);
+            return new PagedResult<IJobTrigger>
+            {
+                Items = this.mapper.Map<List<IJobTrigger>>(triggers.Items),
+                TotalItems = triggers.TotalItems,
+                Page = page,
+                PageSize = pageSize
+            };
         }
 
         public JobRun GetJobRunById(long id)
@@ -82,6 +88,19 @@ namespace Jobbr.Server.ComponentServices.Management
         public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             var jobruns = this.repository.GetJobRuns(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+
+            return new PagedResult<JobRun>
+            {
+                Items = this.mapper.Map<List<JobRun>>(jobruns.Items),
+                TotalItems = jobruns.TotalItems,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
+        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
+        {
+            var jobruns = this.repository.GetJobRunsByJobId(jobId, page, pageSize, sort);
 
             return new PagedResult<JobRun>
             {

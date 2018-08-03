@@ -113,7 +113,7 @@ namespace Jobbr.Tests.Integration.Management
             this.Services.JobStorageProvider.AddTrigger(300, scheduledTrigger);
 
             // Act
-            var triggers = this.QueryService.GetTriggersByJobId(200);
+            var triggers = this.QueryService.GetTriggersByJobId(200, 1, 50).Items;
             var assertingRecurringTrigger = triggers[0] as ComponentModel.Management.Model.RecurringTrigger;
 
             // Test
@@ -138,7 +138,7 @@ namespace Jobbr.Tests.Integration.Management
             this.Services.JobStorageProvider.AddTrigger(1000, recurringTrigger);
 
             // Act
-            var result = this.QueryService.GetTriggersByJobId(1000)[0] as ComponentModel.Management.Model.RecurringTrigger;
+            var result = this.QueryService.GetTriggersByJobId(1000, 1, 50).Items[0] as ComponentModel.Management.Model.RecurringTrigger;
 
             // Assert
             Assert.IsNotNull(result);
