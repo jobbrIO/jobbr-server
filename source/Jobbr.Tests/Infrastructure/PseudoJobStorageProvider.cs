@@ -16,9 +16,15 @@ namespace Jobbr.Tests.Infrastructure
             return 0;
         }
 
-        public List<Job> GetJobs(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            return new List<Job>();
+            return new PagedResult<Job>
+            {
+                Items = new List<Job>(),
+                TotalItems = 0,
+                Page = page,
+                PageSize = pageSize
+            };
         }
 
         public void AddJob(Job job)
@@ -30,9 +36,15 @@ namespace Jobbr.Tests.Infrastructure
             return null;
         }
 
-        public List<JobTriggerBase> GetActiveTriggers(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            return new List<JobTriggerBase>();
+            return new PagedResult<JobTriggerBase>
+            {
+                Items = new List<JobTriggerBase>(),
+                TotalItems = 0,
+                Page = page,
+                PageSize = pageSize
+            };
         }
 
         public void AddTrigger(long jobId, RecurringTrigger trigger)
@@ -59,11 +71,6 @@ namespace Jobbr.Tests.Infrastructure
         {
         }
 
-        public List<JobTriggerBase> GetActiveTriggers()
-        {
-            return new List<JobTriggerBase>();
-        }
-
         public JobTriggerBase GetTriggerById(long jobId, long triggerId)
         {
             return null;
@@ -79,22 +86,28 @@ namespace Jobbr.Tests.Infrastructure
             return null;
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 0, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 11, int pageSize = 50, params string[] sort)
         {
             return null;
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            return new List<JobRun>();
+            return new PagedResult<JobRun>
+            {
+                Items = new List<JobRun>(),
+                TotalItems = 0,
+                Page = page,
+                PageSize = pageSize
+            };
         }
 
-        public List<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
             return null;
         }
 
-        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
             return null;
         }
@@ -103,12 +116,7 @@ namespace Jobbr.Tests.Infrastructure
         {
         }
 
-        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
-        {
-            return null;
-        }
-
-        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50)
+        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             return null;
         }

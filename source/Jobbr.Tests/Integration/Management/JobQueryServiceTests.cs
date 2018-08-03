@@ -19,7 +19,7 @@ namespace Jobbr.Tests.Integration.Management
 
             // Assert
             Assert.IsNotNull(jobs);
-            Assert.AreEqual(0, jobs.Count);
+            Assert.AreEqual(0, jobs.Items.Count);
         }
 
         [TestMethod]
@@ -32,7 +32,7 @@ namespace Jobbr.Tests.Integration.Management
             var jobs = this.QueryService.GetJobs();
 
             // Assert
-            Assert.AreEqual(1, jobs.Count);
+            Assert.AreEqual(1, jobs.Items.Count);
         }
 
         [TestMethod]
@@ -186,7 +186,7 @@ namespace Jobbr.Tests.Integration.Management
             var triggers = this.QueryService.GetActiveTriggers();
 
             // Test
-            Assert.AreEqual(3, triggers.Count);
+            Assert.AreEqual(3, triggers.Items.Count);
         }
 
         [TestMethod]
@@ -206,7 +206,7 @@ namespace Jobbr.Tests.Integration.Management
             var triggers = this.QueryService.GetActiveTriggers();
 
             // Test
-            Assert.AreEqual(3, triggers.Count);
+            Assert.AreEqual(3, triggers.Items.Count);
         }
 
         [TestMethod]
@@ -282,7 +282,7 @@ namespace Jobbr.Tests.Integration.Management
 
             // Assert
             Assert.IsNotNull(jobs);
-            Assert.AreEqual(0, jobs.Count);
+            Assert.AreEqual(0, jobs.Items.Count);
 
         }
 
@@ -297,7 +297,7 @@ namespace Jobbr.Tests.Integration.Management
             var jobs = this.QueryService.GetJobRuns();
 
             // Assert
-            Assert.AreEqual(1, jobs.Count);
+            Assert.AreEqual(1, jobs.Items.Count);
         }
 
         [TestMethod]
@@ -341,10 +341,10 @@ namespace Jobbr.Tests.Integration.Management
             var runs = this.QueryService.GetJobRunsByTriggerId(1337, 34);
 
             Assert.IsNotNull(runs);
-            Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(jobRun.Id, runs[0].Id);
-            Assert.AreEqual(34, runs[0].TriggerId);
-            Assert.AreEqual(1337, runs[0].JobId);
+            Assert.AreEqual(1, runs.Items.Count);
+            Assert.AreEqual(jobRun.Id, runs.Items[0].Id);
+            Assert.AreEqual(34, runs.Items[0].TriggerId);
+            Assert.AreEqual(1337, runs.Items[0].JobId);
         }
 
         [TestMethod]
@@ -359,7 +359,7 @@ namespace Jobbr.Tests.Integration.Management
             var runs = this.QueryService.GetJobRunsByTriggerId(-1, -1);
 
             Assert.IsNotNull(runs);
-            Assert.AreEqual(0, runs.Count);
+            Assert.AreEqual(0, runs.Items.Count);
         }
 
         [TestMethod]
@@ -376,11 +376,11 @@ namespace Jobbr.Tests.Integration.Management
             this.Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc("45");
+            var runs = this.QueryService.GetJobRunsByUserId("45");
 
             Assert.IsNotNull(runs);
-            Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(jobRun.Id, runs[0].Id);
+            Assert.AreEqual(1, runs.Items.Count);
+            Assert.AreEqual(jobRun.Id, runs.Items[0].Id);
         }
 
         [TestMethod]
@@ -395,10 +395,10 @@ namespace Jobbr.Tests.Integration.Management
             this.Services.JobStorageProvider.AddJobRun(new JobRun { Trigger = instantTrigger, Job = job });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc("88");
+            var runs = this.QueryService.GetJobRunsByUserId("88");
 
             Assert.IsNotNull(runs);
-            Assert.AreEqual(0, runs.Count);
+            Assert.AreEqual(0, runs.Items.Count);
         }
 
         [TestMethod]
@@ -421,12 +421,12 @@ namespace Jobbr.Tests.Integration.Management
             this.Services.JobStorageProvider.AddJobRun(jobRun2);
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserIdOrderByIdDesc("45");
+            var runs = this.QueryService.GetJobRunsByUserId("45");
 
             Assert.IsNotNull(runs);
-            Assert.AreEqual(2, runs.Count);
-            Assert.AreEqual(jobRun2.Id, runs[0].Id);
-            Assert.AreEqual(jobRun1.Id, runs[1].Id);
+            Assert.AreEqual(2, runs.Items.Count);
+            Assert.AreEqual(jobRun2.Id, runs.Items[0].Id);
+            Assert.AreEqual(jobRun1.Id, runs.Items[1].Id);
         }
 
         [TestMethod]
@@ -441,11 +441,11 @@ namespace Jobbr.Tests.Integration.Management
             this.Services.JobStorageProvider.AddJobRun(new JobRun { Job = job, Trigger = instantTrigger });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserDisplayNameOrderByIdDesc("hans");
+            var runs = this.QueryService.GetJobRunsByUserId("hans");
 
             Assert.IsNotNull(runs);
-            Assert.AreEqual(1, runs.Count);
-            Assert.AreEqual(instantTrigger.Id, runs[0].TriggerId);
+            Assert.AreEqual(1, runs.Items.Count);
+            Assert.AreEqual(instantTrigger.Id, runs.Items[0].TriggerId);
         }
 
         [TestMethod]
@@ -462,10 +462,10 @@ namespace Jobbr.Tests.Integration.Management
             this.Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserDisplayNameOrderByIdDesc("blablablabl");
+            var runs = this.QueryService.GetJobRunsByUserDisplayName("blablablabl");
 
             Assert.IsNotNull(runs);
-            Assert.AreEqual(0, runs.Count);
+            Assert.AreEqual(0, runs.Items.Count);
         }
 
         [TestMethod]
@@ -487,12 +487,12 @@ namespace Jobbr.Tests.Integration.Management
             this.Services.JobStorageProvider.AddJobRun(jobRun2);
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserDisplayNameOrderByIdDesc("hans");
+            var runs = this.QueryService.GetJobRunsByUserDisplayName("hans");
 
             Assert.IsNotNull(runs);
-            Assert.AreEqual(2, runs.Count);
-            Assert.AreEqual(jobRun2.Id, runs[0].Id);
-            Assert.AreEqual(jobRun1.Id, runs[1].Id);
+            Assert.AreEqual(2, runs.Items.Count);
+            Assert.AreEqual(jobRun2.Id, runs.Items[0].Id);
+            Assert.AreEqual(jobRun1.Id, runs.Items[1].Id);
         }
     }
 }

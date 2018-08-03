@@ -36,8 +36,8 @@ namespace Jobbr.Tests.Components.Scheduler
             var schedulerJobRuns = this.repository.GetJobRunsByState(JobRunStates.Scheduled);
             var omittedJobRuns = this.repository.GetJobRunsByState(JobRunStates.Omitted);
 
-            Assert.AreEqual(0, schedulerJobRuns.Count, "The only past scheduled jobrun should have been set to omitted");
-            Assert.AreEqual(1, omittedJobRuns.Count, "It's assumed that the previous scheduled jobrun is now omitted");
+            Assert.AreEqual(0, schedulerJobRuns.Items.Count, "The only past scheduled jobrun should have been set to omitted");
+            Assert.AreEqual(1, omittedJobRuns.Items.Count, "It's assumed that the previous scheduled jobrun is now omitted");
         }
 
         [TestMethod]
@@ -53,7 +53,7 @@ namespace Jobbr.Tests.Components.Scheduler
 
             var schedulerJobRuns = this.repository.GetJobRunsByState(JobRunStates.Scheduled);
 
-            Assert.AreEqual(1, schedulerJobRuns.Count, "A future scheduled jobrun should not be omitted");
+            Assert.AreEqual(1, schedulerJobRuns.Items.Count, "A future scheduled jobrun should not be omitted");
         }
 
         [TestMethod]
@@ -79,7 +79,7 @@ namespace Jobbr.Tests.Components.Scheduler
 
             var failedJobRuns = this.repository.GetJobRunsByState(JobRunStates.Failed);
 
-            Assert.AreEqual(9, failedJobRuns.Count, $"Still have jobruns with the following states:\n {string.Join(", ", this.repository.GetJobRuns().Select(jr => jr.State))}");
+            Assert.AreEqual(9, failedJobRuns.Items.Count, $"Still have jobruns with the following states:\n {string.Join(", ", this.repository.GetJobRuns().Items.Select(jr => jr.State))}");
         }
     }
 }

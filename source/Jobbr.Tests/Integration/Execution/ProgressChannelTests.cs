@@ -31,7 +31,7 @@ namespace Jobbr.Tests.Integration.Execution
 
             progressService.PublishProgressUpdate(this.currentRun.Id, 50);
 
-            var jobRunFromDb = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Single();
+            var jobRunFromDb = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Items.Single();
 
             Assert.AreEqual(50, jobRunFromDb.Progress);
         }
@@ -43,7 +43,7 @@ namespace Jobbr.Tests.Integration.Execution
 
             progressService.PublishPid(this.currentRun.Id, 42373, "host01");
 
-            var jobRunFromDb = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Single();
+            var jobRunFromDb = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Items.Single();
 
             Assert.AreEqual(42373, jobRunFromDb.Pid);
         }
@@ -83,7 +83,7 @@ namespace Jobbr.Tests.Integration.Execution
         {
             this.SimulateStateUpdate(JobRunStates.Started);
 
-            var actualJobRun = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Single();
+            var actualJobRun = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Items.Single();
 
             Assert.IsNotNull(actualJobRun.ActualStartDateTimeUtc);
         }
@@ -164,7 +164,7 @@ namespace Jobbr.Tests.Integration.Execution
 
         private ComponentModel.JobStorage.Model.JobRunStates GetActualStoredJobRunState()
         {
-            return this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Single().State;
+            return this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Items.Single().State;
         }
 
         private void SimulateStateUpdate(JobRunStates state)

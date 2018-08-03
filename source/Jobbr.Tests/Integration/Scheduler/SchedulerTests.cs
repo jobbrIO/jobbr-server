@@ -27,9 +27,9 @@ namespace Jobbr.Tests.Integration.Scheduler
             jobManagementService.AddTrigger(1, recurringTrigger);
 
             // Wait for the scheduler to do his work
-            WaitFor.HasElements(() => storageProvider.GetJobRuns());
+            WaitFor.HasElements(() => storageProvider.GetJobRuns().Items);
 
-            var createdJobRun = storageProvider.GetJobRuns().FirstOrDefault();
+            var createdJobRun = storageProvider.GetJobRuns().Items.FirstOrDefault();
 
             // Base Assertions
             Assert.IsNotNull(createdJobRun, "There should be exact one JobRun which is not null");
@@ -39,9 +39,9 @@ namespace Jobbr.Tests.Integration.Scheduler
             jobManagementService.UpdateTriggerDefinition(1, recurringTrigger.Id, futureMinute2 + " * * * *");
 
             // Wait for the scheduler to do his work
-            WaitFor.HasElements(() => storageProvider.GetJobRuns().Where(r => r.PlannedStartDateTimeUtc.Minute == futureMinute2).ToList());
+            WaitFor.HasElements(() => storageProvider.GetJobRuns().Items.Where(r => r.PlannedStartDateTimeUtc.Minute == futureMinute2).ToList());
 
-            var updatedJobRun = storageProvider.GetJobRuns().FirstOrDefault();
+            var updatedJobRun = storageProvider.GetJobRuns().Items.FirstOrDefault();
 
             Assert.AreEqual(futureMinute2, updatedJobRun.PlannedStartDateTimeUtc.Minute, "As per updated definition, the job should now start on a different plan");
         }
@@ -62,9 +62,9 @@ namespace Jobbr.Tests.Integration.Scheduler
             jobManagementService.AddTrigger(1, recurringTrigger);
 
             // Wait for the scheduler to do his work
-            WaitFor.HasElements(() => storageProvider.GetJobRuns());
+            WaitFor.HasElements(() => storageProvider.GetJobRuns().Items);
 
-            var createdJobRun = storageProvider.GetJobRuns().FirstOrDefault();
+            var createdJobRun = storageProvider.GetJobRuns().Items.FirstOrDefault();
 
             // Base Assertions
             Assert.IsNotNull(createdJobRun, "There should be exact one JobRun which is not null");
@@ -74,9 +74,9 @@ namespace Jobbr.Tests.Integration.Scheduler
             jobManagementService.UpdateTriggerStartTime(1, recurringTrigger.Id, futureDate2);
 
             // Wait for the scheduler to do his work
-            WaitFor.HasElements(() => storageProvider.GetJobRuns().Where(r => r.PlannedStartDateTimeUtc == futureDate2).ToList());
+            WaitFor.HasElements(() => storageProvider.GetJobRuns().Items.Where(r => r.PlannedStartDateTimeUtc == futureDate2).ToList());
 
-            var updatedJobRun = storageProvider.GetJobRuns().FirstOrDefault();
+            var updatedJobRun = storageProvider.GetJobRuns().Items.FirstOrDefault();
 
             Assert.AreEqual(futureDate2, updatedJobRun.PlannedStartDateTimeUtc, "As per updated startddate, the job should now start on a different point in time");
         }
@@ -96,9 +96,9 @@ namespace Jobbr.Tests.Integration.Scheduler
             jobManagementService.AddTrigger(demoJob.Id, trigger);
 
             // Wait for the scheduler to do his work
-            WaitFor.HasElements(() => storageProvider.GetJobRuns());
+            WaitFor.HasElements(() => storageProvider.GetJobRuns().Items);
 
-            var createdJobRun = storageProvider.GetJobRuns().FirstOrDefault();
+            var createdJobRun = storageProvider.GetJobRuns().Items.FirstOrDefault();
             Assert.IsNotNull(createdJobRun, "There should be exact one JobRun");
             Assert.IsTrue(createdJobRun.PlannedStartDateTimeUtc >= DateTime.UtcNow, "The job run needs to be in the future");
             Assert.AreEqual(futureDate1, createdJobRun.PlannedStartDateTimeUtc);
@@ -106,9 +106,9 @@ namespace Jobbr.Tests.Integration.Scheduler
             jobManagementService.DisableTrigger(demoJob.Id, trigger.Id);
 
             // Wait for the scheduler to do his work
-            WaitFor.HasElements(() => storageProvider.GetJobRuns().Where(r => r.State == ComponentModel.JobStorage.Model.JobRunStates.Deleted).ToList());
+            WaitFor.HasElements(() => storageProvider.GetJobRuns().Items.Where(r => r.State == ComponentModel.JobStorage.Model.JobRunStates.Deleted).ToList());
 
-            var jobRun = storageProvider.GetJobRuns().FirstOrDefault();
+            var jobRun = storageProvider.GetJobRuns().Items.FirstOrDefault();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Deleted, jobRun.State);
         }
@@ -128,15 +128,15 @@ namespace Jobbr.Tests.Integration.Scheduler
             jobManagementService.AddTrigger(demoJob.Id, trigger);
 
             // Base asserts
-            var createdJobRun = storageProvider.GetJobRuns().FirstOrDefault();
+            var createdJobRun = storageProvider.GetJobRuns().Items.FirstOrDefault();
             Assert.IsNull(createdJobRun, "There should be exact no JobRun");
 
             jobManagementService.EnableTrigger(demoJob.Id, trigger.Id);
 
             // Wait for the scheduler to do his work
-            WaitFor.HasElements(() => storageProvider.GetJobRuns());
+            WaitFor.HasElements(() => storageProvider.GetJobRuns().Items);
 
-            var jobRun = storageProvider.GetJobRuns().FirstOrDefault();
+            var jobRun = storageProvider.GetJobRuns().Items.FirstOrDefault();
 
             Assert.AreEqual(JobRunStates.Scheduled, jobRun.State);
         }

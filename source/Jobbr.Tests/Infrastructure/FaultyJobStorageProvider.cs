@@ -31,7 +31,7 @@ namespace Jobbr.Tests.Infrastructure
             return this.inMemoryVersion.GetJobsCount();
         }
 
-        public List<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
@@ -49,7 +49,7 @@ namespace Jobbr.Tests.Infrastructure
             return this.inMemoryVersion.GetTriggersByJobId(jobId);
         }
 
-        public List<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetActiveTriggers(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
@@ -109,25 +109,25 @@ namespace Jobbr.Tests.Infrastructure
             return this.inMemoryVersion.GetNextJobRunByTriggerId(jobId, triggerId, utcNow);
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, sort);
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             this.CheckFailAll();
             return this.GetJobRunsByState(state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
         }
 
-        public List<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, sort);
         }
 
-        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
             this.CheckFailAll();
             return this.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, sort);
@@ -139,13 +139,7 @@ namespace Jobbr.Tests.Infrastructure
             this.inMemoryVersion.AddJobRun(jobRun);
         }
 
-        public List<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
-        {
-            this.CheckFailAll();
-            return this.GetJobRuns(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
-        }
-
-        public List<JobRun> GetJobRuns(int page = 1, int pageSize = 50)
+        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRuns();
@@ -181,18 +175,6 @@ namespace Jobbr.Tests.Infrastructure
             return this.inMemoryVersion.GetJobRunById(id);
         }
 
-        public List<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50)
-        {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByUserId(userId, page, pageSize);
-        }
-
-        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50)
-        {
-            this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize);
-        }
-
         public void Update(Job job)
         {
             this.CheckFailAll();
@@ -217,13 +199,13 @@ namespace Jobbr.Tests.Infrastructure
             this.inMemoryVersion.Update(jobId, trigger);
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50)
+        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize);
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50)
+        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRunsByState(state, page, pageSize);

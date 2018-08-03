@@ -246,7 +246,7 @@ namespace Jobbr.Server
             try
             {
                 var numberOfChanges = this.registryBuilder.Apply(this.jobStorageProvider);
-                var numberOfJobs = this.jobStorageProvider.GetJobs().Count;
+                var numberOfJobs = this.jobStorageProvider.GetJobs().Items.Count;
 
                 Logger.InfoFormat("There were {0} by the JobRegistry. There are now {1} known jobs right available.", numberOfChanges, numberOfJobs);
             }

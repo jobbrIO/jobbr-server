@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 
 namespace Jobbr.Server.Storage
 {
     public interface IJobbrRepository
     {
-        List<Job> GetJobs(int page = 0, int pageSize = 50);
+        PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort);
 
         Job GetJob(long id);
 
@@ -28,11 +29,11 @@ namespace Jobbr.Server.Storage
 
         void EnableTrigger(long jobId, long triggerId);
 
-        List<JobTriggerBase> GetActiveTriggers();
+        PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort);
 
         JobTriggerBase SaveUpdateTrigger(long jobId, JobTriggerBase trigger, out bool hadChanges);
 
-        List<JobRun> GetJobRunsByState(JobRunStates state);
+        PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort);
 
         IEnumerable<JobRun> GetRunningJobs(long triggerJobId, long triggerId);
 
@@ -56,20 +57,20 @@ namespace Jobbr.Server.Storage
 
         List<JobTriggerBase> GetTriggersByJobId(long jobId);
 
-        List<JobRun> GetJobRuns(int page = 0, int pageSize = 50);
+        PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort);
 
         Job GetJobByUniqueName(string identifier);
 
         void Delete(JobRun jobRun);
 
-        List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId);
+        PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort);
 
-        List<JobRun> GetJobRunsForUserId(string userId);
+        PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort);
 
-        List<JobRun> GetJobRunsByUserDisplayName(string userName);
-
-        JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow);
+        PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort);
 
         JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow);
+
+        JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow);
     }
 }

@@ -52,11 +52,13 @@ namespace Jobbr.Server.Storage
             return this.localTriggers.Where(t => t.JobId == jobId).ToList().Clone();
         }
 
-        public List<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             var enumerable = this.localTriggers.Where(t => t.IsActive);
 
-            enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, enumerable);
+            int totalItems;
+
+            enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, enumerable, out totalItems);
 
             if (sort.Length == 0)
             {
@@ -67,12 +69,22 @@ namespace Jobbr.Server.Storage
                 enumerable = ApplySorting(sort, enumerable, this.TriggerOrderByMapping);
             }
 
-            return enumerable.ToList().Clone();
+            var list = enumerable.ToList().Clone();
+
+            return new PagedResult<JobTriggerBase>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Items = list,
+                TotalItems = totalItems,
+            };
         }
 
-        public List<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobRuns);
+            int totalItems;
+
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobRuns, out totalItems);
 
             if (sort.Length == 0)
             {
@@ -83,12 +95,20 @@ namespace Jobbr.Server.Storage
                 enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
             }
 
-            return enumerable.ToList().Clone();
+            return new PagedResult<JobRun>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Items = enumerable.ToList(),
+                TotalItems = totalItems,
+            };
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
         {
-            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, null, null, null, this.localJobRuns.Where(p => p.Trigger.Id == triggerId));
+            int totalItems;
+
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, null, null, null, this.localJobRuns.Where(p => p.Trigger.Id == triggerId), out totalItems);
 
             if (sort.Length == 0)
             {
@@ -99,7 +119,13 @@ namespace Jobbr.Server.Storage
                 enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
             }
 
-            return enumerable.ToList().Clone();
+            return new PagedResult<JobRun>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Items = enumerable.ToList(),
+                TotalItems = totalItems,
+            };
         }
 
         public JobTriggerBase GetTriggerById(long jobId, long triggerId)
@@ -117,9 +143,11 @@ namespace Jobbr.Server.Storage
             return this.localJobRuns.FirstOrDefault(jr => jr.Trigger.Id == triggerId && jr.PlannedStartDateTimeUtc >= utcNow).Clone();
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobRuns.Where(p => p.State == state));
+            int totalItems;
+
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobRuns.Where(p => p.State == state), out totalItems);
 
             if (sort.Length == 0)
             {
@@ -130,12 +158,20 @@ namespace Jobbr.Server.Storage
                 enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
             }
 
-            return enumerable.ToList().Clone();
+            return new PagedResult<JobRun>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Items = enumerable.ToList(),
+                TotalItems = totalItems,
+            };
         }
 
-        public List<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
-            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, this.localJobRuns.Where(p => string.Equals(p.Trigger.UserId, userId, StringComparison.OrdinalIgnoreCase)));
+            int totalItems;
+
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, this.localJobRuns.Where(p => string.Equals(p.Trigger.UserId, userId, StringComparison.OrdinalIgnoreCase)), out totalItems);
 
             if (sort.Length == 0)
             {
@@ -146,12 +182,20 @@ namespace Jobbr.Server.Storage
                 enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
             }
 
-            return enumerable.ToList().Clone();
+            return new PagedResult<JobRun>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Items = enumerable.ToList(),
+                TotalItems = totalItems,
+            };
         }
 
-        public List<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
-            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, this.localJobRuns.Where(p => string.Equals(p.Trigger.UserDisplayName, userDisplayName, StringComparison.OrdinalIgnoreCase)));
+            int totalItems; 
+
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, this.localJobRuns.Where(p => string.Equals(p.Trigger.UserDisplayName, userDisplayName, StringComparison.OrdinalIgnoreCase)), out totalItems);
 
             if (sort.Length == 0)
             {
@@ -162,12 +206,20 @@ namespace Jobbr.Server.Storage
                 enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
             }
 
-            return enumerable.ToList().Clone();
+            return new PagedResult<JobRun>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Items = enumerable.ToList(),
+                TotalItems = totalItems,
+            };
         }
 
-        public List<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobs);
+            int totalItems;
+
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobs, out totalItems);
 
             if (sort.Length == 0)
             {
@@ -178,7 +230,13 @@ namespace Jobbr.Server.Storage
                 enumerable = ApplySorting(sort, enumerable, this.JobOrderByMapping);
             }
 
-            return enumerable.ToList().Clone();
+            return new PagedResult<Job>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Items = enumerable.ToList(),
+                TotalItems = totalItems,
+            };
         }
 
         public Job GetJobById(long id)
@@ -306,11 +364,8 @@ namespace Jobbr.Server.Storage
             return this.localJobs.Count;
         }
 
-        private IEnumerable<JobTriggerBase> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<JobTriggerBase> enumerable)
+        private IEnumerable<JobTriggerBase> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<JobTriggerBase> enumerable, out int totalItems)
         {
-            enumerable = enumerable.Skip((page - 1) * pageSize);
-            enumerable = enumerable.Take(pageSize);
-
             if (string.IsNullOrWhiteSpace(jobTypeFilter) == false)
             {
                 var jobs = this.localJobs.Where(p => string.Equals(p.Type, jobTypeFilter, StringComparison.OrdinalIgnoreCase));
@@ -332,13 +387,17 @@ namespace Jobbr.Server.Storage
                 enumerable = enumerable.Where(p => p.Parameters.Contains(query) || p.UserDisplayName.Contains(query) || p.UserId.Contains(query));
             }
 
+            totalItems = enumerable.Count();
+
+            enumerable = enumerable.Skip((page - 1) * pageSize);
+            enumerable = enumerable.Take(pageSize);
+
             return enumerable;
         }
 
-        private IEnumerable<Job> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<Job> enumerable)
+        private IEnumerable<Job> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<Job> enumerable, out int totalItems)
         {
-            enumerable = enumerable.Skip((page - 1) * pageSize);
-            enumerable = enumerable.Take(pageSize);
+            
 
             if (string.IsNullOrWhiteSpace(jobTypeFilter) == false)
             {
@@ -355,14 +414,16 @@ namespace Jobbr.Server.Storage
                 enumerable = enumerable.Where(p => p.Parameters.Contains(query) || p.Title.Contains(query) || p.Type.Contains(query) || p.UniqueName.Contains(query));
             }
 
-            return enumerable;
-        }
+            totalItems = enumerable.Count();
 
-        private IEnumerable<JobRun> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<JobRun> enumerable)
-        {
             enumerable = enumerable.Skip((page - 1) * pageSize);
             enumerable = enumerable.Take(pageSize);
 
+            return enumerable;
+        }
+
+        private IEnumerable<JobRun> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<JobRun> enumerable, out int totalItems)
+        {
             if (string.IsNullOrWhiteSpace(jobTypeFilter) == false)
             {
                 enumerable = enumerable.Where(p => string.Equals(p.Job.Type, jobTypeFilter, StringComparison.OrdinalIgnoreCase));
@@ -377,6 +438,11 @@ namespace Jobbr.Server.Storage
             {
                 enumerable = enumerable.Where(p => p.InstanceParameters.Contains(query) || p.JobParameters.Contains(query) || p.Job.Title.Contains(query) || p.Job.Type.Contains(query) || p.Job.UniqueName.Contains(query));
             }
+
+            totalItems = enumerable.Count();
+
+            enumerable = enumerable.Skip((page - 1) * pageSize);
+            enumerable = enumerable.Take(pageSize);
 
             return enumerable;
         }

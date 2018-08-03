@@ -17,7 +17,7 @@ namespace Jobbr.Server.Storage
             this.storageProvider = storageProvider;
         }
 
-        public List<Job> GetJobs(int page = 0, int pageSize = 50)
+        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             return this.storageProvider.GetJobs(page, pageSize);
         }
@@ -90,7 +90,7 @@ namespace Jobbr.Server.Storage
             this.storageProvider.EnableTrigger(jobId, triggerId);
         }
 
-        public List<JobTriggerBase> GetActiveTriggers()
+        public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             try
             {
@@ -100,7 +100,13 @@ namespace Jobbr.Server.Storage
             {
                 Logger.FatalException("Cannot read active triggers from storage provider due to an exception. Returning empty list.", e);
 
-                return new List<JobTriggerBase>();
+                return new PagedResult<JobTriggerBase>
+                {
+                    TotalItems = 0,
+                    Items = new List<JobTriggerBase>(),
+                    PageSize = pageSize,
+                    Page = page
+                };
             }
         }
 
@@ -140,7 +146,7 @@ namespace Jobbr.Server.Storage
             return triggerFromDb;
         }
 
-        public List<JobRun> GetJobRunsByState(JobRunStates state)
+        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             return this.storageProvider.GetJobRunsByState(state);
         }
@@ -187,7 +193,7 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetJobRunById(jobRunId);
         }
 
-        public List<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId)
+        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
         {
             return this.storageProvider.GetJobRunsByTriggerId(jobId, triggerId);
         }
@@ -202,19 +208,19 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetTriggersByJobId(jobId);
         }
 
-        public List<JobRun> GetJobRuns(int page = 0, int pageSize = 50)
+        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             return this.storageProvider.GetJobRuns();
         }
 
-        public List<JobRun> GetJobRunsForUserId(string userId)
+        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
             return this.storageProvider.GetJobRunsByUserId(userId);
         }
 
-        public List<JobRun> GetJobRunsByUserDisplayName(string userName)
+        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByUserDisplayName(userName);
+            return this.storageProvider.GetJobRunsByUserDisplayName(userDisplayName);
         }
 
         public Job GetJobByUniqueName(string identifier)
@@ -267,9 +273,9 @@ namespace Jobbr.Server.Storage
             {
                 var currentState = (JobRunStates)i;
 
-                var jobRunsByState = this.GetJobRunsByState(currentState);
+                var jobRunsByState = this.GetJobRunsByState(currentState, 1, int.MaxValue);
 
-                foreach (var jobRun in jobRunsByState)
+                foreach (var jobRun in jobRunsByState.Items)
                 {
                     yield return jobRun;
                 }
