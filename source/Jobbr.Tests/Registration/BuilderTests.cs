@@ -127,7 +127,7 @@ namespace Jobbr.Tests.Registration
             throw new NotImplementedException();
         }
 
-        public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             throw new NotImplementedException();
         }

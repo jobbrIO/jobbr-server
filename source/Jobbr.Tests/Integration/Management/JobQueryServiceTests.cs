@@ -441,7 +441,7 @@ namespace Jobbr.Tests.Integration.Management
             this.Services.JobStorageProvider.AddJobRun(new JobRun { Job = job, Trigger = instantTrigger });
 
             // Act
-            var runs = this.QueryService.GetJobRunsByUserId("hans");
+            var runs = this.QueryService.GetJobRunsByUserDisplayName("hans");
 
             Assert.IsNotNull(runs);
             Assert.AreEqual(1, runs.Items.Count);

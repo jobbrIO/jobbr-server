@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Management.Model;
@@ -48,7 +47,15 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public PagedResult<IJobTrigger> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            throw new NotImplementedException();
+            var triggers = this.repository.GetActiveTriggers(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+
+            return new PagedResult<IJobTrigger>
+            {
+                Items = this.mapper.Map<List<IJobTrigger>>(triggers.Items),
+                TotalItems = triggers.TotalItems,
+                Page = page,
+                PageSize = pageSize
+            };
         }
 
         public IJobTrigger GetTriggerById(long jobId, long triggerId)
