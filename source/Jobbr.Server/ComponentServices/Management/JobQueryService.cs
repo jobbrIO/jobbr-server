@@ -39,7 +39,7 @@ namespace Jobbr.Server.ComponentServices.Management
 
             return new PagedResult<Job>
             {
-                Items = this.mapper.Map<List<Job>>(jobs),
+                Items = this.mapper.Map<List<Job>>(jobs.Items),
                 TotalItems = jobs.TotalItems,
                 Page = page,
                 PageSize = pageSize
@@ -78,7 +78,7 @@ namespace Jobbr.Server.ComponentServices.Management
 
             return new PagedResult<JobRun>
             {
-                Items = this.mapper.Map<List<JobRun>>(jobruns),
+                Items = this.mapper.Map<List<JobRun>>(jobruns.Items),
                 TotalItems = jobruns.TotalItems,
                 Page = page,
                 PageSize = pageSize
@@ -91,7 +91,7 @@ namespace Jobbr.Server.ComponentServices.Management
 
             return new PagedResult<JobRun>
             {
-                Items = this.mapper.Map<List<JobRun>>(jobruns),
+                Items = this.mapper.Map<List<JobRun>>(jobruns.Items),
                 TotalItems = jobruns.TotalItems,
                 Page = page,
                 PageSize = pageSize
@@ -104,7 +104,7 @@ namespace Jobbr.Server.ComponentServices.Management
 
             return new PagedResult<JobRun>
             {
-                Items = this.mapper.Map<List<JobRun>>(jobruns),
+                Items = this.mapper.Map<List<JobRun>>(jobruns.Items),
                 TotalItems = jobruns.TotalItems,
                 Page = page,
                 PageSize = pageSize
@@ -117,7 +117,7 @@ namespace Jobbr.Server.ComponentServices.Management
 
             return new PagedResult<JobRun>
             {
-                Items = this.mapper.Map<List<JobRun>>(jobruns),
+                Items = this.mapper.Map<List<JobRun>>(jobruns.Items),
                 TotalItems = jobruns.TotalItems,
                 Page = page,
                 PageSize = pageSize
@@ -130,7 +130,7 @@ namespace Jobbr.Server.ComponentServices.Management
 
             return new PagedResult<JobRun>
             {
-                Items = this.mapper.Map<List<JobRun>>(jobruns),
+                Items = this.mapper.Map<List<JobRun>>(jobruns.Items),
                 TotalItems = jobruns.TotalItems,
                 Page = page,
                 PageSize = pageSize
