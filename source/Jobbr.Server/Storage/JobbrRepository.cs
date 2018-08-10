@@ -57,6 +57,10 @@ namespace Jobbr.Server.Storage
             this.Update(jobRun);
         }
 
+        /// <summary>
+        /// TODO: Same as <see cref="InMemoryArtefactsStorage"/>
+        /// SandAddTrigger(long jobId, TriggerBase trigger) for the interface defintion and implementations will handle speciald derived types
+        /// </summary>
         public void SaveAddTrigger(long jobId, ScheduledTrigger trigger)
         {
             this.storageProvider.AddTrigger(jobId, trigger);
