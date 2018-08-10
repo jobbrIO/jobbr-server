@@ -173,7 +173,10 @@ namespace Jobbr.Server
         public void GracefulStop(TimeSpan timeOut)
         {
             var cancellationToken = new CancellationTokenSource();
-            if (!this.GracefulStopAsync(cancellationToken.Token).Wait((int) timeOut.TotalMilliseconds))
+            var gracefulStopAsync = this.GracefulStopAsync(cancellationToken.Token);
+            var timeOutTask = Task.Delay(timeOut);
+            var result = Task.WhenAny(gracefulStopAsync, timeOutTask).Result;
+            if (result == timeOutTask)
             {
                 cancellationToken.Cancel();
             }
