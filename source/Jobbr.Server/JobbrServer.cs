@@ -52,13 +52,13 @@ namespace Jobbr.Server
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
         public JobbrServer(
-            IJobScheduler scheduler, 
-            IJobExecutor jobExecutor, 
+            IJobScheduler scheduler,
+            IJobExecutor jobExecutor,
             IJobStorageProvider jobStorageProvider,
-            List<IJobbrComponent> components, 
+            List<IJobbrComponent> components,
             MessageDispatcher messageDispatcher,
-            ConfigurationManager configurationManager, 
-            RegistryBuilder registryBuilder, 
+            ConfigurationManager configurationManager,
+            RegistryBuilder registryBuilder,
             IJobScheduler jobScheduler,
             JobRunService jobRunService)
         {
@@ -170,6 +170,7 @@ namespace Jobbr.Server
         /// <summary>
         /// Stops the server, but still lets all jobs finish
         /// </summary>
+        /// <param name="timeOut">Specifies the amount of time, when the server will be forced to shutdown</param>
         public void GracefulStop(TimeSpan timeOut)
         {
             var cancellationToken = new CancellationTokenSource();
@@ -277,7 +278,7 @@ namespace Jobbr.Server
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     // Wait for pending actions
-                    Thread.Sleep(50);
+                    Thread.Sleep(1000);
 
                     var runningJobIds = this.jobRunService.GetRunningJobIds();
 

@@ -86,7 +86,6 @@
     <Compile Include="Components\Scheduler\SchedulerTests.cs" />
     <Compile Include="Components\Scheduler\TestBase.cs" />
     <Compile Include="Infrastructure\Extensions.cs" />
-    <Compile Include="Integration\Execution\GracefulStopTests.cs" />
     <Compile Include="Integration\Execution\JobRunExecutionTestBase.cs" />
     <Compile Include="Integration\Execution\JobRunInformationServiceTests.cs" />
     <Compile Include="Integration\Execution\ProgressChannelTests.cs" />
