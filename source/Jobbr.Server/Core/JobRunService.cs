@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using AutoMapper;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.Server.Core.Messaging;
@@ -8,6 +9,7 @@ using Jobbr.Server.Core.Models;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
 using TinyMessenger;
+using JobRunStates = Jobbr.Server.Core.Models.JobRunStates;
 
 namespace Jobbr.Server.Core
 {
@@ -97,6 +99,14 @@ namespace Jobbr.Server.Core
             jobRun.Pid = pid;
 
             this.repository.Update(jobRun);
+        }
+
+        /// <summary>
+        /// Returns all <returns>running</returns> jobs
+        /// </summary>
+        public IEnumerable<long> GetRunningJobIds()
+        {
+            return this.repository.GetRunningJobs().Select(s => s.Id);
         }
     }
 }

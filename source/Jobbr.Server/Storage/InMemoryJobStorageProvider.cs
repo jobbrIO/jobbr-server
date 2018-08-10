@@ -299,6 +299,10 @@ namespace Jobbr.Server.Storage
             this.localJobs.Add(job);
         }
 
+        /// <summary>
+        /// TODO: Is AddTrigger(long jobId, TriggerBase trigger) not sufficient for the interface?
+        ///Implementations should decide whether or not they depend on the derived type
+        /// </summary>
         public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
             var newTriggerId = this.localTriggers.Count + 1;
@@ -372,6 +376,10 @@ namespace Jobbr.Server.Storage
             this.localJobs.Add(job);
         }
 
+        /// <summary>
+        /// TODO: Is Update(long jobId, TriggerBase trigger) not sufficient for the interface?
+        /// Implementations should decide whether or not they depend on the derived type
+        /// </summary>
         public void Update(long jobId, InstantTrigger trigger)
         {
             this.localTriggers.Remove(this.localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
@@ -435,8 +443,6 @@ namespace Jobbr.Server.Storage
 
         private IEnumerable<Job> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<Job> enumerable, out int totalItems)
         {
-            
-
             if (string.IsNullOrWhiteSpace(jobTypeFilter) == false)
             {
                 enumerable = enumerable.Where(p => string.Equals(p.Type, jobTypeFilter, StringComparison.OrdinalIgnoreCase));

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Registration;
+using Jobbr.Server.Core;
 using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.Extensions;
 using Jobbr.Server.JobRegistry;
@@ -42,13 +43,24 @@ namespace Jobbr.Server
 
         private readonly ConfigurationManager configurationManager;
         private readonly RegistryBuilder registryBuilder;
+        private readonly IJobScheduler jobScheduler;
+        private readonly JobRunService jobRunService;
 
         private bool isRunning;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        public JobbrServer(IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> components, MessageDispatcher messageDispatcher, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
+        public JobbrServer(
+            IJobScheduler scheduler, 
+            IJobExecutor jobExecutor, 
+            IJobStorageProvider jobStorageProvider,
+            List<IJobbrComponent> components, 
+            MessageDispatcher messageDispatcher,
+            ConfigurationManager configurationManager, 
+            RegistryBuilder registryBuilder, 
+            IJobScheduler jobScheduler,
+            JobRunService jobRunService)
         {
             Logger.Debug("A new instance of a a JobbrServer has been created.");
 
@@ -58,6 +70,8 @@ namespace Jobbr.Server
             this.components = components;
             this.configurationManager = configurationManager;
             this.registryBuilder = registryBuilder;
+            this.jobScheduler = jobScheduler;
+            this.jobRunService = jobRunService;
             this.jobStorageProvider = jobStorageProvider;
 
             messageDispatcher.WireUp();
@@ -138,19 +152,6 @@ namespace Jobbr.Server
             return true;
         }
 
-        private void LogVersions()
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("Version Information:");
-
-            var assemblies = new List<Assembly> { this.GetType().Assembly };
-            assemblies.AddRange(this.components.Select(component => component.GetType().Assembly));
-
-            assemblies.Distinct().ToList().ForEach(assembly => { sb.AppendLine($"{assembly.ManifestModule.Name} {assembly.GetVersion()}"); });
-
-            Logger.Info(sb.ToString().TrimEnd());
-        }
-
         /// <summary>
         /// The stop.
         /// </summary>
@@ -161,9 +162,40 @@ namespace Jobbr.Server
             this.components.ForEach(component => component.Stop());
 
             this.scheduler.Stop();
-            this.executor.Stop();
+            this.StopExecution();
 
             Logger.Info("All components stopped.");
+        }
+
+        /// <summary>
+        /// Stops the server, but still lets all jobs finish
+        /// </summary>
+        public void GracefulStop(TimeSpan timeOut)
+        {
+            var cancellationToken = new CancellationTokenSource();
+            if (!this.GracefulStopAsync(cancellationToken.Token).Wait((int) timeOut.TotalMilliseconds))
+            {
+                cancellationToken.Cancel();
+            }
+        }
+
+        /// <summary>
+        /// Stops the server, but still finishes all jobs
+        /// </summary>
+        /// <returns>Returns the <see cref="Task"/>-object, which can be awaited</returns>
+        public Task GracefulStopAsync(CancellationToken cancellationToken)
+        {
+            // Steps for a graceful stop
+            // 1 Do not schedule any new trigger
+            // 2 Wait for all pending jobs to be finished
+            // 3 Stop our own service
+            this.jobScheduler.Stop();
+            Logger.Info("Waiting for finishing jobs");
+            var waitingTask = this.WaitForPendingJobsAsync(cancellationToken)
+                .ContinueWith(prevTask => { this.StopExecution(); }, cancellationToken);
+            Logger.Info("Server stopped");
+
+            return waitingTask;
         }
 
         /// <summary>
@@ -175,6 +207,19 @@ namespace Jobbr.Server
             {
                 this.Stop();
             }
+        }
+
+        private void LogVersions()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Version Information:");
+
+            var assemblies = new List<Assembly> { this.GetType().Assembly };
+            assemblies.AddRange(this.components.Select(component => component.GetType().Assembly));
+
+            assemblies.Distinct().ToList().ForEach(assembly => { sb.AppendLine($"{assembly.ManifestModule.Name} {assembly.GetVersion()}"); });
+
+            Logger.Info(sb.ToString().TrimEnd());
         }
 
         private void StartInternalComponents()
@@ -222,6 +267,26 @@ namespace Jobbr.Server
             }
         }
 
+        private Task WaitForPendingJobsAsync(CancellationToken cancellationToken)
+        {
+            return Task.Run(() =>
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    // Wait for pending actions
+                    Thread.Sleep(50);
+
+                    var runningJobIds = this.jobRunService.GetRunningJobIds();
+
+                    // Check if all started jobs are finished
+                    if (!runningJobIds.Any())
+                    {
+                        break;
+                    }
+                }
+            }, cancellationToken);
+        }
+
         private void WaitForDb()
         {
             while (true)
@@ -254,6 +319,12 @@ namespace Jobbr.Server
             {
                 Logger.FatalException("Cannot register Jobs on startup. See Execption for details", e);
             }
+        }
+
+        private void StopExecution()
+        {
+            this.executor.Stop();
+            this.isRunning = false;
         }
     }
 }
