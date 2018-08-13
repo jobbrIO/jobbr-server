@@ -163,8 +163,6 @@ namespace Jobbr.Server
 
             this.scheduler.Stop();
             this.StopExecution();
-
-            Logger.Info("All components stopped.");
         }
 
         /// <summary>
@@ -197,7 +195,6 @@ namespace Jobbr.Server
             Logger.Info("Waiting for finishing jobs");
             var waitingTask = this.WaitForPendingJobsAsync(cancellationToken)
                 .ContinueWith(prevTask => { this.StopExecution(); }, cancellationToken);
-            Logger.Info("Server stopped");
 
             return waitingTask;
         }
@@ -287,6 +284,8 @@ namespace Jobbr.Server
                     {
                         break;
                     }
+
+                    Logger.Info($"Waiting for {runningJobIds.Count()} task(s) to complete");
                 }
             }, cancellationToken);
         }
@@ -329,6 +328,7 @@ namespace Jobbr.Server
         {
             this.executor.Stop();
             this.isRunning = false;
+            Logger.Info("All components stopped.");
         }
     }
 }
