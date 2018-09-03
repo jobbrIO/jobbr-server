@@ -5,9 +5,9 @@ using Jobbr.Runtime.ForkedExecution;
 using Jobbr.Runtime.Logging;
 using Jobbr.Sample.Jobs;
 
-namespace Jobbr.Sample.Runtime
+namespace Jobbr.Sample.Runner
 {
-    public class RuntimeSample
+    public class RunnerSample
     {
         public static void Main(string[] args)
         {
@@ -46,7 +46,7 @@ namespace Jobbr.Sample.Runtime
 
             public TraceLogger(string name)
             {
-                _name = name;
+                this._name = name;
             }
 
             public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception = null, params object[] formatParameters)
@@ -56,7 +56,7 @@ namespace Jobbr.Sample.Runtime
                     return true;
                 }
 
-                Trace.WriteLine($"[{logLevel}] ({_name}) {string.Format(messageFunc(), formatParameters)} {exception}");
+                Trace.WriteLine($"[{logLevel}] ({this._name}) {string.Format(messageFunc(), formatParameters)} {exception}");
                 return true;
             }
         }

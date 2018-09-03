@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jobbr.Sample", "Jobbr.Sampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Sample.Server", "Jobbr.Sample\Jobbr.Sample.Server\Jobbr.Sample.Server.csproj", "{7887BD16-52C2-441A-A1F5-E303932350A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Sample.Runtime", "Jobbr.Sample\Jobbr.Sample.Runtime\Jobbr.Sample.Runtime.csproj", "{8331AD0C-0ECE-4E7C-B0CD-5CA586305347}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Sample.Runner", "Jobbr.Sample\Jobbr.Sample.Runtime\Jobbr.Sample.Runner.csproj", "{8331AD0C-0ECE-4E7C-B0CD-5CA586305347}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Sample.Jobs", "Jobbr.Sample\Jobbr.Sample.Jobs\Jobbr.Sample.Jobs.csproj", "{F4144946-342E-4F9A-BF38-40D478C4A51F}"
 EndProject
