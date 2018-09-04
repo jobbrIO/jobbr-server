@@ -38,6 +38,7 @@ namespace Jobbr.Server.Builder
             });
 
             config.AssertConfigurationIsValid();
+
             return config;
         }
     }
