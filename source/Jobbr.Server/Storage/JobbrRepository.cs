@@ -19,7 +19,7 @@ namespace Jobbr.Server.Storage
 
         public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            return this.storageProvider.GetJobs(page, pageSize);
+            return this.storageProvider.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
         }
 
         public Job GetJob(long id)
@@ -143,7 +143,7 @@ namespace Jobbr.Server.Storage
 
         public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByState(state);
+            return this.storageProvider.GetJobRunsByState(state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
         }
 
         public void AddJob(Job job)
@@ -195,7 +195,7 @@ namespace Jobbr.Server.Storage
 
         public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByTriggerId(jobId, triggerId);
+            return this.storageProvider.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, sort);
         }
 
         public JobTriggerBase GetTriggerById(long jobId, long triggerId)
@@ -210,17 +210,17 @@ namespace Jobbr.Server.Storage
 
         public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            return this.storageProvider.GetJobRuns();
+            return this.storageProvider.GetJobRuns(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
         }
 
         public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByUserId(userId);
+            return this.storageProvider.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, sort);
         }
 
         public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByUserDisplayName(userDisplayName);
+            return this.storageProvider.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, sort);
         }
 
         public Job GetJobByUniqueName(string identifier)
