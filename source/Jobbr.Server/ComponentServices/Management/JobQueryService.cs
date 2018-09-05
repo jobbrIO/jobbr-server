@@ -34,7 +34,7 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            var jobs = this.repository.GetJobs();
+            var jobs = this.repository.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
 
             return new PagedResult<Job>
             {
