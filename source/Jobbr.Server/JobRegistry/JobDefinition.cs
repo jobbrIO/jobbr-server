@@ -21,7 +21,7 @@ namespace Jobbr.Server.JobRegistry
 
         internal List<JobTriggerBase> Triggers => this.triggers;
 
-        public JobDefinition WithTrigger(DateTime startDateTimeUtc, object parameters = null)
+        public JobDefinition WithTrigger(DateTime startDateTimeUtc, object parameters = null, string userId = null, string userDisplayName = null)
         {
             this.hasTriggerDefinition = true;
 
@@ -32,12 +32,12 @@ namespace Jobbr.Server.JobRegistry
                 parametersAsJson = JsonConvert.SerializeObject(parameters);
             }
 
-            this.triggers.Add(new ScheduledTrigger { StartDateTimeUtc = startDateTimeUtc, Parameters = parametersAsJson });
+            this.triggers.Add(new ScheduledTrigger { StartDateTimeUtc = startDateTimeUtc, Parameters = parametersAsJson, UserId = userId, UserDisplayName = userDisplayName });
 
             return this;
         }
 
-        public JobDefinition WithTrigger(string cronDefinition, DateTime? validFromDateTimeUtc = null, DateTime? validToDateTimeUtc = null, bool noParallelExecution = false, object parameters = null)
+        public JobDefinition WithTrigger(string cronDefinition, DateTime? validFromDateTimeUtc = null, DateTime? validToDateTimeUtc = null, bool noParallelExecution = false, object parameters = null, string userId = null, string userDisplayName = null)
         {
             this.hasTriggerDefinition = true;
 
@@ -50,7 +50,7 @@ namespace Jobbr.Server.JobRegistry
                 parametersAsJson = JsonConvert.SerializeObject(parameters);
             }
             
-            this.triggers.Add(new RecurringTrigger { StartDateTimeUtc = validFromDateTimeUtc, EndDateTimeUtc = validToDateTimeUtc, Definition = cronDefinition, NoParallelExecution = noParallelExecution, Parameters = parametersAsJson });
+            this.triggers.Add(new RecurringTrigger { StartDateTimeUtc = validFromDateTimeUtc, EndDateTimeUtc = validToDateTimeUtc, Definition = cronDefinition, NoParallelExecution = noParallelExecution, Parameters = parametersAsJson, UserId = userId, UserDisplayName = userDisplayName });
 
             return this;
         }

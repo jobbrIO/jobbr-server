@@ -74,7 +74,7 @@ namespace Jobbr.Server.Storage
 
             enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, enumerable, out totalItems);
 
-            if (sort.Length == 0)
+            if (sort == null || sort.Length == 0)
             {
                 enumerable = enumerable.OrderByDescending(o => o.CreatedDateTimeUtc);
             }
@@ -100,7 +100,7 @@ namespace Jobbr.Server.Storage
 
             var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobRuns, out totalItems);
 
-            if (sort.Length == 0)
+            if (sort == null || sort.Length == 0)
             {
                 enumerable = enumerable.OrderByDescending(o => o.PlannedStartDateTimeUtc);
             }
@@ -124,7 +124,7 @@ namespace Jobbr.Server.Storage
 
             var enumerable = this.ApplyFiltersAndPaging(page, pageSize, null, null, null, this.localJobRuns, out totalItems);
 
-            if (sort.Length == 0)
+            if (sort == null || sort.Length == 0)
             {
                 enumerable = enumerable.OrderByDescending(o => o.PlannedStartDateTimeUtc);
             }
@@ -148,7 +148,7 @@ namespace Jobbr.Server.Storage
 
             var enumerable = this.ApplyFiltersAndPaging(page, pageSize, null, null, null, this.localJobRuns.Where(p => p.Trigger.Id == triggerId), out totalItems);
 
-            if (sort.Length == 0)
+            if (sort == null || sort.Length == 0)
             {
                 enumerable = enumerable.OrderByDescending(o => o.PlannedStartDateTimeUtc);
             }
@@ -187,7 +187,7 @@ namespace Jobbr.Server.Storage
 
             var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobRuns.Where(p => p.State == state), out totalItems);
 
-            if (sort.Length == 0)
+            if (sort == null || sort.Length == 0)
             {
                 enumerable = enumerable.OrderByDescending(o => o.PlannedStartDateTimeUtc);
             }
@@ -211,7 +211,7 @@ namespace Jobbr.Server.Storage
 
             var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, this.localJobRuns.Where(p => string.Equals(p.Trigger.UserId, userId, StringComparison.OrdinalIgnoreCase)), out totalItems);
 
-            if (sort.Length == 0)
+            if (sort == null || sort.Length == 0)
             {
                 enumerable = enumerable.OrderByDescending(o => o.Id);
             }
@@ -235,7 +235,7 @@ namespace Jobbr.Server.Storage
 
             var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, this.localJobRuns.Where(p => string.Equals(p.Trigger.UserDisplayName, userDisplayName, StringComparison.OrdinalIgnoreCase)), out totalItems);
 
-            if (sort.Length == 0)
+            if (sort == null || sort.Length == 0)
             {
                 enumerable = enumerable.OrderByDescending(o => o.Id);
             }
@@ -259,7 +259,7 @@ namespace Jobbr.Server.Storage
 
             var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobs, out totalItems);
 
-            if (sort.Length == 0)
+            if (sort == null || sort.Length == 0)
             {
                 enumerable = enumerable.OrderByDescending(o => o.CreatedDateTimeUtc);
             }
