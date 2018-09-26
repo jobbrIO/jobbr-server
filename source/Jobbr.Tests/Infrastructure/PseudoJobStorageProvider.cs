@@ -113,6 +113,17 @@ namespace Jobbr.Tests.Infrastructure
             };
         }
 
+        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            return new PagedResult<JobRun>
+            {
+                Items = new List<JobRun>(),
+                TotalItems = 0,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
         public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
         {
             return new PagedResult<JobRun>

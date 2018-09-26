@@ -205,6 +205,30 @@ namespace Jobbr.Server.Storage
             };
         }
 
+        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            int totalItems;
+
+            var enumerable = this.ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, this.localJobRuns.Where(p => states.Contains(p.State)), out totalItems);
+
+            if (sort == null || sort.Length == 0)
+            {
+                enumerable = enumerable.OrderByDescending(o => o.PlannedStartDateTimeUtc);
+            }
+            else
+            {
+                enumerable = ApplySorting(sort, enumerable, this.JobRunOrderByMapping);
+            }
+
+            return new PagedResult<JobRun>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Items = enumerable.ToList(),
+                TotalItems = totalItems,
+            };
+        }
+
         public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
             int totalItems;

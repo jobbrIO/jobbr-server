@@ -67,6 +67,11 @@ namespace Jobbr.Server.Storage
             this.storageProvider.AddTrigger(jobId, trigger);
         }
 
+        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            return this.storageProvider.GetJobRunsByStates(states, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+        }
+
         public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             return this.storageProvider.GetLastJobRunByTriggerId(jobId, triggerId, utcNow);

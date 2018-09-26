@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Management.Model;
@@ -153,6 +154,21 @@ namespace Jobbr.Server.ComponentServices.Management
         public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             var jobruns = this.repository.GetJobRunsByState((ComponentModel.JobStorage.Model.JobRunStates)state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+
+            return new PagedResult<JobRun>
+            {
+                Items = this.mapper.Map<List<JobRun>>(jobruns.Items),
+                TotalItems = jobruns.TotalItems,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
+        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            var statesCasted = states.Cast<ComponentModel.JobStorage.Model.JobRunStates>().ToArray();
+
+            var jobruns = this.repository.GetJobRunsByStates(statesCasted, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
 
             return new PagedResult<JobRun>
             {

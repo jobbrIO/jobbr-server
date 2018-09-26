@@ -202,6 +202,11 @@ namespace Jobbr.Tests.Registration
             throw new NotImplementedException();
         }
 
+        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            throw new NotImplementedException();
+        }
+
         public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
         {
             throw new NotImplementedException();

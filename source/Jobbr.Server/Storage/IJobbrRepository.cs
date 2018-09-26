@@ -69,6 +69,8 @@ namespace Jobbr.Server.Storage
 
         PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort);
 
+        PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort);
+
         JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow);
 
         JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow);
