@@ -166,7 +166,7 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            var statesCasted = states.Cast<ComponentModel.JobStorage.Model.JobRunStates>().ToArray();
+            var statesCasted = states.Select(s => (ComponentModel.JobStorage.Model.JobRunStates)s).ToArray();
 
             var jobruns = this.repository.GetJobRunsByStates(statesCasted, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
 
