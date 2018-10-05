@@ -127,6 +127,8 @@ namespace Jobbr.Server.Storage
 
             if (hadChanges)
             {
+                trigger.CreatedDateTimeUtc = triggerFromDb.CreatedDateTimeUtc;
+
                 if (trigger is InstantTrigger)
                 {
                     this.storageProvider.Update(jobId, trigger as InstantTrigger);
@@ -289,25 +291,88 @@ namespace Jobbr.Server.Storage
 
         private bool ApplyOtherChanges(RecurringTrigger fromDb, RecurringTrigger updatedOne)
         {
+            bool hadChanges = false;
+
             if (!string.Equals(fromDb.Definition, updatedOne.Definition, StringComparison.OrdinalIgnoreCase))
             {
                 fromDb.Definition = updatedOne.Definition;
-                return true;
+                hadChanges = true;
             }
 
-            return false;
+            if (fromDb.NoParallelExecution != updatedOne.NoParallelExecution)
+            {
+                fromDb.NoParallelExecution = updatedOne.NoParallelExecution;
+                hadChanges = true;
+            }
+
+            if (fromDb.StartDateTimeUtc != updatedOne.StartDateTimeUtc)
+            {
+                fromDb.StartDateTimeUtc = updatedOne.StartDateTimeUtc;
+                hadChanges = true;
+            }
+
+            if (fromDb.EndDateTimeUtc != updatedOne.EndDateTimeUtc)
+            {
+                fromDb.EndDateTimeUtc = updatedOne.EndDateTimeUtc;
+                hadChanges = true;
+            }
+
+            if (this.ApplyBaseChanges(fromDb, updatedOne))
+            {
+                hadChanges = true;
+            }
+
+            return hadChanges;
         }
 
         private bool ApplyOtherChanges(ScheduledTrigger fromDb, ScheduledTrigger updatedOne)
         {
+            bool hadChanges = false;
+
             if (fromDb.StartDateTimeUtc != updatedOne.StartDateTimeUtc)
             {
                 fromDb.StartDateTimeUtc = updatedOne.StartDateTimeUtc;
 
-                return true;
+                hadChanges = true;
             }
 
-            return false;
+            if (this.ApplyBaseChanges(fromDb, updatedOne))
+            {
+                hadChanges = true;
+            }
+
+            return hadChanges;
+        }
+
+        private bool ApplyBaseChanges(JobTriggerBase fromDb, JobTriggerBase updatedOne)
+        {
+            bool hadChanges = false;
+
+            if (string.Equals(fromDb.Comment, updatedOne.Comment, StringComparison.Ordinal) == false)
+            {
+                fromDb.Comment = updatedOne.Comment;
+                hadChanges = true;
+            }
+
+            if (string.Equals(fromDb.UserId, updatedOne.UserId, StringComparison.Ordinal) == false)
+            {
+                fromDb.UserId = updatedOne.UserId;
+                hadChanges = true;
+            }
+
+            if (string.Equals(fromDb.UserDisplayName, updatedOne.UserDisplayName, StringComparison.Ordinal) == false)
+            {
+                fromDb.UserDisplayName = updatedOne.UserDisplayName;
+                hadChanges = true;
+            }
+
+            if (string.Equals(fromDb.Parameters, updatedOne.Parameters, StringComparison.Ordinal) == false)
+            {
+                fromDb.Parameters = updatedOne.Parameters;
+                hadChanges = true;
+            }
+
+            return hadChanges;
         }
 
         private bool ApplyOtherChanges(InstantTrigger fromDb, InstantTrigger updatedOne)

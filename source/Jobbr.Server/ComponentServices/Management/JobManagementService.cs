@@ -36,6 +36,13 @@ namespace Jobbr.Server.ComponentServices.Management
             job.Id = newJOb.Id;
         }
 
+        public void UpdateJob(Job job)
+        {
+            var model = this.mapper.Map<JobModel>(job);
+
+            this.jobService.Update(model);
+        }
+
         public void DeleteJob(long jobId)
         {
             // TODO: implement :)
@@ -92,6 +99,20 @@ namespace Jobbr.Server.ComponentServices.Management
         public void UpdateTriggerDefinition(long jobId, long triggerId, string definition)
         {
             this.triggerService.Update(jobId, triggerId, definition);
+        }
+
+        public void Update(RecurringTrigger trigger)
+        {
+            var triggerModel = this.mapper.Map<RecurringTriggerModel>(trigger);
+
+            this.triggerService.Update(triggerModel);
+        }
+
+        public void Update(ScheduledTrigger trigger)
+        {
+            var triggerModel = this.mapper.Map<ScheduledTriggerModel>(trigger);
+
+            this.triggerService.Update(triggerModel);
         }
 
         public void UpdateTriggerStartTime(long jobId, long triggerId, DateTime startDateTimeUtc)

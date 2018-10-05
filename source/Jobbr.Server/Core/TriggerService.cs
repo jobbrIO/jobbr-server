@@ -90,8 +90,7 @@ namespace Jobbr.Server.Core
 
             recurringTrigger.Definition = definition;
 
-            bool hadChanges;
-            this.jobbrRepository.SaveUpdateTrigger(jobId, trigger, out hadChanges);
+            this.jobbrRepository.SaveUpdateTrigger(jobId, trigger, out var hadChanges);
 
             if (hadChanges)
             {
@@ -99,10 +98,53 @@ namespace Jobbr.Server.Core
             }
         }
 
+        internal void Update(RecurringTriggerModel trigger)
+        {
+            var triggerEntity = this.mapper.Map<RecurringTrigger>(trigger);
+
+            // ReSharper disable once UsePatternMatching
+            var fromDb = this.jobbrRepository.GetTriggerById(trigger.JobId, trigger.Id) as RecurringTrigger;
+
+            if (fromDb == null)
+            {
+                Logger.Warn($"Unable to update RecurringTrigger with id '{trigger.Id}' (JobId '{trigger.JobId}'): Trigger not found!");
+                return;
+            }
+
+            this.jobbrRepository.SaveUpdateTrigger(trigger.JobId, triggerEntity, out var hadChanges);
+
+            if (hadChanges)
+            {
+                this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = trigger.JobId, TriggerId = trigger.Id }));
+            }
+        }
+
+        internal void Update(ScheduledTriggerModel trigger)
+        {
+            var triggerEntity = this.mapper.Map<ScheduledTrigger>(trigger);
+
+            // ReSharper disable once UsePatternMatching
+            var fromDb = this.jobbrRepository.GetTriggerById(trigger.JobId, trigger.Id) as ScheduledTrigger;
+
+            if (fromDb == null)
+            {
+                Logger.Warn($"Unable to update ScheduledTrigger with id '{trigger.Id}' (JobId '{trigger.JobId}'): Trigger not found!");
+                return;
+            }
+
+            this.jobbrRepository.SaveUpdateTrigger(trigger.JobId, triggerEntity, out var hadChanges);
+
+            if (hadChanges)
+            {
+                this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = trigger.JobId, TriggerId = trigger.Id }));
+            }
+        }
+
         internal void Update(long jobId, long triggerId, DateTime startDateTimeUtc)
         {
             var trigger = this.jobbrRepository.GetTriggerById(jobId, triggerId);
 
+            // ReSharper disable once UsePatternMatching
             var recurringTrigger = trigger as ScheduledTrigger;
 
             if (recurringTrigger == null)
@@ -113,8 +155,7 @@ namespace Jobbr.Server.Core
 
             recurringTrigger.StartDateTimeUtc = startDateTimeUtc;
 
-            bool hadChanges;
-            this.jobbrRepository.SaveUpdateTrigger(jobId, trigger, out hadChanges);
+            this.jobbrRepository.SaveUpdateTrigger(jobId, trigger, out var hadChanges);
 
             if (hadChanges)
             {
