@@ -98,5 +98,14 @@ namespace Jobbr.Server.Core
 
             this.repository.Update(jobRun);
         }
+
+        public void Delete(long jobRunId)
+        {
+            var jobRun = this.repository.GetJobRunById(jobRunId);
+
+            jobRun.Deleted = true;
+
+            this.repository.Update(jobRun);
+        }
     }
 }

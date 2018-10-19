@@ -120,6 +120,11 @@ namespace Jobbr.Server.ComponentServices.Management
             this.triggerService.Update(jobId, triggerId, startDateTimeUtc);
         }
 
+        public void DeleteJobRun(long jobRunId)
+        {
+            this.jobRunService.Delete(jobRunId);
+        }
+
         public List<JobArtefact> GetArtefactForJob(long jobRunId)
         {
             var artefacts = this.jobRunService.GetArtefactsByJobRunId(jobRunId);
