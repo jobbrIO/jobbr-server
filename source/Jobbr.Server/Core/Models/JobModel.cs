@@ -17,5 +17,7 @@ namespace Jobbr.Server.Core.Models
         public DateTime? UpdatedDateTimeUtc { get; set; }
 
         public DateTime? CreatedDateTimeUtc { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

@@ -82,7 +82,12 @@ namespace Jobbr.Tests.Registration
             throw new NotImplementedException();
         }
 
-        public PagedResult<Job> GetJobs(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public long GetJobsCount()
+        {
+            throw new NotImplementedException();
+        }
+
+        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             throw new NotImplementedException();
         }
@@ -122,7 +127,7 @@ namespace Jobbr.Tests.Registration
             throw new NotImplementedException();
         }
 
-        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50)
+        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50, bool showDeleted = false)
         {
             throw new NotImplementedException();
         }
@@ -167,16 +172,6 @@ namespace Jobbr.Tests.Registration
             throw new NotImplementedException();
         }
 
-        public PagedResult<JobRun> GetJobRuns(int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
-
-        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
-
         public JobRun GetJobRunById(long id)
         {
             throw new NotImplementedException();
@@ -192,27 +187,37 @@ namespace Jobbr.Tests.Registration
             throw new NotImplementedException();
         }
 
-        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 0, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             throw new NotImplementedException();
         }
 
-        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
             throw new NotImplementedException();
         }
 
-        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
             throw new NotImplementedException();
         }
 
-        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
             throw new NotImplementedException();
         }
 
-        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 0, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             throw new NotImplementedException();
         }
@@ -228,11 +233,6 @@ namespace Jobbr.Tests.Registration
         }
 
         public bool IsAvailable()
-        {
-            throw new NotImplementedException();
-        }
-
-        public long GetJobsCount()
         {
             throw new NotImplementedException();
         }

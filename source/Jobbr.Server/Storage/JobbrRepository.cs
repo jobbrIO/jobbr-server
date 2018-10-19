@@ -17,9 +17,9 @@ namespace Jobbr.Server.Storage
             this.storageProvider = storageProvider;
         }
 
-        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
-            return this.storageProvider.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            return this.storageProvider.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
         public Job GetJob(long id)
@@ -67,9 +67,9 @@ namespace Jobbr.Server.Storage
             this.storageProvider.AddTrigger(jobId, trigger);
         }
 
-        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByStates(states, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            return this.storageProvider.GetJobRunsByStates(states, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
         public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
@@ -148,9 +148,9 @@ namespace Jobbr.Server.Storage
             return triggerFromDb;
         }
 
-        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByState(state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            return this.storageProvider.GetJobRunsByState(state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
         public void AddJob(Job job)
@@ -195,14 +195,14 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetJobRunById(jobRunId);
         }
 
-        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByJobId(jobId, page, pageSize, sort);
+            return this.storageProvider.GetJobRunsByJobId(jobId, page, pageSize, showDeleted, sort);
         }
 
-        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, sort);
+            return this.storageProvider.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, showDeleted, sort);
         }
 
         public JobTriggerBase GetTriggerById(long jobId, long triggerId)
@@ -210,24 +210,24 @@ namespace Jobbr.Server.Storage
             return this.storageProvider.GetTriggerById(jobId, triggerId);
         }
 
-        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50)
+        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50, bool showDeleted = false)
         {
-            return this.storageProvider.GetTriggersByJobId(jobId, page, pageSize);
+            return this.storageProvider.GetTriggersByJobId(jobId, page, pageSize, showDeleted);
         }
 
-        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
-            return this.storageProvider.GetJobRuns(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            return this.storageProvider.GetJobRuns(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
-        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, sort);
+            return this.storageProvider.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
         }
 
-        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
-            return this.storageProvider.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, sort);
+            return this.storageProvider.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
         }
 
         public Job GetJobByUniqueName(string identifier)

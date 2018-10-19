@@ -19,5 +19,7 @@ namespace Jobbr.Server.Core.Models
         public long Id { get; set; }
 
         public DateTime CreatedDateTimeUtc { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

@@ -7,6 +7,10 @@ namespace Jobbr.Tests.Infrastructure
 {
     public class PseudoJobStorageProvider : IJobStorageProvider
     {
+        public void AddJob(Job job)
+        {
+        }
+
         public void DeleteJob(long jobId)
         {
         }
@@ -16,46 +20,29 @@ namespace Jobbr.Tests.Infrastructure
             return 0;
         }
 
-        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             return new PagedResult<Job>
             {
                 Items = new List<Job>(),
                 TotalItems = 0,
-                Page = page,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Page = page
             };
         }
 
-        public void AddJob(Job job)
-        {
-        }
-
-        public List<JobTriggerBase> GetTriggersByJobId(long jobId)
+        public Job GetJobById(long id)
         {
             return null;
         }
 
-        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50)
+        public Job GetJobByUniqueName(string identifier)
         {
-            return new PagedResult<JobTriggerBase>
-            {
-                Items = new List<JobTriggerBase>(),
-                TotalItems = 0,
-                Page = page,
-                PageSize = pageSize
-            };
+            return null;
         }
 
-        public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public void Update(Job job)
         {
-            return new PagedResult<JobTriggerBase>
-            {
-                Items = new List<JobTriggerBase>(),
-                TotalItems = 0,
-                Page = page,
-                PageSize = pageSize
-            };
         }
 
         public void AddTrigger(long jobId, RecurringTrigger trigger)
@@ -70,6 +57,33 @@ namespace Jobbr.Tests.Infrastructure
         {
         }
 
+        public JobTriggerBase GetTriggerById(long jobId, long triggerId)
+        {
+            return null;
+        }
+
+        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50, bool showDeleted = false)
+        {
+            return new PagedResult<JobTriggerBase>
+            {
+                Items = new List<JobTriggerBase>(),
+                TotalItems = 0,
+                PageSize = pageSize,
+                Page = page
+            };
+        }
+
+        public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        {
+            return new PagedResult<JobTriggerBase>
+            {
+                Items = new List<JobTriggerBase>(),
+                TotalItems = 0,
+                PageSize = pageSize,
+                Page = page
+            };
+        }
+
         public void DisableTrigger(long jobId, long triggerId)
         {
         }
@@ -82,7 +96,23 @@ namespace Jobbr.Tests.Infrastructure
         {
         }
 
-        public JobTriggerBase GetTriggerById(long jobId, long triggerId)
+        public void Update(long jobId, InstantTrigger trigger)
+        {
+        }
+
+        public void Update(long jobId, ScheduledTrigger trigger)
+        {
+        }
+
+        public void Update(long jobId, RecurringTrigger trigger)
+        {
+        }
+
+        public void AddJobRun(JobRun jobRun)
+        {
+        }
+
+        public JobRun GetJobRunById(long id)
         {
             return null;
         }
@@ -97,99 +127,88 @@ namespace Jobbr.Tests.Infrastructure
             return null;
         }
 
-        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 11, int pageSize = 50, params string[] sort)
-        {
-            return null;
-        }
-
-        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             return new PagedResult<JobRun>
             {
                 Items = new List<JobRun>(),
                 TotalItems = 0,
-                Page = page,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Page = page
             };
         }
 
-        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
             return new PagedResult<JobRun>
             {
                 Items = new List<JobRun>(),
                 TotalItems = 0,
-                Page = page,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Page = page
             };
         }
 
-        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
             return new PagedResult<JobRun>
             {
                 Items = new List<JobRun>(),
                 TotalItems = 0,
-                Page = page,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Page = page
             };
         }
 
-        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
-            return null;
+            return new PagedResult<JobRun>
+            {
+                Items = new List<JobRun>(),
+                TotalItems = 0,
+                PageSize = pageSize,
+                Page = page
+            };
         }
 
-        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
-            return null;
+            return new PagedResult<JobRun>
+            {
+                Items = new List<JobRun>(),
+                TotalItems = 0,
+                PageSize = pageSize,
+                Page = page
+            };
         }
 
-        public void AddJobRun(JobRun jobRun)
+        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
+            return new PagedResult<JobRun>
+            {
+                Items = new List<JobRun>(),
+                TotalItems = 0,
+                PageSize = pageSize,
+                Page = page
+            };
         }
 
-        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
-            return null;
-        }
-
-        public void UpdateProgress(long jobRunId, double? progress)
-        {
+            return new PagedResult<JobRun>
+            {
+                Items = new List<JobRun>(),
+                TotalItems = 0,
+                PageSize = pageSize,
+                Page = page
+            };
         }
 
         public void Update(JobRun jobRun)
         {
         }
 
-        public Job GetJobById(long id)
-        {
-            return null;
-        }
-
-        public Job GetJobByUniqueName(string identifier)
-        {
-            return null;
-        }
-
-        public JobRun GetJobRunById(long id)
-        {
-            return null;
-        }
-
-        public void Update(Job job)
-        {
-        }
-
-        public void Update(long jobId, InstantTrigger trigger)
-        {
-        }
-
-        public void Update(long jobId, ScheduledTrigger trigger)
-        {
-        }
-
-        public void Update(long jobId, RecurringTrigger trigger)
+        public void UpdateProgress(long jobRunId, double? progress)
         {
         }
 

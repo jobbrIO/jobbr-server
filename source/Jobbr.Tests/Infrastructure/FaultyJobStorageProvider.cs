@@ -30,10 +30,10 @@ namespace Jobbr.Tests.Infrastructure
             return this.inMemoryVersion.GetJobsCount();
         }
 
-        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            return this.inMemoryVersion.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
         public void AddJob(Job job)
@@ -42,7 +42,7 @@ namespace Jobbr.Tests.Infrastructure
             this.inMemoryVersion.AddJob(job);
         }
 
-        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50)
+        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50, bool showDeleted = false)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetTriggersByJobId(jobId);
@@ -108,40 +108,40 @@ namespace Jobbr.Tests.Infrastructure
             return this.inMemoryVersion.GetNextJobRunByTriggerId(jobId, triggerId, utcNow);
         }
 
-        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, sort);
+            return this.inMemoryVersion.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, showDeleted, sort);
         }
 
-        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByState(state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            return this.inMemoryVersion.GetJobRunsByState(state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
-        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByStates(states, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            return this.inMemoryVersion.GetJobRunsByStates(states, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
-        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByJobId(jobId, page, pageSize, sort);
+            return this.inMemoryVersion.GetJobRunsByJobId(jobId, page, pageSize, showDeleted, sort);
         }
 
-        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, sort);
+            return this.inMemoryVersion.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
         }
 
-        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
             this.CheckFailAll();
-            return this.inMemoryVersion.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, sort);
+            return this.inMemoryVersion.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
         }
 
         public void AddJobRun(JobRun jobRun)
@@ -150,7 +150,7 @@ namespace Jobbr.Tests.Infrastructure
             this.inMemoryVersion.AddJobRun(jobRun);
         }
 
-        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             this.CheckFailAll();
             return this.inMemoryVersion.GetJobRuns();

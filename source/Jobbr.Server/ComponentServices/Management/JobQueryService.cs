@@ -33,9 +33,9 @@ namespace Jobbr.Server.ComponentServices.Management
             return this.mapper.Map<Job>(job);
         }
 
-        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
-            var jobs = this.repository.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            var jobs = this.repository.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
 
             return new PagedResult<Job>
             {
@@ -66,9 +66,9 @@ namespace Jobbr.Server.ComponentServices.Management
             return this.mapper.Map<IJobTrigger>(trigger);
         }
 
-        public PagedResult<IJobTrigger> GetTriggersByJobId(long jobId, int page, int pageSize = 50)
+        public PagedResult<IJobTrigger> GetTriggersByJobId(long jobId, int page, int pageSize = 50, bool showDeleted = false)
         {
-            var triggers = this.repository.GetTriggersByJobId(jobId, page, pageSize);
+            var triggers = this.repository.GetTriggersByJobId(jobId, page, pageSize, showDeleted);
 
             return new PagedResult<IJobTrigger>
             {
@@ -86,9 +86,9 @@ namespace Jobbr.Server.ComponentServices.Management
             return this.mapper.Map<JobRun>(jobRun);
         }
 
-        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
-            var jobruns = this.repository.GetJobRuns(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            var jobruns = this.repository.GetJobRuns(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
 
             return new PagedResult<JobRun>
             {
@@ -99,9 +99,9 @@ namespace Jobbr.Server.ComponentServices.Management
             };
         }
 
-        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
-            var jobruns = this.repository.GetJobRunsByJobId(jobId, page, pageSize, sort);
+            var jobruns = this.repository.GetJobRunsByJobId(jobId, page, pageSize, showDeleted, sort);
 
             return new PagedResult<JobRun>
             {
@@ -112,9 +112,9 @@ namespace Jobbr.Server.ComponentServices.Management
             };
         }
 
-        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
-            var jobruns = this.repository.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, sort);
+            var jobruns = this.repository.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
 
             return new PagedResult<JobRun>
             {
@@ -125,9 +125,9 @@ namespace Jobbr.Server.ComponentServices.Management
             };
         }
 
-        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
-            var jobruns = this.repository.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, sort);
+            var jobruns = this.repository.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, showDeleted, sort);
 
             return new PagedResult<JobRun>
             {
@@ -138,9 +138,9 @@ namespace Jobbr.Server.ComponentServices.Management
             };
         }
 
-        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
-            var jobruns = this.repository.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, sort);
+            var jobruns = this.repository.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
 
             return new PagedResult<JobRun>
             {
@@ -151,9 +151,9 @@ namespace Jobbr.Server.ComponentServices.Management
             };
         }
 
-        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
-            var jobruns = this.repository.GetJobRunsByState((ComponentModel.JobStorage.Model.JobRunStates)state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            var jobruns = this.repository.GetJobRunsByState((ComponentModel.JobStorage.Model.JobRunStates)state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
 
             return new PagedResult<JobRun>
             {
@@ -164,11 +164,11 @@ namespace Jobbr.Server.ComponentServices.Management
             };
         }
 
-        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             var statesCasted = states.Select(s => (ComponentModel.JobStorage.Model.JobRunStates)s).ToArray();
 
-            var jobruns = this.repository.GetJobRunsByStates(statesCasted, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            var jobruns = this.repository.GetJobRunsByStates(statesCasted, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
 
             return new PagedResult<JobRun>
             {

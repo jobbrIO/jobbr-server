@@ -39,5 +39,11 @@ namespace Jobbr.Server.Core
 
             throw new NotImplementedException();
         }
+
+        public void Delete(long id)
+        {
+            var job = this.repository.GetJob(id);
+            job.Deleted = true;
+        }
     }
 }
