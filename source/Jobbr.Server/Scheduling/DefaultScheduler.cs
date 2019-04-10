@@ -186,7 +186,7 @@ namespace Jobbr.Server.Scheduling
                 var additonalItems = new List<ScheduledPlanItem>();
 
                 // If a trigger was blocked previously, it might be a candidate to schedule now
-                var activeTriggers = this.repository.GetActiveTriggers().Items;
+                var activeTriggers = this.repository.GetActiveTriggers(pageSize: int.MaxValue).Items;
 
                 foreach (var trigger in activeTriggers)
                 {
@@ -224,7 +224,7 @@ namespace Jobbr.Server.Scheduling
             lock (this.evaluateTriggersLock)
             {
                 // Re-evaluate recurring triggers every n seconds
-                var activeTriggers = this.repository.GetActiveTriggers().Items.Where(t => t.GetType() == typeof(RecurringTrigger));
+                var activeTriggers = this.repository.GetActiveTriggers(pageSize: int.MaxValue).Items.Where(t => t.GetType() == typeof(RecurringTrigger));
 
                 var additonalItems = new List<ScheduledPlanItem>();
 
@@ -324,9 +324,10 @@ namespace Jobbr.Server.Scheduling
 
         private void CreateInitialPlan()
         {
-            var activeTriggers = this.repository.GetActiveTriggers().Items;
+            var activeTriggers = this.repository.GetActiveTriggers(pageSize: int.MaxValue).Items;
 
             var newPlan = new List<ScheduledPlanItem>();
+
             foreach (var trigger in activeTriggers)
             {
                 PlanResult planResult = this.GetPlanResult(trigger as dynamic, false);
