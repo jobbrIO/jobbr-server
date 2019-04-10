@@ -13,7 +13,7 @@ skip_commits:
 
 install:
   - git submodule update --init --recursive
-  - choco install gitversion.portable -pre -y
+  - choco install gitversion.portable --version 4.0.0
 
 assembly_info:
   patch: false
