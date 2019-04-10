@@ -94,7 +94,7 @@ namespace Jobbr.Server.Storage
         {
             try
             {
-                return this.storageProvider.GetActiveTriggers();
+                return this.storageProvider.GetActiveTriggers(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
             }
             catch (Exception e)
             {
