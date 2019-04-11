@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
@@ -14,6 +15,8 @@ namespace Jobbr.Server.JobRegistry
 
         private readonly List<JobDefinition> definitions = new List<JobDefinition>();
 
+        private bool isSingleSourceOfTruth;
+
         internal bool HasConfiguration { get; private set; }
 
         internal List<JobDefinition> Definitions => this.definitions;
@@ -22,6 +25,12 @@ namespace Jobbr.Server.JobRegistry
         {
             this.HasConfiguration = true;
 
+            return this;
+        }
+
+        public RegistryBuilder AsSingleSourceOfTruth()
+        {
+            this.isSingleSourceOfTruth = true;
             return this;
         }
 
@@ -136,6 +145,10 @@ namespace Jobbr.Server.JobRegistry
             }
 
             // Deactivate non existent
+            if (this.isSingleSourceOfTruth)
+            {
+                numberOfChanges += this.SoftDeleteOldJobsAndTriggers(storage);
+            }
 
             return numberOfChanges;
         }
@@ -161,6 +174,50 @@ namespace Jobbr.Server.JobRegistry
             }
         }
 
+        private static IList<Job> GetUndefinedJobs(ICollection<string> allDefinedJobs, IEnumerable<Job> allJobsInStorage)
+        {
+            return allJobsInStorage.Where(job => !allDefinedJobs.Contains(job.UniqueName)).ToList();
+        }
+
+        private static IList<JobTriggerBase> GetTriggerOfJob(IEnumerable<long> jobIds, IJobStorageProvider storage)
+        {
+            var triggers = new List<JobTriggerBase>();
+            foreach (var jobId in jobIds)
+            {
+                triggers.AddRange(storage.GetTriggersByJobId(jobId, pageSize: int.MaxValue).Items);
+            }
+
+            Logger.InfoFormat($"{triggers.Count} are in the storage but not defined.");
+            return triggers;
+        }
+
+        private static int SoftDeleteJobs(IJobStorageProvider storage, IList<Job> undefinedJobs)
+        {
+            var numberOfChanges = 0;
+            foreach (var undefinedJob in undefinedJobs)
+            {
+                Logger.InfoFormat($"Deleting job ({undefinedJob.UniqueName}) with the id: {undefinedJob.Id}");
+                storage.DeleteJob(undefinedJob.Id);
+                numberOfChanges++;
+            }
+
+            return numberOfChanges;
+
+        }
+
+        private static int SoftDeleteTriggers(IJobStorageProvider storage, IList<JobTriggerBase> triggersOfJob)
+        {
+            var numberOfChanges = 0;
+            foreach (var trigger in triggersOfJob)
+            {
+                Logger.InfoFormat($"Deleting trigger with the id: {trigger.Id}");
+                storage.DeleteTrigger(trigger.JobId, trigger.Id);
+                numberOfChanges++;
+            }
+
+            return numberOfChanges;
+        }
+
         [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "Fallback for dynamic invocation.")]
         private bool IsSame(JobTriggerBase left, JobTriggerBase right)
         {
@@ -175,6 +232,21 @@ namespace Jobbr.Server.JobRegistry
         private bool IsSame(RecurringTrigger left, RecurringTrigger right)
         {
             return string.Equals(left.Definition, right.Definition, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private int SoftDeleteOldJobsAndTriggers(IJobStorageProvider storage)
+        {
+            var allDefinedUniqueJobNames = this.Definitions.Select(d => d.UniqueName).ToList();
+            var allJobsInStorage = storage.GetJobs(pageSize: int.MaxValue).Items;
+
+            var numberOfChanges = 0;
+            var undefinedJobs = GetUndefinedJobs(allDefinedUniqueJobNames, allJobsInStorage);
+            numberOfChanges += SoftDeleteJobs(storage, undefinedJobs);
+
+            var triggersOfJob = GetTriggerOfJob(undefinedJobs.Select(j => j.Id), storage);
+            numberOfChanges += SoftDeleteTriggers(storage, triggersOfJob);
+
+            return numberOfChanges;
         }
     }
 }
