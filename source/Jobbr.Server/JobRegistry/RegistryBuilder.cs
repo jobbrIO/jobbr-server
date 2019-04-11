@@ -176,7 +176,7 @@ namespace Jobbr.Server.JobRegistry
             return allJobsInStorage.Where(job => !allDefinedJobs.Contains(job.UniqueName)).ToList();
         }
 
-        private static IList<JobTriggerBase> GetTriggerOfJob(IEnumerable<long> jobIds, IJobStorageProvider storage)
+        private static IList<JobTriggerBase> GetTriggersOfJobs(IEnumerable<long> jobIds, IJobStorageProvider storage)
         {
             var triggers = new List<JobTriggerBase>();
             foreach (var jobId in jobIds)
@@ -240,7 +240,7 @@ namespace Jobbr.Server.JobRegistry
             var undefinedJobs = GetUndefinedJobs(allDefinedUniqueJobNames, allJobsInStorage);
             numberOfChanges += SoftDeleteJobs(storage, undefinedJobs);
 
-            var triggersOfJob = GetTriggerOfJob(undefinedJobs.Select(j => j.Id), storage);
+            var triggersOfJob = GetTriggersOfJobs(undefinedJobs.Select(j => j.Id), storage);
             numberOfChanges += SoftDeleteTriggers(storage, triggersOfJob);
 
             return numberOfChanges;
