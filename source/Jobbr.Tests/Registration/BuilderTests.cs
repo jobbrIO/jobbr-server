@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.ArtefactStorage.Model;
 using Jobbr.ComponentModel.JobStorage;
@@ -74,7 +73,7 @@ namespace Jobbr.Tests.Registration
             builder.AddJobs(repo =>
                 repo.AsSingleSourceOfTruth().Define(existingJobName, "CLR.Type"));
 
-            builder.Create().Start(Int32.MaxValue);
+            builder.Create().Start();
 
             storage.Verify(s => s.DeleteJob(nonExistingJobId), Times.Once);
             storage.Verify(s => s.DeleteTrigger(nonExistingJobId, nonExistingTriggerId), Times.Once);
