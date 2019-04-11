@@ -102,6 +102,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="JobRegistry\JobbrBuilderExtension.cs" />
     <Compile Include="Core\Messaging\MessageDispatcher.cs" />
+    <Compile Include="JobRegistry\TriggerExtensions.cs" />
     <Compile Include="Scheduling\BuilderExtension.cs" />
     <Compile Include="Scheduling\DefaultSchedulerConfiguration.cs" />
     <Compile Include="JobbrState.cs" />

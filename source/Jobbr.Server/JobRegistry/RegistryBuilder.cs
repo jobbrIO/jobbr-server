@@ -116,7 +116,7 @@ namespace Jobbr.Server.JobRegistry
                         // Update or add new ones
                         foreach (var trigger in jobDefinition.Triggers)
                         {
-                            var existingOne = activeTriggers.FirstOrDefault(t => this.IsSame(t as dynamic, trigger as dynamic));
+                            var existingOne = activeTriggers.FirstOrDefault(t => t.IsTriggerEqual(trigger));
 
                             if (existingOne == null)
                             {
@@ -215,22 +215,6 @@ namespace Jobbr.Server.JobRegistry
             return numberOfChanges;
         }
 
-        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "Fallback for dynamic invocation.")]
-        private bool IsSame(JobTriggerBase left, JobTriggerBase right)
-        {
-            return false;
-        }
-
-        private bool IsSame(ScheduledTrigger left, ScheduledTrigger right)
-        {
-            return left.StartDateTimeUtc == right.StartDateTimeUtc;
-        }
-
-        private bool IsSame(RecurringTrigger left, RecurringTrigger right)
-        {
-            return string.Equals(left.Definition, right.Definition, StringComparison.OrdinalIgnoreCase);
-        }
-
         private int SoftDeleteOldJobsAndTriggers(IJobStorageProvider storage)
         {
             var allDefinedUniqueJobNames = this.Definitions.Select(d => d.UniqueName).ToList();
@@ -243,7 +227,34 @@ namespace Jobbr.Server.JobRegistry
             var triggersOfJob = GetTriggersOfJobs(undefinedJobs.Select(j => j.Id), storage);
             numberOfChanges += SoftDeleteTriggers(storage, triggersOfJob);
 
+            this.SoftDeleteOrphanedTriggers(storage);
+
             return numberOfChanges;
+        }
+
+        private void SoftDeleteOrphanedTriggers(IJobStorageProvider storage)
+        {
+            var triggers = this.Definitions.SelectMany(d => d.Triggers).ToList();
+            var currentTriggers = this.GetTriggersFromActiveJobs(storage);
+            var orphanedTriggers = new List<long>();
+            foreach (var trigger in currentTriggers)
+            {
+                // Check for Equality
+            }
+        }
+
+        private List<JobTriggerBase> GetTriggersFromActiveJobs(IJobStorageProvider storage)
+        {
+            var triggersFromActiveJobs = new List<JobTriggerBase>();
+            foreach (var uniqueName in this.Definitions.Select(d => d.UniqueName))
+            {
+                var job = storage.GetJobByUniqueName(uniqueName);
+                if (job != null)
+                {
+                    triggersFromActiveJobs.AddRange(storage.GetTriggersByJobId(job.Id, pageSize: int.MaxValue).Items);
+                }
+            }
+            return triggersFromActiveJobs;
         }
     }
 }
