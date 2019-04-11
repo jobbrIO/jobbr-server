@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.ArtefactStorage.Model;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Builder;
+using Jobbr.Server.JobRegistry;
 using Jobbr.Tests.Integration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace Jobbr.Tests.Registration
 {
@@ -43,6 +47,38 @@ namespace Jobbr.Tests.Registration
             Assert.IsNotNull(ExposeAllServicesComponent.Instance.ArtefactsStorageProvider);
             Assert.AreEqual(typeof(CustomJobStorageProvider),
                 ExposeAllServicesComponent.Instance.JobStorageProvider.GetType());
+        }
+
+        [TestMethod]
+        public void ShouldDeleteJobsAndTriggers_WhenSingleSourceOfTruthIsActivated()
+        {
+            var existingJob = new Job {Id = 1, UniqueName = "MyJobExists"};
+            var nonExistingJob = new Job {Id = 2, UniqueName = "DoIDieNow?"};
+            var pagedJobs = CreatePagedResult(existingJob, nonExistingJob);
+            var triggerForExistingJob = new RecurringTrigger { Id = 10, JobId = 1 };
+            var triggerForNonExistingJob = new RecurringTrigger { Id = 20, JobId = 2 };
+            var storage = new Mock<IJobStorageProvider>();
+            storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(pagedJobs);
+            storage.Setup(s => s.GetTriggersByJobId(1, 1, int.MaxValue, false))
+                .Returns(CreatePagedResult<JobTriggerBase>(triggerForExistingJob));
+            storage.Setup(s => s.GetTriggersByJobId(2, 1, int.MaxValue, false))
+                .Returns(CreatePagedResult<JobTriggerBase>(triggerForNonExistingJob));
+            var builder = new JobbrBuilder();
+            builder.Add<IJobStorageProvider>(storage.Object);
+            builder.AddJobs(repo =>
+                repo.AsSingleSourceOfTruth().Define("MyJobExists", "CLR.Type"));
+
+            builder.Create().Start();
+
+            storage.Verify(s => s.DeleteJob(2), Times.Once);
+            storage.Verify(s => s.DeleteTrigger(2, 20), Times.Once);
+        }
+
+        private static PagedResult<T> CreatePagedResult<T>(params T[] args)
+        {
+            var items = new List<T>();
+            items.AddRange(args.ToList());
+            return new PagedResult<T> { Items = items };
         }
     }
 
