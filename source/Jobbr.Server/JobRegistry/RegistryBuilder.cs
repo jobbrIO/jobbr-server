@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
@@ -161,16 +160,14 @@ namespace Jobbr.Server.JobRegistry
 
             Logger.InfoFormat("Adding trigger (type: '{0}' to job '{1}' (JobId: '{2}')", trigger.GetType().Name, jobDef.UniqueName, jobId);
 
-            var scheduledTrigger = trigger as ScheduledTrigger;
-            if (scheduledTrigger != null)
+            switch (trigger)
             {
-                storage.AddTrigger(jobId, scheduledTrigger);
-            }
-
-            var recurringTrigger = trigger as RecurringTrigger;
-            if (recurringTrigger != null)
-            {
-                storage.AddTrigger(jobId, recurringTrigger);
+                case ScheduledTrigger scheduledTrigger:
+                    storage.AddTrigger(jobId, scheduledTrigger);
+                    break;
+                case RecurringTrigger recurringTrigger:
+                    storage.AddTrigger(jobId, recurringTrigger);
+                    break;
             }
         }
 
