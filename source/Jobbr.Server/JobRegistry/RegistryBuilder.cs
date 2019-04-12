@@ -1,7 +1,9 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
@@ -227,23 +229,27 @@ namespace Jobbr.Server.JobRegistry
             var triggersOfJob = GetTriggersOfJobs(undefinedJobs.Select(j => j.Id), storage);
             numberOfChanges += SoftDeleteTriggers(storage, triggersOfJob);
 
-            this.SoftDeleteOrphanedTriggers(storage);
+            numberOfChanges += this.SoftDeleteOrphanedTriggers(storage);
 
             return numberOfChanges;
         }
 
-        private void SoftDeleteOrphanedTriggers(IJobStorageProvider storage)
+        private int SoftDeleteOrphanedTriggers(IJobStorageProvider storage)
         {
             var triggers = this.Definitions.SelectMany(d => d.Triggers).ToList();
             var currentTriggers = this.GetTriggersFromActiveJobs(storage);
-            var orphanedTriggers = new List<long>();
-            foreach (var trigger in currentTriggers)
+
+            var orphanedTriggers = currentTriggers.Except(triggers, new TriggerComparer()).ToList();
+
+            foreach (var orphanedTrigger in orphanedTriggers)
             {
-                // Check for Equality
+                storage.DeleteTrigger(orphanedTrigger.JobId, orphanedTrigger.Id);
             }
+
+            return orphanedTriggers.Count;
         }
 
-        private List<JobTriggerBase> GetTriggersFromActiveJobs(IJobStorageProvider storage)
+        private IList<JobTriggerBase> GetTriggersFromActiveJobs(IJobStorageProvider storage)
         {
             var triggersFromActiveJobs = new List<JobTriggerBase>();
             foreach (var uniqueName in this.Definitions.Select(d => d.UniqueName))
@@ -255,6 +261,19 @@ namespace Jobbr.Server.JobRegistry
                 }
             }
             return triggersFromActiveJobs;
+        }
+
+        private class TriggerComparer : IEqualityComparer<JobTriggerBase>
+        {
+            public bool Equals(JobTriggerBase x, JobTriggerBase y)
+            {
+                return x.IsTriggerEqual(y);
+            }
+
+            public int GetHashCode(JobTriggerBase obj)
+            {
+                return obj.GetHashCode();
+            }
         }
     }
 }
