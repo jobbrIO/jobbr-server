@@ -65,7 +65,7 @@ namespace Jobbr.Server.ComponentServices.Management
         private void AddMappingsFromInternalToComponentModel()
         {
             this.CreateMap<JobArtefactModel, JobArtefact>()
-                .ForMember(d => d.Type, cfg => cfg.ResolveUsing(s => s.MimeType));
+                .ForMember(d => d.Type, cfg => cfg.MapFrom(s => s.MimeType));
         }
     }
 }
