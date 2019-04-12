@@ -79,6 +79,29 @@ namespace Jobbr.Tests.Registration
             storage.Verify(s => s.DeleteTrigger(nonExistingJobId, nonExistingTriggerId), Times.Once);
         }
 
+        [TestMethod]
+        public void ShouldDeleteOrphanedTriggers_WhenSingleSourceOfTruthIsActivated()
+        {
+            const string jobName = "JobName";
+            var storage = new Mock<IJobStorageProvider>();
+            var builder = new JobbrBuilder();
+            var job = new Job { Id = 1, UniqueName = jobName };
+            var trigger = new RecurringTrigger { Definition = "0 * * * *", JobId = 1, Id = 1};
+            var toDeleteTrigger = new RecurringTrigger { Definition = "0 1 * * *", JobId = 1, Id = 10};
+            storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(CreatePagedResult(job));
+            storage.Setup(s => s.GetTriggersByJobId(1, 1, int.MaxValue, false))
+                .Returns(CreatePagedResult<JobTriggerBase>(trigger, toDeleteTrigger));
+            storage.Setup(s => s.GetJobByUniqueName(jobName)).Returns(job);
+            SetupForSuccessfulRun(storage);
+            builder.Add<IJobStorageProvider>(storage.Object);
+            builder.AddJobs(repo =>
+                repo.AsSingleSourceOfTruth().Define(jobName, "CLR.Type").WithTrigger("0 * * * *"));
+
+            builder.Create().Start();
+
+            storage.Verify(s => s.DeleteTrigger(1, 10), Times.Once);
+        }
+
         private static PagedResult<T> CreatePagedResult<T>(params T[] args)
         {
             var items = new List<T>();

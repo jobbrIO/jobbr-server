@@ -272,7 +272,7 @@ namespace Jobbr.Server.JobRegistry
 
             public int GetHashCode(JobTriggerBase obj)
             {
-                return obj.GetHashCode();
+                return obj.JobId.GetHashCode();
             }
         }
     }
