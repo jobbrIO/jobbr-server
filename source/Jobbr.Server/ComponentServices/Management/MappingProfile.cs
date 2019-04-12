@@ -4,6 +4,7 @@ using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.ComponentModel.Management.Model;
 using Jobbr.Server.Core.Models;
 using JobRun = Jobbr.ComponentModel.Management.Model.JobRun;
+using RecurringTrigger = Jobbr.ComponentModel.JobStorage.Model.RecurringTrigger;
 
 namespace Jobbr.Server.ComponentServices.Management
 {
@@ -16,6 +17,16 @@ namespace Jobbr.Server.ComponentServices.Management
             this.AddMappingFromStorageToComponentModel();
 
             this.AddMappingsFromInternalToComponentModel();
+        }
+
+        private static string GetTriggerDefinition(ComponentModel.JobStorage.Model.JobRun r)
+        {
+            if (r.Trigger is RecurringTrigger trigger)
+            {
+                return trigger.Definition;
+            }
+
+            return null;
         }
 
         private void AddMappingFromStorageToComponentModel()
@@ -41,11 +52,11 @@ namespace Jobbr.Server.ComponentServices.Management
                 .ForMember(m => m.JobName, o => o.MapFrom(m => m.Job.UniqueName))
                 .ForMember(m => m.PlannedStartDateTimeUtc, o => o.MapFrom(m => m.PlannedStartDateTimeUtc))
                 .ForMember(m => m.Progress, o => o.MapFrom(m => m.Progress))
-                .ForMember(m => m.State, o => o.ResolveUsing(r => (ComponentModel.Management.Model.JobRunStates) Enum.Parse(typeof(ComponentModel.Management.Model.JobRunStates), r.State.ToString())))
+                .ForMember(m => m.State, o => o.MapFrom(r => (ComponentModel.Management.Model.JobRunStates) Enum.Parse(typeof(ComponentModel.Management.Model.JobRunStates), r.State.ToString())))
                 .ForMember(m => m.TriggerId, o => o.MapFrom(m => m.Trigger.Id))
                 .ForMember(m => m.UserId, o => o.MapFrom(m => m.Trigger.UserId))
                 .ForMember(m => m.UserDisplayName, o => o.MapFrom(m => m.Trigger.UserDisplayName))
-                .ForMember(m => m.Definition, o => o.ResolveUsing(r => (r.Trigger as ComponentModel.JobStorage.Model.RecurringTrigger)?.Definition));
+                .ForMember(m => m.Definition, o => o.MapFrom(r => GetTriggerDefinition(r)));
         }
 
         private void AddMappingFromComponentToInternalModel()
