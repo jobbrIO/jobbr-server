@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Jobbr.ComponentModel.JobStorage.Model;
 
 namespace Jobbr.Server.JobRegistry

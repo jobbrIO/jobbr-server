@@ -75,6 +75,28 @@ namespace Jobbr.Tests.Registration
         }
 
         [TestMethod]
+        public void TriggersAreNotEqual_WhenJobIdIsDifferent()
+        {
+            var firstTrigger = new InstantTrigger { JobId = 1 };
+            var secondTrigger = new InstantTrigger { JobId = 3 };
+
+            var isTriggerEqual = firstTrigger.IsTriggerEqual(secondTrigger);
+
+            Assert.IsFalse(isTriggerEqual);
+        }
+
+        [TestMethod]
+        public void TriggersAreNotEqual_WhenParameterIsDifferent()
+        {
+            var firstTrigger = new InstantTrigger { Parameters = "CAS9" };
+            var secondTrigger = new InstantTrigger { Parameters = "CRISPR" };
+
+            var isTriggerEqual = firstTrigger.IsTriggerEqual(secondTrigger);
+
+            Assert.IsFalse(isTriggerEqual);
+        }
+
+        [TestMethod]
         public void InstantTriggerShouldBeEqual_WhenSameDelay()
         {
             const int delay = 100;
@@ -109,9 +131,9 @@ namespace Jobbr.Tests.Registration
         [TestMethod]
         public void RecurringTriggerShouldBeEqual_WhenDefinitionIsEqual()
         {
-            const string defintion = "0 * * * *";
-            var firstTrigger = new RecurringTrigger {Definition = defintion };
-            var secondTrigger = new RecurringTrigger {Definition = defintion };
+            const string definition = "0 * * * *";
+            var firstTrigger = new RecurringTrigger {Definition = definition };
+            var secondTrigger = new RecurringTrigger {Definition = definition };
             var thirdTrigger = new RecurringTrigger();
 
             var firstAndSecondEqual = firstTrigger.IsTriggerEqual(secondTrigger);
