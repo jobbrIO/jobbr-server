@@ -351,7 +351,7 @@ namespace Jobbr.Server.Scheduling
                     if (planResult.ExpectedStartDateUtc == null)
                     {
                         // Move to ctor of PlanResult
-                        throw new ArgumentNullException("ExpectedStartDateUtc");
+                        throw new ArgumentNullException(nameof(planResult.ExpectedStartDateUtc));
                     }
 
                     var dateTime = planResult.ExpectedStartDateUtc;
