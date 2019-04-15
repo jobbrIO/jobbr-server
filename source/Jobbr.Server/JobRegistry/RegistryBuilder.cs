@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.JobStorage.Model;
@@ -69,6 +70,12 @@ namespace Jobbr.Server.JobRegistry
                 return numberOfChanges;
             }
 
+            // Deactivate non existent
+            if (this.isSingleSourceOfTruth)
+            {
+                numberOfChanges += this.SoftDeleteOldJobsAndTriggers(storage);
+            }
+
             foreach (var jobDefinition in this.Definitions)
             {
                 var existingJob = storage.GetJobByUniqueName(jobDefinition.UniqueName);
@@ -88,6 +95,8 @@ namespace Jobbr.Server.JobRegistry
                 }
                 else
                 {
+                    existingJob.Deleted = false;
+                    storage.Update(existingJob);
                     // Update existing Jobs and triggers
                     if (!string.Equals(existingJob.Type, jobDefinition.ClrType, StringComparison.OrdinalIgnoreCase))
                     {
@@ -103,8 +112,7 @@ namespace Jobbr.Server.JobRegistry
                     if (jobDefinition.HasTriggerDefinition)
                     {
                         // Setup triggers
-                        var job = storage.GetJobByUniqueName(jobDefinition.UniqueName);
-                        var activeTriggers = storage.GetTriggersByJobId(job.Id, 1, int.MaxValue).Items.Where(t => t.IsActive).ToList();
+                        var activeTriggers = storage.GetTriggersByJobId(existingJob.Id, 1, int.MaxValue).Items.Where(t => t.IsActive).ToList();
                         var toDeactivateTriggers = new List<JobTriggerBase>(activeTriggers.Where(t => !(t is InstantTrigger)));
 
                         if (jobDefinition.Triggers.Any())
@@ -120,7 +128,7 @@ namespace Jobbr.Server.JobRegistry
                             if (existingOne == null)
                             {
                                 // Add one
-                                AddTrigger(storage, trigger, jobDefinition, job.Id);
+                                AddTrigger(storage, trigger, jobDefinition, existingJob.Id);
                                 Logger.InfoFormat("Added trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.GetType().Name, jobDefinition.UniqueName, trigger.Id);
 
                                 numberOfChanges++;
@@ -140,12 +148,6 @@ namespace Jobbr.Server.JobRegistry
                         }
                     }
                 }
-            }
-
-            // Deactivate non existent
-            if (this.isSingleSourceOfTruth)
-            {
-                numberOfChanges += this.SoftDeleteOldJobsAndTriggers(storage);
             }
 
             return numberOfChanges;
@@ -192,13 +194,27 @@ namespace Jobbr.Server.JobRegistry
             var numberOfChanges = 0;
             foreach (var undefinedJob in undefinedJobs)
             {
+                undefinedJob.Deleted = true;
                 Logger.InfoFormat($"Deleting job ({undefinedJob.UniqueName}) with the id: {undefinedJob.Id}");
-                storage.DeleteJob(undefinedJob.Id);
+                storage.Update(undefinedJob);
+                numberOfChanges = OmitJobRunsFromJob(storage, undefinedJob);
                 numberOfChanges++;
             }
 
             return numberOfChanges;
+        }
 
+        private static int OmitJobRunsFromJob(IJobStorageProvider storage, Job undefinedJob)
+        {
+            var numberOfChanges = 0;
+            foreach (var jobRun in storage.GetJobRunsByJobId((int)undefinedJob.Id, pageSize: int.MaxValue).Items)
+            {
+                jobRun.State = JobRunStates.Omitted;
+                storage.Update(jobRun);
+                numberOfChanges++;
+            }
+
+            return numberOfChanges;
         }
 
         private static int SoftDeleteTriggers(IJobStorageProvider storage, IList<JobTriggerBase> triggersOfJob)
@@ -206,12 +222,19 @@ namespace Jobbr.Server.JobRegistry
             var numberOfChanges = 0;
             foreach (var trigger in triggersOfJob)
             {
-                Logger.InfoFormat($"Deleting trigger with the id: {trigger.Id}");
-                storage.DeleteTrigger(trigger.JobId, trigger.Id);
+                DeleteAndDeactivateTrigger(storage, trigger);
                 numberOfChanges++;
             }
 
             return numberOfChanges;
+        }
+
+        private static void DeleteAndDeactivateTrigger(IJobStorageProvider storage, JobTriggerBase trigger)
+        {
+            Logger.InfoFormat($"Deleting trigger with the id: {trigger.Id}");
+            trigger.Deleted = true;
+            trigger.IsActive = false;
+            storage.Update(trigger.JobId, trigger as dynamic);
         }
 
         private int SoftDeleteOldJobsAndTriggers(IJobStorageProvider storage)
@@ -233,17 +256,27 @@ namespace Jobbr.Server.JobRegistry
 
         private int SoftDeleteOrphanedTriggers(IJobStorageProvider storage)
         {
-            var triggers = this.Definitions.SelectMany(d => d.Triggers).ToList();
-            var currentTriggers = this.GetTriggersFromActiveJobs(storage);
+            var triggersInDefinition = this.Definitions.SelectMany(d => d.Triggers).ToList();
+            var currentTriggersInStorage = this.GetTriggersFromActiveJobs(storage);
 
-            var orphanedTriggers = currentTriggers.Except(triggers, new TriggerComparer()).ToList();
+            var orphanedTriggers = currentTriggersInStorage.Except(triggersInDefinition, new TriggerComparer()).ToList();
+            var numberOfChanges = 0;
 
             foreach (var orphanedTrigger in orphanedTriggers)
             {
-                storage.DeleteTrigger(orphanedTrigger.JobId, orphanedTrigger.Id);
+                DeleteAndDeactivateTrigger(storage, orphanedTrigger);
+                var jobRuns = storage.GetJobRunsByTriggerId(orphanedTrigger.JobId, orphanedTrigger.Id, pageSize: int.MaxValue).Items;
+                foreach (var jobRunToOmit in jobRuns)
+                {
+                    jobRunToOmit.State = JobRunStates.Omitted;
+                    storage.Update(jobRunToOmit);
+                    numberOfChanges++;
+                }
+
+                numberOfChanges++;
             }
 
-            return orphanedTriggers.Count;
+            return numberOfChanges;
         }
 
         private IList<JobTriggerBase> GetTriggersFromActiveJobs(IJobStorageProvider storage)
@@ -269,7 +302,7 @@ namespace Jobbr.Server.JobRegistry
 
             public int GetHashCode(JobTriggerBase obj)
             {
-                return obj.JobId.GetHashCode();
+                return 0;
             }
         }
     }
