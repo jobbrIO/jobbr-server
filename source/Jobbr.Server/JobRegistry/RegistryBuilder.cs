@@ -209,6 +209,7 @@ namespace Jobbr.Server.JobRegistry
             var numberOfChanges = 0;
             foreach (var jobRun in storage.GetJobRunsByJobId((int)undefinedJob.Id, pageSize: int.MaxValue).Items)
             {
+                jobRun.Deleted = true;
                 jobRun.State = JobRunStates.Omitted;
                 storage.Update(jobRun);
                 numberOfChanges++;

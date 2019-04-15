@@ -105,6 +105,49 @@ namespace Jobbr.Tests.Registration
             Assert.IsTrue(toDeleteTrigger.Deleted);
         }
 
+        [TestMethod]
+        public void ShouldReActivateJob_WhenJobIsRedefined()
+        {
+            const string jobName = "JobName";
+            var storage = new Mock<IJobStorageProvider>();
+            var builder = new JobbrBuilder();
+            var job = new Job { Id = 1, UniqueName = jobName };
+            storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(CreatePagedResult(job));
+            builder.AddJobs(repo =>
+                repo.AsSingleSourceOfTruth().Define(jobName, "CLR.Type").WithTrigger("0 * * * *"));
+            var jobbr = builder.Create();
+            jobbr.Start();
+            jobbr.Stop();
+
+            jobbr.Start();
+
+            Assert.IsFalse(job.Deleted);
+        }
+
+        [TestMethod]
+        public void ShouldOmitScheduledJob_WhenJobIsDeactivated()
+        {
+            const string existingJobName = "MyJobExists";
+            const long nonExistingJobId = 2;
+            var existingJob = new Job { Id = 1, UniqueName = existingJobName };
+            var nonExistingJob = new Job { Id = 2, UniqueName = "DoIDieNow?" };
+            var pagedJobs = CreatePagedResult(existingJob, nonExistingJob);
+            var toOmitJobRun = new JobRun {State = JobRunStates.Scheduled, Deleted = false};
+            var storage = new Mock<IJobStorageProvider>();
+            storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(pagedJobs);
+            storage.Setup(s => s.GetJobRunsByJobId((int)nonExistingJobId, 1, int.MaxValue, false))
+                .Returns(CreatePagedResult(toOmitJobRun));
+            var builder = new JobbrBuilder();
+            builder.Add<IJobStorageProvider>(storage.Object);
+            builder.AddJobs(repo =>
+                repo.AsSingleSourceOfTruth().Define(existingJobName, "CLR.Type"));
+
+            builder.Create().Start();
+
+            Assert.IsTrue(toOmitJobRun.Deleted);
+            Assert.AreEqual(JobRunStates.Omitted, toOmitJobRun.State);
+        }
+
         private static PagedResult<T> CreatePagedResult<T>(params T[] args)
         {
             var items = new List<T>();
