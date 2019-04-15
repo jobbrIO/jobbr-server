@@ -32,13 +32,11 @@ namespace Jobbr.Server.JobRegistry
 
         private static bool IsSame(JobTriggerBase left, JobTriggerBase right)
         {
-            var jobIdEqual = left.JobId == right.JobId;
-
             var parametersEqual = string.Equals(left.Parameters, right.Parameters, StringComparison.OrdinalIgnoreCase);
             var userDisplayNameEqual = string.Equals(left.UserDisplayName, right.UserDisplayName, StringComparison.OrdinalIgnoreCase);
             var userIdEqual = string.Equals(left.UserId, right.UserId, StringComparison.OrdinalIgnoreCase);
 
-            var baseEqual = jobIdEqual && parametersEqual && userDisplayNameEqual && userIdEqual;
+            var baseEqual = parametersEqual && userDisplayNameEqual && userIdEqual;
             if (!baseEqual)
             {
                 return false;

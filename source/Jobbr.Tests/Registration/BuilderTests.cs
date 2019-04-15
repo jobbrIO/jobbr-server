@@ -75,8 +75,9 @@ namespace Jobbr.Tests.Registration
 
             builder.Create().Start();
 
-            storage.Verify(s => s.DeleteJob(nonExistingJobId), Times.Once);
-            storage.Verify(s => s.DeleteTrigger(nonExistingJobId, nonExistingTriggerId), Times.Once);
+            Assert.IsTrue(nonExistingJob.Deleted);
+            Assert.IsFalse(triggerForNonExistingJob.IsActive);
+            Assert.IsTrue(triggerForNonExistingJob.Deleted);
         }
 
         [TestMethod]
@@ -99,7 +100,9 @@ namespace Jobbr.Tests.Registration
 
             builder.Create().Start();
 
-            storage.Verify(s => s.DeleteTrigger(1, 10), Times.Once);
+            Assert.IsFalse(job.Deleted);
+            Assert.IsFalse(toDeleteTrigger.IsActive);
+            Assert.IsTrue(toDeleteTrigger.Deleted);
         }
 
         private static PagedResult<T> CreatePagedResult<T>(params T[] args)
@@ -115,6 +118,9 @@ namespace Jobbr.Tests.Registration
                 .Returns(CreatePagedResult<JobRun>());
             storage.Setup(s => s.GetActiveTriggers(1, int.MaxValue, null, null, null))
                 .Returns(CreatePagedResult<JobTriggerBase>());
+            var anyId = It.IsAny<long>();
+            storage.Setup(s => s.GetJobRunsByJobId(It.IsAny<int>(), 1, int.MaxValue, false)).Returns(CreatePagedResult<JobRun>());
+            storage.Setup(s => s.GetJobRunsByTriggerId(anyId, anyId, 1, int.MaxValue, false)).Returns(CreatePagedResult<JobRun>());
         }
     }
 

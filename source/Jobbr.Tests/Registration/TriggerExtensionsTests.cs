@@ -46,14 +46,13 @@ namespace Jobbr.Tests.Registration
         [TestMethod]
         public void TriggersAreEqual_WhenBaseInformationAreEqualEvenIdIsDifferent()
         {
-            const long jobId = 10;
             const string userDisplayName = "Jobbr";
             const string parameters = "json";
             const string userId = "1";
             var firstTrigger = new InstantTrigger
             {
                 Id = 1,
-                JobId = jobId,
+                JobId = 2,
                 Comment = "Different",
                 UserDisplayName = userDisplayName,
                 Parameters = parameters,
@@ -62,7 +61,7 @@ namespace Jobbr.Tests.Registration
             var secondTrigger = new InstantTrigger
             {
                 Id = 2,
-                JobId = jobId,
+                JobId = 4,
                 Comment = "Same same but different",
                 Parameters = parameters,
                 UserId = userId,
@@ -72,17 +71,6 @@ namespace Jobbr.Tests.Registration
             var isTriggerEqual = firstTrigger.IsTriggerEqual(secondTrigger);
 
             Assert.IsTrue(isTriggerEqual);
-        }
-
-        [TestMethod]
-        public void TriggersAreNotEqual_WhenJobIdIsDifferent()
-        {
-            var firstTrigger = new InstantTrigger { JobId = 1 };
-            var secondTrigger = new InstantTrigger { JobId = 3 };
-
-            var isTriggerEqual = firstTrigger.IsTriggerEqual(secondTrigger);
-
-            Assert.IsFalse(isTriggerEqual);
         }
 
         [TestMethod]
