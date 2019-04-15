@@ -268,6 +268,7 @@ namespace Jobbr.Server.JobRegistry
                 var jobRuns = storage.GetJobRunsByTriggerId(orphanedTrigger.JobId, orphanedTrigger.Id, pageSize: int.MaxValue).Items;
                 foreach (var jobRunToOmit in jobRuns)
                 {
+                    jobRunToOmit.Deleted = true;
                     jobRunToOmit.State = JobRunStates.Omitted;
                     storage.Update(jobRunToOmit);
                     numberOfChanges++;
