@@ -167,7 +167,7 @@ namespace Jobbr.Tests.Registration
             builder.AddJobs(repo =>
                 repo.AsSingleSourceOfTruth().Define(jobName, "CLR.Type").WithTrigger("* * * * *"));
 
-            builder.Create().Start(Int32.MaxValue);
+            builder.Create().Start();
 
             Assert.IsTrue(toOmitJobRun.Deleted);
             Assert.AreEqual(JobRunStates.Omitted, toOmitJobRun.State);
