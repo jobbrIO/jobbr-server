@@ -26,7 +26,12 @@ namespace Jobbr.Server.JobRegistry
             return this;
         }
 
-        public RegistryBuilder AsSingleSourceOfTruth()
+        // TODO: Make internal behaviour visible by splitting explicitly to differnt flags
+        // Area                                 Old                                 Additional
+        // JobNotExistentAnyMoreBehaviour      Nothing                              SoftDelete Job & Triggers & FutureRuns
+        // TriggerNotExistentAnyMoreBehavior   Deactivate +(Bug kept FutureRuns)    SoftDelete & FutureRuns
+
+        public RegistryBuilder AsSingleSourceOfTruth() // RemoveUndefined?
         {
             this.isSingleSourceOfTruth = true;
             return this;
@@ -60,6 +65,7 @@ namespace Jobbr.Server.JobRegistry
             return definition;
         }
 
+        // TODO: Refactor in extension method to isolate actual logic from definition datastructure
         internal int Apply(IJobStorageProvider storage)
         {
             var numberOfChanges = 0;
@@ -69,11 +75,8 @@ namespace Jobbr.Server.JobRegistry
                 return numberOfChanges;
             }
 
-            // Deactivate non existent
-            if (this.isSingleSourceOfTruth)
-            {
-                numberOfChanges += this.SoftDeleteOldJobsAndTriggers(storage);
-            }
+            // TODO: Create list of active jobs in DB to gain difference for soft delete them if required
+            var jobsToDeactivate = storage.GetJobs(1, Int32.MaxValue).Items;
 
             foreach (var jobDefinition in this.Definitions)
             {
@@ -81,72 +84,118 @@ namespace Jobbr.Server.JobRegistry
 
                 if (existingJob == null)
                 {
-                    // Add new Job
-                    Logger.InfoFormat("Adding job '{0}' of type '{1}'", jobDefinition.UniqueName, jobDefinition.ClrType);
-                    var job = new Job { UniqueName = jobDefinition.UniqueName, Type = jobDefinition.ClrType, Parameters = jobDefinition.Parameter };
-                    storage.AddJob(job);
-
-                    foreach (var trigger in jobDefinition.Triggers)
-                    {
-                        AddTrigger(storage, trigger, jobDefinition, job.Id);
-                        numberOfChanges++;
-                    }
+                    numberOfChanges = AddNewJob(storage, jobDefinition, numberOfChanges);
                 }
                 else
                 {
-                    existingJob.Deleted = false;
-                    storage.Update(existingJob);
-                    // Update existing Jobs and triggers
-                    if (!string.Equals(existingJob.Type, jobDefinition.ClrType, StringComparison.OrdinalIgnoreCase))
-                    {
-                        Logger.InfoFormat("Updating type for Job '{0}' (Id: '{1}') from '{2}' to '{2}'", existingJob.UniqueName, existingJob.Id, existingJob.Type, jobDefinition.ClrType);
-                        existingJob.Type = jobDefinition.ClrType;
-                        existingJob.Parameters = jobDefinition.Parameter;
+                    numberOfChanges = UpdateExisting(storage, existingJob, jobDefinition, numberOfChanges);
+                }
 
-                        storage.Update(existingJob);
+                // TODO: Remove the ones that are either new or updated
+                jobsToDeactivate.Remove()
+            }
+
+            // TODO: Handle jobs that are not existent anymore
+            if (jobsToDeactivate.Any())
+            {
+                // Pass jobsToDeactivate
+                numberOfChanges += this.HandleNonExistingJobs(storage, numberOfChanges);
+            }
+
+            return numberOfChanges;
+        }
+
+        private int HandleNonExistingJobs(IJobStorageProvider storage, int numberOfChanges)
+        {
+            // Deactivate non existent
+            if (this.isSingleSourceOfTruth)
+            {
+                numberOfChanges += this.SoftDeleteOldJobsAndTriggers(storage);
+            }
+
+            return numberOfChanges;
+        }
+
+        private static int UpdateExisting(IJobStorageProvider storage, Job existingJob, JobDefinition jobDefinition,
+            int numberOfChanges)
+        {
+            existingJob.Deleted = false;
+            storage.Update(existingJob);
+            // Update existing Jobs and triggers
+            if (!string.Equals(existingJob.Type, jobDefinition.ClrType, StringComparison.OrdinalIgnoreCase))
+            {
+                Logger.InfoFormat("Updating type for Job '{0}' (Id: '{1}') from '{2}' to '{2}'", existingJob.UniqueName,
+                    existingJob.Id, existingJob.Type, jobDefinition.ClrType);
+                existingJob.Type = jobDefinition.ClrType;
+                existingJob.Parameters = jobDefinition.Parameter;
+
+                storage.Update(existingJob);
+
+                numberOfChanges++;
+            }
+
+            if (jobDefinition.HasTriggerDefinition)
+            {
+                // Setup triggers
+                var activeTriggers = storage.GetTriggersByJobId(existingJob.Id, 1, int.MaxValue).Items.Where(t => t.IsActive)
+                    .ToList();
+                var toDeactivateTriggers = new List<JobTriggerBase>(activeTriggers.Where(t => !(t is InstantTrigger)));
+
+                if (jobDefinition.Triggers.Any())
+                {
+                    Logger.InfoFormat(
+                        "Job '{0}' has {1} triggers explicitly specified by definition. Going to apply the TriggerDefinition to the actual storage provider.",
+                        existingJob.UniqueName, jobDefinition.Triggers.Count);
+                }
+
+                // Update or add new ones
+                foreach (var trigger in jobDefinition.Triggers)
+                {
+                    var existingOne = activeTriggers.FirstOrDefault(t => t.IsTriggerEqual(trigger));
+
+                    if (existingOne == null)
+                    {
+                        // Add one
+                        AddTrigger(storage, trigger, jobDefinition, existingJob.Id);
+                        Logger.InfoFormat("Added trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.GetType().Name,
+                            jobDefinition.UniqueName, trigger.Id);
 
                         numberOfChanges++;
                     }
-
-                    if (jobDefinition.HasTriggerDefinition)
+                    else
                     {
-                        // Setup triggers
-                        var activeTriggers = storage.GetTriggersByJobId(existingJob.Id, 1, int.MaxValue).Items.Where(t => t.IsActive).ToList();
-                        var toDeactivateTriggers = new List<JobTriggerBase>(activeTriggers.Where(t => !(t is InstantTrigger)));
-
-                        if (jobDefinition.Triggers.Any())
-                        {
-                            Logger.InfoFormat("Job '{0}' has {1} triggers explicitly specified by definition. Going to apply the TriggerDefinition to the actual storage provider.", existingJob.UniqueName, jobDefinition.Triggers.Count);
-                        }
-
-                        // Update or add new ones
-                        foreach (var trigger in jobDefinition.Triggers)
-                        {
-                            var existingOne = activeTriggers.FirstOrDefault(t => t.IsTriggerEqual(trigger));
-
-                            if (existingOne == null)
-                            {
-                                // Add one
-                                AddTrigger(storage, trigger, jobDefinition, existingJob.Id);
-                                Logger.InfoFormat("Added trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.GetType().Name, jobDefinition.UniqueName, trigger.Id);
-
-                                numberOfChanges++;
-                            }
-                            else
-                            {
-                                toDeactivateTriggers.Remove(existingOne);
-                            }
-                        }
-
-                        // Deactivate not specified triggers
-                        foreach (var trigger in toDeactivateTriggers)
-                        {
-                            Logger.InfoFormat("Deactivating trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.GetType().Name, jobDefinition.UniqueName, trigger.Id);
-                            storage.DisableTrigger(existingJob.Id, trigger.Id);
-                            numberOfChanges++;
-                        }
+                        toDeactivateTriggers.Remove(existingOne);
                     }
                 }
+
+                // Deactivate not yet defined triggers
+                foreach (var trigger in toDeactivateTriggers)
+                {
+                    Logger.InfoFormat("Deactivating trigger (type: '{0}' to job '{1}' (JobId: '{2}')'", trigger.GetType().Name,
+                        jobDefinition.UniqueName, trigger.Id);
+                    storage.DisableTrigger(existingJob.Id, trigger.Id);
+                    numberOfChanges++;
+
+                    // TODO: Disable future Jobruns
+                    // TODO: If Master is Repository, SoftDelete Trigger instead of disabling
+                }
+            }
+
+            return numberOfChanges;
+        }
+
+        private static int AddNewJob(IJobStorageProvider storage, JobDefinition jobDefinition, int numberOfChanges)
+        {
+            // Add new Job
+            Logger.InfoFormat("Adding job '{0}' of type '{1}'", jobDefinition.UniqueName, jobDefinition.ClrType);
+            var job = new Job
+                {UniqueName = jobDefinition.UniqueName, Type = jobDefinition.ClrType, Parameters = jobDefinition.Parameter};
+            storage.AddJob(job);
+
+            foreach (var trigger in jobDefinition.Triggers)
+            {
+                AddTrigger(storage, trigger, jobDefinition, job.Id);
+                numberOfChanges++;
             }
 
             return numberOfChanges;
