@@ -45,7 +45,7 @@ namespace Jobbr.Server.Storage
 
         private readonly List<Job> localJobs = new List<Job>();
 
-        private readonly List<JobRun> localJobRuns = new List<JobRun>();
+        private List<JobRun> localJobRuns = new List<JobRun>();
 
         public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50, bool showDeleted = false)
         {
@@ -417,6 +417,11 @@ namespace Jobbr.Server.Storage
         public bool IsAvailable()
         {
             return true;
+        }
+
+        public void ApplyRetention(DateTimeOffset date)
+        {
+            localJobRuns = localJobRuns.Where(j => j.ActualEndDateTimeUtc.HasValue && j.ActualEndDateTimeUtc <= date.UtcDateTime).ToList();
         }
 
 #pragma warning disable CA1024 // Use properties where appropriate.

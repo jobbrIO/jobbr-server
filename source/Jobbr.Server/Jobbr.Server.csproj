@@ -45,8 +45,8 @@
     <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.1\lib\net462\Jobbr.ComponentModel.Execution.dll</HintPath>
     </Reference>
-    <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.3.0\lib\net462\Jobbr.ComponentModel.JobStorage.dll</HintPath>
+    <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.4.0-unstable.1\lib\net462\Jobbr.ComponentModel.JobStorage.dll</HintPath>
     </Reference>
     <Reference Include="Jobbr.ComponentModel.Management, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jobbr.ComponentModel.Management.1.5.0\lib\net462\Jobbr.ComponentModel.Management.dll</HintPath>
@@ -103,6 +103,9 @@
     <Compile Include="JobRegistry\JobbrBuilderExtension.cs" />
     <Compile Include="Core\Messaging\MessageDispatcher.cs" />
     <Compile Include="JobRegistry\TriggerExtensions.cs" />
+    <Compile Include="Retention\BuilderExtension.cs" />
+    <Compile Include="Retention\RetentionComponent.cs" />
+    <Compile Include="Retention\RetentionConfiguration.cs" />
     <Compile Include="Scheduling\BuilderExtension.cs" />
     <Compile Include="Scheduling\DefaultSchedulerConfiguration.cs" />
     <Compile Include="JobbrState.cs" />

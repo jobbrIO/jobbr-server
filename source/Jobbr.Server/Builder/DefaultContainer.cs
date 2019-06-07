@@ -5,6 +5,7 @@ using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.ComponentServices.Execution;
 using Jobbr.Server.ComponentServices.Management;
 using Jobbr.Server.ComponentServices.Registration;
+using Jobbr.Server.Retention;
 using Jobbr.Server.Storage;
 using Ninject;
 using TinyMessenger;
