@@ -390,6 +390,11 @@ namespace Jobbr.Server.Storage
             jobRun.Progress = progress;
         }
 
+        public void ApplyRetention(DateTimeOffset date)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update(Job job)
         {
             this.localJobs.Remove(this.localJobs.FirstOrDefault(j => j.Id == job.Id));

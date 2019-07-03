@@ -212,6 +212,10 @@ namespace Jobbr.Tests.Infrastructure
         {
         }
 
+        public void ApplyRetention(DateTimeOffset date)
+        {
+        }
+
         public bool IsAvailable()
         {
             return true;
