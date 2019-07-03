@@ -9,5 +9,7 @@ namespace Jobbr.Server.Scheduling
         public DateTime PlannedStartDateTimeUtc { get; set; }
 
         public long TriggerId { get; set; }
+
+        public long JobId { get; set; }
     }
 }
