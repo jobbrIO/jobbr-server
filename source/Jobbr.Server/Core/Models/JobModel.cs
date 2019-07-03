@@ -21,6 +21,5 @@ namespace Jobbr.Server.Core.Models
         public bool Deleted { get; set; }
 
         public int MaxConcurrentJobRuns { get; set; }
-
     }
 }

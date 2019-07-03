@@ -1,6 +1,8 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.ComponentModel.JobStorage.Model;
@@ -274,6 +276,7 @@ namespace Jobbr.Server.Scheduling
             {
                 TriggerId = trigger.Id,
                 Id = newJobRun.Id,
+                JobId = trigger.JobId,
                 PlannedStartDateTimeUtc = newJobRun.PlannedStartDateTimeUtc
             };
 
@@ -373,7 +376,8 @@ namespace Jobbr.Server.Scheduling
                     {
                         TriggerId = trigger.Id,
                         Id = dependentJobRun.Id,
-                        PlannedStartDateTimeUtc = dependentJobRun.PlannedStartDateTimeUtc
+                        PlannedStartDateTimeUtc = dependentJobRun.PlannedStartDateTimeUtc,
+                        JobId = trigger.JobId,
                     });
                 }
             }
@@ -381,7 +385,7 @@ namespace Jobbr.Server.Scheduling
             // Set current plan
             this.currentPlan = newPlan;
 
-            // Publish the initial plan top the Excutor
+            // Publish the initial plan top the Executor
             this.PublishCurrentPlan();
         }
 
@@ -389,11 +393,11 @@ namespace Jobbr.Server.Scheduling
         {
             Logger.Info($"Publishing new plan for upcoming jobs to the executor. Number of Items: {this.currentPlan.Count}");
 
-            var clone = this.currentPlan.Select(e => new PlannedJobRun { PlannedStartDateTimeUtc = e.PlannedStartDateTimeUtc, Id = e.Id }).ToList();
+            var possibleJobRuns = this.GetPossiblePlannedJobRuns();
 
             try
             {
-                this.executor.OnPlanChanged(clone);
+                this.executor.OnPlanChanged(possibleJobRuns);
             }
             catch (Exception e)
             {
@@ -450,18 +454,68 @@ namespace Jobbr.Server.Scheduling
         private PlanResult GetPlanResult(InstantTrigger trigger, bool isNew = false) => this.instantJobRunPlaner.Plan(trigger, isNew);
 
         // ReSharper disable once UnusedParameter.Local
+
         // Reason: Parameter is used by dynamic overload
+
         private PlanResult GetPlanResult(ScheduledTrigger trigger, bool isNew = false) => this.scheduledJobRunPlaner.Plan(trigger, isNew);
 
         // ReSharper disable once UnusedParameter.Local
+
         // Reason: Parameter is used by dynamic overload
+
         private PlanResult GetPlanResult(RecurringTrigger trigger, bool isNew = false) => this.recurringJobRunPlaner.Plan(trigger);
 
         // ReSharper disable once UnusedParameter.Local
+
         // Reason: Parameter is used by dynamic overload
+
         private PlanResult GetPlanResult(object trigger, bool isNew)
         {
             throw new NotImplementedException($"Unable to dynamic dispatch trigger of type '{trigger?.GetType().Name}'");
+        }
+
+        private List<PlannedJobRun> GetPossiblePlannedJobRuns()
+        {
+            var allRunningJobs = this.repository.GetRunningJobs().Select(j => j.Job).ToList();
+            var allPlannedJobIds = this.currentPlan.Select(c => c.JobId).ToList();
+            var allJobIds = allPlannedJobIds.Union(allRunningJobs.Select(p => p.Id)).ToList();
+
+            var possibleRunsPerJob = new Dictionary<long, int>();
+            foreach (var jobId in allJobIds)
+            {
+                var currentRunningJobs = allRunningJobs.Count(a => a.Id == jobId);
+                var plannedRunningJobs = allPlannedJobIds.Count(a => a == jobId);
+                var maximumJobRuns = this.repository.GetJob(jobId).MaxConcurrentJobRuns;
+                if (maximumJobRuns == 0)
+                {
+                    maximumJobRuns = int.MaxValue;
+                }
+
+                var possibleSlots = maximumJobRuns - (plannedRunningJobs + currentRunningJobs);
+                possibleRunsPerJob.Add(jobId, possibleSlots);
+            }
+
+            var scheduledPlanItems = from item in this.currentPlan
+                orderby item.PlannedStartDateTimeUtc
+                group item by item.JobId
+                into g
+                select new { JobId = g.Key, ScheduledPlanItems = g.ToList() };
+
+            var runningJobs = new List<PlannedJobRun>();
+            foreach (var scheduledPlanItem in scheduledPlanItems)
+            {
+                for (var i = 0; i < possibleRunsPerJob[scheduledPlanItem.JobId] && i < scheduledPlanItem.ScheduledPlanItems.Count; i++)
+                {
+                    var plannedJobRun = new PlannedJobRun
+                    {
+                        Id = scheduledPlanItem.ScheduledPlanItems[i].Id,
+                        PlannedStartDateTimeUtc = scheduledPlanItem.ScheduledPlanItems[i].PlannedStartDateTimeUtc,
+                    };
+                    runningJobs.Add(plannedJobRun);
+                }
+            }
+
+            return runningJobs;
         }
     }
 }
