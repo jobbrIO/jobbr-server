@@ -20,6 +20,7 @@ namespace Jobbr.Server.JobRegistry
         internal string Parameter { get; set; }
 
         internal List<JobTriggerBase> Triggers => this.triggers;
+        public int MaxConcurrentJobRuns { get; set; }
 
         public JobDefinition WithTrigger(DateTime startDateTimeUtc, object parameters = null, string userId = null, string userDisplayName = null)
         {

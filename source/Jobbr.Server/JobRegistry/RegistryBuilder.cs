@@ -32,17 +32,17 @@ namespace Jobbr.Server.JobRegistry
             return this;
         }
 
-        public JobDefinition Define(Type jobType)
+        public JobDefinition Define(Type jobType, int maxConcurrentJobRuns = 0)
         {
             if (jobType == null)
             {
                 throw new ArgumentException($"Job Type can't be null.");
             }
 
-            return this.Define(jobType.Name, jobType.FullName);
+            return this.Define(jobType.Name, jobType.FullName, maxConcurrentJobRuns);
         }
 
-        public JobDefinition Define(string uniqueName, string typeName)
+        public JobDefinition Define(string uniqueName, string typeName, int maxConcurrentJobRuns = 0)
         {
             var existing = this.definitions.FirstOrDefault(d => string.Equals(d.UniqueName, uniqueName, StringComparison.OrdinalIgnoreCase));
 
@@ -52,7 +52,7 @@ namespace Jobbr.Server.JobRegistry
                 return existing;
             }
 
-            var definition = new JobDefinition() { UniqueName = uniqueName, ClrType = typeName };
+            var definition = new JobDefinition() { UniqueName = uniqueName, ClrType = typeName, MaxConcurrentJobRuns = maxConcurrentJobRuns };
             this.definitions.Add(definition);
 
             this.HasConfiguration = true;
@@ -83,7 +83,11 @@ namespace Jobbr.Server.JobRegistry
                 {
                     // Add new Job
                     Logger.InfoFormat("Adding job '{0}' of type '{1}'", jobDefinition.UniqueName, jobDefinition.ClrType);
-                    var job = new Job { UniqueName = jobDefinition.UniqueName, Type = jobDefinition.ClrType, Parameters = jobDefinition.Parameter };
+                    var job = new Job
+                    {
+                        UniqueName = jobDefinition.UniqueName, Type = jobDefinition.ClrType,
+                        Parameters = jobDefinition.Parameter, MaxConcurrentJobRuns = jobDefinition.MaxConcurrentJobRuns
+                    };
                     storage.AddJob(job);
 
                     foreach (var trigger in jobDefinition.Triggers)
