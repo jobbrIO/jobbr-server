@@ -476,14 +476,14 @@ namespace Jobbr.Server.Scheduling
 
         private List<PlannedJobRun> GetPossiblePlannedJobRuns()
         {
-            var allRunningJobs = this.repository.GetRunningJobs().Select(j => j.Job).ToList();
+            var allRunningJobIds = this.repository.GetRunningJobs().Select(j => j.Job.Id).ToList();
             var allPlannedJobIds = this.currentPlan.Select(c => c.JobId).ToList();
-            var allJobIds = allPlannedJobIds.Union(allRunningJobs.Select(p => p.Id)).ToList();
+            var allJobIds = allPlannedJobIds.Union(allRunningJobIds).ToList();
 
             var possibleRunsPerJob = new Dictionary<long, int>();
             foreach (var jobId in allJobIds)
             {
-                var currentRunningJobs = allRunningJobs.Count(a => a.Id == jobId);
+                var currentRunningJobs = allRunningJobIds.Count(a => a == jobId);
                 var plannedRunningJobs = allPlannedJobIds.Count(a => a == jobId);
                 var maximumJobRuns = this.repository.GetJob(jobId).MaxConcurrentJobRuns;
                 if (maximumJobRuns == 0)
