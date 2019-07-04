@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -83,7 +84,7 @@ namespace Jobbr.Tests.Components.Scheduler
         }
 
         [TestMethod]
-        public void GivenMultipleScheduledJobRuns_WhenLimitingAmountOfParallelRuns_ThenLatestShouldNotBeExecuted()
+        public void GivenMultipleScheduledJobRuns_WhenLimitingAmountOfParallelRuns_ThenNewestShouldBeExecuted()
         {
             this.scheduler.Start();
             var job = new Job
@@ -91,12 +92,12 @@ namespace Jobbr.Tests.Components.Scheduler
                 MaxConcurrentJobRuns = 1
             };
             this.repository.AddJob(job);
-            var dateFrom1991 = new DateTime(1991, 5, 17);
-            var dateFrom1992 = new DateTime(1992, 7, 12);
-            var dateFrom1993 = new DateTime(1993, 7, 12);
-            var firstTrigger = new ScheduledTrigger {JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom1991};
-            var secondTrigger = new ScheduledTrigger { JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom1992 };
-            var thirdTrigger = new ScheduledTrigger { JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom1993 };
+            var dateFrom2091 = new DateTime(2091, 5, 17);
+            var dateFrom2092 = new DateTime(2092, 7, 12);
+            var dateFrom2093 = new DateTime(2093, 7, 12);
+            var firstTrigger = new ScheduledTrigger {JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom2091};
+            var secondTrigger = new ScheduledTrigger { JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom2092 };
+            var thirdTrigger = new ScheduledTrigger { JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom2093 };
             this.repository.SaveAddTrigger(job.Id, firstTrigger);
             this.repository.SaveAddTrigger(job.Id, secondTrigger);
             this.repository.SaveAddTrigger(job.Id, thirdTrigger);
@@ -105,12 +106,12 @@ namespace Jobbr.Tests.Components.Scheduler
             this.scheduler.OnTriggerAdded(job.Id, secondTrigger.Id);
 
            Assert.AreEqual(1, this.lastIssuedPlan.Count);
-           Assert.AreEqual(dateFrom1992, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc);
+           Assert.AreEqual(dateFrom2091, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc);
 
            this.scheduler.OnTriggerAdded(job.Id, thirdTrigger.Id);
 
            Assert.AreEqual(1, this.lastIssuedPlan.Count);
-           Assert.AreEqual(dateFrom1993, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc);
+           Assert.AreEqual(dateFrom2091, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc);
         }
     }
 }
