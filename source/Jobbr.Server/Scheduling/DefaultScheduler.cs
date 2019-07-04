@@ -1,8 +1,6 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.ComponentModel.JobStorage.Model;
@@ -511,7 +509,7 @@ namespace Jobbr.Server.Scheduling
         private Dictionary<long, List<ScheduledPlanItem>> GetOrderedScheduledPlanItems()
         {
             return (from item in this.currentPlan
-                orderby item.PlannedStartDateTimeUtc descending
+                orderby item.PlannedStartDateTimeUtc 
                 group item by item.JobId
                 into g
                 select g).ToDictionary(k => k.Key, v => v.ToList());
