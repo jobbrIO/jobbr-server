@@ -391,9 +391,11 @@ namespace Jobbr.Server.Scheduling
 
         private void PublishCurrentPlan()
         {
-            Logger.Info($"Publishing new plan for upcoming jobs to the executor. Number of Items: {this.currentPlan.Count}");
+            Logger.Info($"Getting new plan for upcoming scheduled jobs to the executor. Number of Items: {this.currentPlan.Count}");
 
             var possibleJobRuns = this.GetPossiblePlannedJobRuns();
+            
+            Logger.Info($"Publishing new plan for upcoming planned jobs to the executor. Number of Items: {possibleJobRuns.Count}");
 
             try
             {
@@ -484,19 +486,18 @@ namespace Jobbr.Server.Scheduling
             foreach (var jobId in allJobIds)
             {
                 var currentRunningJobs = allRunningJobIds.Count(a => a == jobId);
-                var plannedRunningJobs = allPlannedJobIds.Count(a => a == jobId);
                 var maximumJobRuns = this.repository.GetJob(jobId).MaxConcurrentJobRuns;
                 if (maximumJobRuns == 0)
                 {
                     maximumJobRuns = int.MaxValue;
                 }
 
-                var possibleSlots = maximumJobRuns - (plannedRunningJobs + currentRunningJobs);
+                var possibleSlots = maximumJobRuns - currentRunningJobs;
                 possibleRunsPerJob.Add(jobId, possibleSlots);
             }
 
             var scheduledPlanItems = from item in this.currentPlan
-                orderby item.PlannedStartDateTimeUtc
+                orderby item.PlannedStartDateTimeUtc descending 
                 group item by item.JobId
                 into g
                 select new { JobId = g.Key, ScheduledPlanItems = g.ToList() };
