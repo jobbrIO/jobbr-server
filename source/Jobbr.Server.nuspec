@@ -20,7 +20,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="source\Jobbr.Server\bin\Release\Jobbr.Server.dll" target="lib\net462"/>
-    <file src="source\Jobbr.Server\bin\Release\Jobbr.Server.pdb" target="lib\net462"/>
+    <file src="Jobbr.Server\bin\Release\Jobbr.Server.dll" target="lib\net462"/>
+    <file src="Jobbr.Server\bin\Release\Jobbr.Server.pdb" target="lib\net462"/>
   </files>
 </package>
