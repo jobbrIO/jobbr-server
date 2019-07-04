@@ -81,5 +81,36 @@ namespace Jobbr.Tests.Components.Scheduler
 
             Assert.AreEqual(9, failedJobRuns.Items.Count, $"Still have jobruns with the following states:\n {string.Join(", ", this.repository.GetJobRuns().Items.Select(jr => jr.State))}");
         }
+
+        [TestMethod]
+        public void GivenMultipleScheduledJobRuns_WhenLimitingAmountOfParallelRuns_ThenLatestShouldNotBeExecuted()
+        {
+            this.scheduler.Start();
+            var job = new Job
+            {
+                MaxConcurrentJobRuns = 1
+            };
+            this.repository.AddJob(job);
+            var dateFrom1991 = new DateTime(1991, 5, 17);
+            var dateFrom1992 = new DateTime(1992, 7, 12);
+            var dateFrom1993 = new DateTime(1993, 7, 12);
+            var firstTrigger = new ScheduledTrigger {JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom1991};
+            var secondTrigger = new ScheduledTrigger { JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom1992 };
+            var thirdTrigger = new ScheduledTrigger { JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom1993 };
+            this.repository.SaveAddTrigger(job.Id, firstTrigger);
+            this.repository.SaveAddTrigger(job.Id, secondTrigger);
+            this.repository.SaveAddTrigger(job.Id, thirdTrigger);
+
+            this.scheduler.OnTriggerAdded(job.Id, firstTrigger.Id);
+            this.scheduler.OnTriggerAdded(job.Id, secondTrigger.Id);
+
+           Assert.AreEqual(1, this.lastIssuedPlan.Count);
+           Assert.AreEqual(dateFrom1992, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc);
+
+           this.scheduler.OnTriggerAdded(job.Id, thirdTrigger.Id);
+
+           Assert.AreEqual(1, this.lastIssuedPlan.Count);
+           Assert.AreEqual(dateFrom1993, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc);
+        }
     }
 }
