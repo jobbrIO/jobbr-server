@@ -478,6 +478,15 @@ namespace Jobbr.Server.Scheduling
 
         private List<PlannedJobRun> GetPossiblePlannedJobRuns()
         {
+            var possibleRunsPerJob = this.GetPossibleRunsPerJob();
+            var scheduledPlanItems = this.GetOrderedScheduledPlanItems();
+            var runningJobs = CreatePlannedJobRuns(scheduledPlanItems, possibleRunsPerJob);
+
+            return runningJobs;
+        }
+
+        private Dictionary<long, int> GetPossibleRunsPerJob()
+        {
             var allRunningJobIds = this.repository.GetRunningJobs().Select(j => j.Job.Id).ToList();
             var allPlannedJobIds = this.currentPlan.Select(c => c.JobId).ToList();
             var allJobIds = allPlannedJobIds.Union(allRunningJobIds).ToList();
@@ -496,21 +505,29 @@ namespace Jobbr.Server.Scheduling
                 possibleRunsPerJob.Add(jobId, possibleSlots);
             }
 
-            var scheduledPlanItems = from item in this.currentPlan
-                orderby item.PlannedStartDateTimeUtc descending 
+            return possibleRunsPerJob;
+        }
+
+        private Dictionary<long, List<ScheduledPlanItem>> GetOrderedScheduledPlanItems()
+        {
+            return (from item in this.currentPlan
+                orderby item.PlannedStartDateTimeUtc descending
                 group item by item.JobId
                 into g
-                select new { JobId = g.Key, ScheduledPlanItems = g.ToList() };
+                select g).ToDictionary(k => k.Key, v => v.ToList());
+        }
 
+        private static List<PlannedJobRun> CreatePlannedJobRuns(Dictionary<long, List<ScheduledPlanItem>> scheduledPlanItems, Dictionary<long, int> possibleRunsPerJob)
+        {
             var runningJobs = new List<PlannedJobRun>();
             foreach (var scheduledPlanItem in scheduledPlanItems)
             {
-                for (var i = 0; i < possibleRunsPerJob[scheduledPlanItem.JobId] && i < scheduledPlanItem.ScheduledPlanItems.Count; i++)
+                for (var i = 0; i < possibleRunsPerJob[scheduledPlanItem.Key] && i < scheduledPlanItem.Value.Count; i++)
                 {
                     var plannedJobRun = new PlannedJobRun
                     {
-                        Id = scheduledPlanItem.ScheduledPlanItems[i].Id,
-                        PlannedStartDateTimeUtc = scheduledPlanItem.ScheduledPlanItems[i].PlannedStartDateTimeUtc,
+                        Id = scheduledPlanItem.Value[i].Id,
+                        PlannedStartDateTimeUtc = scheduledPlanItem.Value[i].PlannedStartDateTimeUtc,
                     };
                     runningJobs.Add(plannedJobRun);
                 }
