@@ -76,28 +76,24 @@ namespace Jobbr.Tests.Components.Scheduler
         public void GivenMultipleScheduledJobRuns_WhenLimitingAmountOfParallelRuns_ThenNewestShouldBeExecuted()
         {
             this.scheduler.Start();
-            var job = new Job
-            {
-                MaxConcurrentJobRuns = 1
-            };
-            this.repository.AddJob(job);
+            var jobId = this.AddAndSaveJob(1);
             var dateFrom2091 = new DateTime(2091, 5, 17);
             var dateFrom2092 = new DateTime(2092, 7, 12);
             var dateFrom2093 = new DateTime(2093, 7, 12);
-            var firstTrigger = new ScheduledTrigger {JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom2091};
-            var secondTrigger = new ScheduledTrigger { JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom2092 };
-            var thirdTrigger = new ScheduledTrigger { JobId = job.Id, IsActive = true, StartDateTimeUtc = dateFrom2093 };
-            this.repository.SaveAddTrigger(job.Id, firstTrigger);
-            this.repository.SaveAddTrigger(job.Id, secondTrigger);
-            this.repository.SaveAddTrigger(job.Id, thirdTrigger);
+            var firstTrigger = new ScheduledTrigger {JobId = jobId, IsActive = true, StartDateTimeUtc = dateFrom2091};
+            var secondTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = dateFrom2092 };
+            var thirdTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = dateFrom2093 };
+            this.repository.SaveAddTrigger(jobId, firstTrigger);
+            this.repository.SaveAddTrigger(jobId, secondTrigger);
+            this.repository.SaveAddTrigger(jobId, thirdTrigger);
 
-            this.scheduler.OnTriggerAdded(job.Id, firstTrigger.Id);
-            this.scheduler.OnTriggerAdded(job.Id, secondTrigger.Id);
+            this.scheduler.OnTriggerAdded(jobId, firstTrigger.Id);
+            this.scheduler.OnTriggerAdded(jobId, secondTrigger.Id);
 
            Assert.AreEqual(1, this.lastIssuedPlan.Count);
            Assert.AreEqual(dateFrom2091, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc);
 
-           this.scheduler.OnTriggerAdded(job.Id, thirdTrigger.Id);
+           this.scheduler.OnTriggerAdded(jobId, thirdTrigger.Id);
 
            Assert.AreEqual(1, this.lastIssuedPlan.Count);
            Assert.AreEqual(dateFrom2091, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc);
@@ -107,21 +103,37 @@ namespace Jobbr.Tests.Components.Scheduler
         public void GivenMultipleScheduledJobRuns_WhenLimitingAmountOfParallelRuns_ThenLatestShouldNotBeExecuted()
         {
             this.scheduler.Start();
-            var job = new Job
-            {
-                MaxConcurrentJobRuns = 2
-            };
-            this.repository.AddJob(job);
+            var jobId = this.AddAndSaveJob(2);
             var startTimeTrigger1 = new DateTime(2100, 1, 1);
             var startTimeTrigger2 = new DateTime(2200, 1, 1);
-            var firstTrigger = new ScheduledTrigger { JobId = job.Id, IsActive = true, StartDateTimeUtc = startTimeTrigger1 };
-            var secondTrigger = new ScheduledTrigger { JobId = job.Id, IsActive = true, StartDateTimeUtc = startTimeTrigger2 };
-            this.repository.SaveAddTrigger(job.Id, firstTrigger);
-            this.repository.SaveAddTrigger(job.Id, secondTrigger);
-            this.AddJobRun(new DateTime(2050, 1, 1), JobRunStates.Started, job.Id);
-            this.scheduler.OnTriggerAdded(job.Id, firstTrigger.Id);
+            var firstTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = startTimeTrigger1 };
+            var secondTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = startTimeTrigger2 };
+            this.repository.SaveAddTrigger(jobId, firstTrigger);
+            this.repository.SaveAddTrigger(jobId, secondTrigger);
+            this.AddJobRun(new DateTime(2050, 1, 1), JobRunStates.Started, jobId);
+            this.scheduler.OnTriggerAdded(jobId, firstTrigger.Id);
 
-            this.scheduler.OnTriggerAdded(job.Id, secondTrigger.Id);
+            this.scheduler.OnTriggerAdded(jobId, secondTrigger.Id);
+
+            Assert.AreEqual(1, this.lastIssuedPlan.Count);
+            Assert.AreEqual(startTimeTrigger1, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc);
+        }
+
+        [TestMethod]
+        public void ShouldQueueJobWhenJobRunEnded()
+        {
+            this.scheduler.Start();
+            var jobId = this.AddAndSaveJob(1);
+            var startTimeTrigger1 = new DateTime(2100, 1, 1);
+            var startTimeTrigger2 = new DateTime(2200, 1, 1);
+            var firstTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = startTimeTrigger1 };
+            var secondTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = startTimeTrigger2 };
+            this.repository.SaveAddTrigger(jobId, firstTrigger);
+            this.repository.SaveAddTrigger(jobId, secondTrigger);
+            this.scheduler.OnTriggerAdded(jobId, firstTrigger.Id);
+            var jobRunId = this.lastIssuedPlan.Single().Id;
+
+            this.scheduler.OnJobRunEnded(jobRunId);
 
             Assert.AreEqual(1, this.lastIssuedPlan.Count);
             Assert.AreEqual(startTimeTrigger1, this.lastIssuedPlan.Single().PlannedStartDateTimeUtc);
@@ -136,6 +148,16 @@ namespace Jobbr.Tests.Components.Scheduler
             var jobRun = this.repository.SaveNewJobRun(demoJob, scheduledTrigger, plannedStartDateTimeUtc);
             jobRun.State = state;
             this.repository.Update(jobRun);
+        }
+
+        private long AddAndSaveJob(int maxConcurrentJobRuns)
+        {
+            var job = new Job
+            {
+                MaxConcurrentJobRuns = maxConcurrentJobRuns
+            };
+            this.repository.AddJob(job);
+            return job.Id;
         }
     }
 }
