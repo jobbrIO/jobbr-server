@@ -99,6 +99,7 @@ namespace Jobbr.Server.JobRegistry
                 else
                 {
                     existingJob.Deleted = false;
+                    existingJob.MaxConcurrentJobRuns = jobDefinition.MaxConcurrentJobRuns;
                     storage.Update(existingJob);
                     // Update existing Jobs and triggers
                     if (!string.Equals(existingJob.Type, jobDefinition.ClrType, StringComparison.OrdinalIgnoreCase))
