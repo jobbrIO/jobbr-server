@@ -113,6 +113,7 @@
     <Compile Include="Scheduling\IDateTimeProvider.cs" />
     <Compile Include="Scheduling\IJobScheduler.cs" />
     <Compile Include="Scheduling\IPeriodicTimer.cs" />
+    <Compile Include="Scheduling\MaxConcurrentJobRunPlaner.cs" />
     <Compile Include="Scheduling\Planer\InstantJobRunPlaner.cs" />
     <Compile Include="Scheduling\Planer\PlanAction.cs" />
     <Compile Include="Scheduling\Planer\PlanResult.cs" />

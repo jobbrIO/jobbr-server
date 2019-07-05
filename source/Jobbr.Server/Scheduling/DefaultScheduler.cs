@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Jobbr.ComponentModel.Execution;
-using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Scheduling.Planer;
@@ -181,9 +180,9 @@ namespace Jobbr.Server.Scheduling
                 Logger.Info($"A JobRun has ended. Reevaluating triggers that did not yet schedule a run");
 
                 // Remove from in memory plan to not publish this in future
-                var numbertOfDeletedItems = this.currentPlan.RemoveAll(e => e.Id == id);
+                var numberOfDeletedItems = this.currentPlan.RemoveAll(e => e.Id == id);
 
-                var additonalItems = new List<ScheduledPlanItem>();
+                var additionalItems = new List<ScheduledPlanItem>();
 
                 // If a trigger was blocked previously, it might be a candidate to schedule now
                 var activeTriggers = this.repository.GetActiveTriggers(pageSize: int.MaxValue).Items;
@@ -201,14 +200,14 @@ namespace Jobbr.Server.Scheduling
                     {
                         var scheduledItem = this.CreateNew(planResult, trigger);
 
-                        additonalItems.Add(scheduledItem);
+                        additionalItems.Add(scheduledItem);
                     }
                 }
 
-                if (additonalItems.Any() || numbertOfDeletedItems > 0)
+                if (additionalItems.Any() || numberOfDeletedItems > 0)
                 {
-                    Logger.Info($"The completion of a previous job caused the addition of {additonalItems.Count} and removal of {numbertOfDeletedItems} scheduled items");
-                    this.currentPlan.AddRange(additonalItems);
+                    Logger.Info($"The completion of a previous job caused the addition of {additionalItems.Count} and removal of {numberOfDeletedItems} scheduled items");
+                    this.currentPlan.AddRange(additionalItems);
 
                     this.PublishCurrentPlan();
                 }
@@ -226,11 +225,11 @@ namespace Jobbr.Server.Scheduling
                 // Re-evaluate recurring triggers every n seconds
                 var activeTriggers = this.repository.GetActiveTriggers(pageSize: int.MaxValue).Items.Where(t => t.GetType() == typeof(RecurringTrigger));
 
-                var additonalItems = new List<ScheduledPlanItem>();
+                var additionalItems = new List<ScheduledPlanItem>();
 
-                foreach (RecurringTrigger trigger in activeTriggers.Cast<RecurringTrigger>())
+                foreach (var trigger in activeTriggers.Cast<RecurringTrigger>())
                 {
-                    PlanResult planResult = this.GetPlanResult(trigger, false);
+                    var planResult = this.GetPlanResult(trigger, false);
 
                     if (planResult.Action == PlanAction.Possible)
                     {
@@ -240,15 +239,15 @@ namespace Jobbr.Server.Scheduling
                         if (nextRunForTrigger == null || !nextRunForTrigger.PlannedStartDateTimeUtc.Equals(planResult.ExpectedStartDateUtc))
                         {
                             var scheduledItem = this.CreateNew(planResult, trigger);
-                            additonalItems.Add(scheduledItem);
+                            additionalItems.Add(scheduledItem);
                         }
                     }
                 }
 
-                if (additonalItems.Any())
+                if (additionalItems.Any())
                 {
-                    Logger.Info($"The re-evaluation of recuring triggers caused the addition of {additonalItems.Count} scheduled items");
-                    this.currentPlan.AddRange(additonalItems);
+                    Logger.Info($"The re-evaluation of recurring triggers caused the addition of {additionalItems.Count} scheduled items");
+                    this.currentPlan.AddRange(additionalItems);
 
                     this.PublishCurrentPlan();
                 }
@@ -391,7 +390,7 @@ namespace Jobbr.Server.Scheduling
         {
             Logger.Info($"Getting new plan for upcoming scheduled jobs to the executor. Number of Items: {this.currentPlan.Count}");
 
-            var possibleJobRuns = this.GetPossiblePlannedJobRuns();
+            var possibleJobRuns = MaxConcurrentJobRunPlaner.GetPossiblePlannedJobRuns(this.currentPlan, this.repository);
             
             Logger.Info($"Publishing new plan for upcoming planned jobs to the executor. Number of Items: {possibleJobRuns.Count}");
 
@@ -472,66 +471,6 @@ namespace Jobbr.Server.Scheduling
         private PlanResult GetPlanResult(object trigger, bool isNew)
         {
             throw new NotImplementedException($"Unable to dynamic dispatch trigger of type '{trigger?.GetType().Name}'");
-        }
-
-        private List<PlannedJobRun> GetPossiblePlannedJobRuns()
-        {
-            var possibleRunsPerJob = this.GetPossibleRunsPerJob();
-            var scheduledPlanItems = this.GetOrderedScheduledPlanItems();
-            var runningJobs = CreatePlannedJobRuns(scheduledPlanItems, possibleRunsPerJob);
-
-            return runningJobs;
-        }
-
-        private Dictionary<long, int> GetPossibleRunsPerJob()
-        {
-            var allRunningJobIds = this.repository.GetRunningJobs().Select(j => j.Job.Id).ToList();
-            var allPlannedJobIds = this.currentPlan.Select(c => c.JobId).ToList();
-            var allJobIds = allPlannedJobIds.Union(allRunningJobIds).ToList();
-
-            var possibleRunsPerJob = new Dictionary<long, int>();
-            foreach (var jobId in allJobIds)
-            {
-                var currentRunningJobs = allRunningJobIds.Count(a => a == jobId);
-                var maximumJobRuns = this.repository.GetJob(jobId).MaxConcurrentJobRuns;
-                if (maximumJobRuns == 0)
-                {
-                    maximumJobRuns = int.MaxValue;
-                }
-
-                var possibleSlots = maximumJobRuns - currentRunningJobs;
-                possibleRunsPerJob.Add(jobId, possibleSlots);
-            }
-
-            return possibleRunsPerJob;
-        }
-
-        private Dictionary<long, List<ScheduledPlanItem>> GetOrderedScheduledPlanItems()
-        {
-            return (from item in this.currentPlan
-                orderby item.PlannedStartDateTimeUtc 
-                group item by item.JobId
-                into g
-                select g).ToDictionary(k => k.Key, v => v.ToList());
-        }
-
-        private static List<PlannedJobRun> CreatePlannedJobRuns(Dictionary<long, List<ScheduledPlanItem>> scheduledPlanItems, Dictionary<long, int> possibleRunsPerJob)
-        {
-            var runningJobs = new List<PlannedJobRun>();
-            foreach (var scheduledPlanItem in scheduledPlanItems)
-            {
-                for (var i = 0; i < possibleRunsPerJob[scheduledPlanItem.Key] && i < scheduledPlanItem.Value.Count; i++)
-                {
-                    var plannedJobRun = new PlannedJobRun
-                    {
-                        Id = scheduledPlanItem.Value[i].Id,
-                        PlannedStartDateTimeUtc = scheduledPlanItem.Value[i].PlannedStartDateTimeUtc,
-                    };
-                    runningJobs.Add(plannedJobRun);
-                }
-            }
-
-            return runningJobs;
         }
     }
 }
