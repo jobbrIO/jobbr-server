@@ -90,4 +90,5 @@ This application was built by the following awesome developers:
 * Oliver Zürcher
 * Peter Gfader
 * Mark Odermatt
-* Steven Giesel
+* [Steven Giesel](https://github.com/linkdotnet)
+* David Fiebig
