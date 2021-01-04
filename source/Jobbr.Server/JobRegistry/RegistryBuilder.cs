@@ -100,7 +100,6 @@ namespace Jobbr.Server.JobRegistry
                 {
                     existingJob.Deleted = false;
                     existingJob.MaxConcurrentJobRuns = jobDefinition.MaxConcurrentJobRuns;
-                    storage.Update(existingJob);
                     
                     // Update existing Jobs and triggers
                     Logger.InfoFormat("Updating type for Job '{0}' (Id: '{1}') from '{2}' to '{2}'", existingJob.UniqueName, existingJob.Id, existingJob.Type, jobDefinition.ClrType);
