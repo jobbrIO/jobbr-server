@@ -37,6 +37,6 @@ deploy:
 - provider: NuGet
   server: https://nuget.org
   api_key:
-    secure: dmAor9/81YJtHhqccxBN1aHyDgLVB96KSqRlqnaiFxqF5ROMgz3jCivW8ROvv4N3
+    secure: M0g00y28joGDzBurWk8q1R4VNLm5FQF/a81NvbLa+GZ7mNWEHQii5EtFtuZTNnC1
   on:
     appveyor_repo_tag: true
