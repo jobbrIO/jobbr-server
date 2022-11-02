@@ -162,6 +162,11 @@ namespace Jobbr.Tests.Infrastructure
             this.inMemoryVersion.UpdateProgress(jobRunId, progress);
         }
 
+        public void ApplyRetention(DateTimeOffset date)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update(JobRun jobRun)
         {
             this.CheckFailAll();

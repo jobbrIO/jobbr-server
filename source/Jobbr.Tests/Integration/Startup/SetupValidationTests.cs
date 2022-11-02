@@ -52,7 +52,7 @@ namespace Jobbr.Tests.Integration.Startup
                 var builder = new JobbrBuilder();
 
                 // Register only Artefacts and Executor
-                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArfetacstStorageProvider));
+                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
                 builder.Register<IJobExecutor>(typeof(PseudoExecutor));
 
                 builder.Create();
@@ -93,7 +93,7 @@ namespace Jobbr.Tests.Integration.Startup
                 var builder = new JobbrBuilder();
 
                 // Register only Artefacts and JoStorage
-                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArfetacstStorageProvider));
+                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
                 builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
 
                 builder.Create();
@@ -113,7 +113,7 @@ namespace Jobbr.Tests.Integration.Startup
                 var builder = new JobbrBuilder();
 
                 // Register only Artefacts and JoStorage
-                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArfetacstStorageProvider));
+                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
                 builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
                 builder.Register<IJobExecutor>(typeof(PseudoExecutor));
 
@@ -135,7 +135,7 @@ namespace Jobbr.Tests.Integration.Startup
                 var builder = new JobbrBuilder();
 
                 // Register only Artefacts and JoStorage
-                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArfetacstStorageProvider));
+                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
                 builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
                 builder.Register<IJobExecutor>(typeof(PseudoExecutor));
 
@@ -147,9 +147,9 @@ namespace Jobbr.Tests.Integration.Startup
                 var warnings = capture.GetLines("WARN").ToList();
                 var fatals = capture.GetLines("FATAL").ToList();
 
-                Assert.IsFalse(fatals.Any(), "Got too manny fatals: \n\n * " + string.Join("\n * ", fatals));
-                Assert.IsFalse(errors.Any(), "Got too manny errors: \n\n * " + string.Join("\n * ", errors));
-                Assert.IsFalse(warnings.Any(), "Got too manny warnings: \n\n * " + string.Join("\n * ", warnings));
+                Assert.IsFalse(fatals.Any(), "Got too many fatals: \n\n * " + string.Join("\n * ", fatals));
+                Assert.IsFalse(errors.Any(), "Got too many errors: \n\n * " + string.Join("\n * ", errors));
+                Assert.IsFalse(warnings.Any(), "Got too many warnings: \n\n * " + string.Join("\n * ", warnings));
             }
         }
     }

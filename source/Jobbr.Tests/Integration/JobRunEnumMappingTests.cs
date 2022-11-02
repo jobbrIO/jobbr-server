@@ -31,7 +31,7 @@ namespace Jobbr.Tests.Integration
         }
 
         [TestMethod]
-        public void InfrastructureTest_GetComponenModelJobRunEnumTypes_HasSome()
+        public void InfrastructureTest_GetComponentModelJobRunEnumTypes_HasSome()
         {
             Assert.IsTrue(this.allComponentModelJobRunEnumTypes.Any(), "There should be some JobRun Enum Types in the Component Models");
         }
@@ -128,11 +128,11 @@ namespace Jobbr.Tests.Integration
 
                 // AutoMapper maps by using the index/value of the enum so we do
                 var masterValue = (int) Enum.Parse(masterType, name);
-                var remoteVaue = (int) Enum.Parse(remoteType, name);
+                var remoteValue = (int) Enum.Parse(remoteType, name);
 
-                if (remoteVaue != masterValue)
+                if (remoteValue != masterValue)
                 {
-                    var err = $"Remote {remoteType.FullName}.{name} (Value: {remoteVaue}) does not match with {masterType.FullName}.{name} (Value: {masterValue})";
+                    var err = $"Remote {remoteType.FullName}.{name} (Value: {remoteValue}) does not match with {masterType.FullName}.{name} (Value: {masterValue})";
 
                     yield return err;
                 }
