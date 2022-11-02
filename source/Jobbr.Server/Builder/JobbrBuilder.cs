@@ -53,7 +53,7 @@ namespace Jobbr.Server.Builder
             // Register default implementations if user did not specify any separate
             if (this.container.TryGet<IJobScheduler>() == null)
             {
-                // Don't warn because the internel Scheduler is usually in use
+                // Don't warn because the internal Scheduler is usually in use
                 this.AddDefaultScheduler();
             }
 

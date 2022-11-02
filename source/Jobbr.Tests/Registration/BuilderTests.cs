@@ -192,7 +192,7 @@ namespace Jobbr.Tests.Registration
         }
     }
 
-    public interface IPriorizationStrategy: IComparable<JobRun>
+    public interface IPrioritizationStrategy: IComparable<JobRun>
     {
         
     }

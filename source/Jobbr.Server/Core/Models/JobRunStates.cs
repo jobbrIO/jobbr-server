@@ -13,7 +13,7 @@
         Scheduled = 1,
 
         /// <summary>
-        /// The JobStarter has created a enviornment for the Job and copies a related files/data to the working directory
+        /// The JobStarter has created a environment for the Job and copies a related files/data to the working directory
         /// </summary>
         Preparing = 2,
 
@@ -28,12 +28,12 @@
         Started = 4,
 
         /// <summary>
-        /// The Executable itself has connected to the jobServer
+        /// The Executable itself has connected to the job server
         /// </summary>
         Connected = 5,
 
         /// <summary>
-        /// The Executable is running and connected to the jobserver
+        /// The Executable is running and connected to the job server
         /// </summary>
         Initializing = 6,
 
@@ -53,7 +53,7 @@
         Collecting = 9,
 
         /// <summary>
-        /// The job as executed sucessfully and the executer has cleaned up and terminated
+        /// The job as executed successfully and the executor has cleaned up and terminated
         /// </summary>
         Completed = 10,
 
@@ -68,7 +68,7 @@
         Deleted = 12,
 
         /// <summary>
-        /// The JobRun has been omitted. Eg job has been scheduled, Jobserver stopped (before the jobrun is executed) and After PlannedStartDateTime started again -> JobRun won't be started in that case but set to Omitted.
+        /// The JobRun has been omitted. Eg job has been scheduled, job server stopped (before the jobrun is executed) and After PlannedStartDateTime started again -> JobRun won't be started in that case but set to Omitted.
         /// </summary>
         Omitted = 13
     }

@@ -84,16 +84,16 @@ namespace Jobbr.Server.Scheduling
 
                 if (!dateTime.HasValue)
                 {
-                    Logger.Warn($"Unable to gather an expected start date for trigger, skipping.");
+                    Logger.Warn("Unable to gather an expected start date for trigger, skipping.");
                     return;
                 }
 
-                // Get the next occurence from database
+                // Get the next occurrence from database
                 var dependentJobRun = this.repository.GetNextJobRunByTriggerId(jobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                 if (dependentJobRun == null)
                 {
-                    Logger.Error($"Trigger was updated before job run has been created. Cannot apply update.");
+                    Logger.Error("Trigger was updated before job run has been created. Cannot apply update.");
                     return;
                 }
 
@@ -163,7 +163,7 @@ namespace Jobbr.Server.Scheduling
 
                 if (newItem == null)
                 {
-                    Logger.Error($"Unable to create a new Planned Item with a JobRun.");
+                    Logger.Error("Unable to create a new Planned Item with a JobRun.");
                     return;
                 }
 
@@ -177,7 +177,7 @@ namespace Jobbr.Server.Scheduling
         {
             lock (this.evaluateTriggersLock)
             {
-                Logger.Info($"A JobRun has ended. Reevaluating triggers that did not yet schedule a run");
+                Logger.Info("A JobRun has ended. Reevaluating triggers that did not yet schedule a run");
 
                 // Remove from in memory plan to not publish this in future
                 var numberOfDeletedItems = this.currentPlan.RemoveAll(e => e.Id == id);
@@ -265,7 +265,7 @@ namespace Jobbr.Server.Scheduling
                 return null;
             }
 
-            // Create the next occurence from database
+            // Create the next occurrence from database
             var newJobRun = this.CreateNewJobRun(trigger, dateTime.Value);
 
             // Add to the initial plan
@@ -356,7 +356,7 @@ namespace Jobbr.Server.Scheduling
 
                     var dateTime = planResult.ExpectedStartDateUtc;
 
-                    // Get the next occurence from database
+                    // Get the next occurrence from database
                     var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.JobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                     if (dependentJobRun != null)
@@ -453,21 +453,15 @@ namespace Jobbr.Server.Scheduling
         private PlanResult GetPlanResult(InstantTrigger trigger, bool isNew = false) => this.instantJobRunPlaner.Plan(trigger, isNew);
 
         // ReSharper disable once UnusedParameter.Local
-
         // Reason: Parameter is used by dynamic overload
-
         private PlanResult GetPlanResult(ScheduledTrigger trigger, bool isNew = false) => this.scheduledJobRunPlaner.Plan(trigger, isNew);
 
         // ReSharper disable once UnusedParameter.Local
-
         // Reason: Parameter is used by dynamic overload
-
         private PlanResult GetPlanResult(RecurringTrigger trigger, bool isNew = false) => this.recurringJobRunPlaner.Plan(trigger);
 
         // ReSharper disable once UnusedParameter.Local
-
         // Reason: Parameter is used by dynamic overload
-
         private PlanResult GetPlanResult(object trigger, bool isNew)
         {
             throw new NotImplementedException($"Unable to dynamic dispatch trigger of type '{trigger?.GetType().Name}'");

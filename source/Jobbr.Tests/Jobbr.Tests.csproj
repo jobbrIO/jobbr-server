@@ -111,7 +111,7 @@
     <Compile Include="Integration\Scheduler\SchedulerTests.cs" />
     <Compile Include="Infrastructure\FaultyJobStorageProvider.cs" />
     <Compile Include="Integration\Startup\ConsoleCapturer.cs" />
-    <Compile Include="Infrastructure\PseudoArfetacstStorageProvider.cs" />
+    <Compile Include="Infrastructure\PseudoArtefactsStorageProvider.cs" />
     <Compile Include="Infrastructure\PseudoExecutor.cs" />
     <Compile Include="Infrastructure\PseudoJobStorageProvider.cs" />
     <Compile Include="PackagingTests.cs" />
