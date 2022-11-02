@@ -30,9 +30,6 @@ build:
   project: source/Jobbr.Server.sln
 
 after_build:
-  - cmd: nuget install ILMerge -ExcludeVersion -Version 2.14.1208
-  - cmd: mkdir ilmerged
-  - cmd: ILMerge\tools\ILMerge.exe /out:ilmerged/Jobbr.Server.dll source/Jobbr.Server/bin/Release/Jobbr.Server.dll source/Jobbr.Server/bin/Release/AutoMapper.dll source/Jobbr.Server/bin/Release/NCrontab.dll source/Jobbr.Server/bin/Release/Newtonsoft.Json.dll source/Jobbr.Server/bin/Release/Ninject.dll /target:library /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /wildcards /internalize:internalize_exclude.txt /allowDup:HttpRequestMessageExtensions /allowDup:MediaTypeFormatterExtensions
   - cmd: nuget pack source\Jobbr.Server.nuspec -version "%GitVersion_SemVer%" -prop "target=%CONFIGURATION%"
   - cmd: appveyor PushArtifact "Jobbr.Server.%GitVersion_SemVer%.nupkg"
 
@@ -40,6 +37,6 @@ deploy:
 - provider: NuGet
   server: https://nuget.org
   api_key:
-    secure: +AgExDSzPqydFKSbpQBS0j3s8d3rwTli8aRmMbUZ3DVBL29Lj7MNPOxEDLJT7f07
+    secure: anKLNUxe1pn63rrNVCigoQVfA/fWML9gEpE1UHRLK/LDmQX4SM9WwzDx0kliHKWC
   on:
     appveyor_repo_tag: true

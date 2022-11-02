@@ -5,7 +5,7 @@ using Jobbr.ComponentModel.ArtefactStorage.Model;
 
 namespace Jobbr.Tests.Infrastructure
 {
-    public class PseudoArfetacstStorageProvider : IArtefactsStorageProvider
+    public class PseudoArtefactsStorageProvider : IArtefactsStorageProvider
     {
         public void Save(string container, string fileName, Stream content)
         {

@@ -254,6 +254,7 @@ namespace Jobbr.Tests.Components.Scheduler
             var recurringTrigger = new RecurringTrigger { Definition = "* * * * *", JobId = this.demoJob1Id, IsActive = true };
 
             // This triggers the first jobrun
+            this.repository.AddJob(new Job {Id = this.demoJob1Id});
             this.repository.SaveAddTrigger(this.demoJob1Id, recurringTrigger);
 
             this.scheduler.Start();

@@ -187,7 +187,7 @@ namespace Jobbr.Server
                 Logger.DebugFormat("Starting Executor ({0})...", this.executor.GetType().Name);
                 this.executor.Start();
 
-                Logger.Info("All services (Scheduler, Executor) have been started sucessfully.");
+                Logger.Info("All services (Scheduler, Executor) have been started successfully.");
             }
             catch (Exception e)
             {
@@ -211,7 +211,7 @@ namespace Jobbr.Server
                     jobbrComponent.Start();
                 }
 
-                Logger.Info("All Optional Services have been started sucessfully.");
+                Logger.Info("All Optional Services have been started successfully.");
 
                 this.isRunning = true;
             }
@@ -246,13 +246,13 @@ namespace Jobbr.Server
             try
             {
                 var numberOfChanges = this.registryBuilder.Apply(this.jobStorageProvider);
-                var numberOfJobs = this.jobStorageProvider.GetJobs().Items.Count;
+                var numberOfJobs = this.jobStorageProvider.GetJobs(pageSize: int.MaxValue).Items.Count;
 
-                Logger.InfoFormat("There were {0} by the JobRegistry. There are now {1} known jobs right available.", numberOfChanges, numberOfJobs);
+                Logger.InfoFormat("There were {0} changes by the JobRegistry. There are now {1} known jobs right available.", numberOfChanges, numberOfJobs);
             }
             catch (Exception e)
             {
-                Logger.FatalException("Cannot register Jobs on startup. See Execption for details", e);
+                Logger.FatalException("Cannot register Jobs on startup. See Exception for details", e);
             }
         }
     }

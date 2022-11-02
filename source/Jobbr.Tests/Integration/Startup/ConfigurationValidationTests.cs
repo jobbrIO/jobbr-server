@@ -31,14 +31,14 @@ namespace Jobbr.Tests.Integration.Startup
         {
             private readonly Action<DemoSettings> func;
             private readonly bool validationShouldFail;
-            private readonly bool throwExecption;
+            private readonly bool throwException;
 
             public Type ConfigurationType { get; set; } = typeof(DemoSettings);
 
-            public DemoComponentValidator(bool validationShouldFail, bool throwExecption)
+            public DemoComponentValidator(bool validationShouldFail, bool throwException)
             {
                 this.validationShouldFail = validationShouldFail;
-                this.throwExecption = throwExecption;
+                this.throwException = throwException;
             }
 
             public DemoComponentValidator(Action<DemoSettings> func)
@@ -48,7 +48,7 @@ namespace Jobbr.Tests.Integration.Startup
 
             public bool Validate(object configuration)
             {
-                if (this.throwExecption)
+                if (this.throwException)
                 {
                     throw new Exception("Exception from here");
                 }
@@ -104,7 +104,7 @@ namespace Jobbr.Tests.Integration.Startup
 
             builder.Add<DemoSettings>(new DemoSettings());
 
-            builder.Add<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: true, throwExecption: false));
+            builder.Add<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: true, throwException: false));
 
             var jobbr = builder.Create();
 
@@ -119,7 +119,7 @@ namespace Jobbr.Tests.Integration.Startup
 
             builder.Add<DemoSettings>(new DemoSettings());
 
-            builder.Add<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: false, throwExecption: true));
+            builder.Add<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: false, throwException: true));
 
             var jobbr = builder.Create();
 

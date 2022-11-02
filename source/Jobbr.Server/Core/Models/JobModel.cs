@@ -19,5 +19,7 @@ namespace Jobbr.Server.Core.Models
         public DateTime? CreatedDateTimeUtc { get; set; }
 
         public bool Deleted { get; set; }
+
+        public int MaxConcurrentJobRuns { get; set; }
     }
 }

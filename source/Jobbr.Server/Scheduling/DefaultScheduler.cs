@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Jobbr.ComponentModel.Execution;
-using Jobbr.ComponentModel.Execution.Model;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Logging;
 using Jobbr.Server.Scheduling.Planer;
@@ -85,16 +84,16 @@ namespace Jobbr.Server.Scheduling
 
                 if (!dateTime.HasValue)
                 {
-                    Logger.Warn($"Unable to gather an expected start date for trigger, skipping.");
+                    Logger.Warn("Unable to gather an expected start date for trigger, skipping.");
                     return;
                 }
 
-                // Get the next occurence from database
+                // Get the next occurrence from database
                 var dependentJobRun = this.repository.GetNextJobRunByTriggerId(jobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                 if (dependentJobRun == null)
                 {
-                    Logger.Error($"Trigger was updated before job run has been created. Cannot apply update.");
+                    Logger.Error("Trigger was updated before job run has been created. Cannot apply update.");
                     return;
                 }
 
@@ -164,7 +163,7 @@ namespace Jobbr.Server.Scheduling
 
                 if (newItem == null)
                 {
-                    Logger.Error($"Unable to create a new Planned Item with a JobRun.");
+                    Logger.Error("Unable to create a new Planned Item with a JobRun.");
                     return;
                 }
 
@@ -178,12 +177,12 @@ namespace Jobbr.Server.Scheduling
         {
             lock (this.evaluateTriggersLock)
             {
-                Logger.Info($"A JobRun has ended. Reevaluating triggers that did not yet schedule a run");
+                Logger.Info("A JobRun has ended. Reevaluating triggers that did not yet schedule a run");
 
                 // Remove from in memory plan to not publish this in future
-                var numbertOfDeletedItems = this.currentPlan.RemoveAll(e => e.Id == id);
+                var numberOfDeletedItems = this.currentPlan.RemoveAll(e => e.Id == id);
 
-                var additonalItems = new List<ScheduledPlanItem>();
+                var additionalItems = new List<ScheduledPlanItem>();
 
                 // If a trigger was blocked previously, it might be a candidate to schedule now
                 var activeTriggers = this.repository.GetActiveTriggers(pageSize: int.MaxValue).Items;
@@ -201,14 +200,14 @@ namespace Jobbr.Server.Scheduling
                     {
                         var scheduledItem = this.CreateNew(planResult, trigger);
 
-                        additonalItems.Add(scheduledItem);
+                        additionalItems.Add(scheduledItem);
                     }
                 }
 
-                if (additonalItems.Any() || numbertOfDeletedItems > 0)
+                if (additionalItems.Any() || numberOfDeletedItems > 0)
                 {
-                    Logger.Info($"The completion of a previous job caused the addition of {additonalItems.Count} and removal of {numbertOfDeletedItems} scheduled items");
-                    this.currentPlan.AddRange(additonalItems);
+                    Logger.Info($"The completion of a previous job caused the addition of {additionalItems.Count} and removal of {numberOfDeletedItems} scheduled items");
+                    this.currentPlan.AddRange(additionalItems);
 
                     this.PublishCurrentPlan();
                 }
@@ -226,11 +225,11 @@ namespace Jobbr.Server.Scheduling
                 // Re-evaluate recurring triggers every n seconds
                 var activeTriggers = this.repository.GetActiveTriggers(pageSize: int.MaxValue).Items.Where(t => t.GetType() == typeof(RecurringTrigger));
 
-                var additonalItems = new List<ScheduledPlanItem>();
+                var additionalItems = new List<ScheduledPlanItem>();
 
-                foreach (RecurringTrigger trigger in activeTriggers.Cast<RecurringTrigger>())
+                foreach (var trigger in activeTriggers.Cast<RecurringTrigger>())
                 {
-                    PlanResult planResult = this.GetPlanResult(trigger, false);
+                    var planResult = this.GetPlanResult(trigger, false);
 
                     if (planResult.Action == PlanAction.Possible)
                     {
@@ -240,15 +239,15 @@ namespace Jobbr.Server.Scheduling
                         if (nextRunForTrigger == null || !nextRunForTrigger.PlannedStartDateTimeUtc.Equals(planResult.ExpectedStartDateUtc))
                         {
                             var scheduledItem = this.CreateNew(planResult, trigger);
-                            additonalItems.Add(scheduledItem);
+                            additionalItems.Add(scheduledItem);
                         }
                     }
                 }
 
-                if (additonalItems.Any())
+                if (additionalItems.Any())
                 {
-                    Logger.Info($"The re-evaluation of recuring triggers caused the addition of {additonalItems.Count} scheduled items");
-                    this.currentPlan.AddRange(additonalItems);
+                    Logger.Info($"The re-evaluation of recurring triggers caused the addition of {additionalItems.Count} scheduled items");
+                    this.currentPlan.AddRange(additionalItems);
 
                     this.PublishCurrentPlan();
                 }
@@ -266,7 +265,7 @@ namespace Jobbr.Server.Scheduling
                 return null;
             }
 
-            // Create the next occurence from database
+            // Create the next occurrence from database
             var newJobRun = this.CreateNewJobRun(trigger, dateTime.Value);
 
             // Add to the initial plan
@@ -274,6 +273,7 @@ namespace Jobbr.Server.Scheduling
             {
                 TriggerId = trigger.Id,
                 Id = newJobRun.Id,
+                JobId = trigger.JobId,
                 PlannedStartDateTimeUtc = newJobRun.PlannedStartDateTimeUtc
             };
 
@@ -283,7 +283,7 @@ namespace Jobbr.Server.Scheduling
         private void SetScheduledJobRunsFromPastToOmitted()
         {
             var dateTime = this.dateTimeProvider.GetUtcNow();
-            var scheduledJobRuns = this.repository.GetJobRunsByState(JobRunStates.Scheduled).Items.Where(p => p.PlannedStartDateTimeUtc < dateTime).ToList();
+            var scheduledJobRuns = this.repository.GetJobRunsByState(JobRunStates.Scheduled, pageSize: int.MaxValue).Items.Where(p => p.PlannedStartDateTimeUtc < dateTime).ToList();
 
             if (!scheduledJobRuns.Any())
             {
@@ -351,12 +351,12 @@ namespace Jobbr.Server.Scheduling
                     if (planResult.ExpectedStartDateUtc == null)
                     {
                         // Move to ctor of PlanResult
-                        throw new ArgumentNullException("ExpectedStartDateUtc");
+                        throw new ArgumentNullException(nameof(planResult.ExpectedStartDateUtc));
                     }
 
                     var dateTime = planResult.ExpectedStartDateUtc;
 
-                    // Get the next occurence from database
+                    // Get the next occurrence from database
                     var dependentJobRun = this.repository.GetNextJobRunByTriggerId(trigger.JobId, trigger.Id, this.dateTimeProvider.GetUtcNow());
 
                     if (dependentJobRun != null)
@@ -373,7 +373,8 @@ namespace Jobbr.Server.Scheduling
                     {
                         TriggerId = trigger.Id,
                         Id = dependentJobRun.Id,
-                        PlannedStartDateTimeUtc = dependentJobRun.PlannedStartDateTimeUtc
+                        PlannedStartDateTimeUtc = dependentJobRun.PlannedStartDateTimeUtc,
+                        JobId = trigger.JobId,
                     });
                 }
             }
@@ -381,19 +382,21 @@ namespace Jobbr.Server.Scheduling
             // Set current plan
             this.currentPlan = newPlan;
 
-            // Publish the initial plan top the Excutor
+            // Publish the initial plan top the Executor
             this.PublishCurrentPlan();
         }
 
         private void PublishCurrentPlan()
         {
-            Logger.Info($"Publishing new plan for upcoming jobs to the executor. Number of Items: {this.currentPlan.Count}");
+            Logger.Info($"Getting new plan for upcoming scheduled jobs to the executor. Number of Items: {this.currentPlan.Count}");
 
-            var clone = this.currentPlan.Select(e => new PlannedJobRun { PlannedStartDateTimeUtc = e.PlannedStartDateTimeUtc, Id = e.Id }).ToList();
+            var possibleJobRuns = MaxConcurrentJobRunPlaner.GetPossiblePlannedJobRuns(this.currentPlan, this.repository);
+            
+            Logger.Info($"Publishing new plan for upcoming planned jobs to the executor. Number of Items: {possibleJobRuns.Count}");
 
             try
             {
-                this.executor.OnPlanChanged(clone);
+                this.executor.OnPlanChanged(possibleJobRuns);
             }
             catch (Exception e)
             {

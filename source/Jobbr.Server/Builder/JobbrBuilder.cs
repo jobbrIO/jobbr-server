@@ -53,7 +53,7 @@ namespace Jobbr.Server.Builder
             // Register default implementations if user did not specify any separate
             if (this.container.TryGet<IJobScheduler>() == null)
             {
-                // Don't warn because the internel Scheduler is usually in use
+                // Don't warn because the internal Scheduler is usually in use
                 this.AddDefaultScheduler();
             }
 
@@ -78,11 +78,9 @@ namespace Jobbr.Server.Builder
 
         public void Add<T>(object instance)
         {
-            var featureConfiguration = instance as IFeatureConfiguration;
-
-            if (featureConfiguration != null)
+            if (instance is IFeatureConfiguration featureConfiguration)
             {
-                this.container.Bind<IFeatureConfiguration>().ToConstant((IFeatureConfiguration)instance);
+                this.container.Bind<IFeatureConfiguration>().ToConstant(featureConfiguration);
             }
 
             this.container.Bind<T>().ToConstant((T)instance);
