@@ -7,10 +7,9 @@ namespace Jobbr.Tests
     public class PackagingTests
     {
         [TestMethod]
-        [Ignore]
         public void Feature_NuSpec_IsCompliant()
         {
-            var asserter = new Asserter(Asserter.ResolvePackagesConfig("Jobbr.Server"), Asserter.ResolveRootFile("Jobbr.Server.nuspec"));
+            var asserter = new Asserter(Asserter.ResolveProjectFile("Jobbr.Server", "Jobbr.Server.csproj"), Asserter.ResolveRootFile("Jobbr.Server.nuspec"));
 
             asserter.Add(new PackageExistsInBothRule("Jobbr.ComponentModel.ArtefactStorage"));
             asserter.Add(new PackageExistsInBothRule("Jobbr.ComponentModel.Execution"));

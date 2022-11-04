@@ -5,12 +5,12 @@
     <version>$version$</version>
     <authors>Jobbr</authors>
     <owners>Jobbr</owners>
-    <projectUrl>http://github.com/jobbrIO/jobbr-server</projectUrl>
-    <licenseUrl>https://raw.githubusercontent.com/jobbrIO/jobbr-server/develop/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/jobbrIO/jobbr-server</projectUrl>
+    <license type="expression">GPL-3.0-only</license>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Jobbr is a non-invasive .NET JobServer</description>
-    <iconUrl>https://raw.githubusercontent.com/jobbrIO/artwork/master/build/icons/icon_detailed_256_dark.png</iconUrl>
-    <copyright>Copyright 2018</copyright>
+    <copyright>Copyright 2022</copyright>
+    <icon>images\icon.png</icon>
     <dependencies>
       <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[1,1.1)" />
       <dependency id="Jobbr.ComponentModel.Execution" version="[1,1.1)" />
@@ -20,7 +20,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="Jobbr.Server\bin\Release\Jobbr.Server.dll" target="lib\net462"/>
-    <file src="Jobbr.Server\bin\Release\Jobbr.Server.pdb" target="lib\net462"/>
+    <file src="Jobbr.Server\bin\Release\net462\Jobbr.Server.dll" target="lib\net462"/>
+    <file src="Jobbr.Server\bin\Release\net462\Jobbr.Server.pdb" target="lib\net462"/>
+    <file src="icon.png" target="images/"/>
   </files>
 </package>
