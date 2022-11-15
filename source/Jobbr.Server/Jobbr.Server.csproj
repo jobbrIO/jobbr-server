@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{A45F729D-8629-4C7A-96B8-29EAA8D52919}</ProjectGuid>
-    <TargetFramework>net462</TargetFramework>
+	<TargetFramework>net6.0</TargetFramework>
     <AssemblyTitle>Jobber.Server</AssemblyTitle>
     <Company>Zuehlke Technology Group</Company>
     <Product>Jobbr.Server</Product>
@@ -30,16 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="Costura.Fody" Version="3.3.3" />
     <PackageReference Include="Desktop.Analyzers" Version="1.1.0" />
-    <PackageReference Include="Fody" Version="4.2.1">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Jobbr.ComponentModel.ArtefactStorage" Version="1.0.1" />
-    <PackageReference Include="Jobbr.ComponentModel.Execution" Version="1.0.1" />
-    <PackageReference Include="Jobbr.ComponentModel.JobStorage" Version="1.4.0" />
-    <PackageReference Include="Jobbr.ComponentModel.Management" Version="1.6.0" />
-    <PackageReference Include="Jobbr.ComponentModel.Registration" Version="1.0.1" />
     <PackageReference Include="LibLog" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -54,7 +45,15 @@
     <PackageReference Include="System.Runtime.Analyzers" Version="1.1.0" />
     <PackageReference Include="System.Runtime.InteropServices.Analyzers" Version="1.1.0" />
     <PackageReference Include="System.Security.Cryptography.Hashing.Algorithms.Analyzers" Version="1.1.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="TinyMessenger" Version="1.0.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Costura.Fody" Version="5.7.0" />
+    <PackageReference Include="Jobbr.ComponentModel.ArtefactStorage" Version="1.1.1" />
+    <PackageReference Include="Jobbr.ComponentModel.Execution" Version="1.1.1" />
+    <PackageReference Include="Jobbr.ComponentModel.JobStorage" Version="1.6.0" />
+    <PackageReference Include="Jobbr.ComponentModel.Management" Version="1.6.3" />
+    <PackageReference Include="Jobbr.ComponentModel.Registration" Version="1.0.3" />
   </ItemGroup>
 </Project>
