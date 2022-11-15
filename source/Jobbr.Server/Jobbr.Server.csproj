@@ -26,9 +26,6 @@
     </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="Desktop.Analyzers" Version="1.1.0" />
     <PackageReference Include="LibLog" Version="3.1.0">
@@ -49,7 +46,6 @@
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Costura.Fody" Version="5.7.0" />
     <PackageReference Include="Jobbr.ComponentModel.ArtefactStorage" Version="1.1.1" />
     <PackageReference Include="Jobbr.ComponentModel.Execution" Version="1.1.1" />
     <PackageReference Include="Jobbr.ComponentModel.JobStorage" Version="1.6.0" />

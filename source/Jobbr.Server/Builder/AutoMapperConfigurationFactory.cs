@@ -10,7 +10,6 @@ namespace Jobbr.Server.Builder
     {
         private static readonly ILog Logger = LogProvider.For<AutoMapperConfigurationFactory>();
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "We want to express the dynamic aspect of it")]
         public MapperConfiguration GetNew()
         {
             var foundAutoMapperProfiles = new List<Profile>();
