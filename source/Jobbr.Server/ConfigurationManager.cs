@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.ComponentServices.Registration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Jobbr.Server
 {
@@ -49,8 +48,12 @@ namespace Jobbr.Server
 
             foreach (var config in _featureConfigurations)
             {
-                var jsonSettings = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, ContractResolver = new IgnoreDelegatesFromSerializationContractResolver() };
-                var serialized = JsonConvert.SerializeObject(config, jsonSettings);
+                var jsonSettings = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                };
+
+                var serialized = JsonSerializer.Serialize(config, jsonSettings);
 
                 serialized = serialized.Replace("{", "[", StringComparison.CurrentCulture);
                 serialized = serialized.Replace("}", "]", StringComparison.CurrentCulture);
@@ -124,21 +127,6 @@ namespace Jobbr.Server
             if (!results.Values.All(r => r))
             {
                 throw new ArgumentNullException("Configuration failed for one or more configurations");
-            }
-        }
-
-        private class IgnoreDelegatesFromSerializationContractResolver : DefaultContractResolver
-        {
-            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-            {
-                var property = base.CreateProperty(member, memberSerialization);
-
-                if (typeof(MulticastDelegate).IsAssignableFrom(property.PropertyType.BaseType))
-                {
-                    property.ShouldSerialize = o => false;
-                }
-
-                return property;
             }
         }
     }
