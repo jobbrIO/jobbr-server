@@ -21,7 +21,7 @@ namespace Jobbr.Tests.Registration
         [TestMethod]
         public void RegisterCustomArtefactStorageProvider_AfterCreation_CorrectTypeIsActivated()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
 
             builder.Register<IArtefactsStorageProvider>(typeof(CustomArtefactStorageAdapter));
             builder.Register<IJobbrComponent>(typeof(ExposeAllServicesComponent));
@@ -36,7 +36,7 @@ namespace Jobbr.Tests.Registration
         [TestMethod]
         public void RegisterCustomJobStorageProvider_AfterCreation_CorrectTypeIsActivated()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
 
             builder.Register<IJobStorageProvider>(typeof(CustomJobStorageProvider));
             builder.Register<IJobbrComponent>(typeof(ExposeAllServicesComponent));
@@ -56,8 +56,8 @@ namespace Jobbr.Tests.Registration
             const long nonExistingJobId = 2;
             const long existingTriggerId = 10;
             const long nonExistingTriggerId = 20;
-            var existingJob = new Job {Id = 1, UniqueName = existingJobName};
-            var nonExistingJob = new Job {Id = 2, UniqueName = "DoIDieNow?"};
+            var existingJob = new Job { Id = 1, UniqueName = existingJobName };
+            var nonExistingJob = new Job { Id = 2, UniqueName = "DoIDieNow?" };
             var pagedJobs = CreatePagedResult(existingJob, nonExistingJob);
             var triggerForExistingJob = new RecurringTrigger { Id = existingTriggerId, JobId = existingJobId };
             var triggerForNonExistingJob = new RecurringTrigger { Id = nonExistingTriggerId, JobId = nonExistingJobId };
@@ -68,7 +68,7 @@ namespace Jobbr.Tests.Registration
             storage.Setup(s => s.GetTriggersByJobId(nonExistingJobId, 1, int.MaxValue, false))
                 .Returns(CreatePagedResult<JobTriggerBase>(triggerForNonExistingJob));
             SetupForSuccessfulRun(storage);
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
             builder.Add<IJobStorageProvider>(storage.Object);
             builder.AddJobs(repo =>
                 repo.AsSingleSourceOfTruth().Define(existingJobName, "CLR.Type"));
@@ -85,10 +85,10 @@ namespace Jobbr.Tests.Registration
         {
             const string jobName = "JobName";
             var storage = new Mock<IJobStorageProvider>();
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
             var job = new Job { Id = 1, UniqueName = jobName };
-            var trigger = new RecurringTrigger { Definition = "0 * * * *", JobId = 1, Id = 1};
-            var toDeleteTrigger = new RecurringTrigger { Definition = "0 1 * * *", JobId = 1, Id = 10};
+            var trigger = new RecurringTrigger { Definition = "0 * * * *", JobId = 1, Id = 1 };
+            var toDeleteTrigger = new RecurringTrigger { Definition = "0 1 * * *", JobId = 1, Id = 10 };
             storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(CreatePagedResult(job));
             storage.Setup(s => s.GetTriggersByJobId(1, 1, int.MaxValue, false))
                 .Returns(CreatePagedResult<JobTriggerBase>(trigger, toDeleteTrigger));
@@ -110,7 +110,7 @@ namespace Jobbr.Tests.Registration
         {
             const string jobName = "JobName";
             var storage = new Mock<IJobStorageProvider>();
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
             var job = new Job { Id = 1, UniqueName = jobName };
             storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(CreatePagedResult(job));
             builder.AddJobs(repo =>
@@ -132,12 +132,12 @@ namespace Jobbr.Tests.Registration
             var existingJob = new Job { Id = 1, UniqueName = existingJobName };
             var nonExistingJob = new Job { Id = 2, UniqueName = "DoIDieNow?" };
             var pagedJobs = CreatePagedResult(existingJob, nonExistingJob);
-            var toOmitJobRun = new JobRun {State = JobRunStates.Scheduled, Deleted = false};
+            var toOmitJobRun = new JobRun { State = JobRunStates.Scheduled, Deleted = false };
             var storage = new Mock<IJobStorageProvider>();
             storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(pagedJobs);
             storage.Setup(s => s.GetJobRunsByJobId((int)nonExistingJobId, 1, int.MaxValue, false))
                 .Returns(CreatePagedResult(toOmitJobRun));
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
             builder.Add<IJobStorageProvider>(storage.Object);
             builder.AddJobs(repo =>
                 repo.AsSingleSourceOfTruth().Define(existingJobName, "CLR.Type"));
@@ -153,7 +153,7 @@ namespace Jobbr.Tests.Registration
         {
             const string jobName = "JobName";
             var storage = new Mock<IJobStorageProvider>();
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
             var job = new Job { Id = 1, UniqueName = jobName };
             var toDeleteTrigger = new RecurringTrigger { Definition = "0 1 * * *", JobId = 1, Id = 10 };
             var toOmitJobRun = new JobRun { State = JobRunStates.Scheduled, Deleted = false };

@@ -45,7 +45,7 @@ namespace Jobbr.Tests.Integration
 
         protected static JobbrServer GivenAServerInstance()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
 
             builder.Register<IJobbrComponent>(typeof(ExposeAllServicesComponent));
 

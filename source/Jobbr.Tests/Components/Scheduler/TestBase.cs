@@ -20,7 +20,7 @@ namespace Jobbr.Tests.Components.Scheduler
 
         public TestBase()
         {
-            this.repository = new JobbrRepository(new InMemoryJobStorageProvider());
+            this.repository = new JobbrRepository(null, new InMemoryJobStorageProvider());
 
             var executorMock = new Mock<IJobExecutor>();
             executorMock.Setup(e => e.OnPlanChanged(It.IsNotNull<List<PlannedJobRun>>())).Callback<List<PlannedJobRun>>(p => this.lastIssuedPlan = p);
@@ -33,9 +33,9 @@ namespace Jobbr.Tests.Components.Scheduler
             this.repository.AddJob(job);
             this.demoJob1Id = job.Id;
 
-            this.scheduler = new DefaultScheduler(this.repository, executorMock.Object,
+            this.scheduler = new DefaultScheduler(null, this.repository, executorMock.Object,
                 new InstantJobRunPlaner(this.currentTimeProvider), new ScheduledJobRunPlaner(this.currentTimeProvider),
-                new RecurringJobRunPlaner(this.repository, this.currentTimeProvider), new DefaultSchedulerConfiguration(),
+                new RecurringJobRunPlaner(null, this.repository, this.currentTimeProvider), new DefaultSchedulerConfiguration(),
                 this.periodicTimer, this.currentTimeProvider);
         }
     }

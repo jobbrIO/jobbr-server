@@ -35,7 +35,7 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder();
+                var builder = new JobbrBuilder(null);
 
                 builder.Create();
 
@@ -49,7 +49,7 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder();
+                var builder = new JobbrBuilder(null);
 
                 // Register only Artefacts and Executor
                 builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
@@ -70,7 +70,7 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder();
+                var builder = new JobbrBuilder(null);
 
                 // Register only Executor and JobStorage
                 builder.Register<IJobExecutor>(typeof(PseudoExecutor));
@@ -90,7 +90,7 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder();
+                var builder = new JobbrBuilder(null);
 
                 // Register only Artefacts and JoStorage
                 builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
@@ -110,7 +110,7 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder();
+                var builder = new JobbrBuilder(null);
 
                 // Register only Artefacts and JoStorage
                 builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
@@ -132,7 +132,7 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder();
+                var builder = new JobbrBuilder(null);
 
                 // Register only Artefacts and JoStorage
                 builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));

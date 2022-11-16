@@ -15,7 +15,7 @@ namespace Jobbr.Tests.Integration.Startup
         [TestMethod]
         public void StartingJobber_GetsRunning_WhenStorageProviderTurnsHealthy()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
             builder.Register<IJobStorageProvider>(typeof(FaultyJobStorageProvider));
 
             var jobbr = builder.Create();
@@ -34,7 +34,7 @@ namespace Jobbr.Tests.Integration.Startup
         [TestMethod]
         public void StartingJobbr_ComponentFails_IsInErrorState()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
             builder.Register<IJobbrComponent>(typeof(FaultyComponent));
 
             var jobbr = builder.Create();
@@ -55,7 +55,7 @@ namespace Jobbr.Tests.Integration.Startup
         [ExpectedException(typeof(Exception))]
         public void StartingJobbr_ComponentFails_ExceptionIsThrown()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(null);
             builder.Register<IJobbrComponent>(typeof(FaultyComponent));
 
             var jobbr = builder.Create();

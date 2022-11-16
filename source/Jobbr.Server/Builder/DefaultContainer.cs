@@ -6,6 +6,7 @@ using Jobbr.Server.ComponentServices.Execution;
 using Jobbr.Server.ComponentServices.Management;
 using Jobbr.Server.ComponentServices.Registration;
 using Jobbr.Server.Storage;
+using Microsoft.Extensions.Logging;
 using Ninject;
 using TinyMessenger;
 
@@ -16,44 +17,46 @@ namespace Jobbr.Server.Builder
     /// </summary>
     internal class DefaultContainer : StandardKernel
     {
-        private readonly AutoMapperConfigurationFactory autoMapperConfigurationFactory = new AutoMapperConfigurationFactory();
+        private readonly AutoMapperConfigurationFactory _autoMapperConfigurationFactory;
 
-        public DefaultContainer()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultContainer"/> class.
+        /// </summary>
+        public DefaultContainer(ILoggerFactory loggerFactory)
         {
-            this.AddCoreServices();
-
-            this.AddAutoMapper();
-
-            this.AddComponentModelImplementations();
+            _autoMapperConfigurationFactory = new AutoMapperConfigurationFactory(loggerFactory.CreateLogger<AutoMapperConfigurationFactory>());
+            AddCoreServices();
+            AddAutoMapper();
+            AddComponentModelImplementations();
         }
 
         private void AddCoreServices()
         {
-            this.Bind<IJobbrRepository>().To<JobbrRepository>().InSingletonScope();
-            this.Bind<ITinyMessengerHub>().To<TinyMessengerHub>().InSingletonScope();
+            Bind<IJobbrRepository>().To<JobbrRepository>().InSingletonScope();
+            Bind<ITinyMessengerHub>().To<TinyMessengerHub>().InSingletonScope();
         }
 
         private void AddAutoMapper()
         {
-            var config = this.autoMapperConfigurationFactory.GetNew();
+            var config = _autoMapperConfigurationFactory.GetNew();
 
-            this.Bind<MapperConfiguration>().ToConstant(config);
-            this.Bind<IMapper>().ToProvider<AutoMapperProvider>();
+            Bind<MapperConfiguration>().ToConstant(config);
+            Bind<IMapper>().ToProvider<AutoMapperProvider>();
         }
 
         private void AddComponentModelImplementations()
         {
             // Registration
-            this.Bind<IJobbrServiceProvider>().ToConstant(new JobbrServiceProvider(this));
+            Bind<IJobbrServiceProvider>().ToConstant(new JobbrServiceProvider(this));
 
             // Management related services
-            this.Bind<IJobManagementService>().To<JobManagementService>().InSingletonScope();
-            this.Bind<IQueryService>().To<JobQueryService>().InSingletonScope();
-            this.Bind<IServerManagementService>().To<ServerManagementService>().InSingletonScope();
+            Bind<IJobManagementService>().To<JobManagementService>().InSingletonScope();
+            Bind<IQueryService>().To<JobQueryService>().InSingletonScope();
+            Bind<IServerManagementService>().To<ServerManagementService>().InSingletonScope();
 
             // Execution related services
-            this.Bind<IJobRunInformationService>().To<JobRunInformationService>().InSingletonScope();
-            this.Bind<IJobRunProgressChannel>().To<JobRunProgressReceiver>().InSingletonScope();
+            Bind<IJobRunInformationService>().To<JobRunInformationService>().InSingletonScope();
+            Bind<IJobRunProgressChannel>().To<JobRunProgressReceiver>().InSingletonScope();
         }
     }
 }

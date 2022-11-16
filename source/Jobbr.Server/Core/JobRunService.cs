@@ -5,67 +5,88 @@ using AutoMapper;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.Core.Models;
-using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
+using Microsoft.Extensions.Logging;
 using TinyMessenger;
 
 namespace Jobbr.Server.Core
 {
+    /// <summary>
+    /// Service for managing the job states, artifacts and IDs.
+    /// </summary>
     public class JobRunService
     {
-        private static readonly ILog Logger = LogProvider.For<JobRunService>();
+        private readonly ILogger<JobRunService> _logger;
+        private readonly ITinyMessengerHub _messengerHub;
+        private readonly IJobbrRepository _jobbrRepository;
+        private readonly IArtefactsStorageProvider _artefactsStorageProvider;
+        private readonly IMapper _mapper;
 
-        private readonly ITinyMessengerHub messengerHub;
-        private readonly IJobbrRepository repository;
-        private readonly IArtefactsStorageProvider artefactsStorageProvider;
-        private readonly IMapper mapper;
-
-        public JobRunService(ITinyMessengerHub messengerHub, IJobbrRepository repository, IArtefactsStorageProvider artefactsStorageProvider, IMapper mapper)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JobRunService"/> class.
+        /// </summary>
+        public JobRunService(ILogger<JobRunService> logger, ITinyMessengerHub messengerHub, IJobbrRepository jobbrRepository, IArtefactsStorageProvider artefactsStorageProvider, IMapper mapper)
         {
-            this.messengerHub = messengerHub;
-            this.repository = repository;
-            this.artefactsStorageProvider = artefactsStorageProvider;
-            this.mapper = mapper;
+            _logger = logger;
+            _messengerHub = messengerHub;
+            _jobbrRepository = jobbrRepository;
+            _artefactsStorageProvider = artefactsStorageProvider;
+            _mapper = mapper;
         }
 
+        /// <summary>
+        /// Update the progress of a job.
+        /// </summary>
+        /// <param name="jobRunId">ID for the job run.</param>
+        /// <param name="progress">How far the job has progressed.</param>
         public void UpdateProgress(long jobRunId, double progress)
         {
-            this.repository.UpdateJobRunProgress(jobRunId, progress);
+            _jobbrRepository.UpdateJobRunProgress(jobRunId, progress);
         }
 
+        /// <summary>
+        /// Update the state of a job.
+        /// </summary>
+        /// <param name="jobRunId">The ID of the job run.</param>
+        /// <param name="state">The new state for the job.</param>
         public void UpdateState(long jobRunId, JobRunStates state)
         {
-            Logger.InfoFormat("[{0}] The JobRun with id: {0} has switched to the '{1}'-State", jobRunId, state);
+            _logger.LogInformation("[{jobRunId}] The JobRun with id: {jobRunId} has switched to the '{state}'-State", jobRunId, jobRunId, state);
 
-            var jobRun = this.repository.GetJobRunById(jobRunId);
-            jobRun.State = this.mapper.Map<ComponentModel.JobStorage.Model.JobRunStates>(state);
+            var jobRun = _jobbrRepository.GetJobRunById(jobRunId);
+            jobRun.State = _mapper.Map<ComponentModel.JobStorage.Model.JobRunStates>(state);
 
             if (state == JobRunStates.Started)
             {
                 jobRun.ActualStartDateTimeUtc = DateTime.UtcNow;
             }
 
-            if (state == JobRunStates.Completed || state == JobRunStates.Failed)
+            if (state is JobRunStates.Completed or JobRunStates.Failed)
             {
                 jobRun.ActualEndDateTimeUtc = DateTime.UtcNow;
             }
 
-            this.repository.Update(jobRun);
+            _jobbrRepository.Update(jobRun);
 
             if (state == JobRunStates.Completed || state == JobRunStates.Failed)
             {
-                this.messengerHub.Publish(new JobRunCompletedMessage(this) { Id = jobRunId, IsSuccessful = state == JobRunStates.Completed });
+                _messengerHub.Publish(new JobRunCompletedMessage(this) { Id = jobRunId, IsSuccessful = state == JobRunStates.Completed });
             }
         }
 
+        /// <summary>
+        /// Gets job artifacts.
+        /// </summary>
+        /// <param name="jobRunId">ID of the job.</param>
+        /// <returns>A list of <see cref="JobArtefactModel"/>s. List is empty if none are found or an error is thrown in the process.</returns>
         public List<JobArtefactModel> GetArtefactsByJobRunId(long jobRunId)
         {
             try
             {
-                var artefacts = this.artefactsStorageProvider.GetArtefacts(jobRunId.ToString());
-                return this.mapper.Map<List<JobArtefactModel>>(artefacts);
+                var artefacts = _artefactsStorageProvider.GetArtefacts(jobRunId.ToString());
+                return _mapper.Map<List<JobArtefactModel>>(artefacts);
             }
-            catch
+            catch (Exception)
             {
                 // ignored
             }
@@ -73,39 +94,61 @@ namespace Jobbr.Server.Core
             return new List<JobArtefactModel>();
         }
 
+        /// <summary>
+        /// Gets a <see cref="Stream"/> of artifacts for the job.
+        /// </summary>
+        /// <param name="jobRunId">ID of the job.</param>
+        /// <param name="filename">Target file to stream to.</param>
+        /// <returns>An artifact <see cref="Stream"/> pointed towards the file. Null if none are found or error is thrown in the process.</returns>
         public Stream GetArtefactAsStream(long jobRunId, string filename)
         {
             try
             {
-                return this.artefactsStorageProvider.Load(jobRunId.ToString(), filename);
+                return _artefactsStorageProvider.Load(jobRunId.ToString(), filename);
             }
-            catch
+            catch (Exception)
             {
+                // ignored
             }
 
             return null;
         }
 
+        /// <summary>
+        /// Adds an artifact to a job.
+        /// </summary>
+        /// <param name="jobRunId">ID of the job.</param>
+        /// <param name="fileName">Filename of the file containing an artifact.</param>
+        /// <param name="result">Result <see cref="Stream"/>.</param>
         public void AddArtefact(long jobRunId, string fileName, Stream result)
         {
-            this.artefactsStorageProvider.Save(jobRunId.ToString(), fileName, result);
+            _artefactsStorageProvider.Save(jobRunId.ToString(), fileName, result);
         }
 
-        public void UpdatePid(long jobRunId, string host, int pid)
+        /// <summary>
+        /// Updates the process ID of the job.
+        /// </summary>
+        /// <param name="jobRunId">ID of the job.</param>
+        /// <param name="processId">New process ID.</param>
+        public void UpdatePid(long jobRunId, int processId)
         {
-            var jobRun = this.repository.GetJobRunById(jobRunId);
-            jobRun.Pid = pid;
+            var jobRun = _jobbrRepository.GetJobRunById(jobRunId);
+            jobRun.Pid = processId;
 
-            this.repository.Update(jobRun);
+            _jobbrRepository.Update(jobRun);
         }
 
+        /// <summary>
+        /// Deletes a job.
+        /// </summary>
+        /// <param name="jobRunId">ID of the job.</param>
         public void Delete(long jobRunId)
         {
-            var jobRun = this.repository.GetJobRunById(jobRunId);
+            var jobRun = _jobbrRepository.GetJobRunById(jobRunId);
 
             jobRun.Deleted = true;
 
-            this.repository.Update(jobRun);
+            _jobbrRepository.Update(jobRun);
         }
     }
 }

@@ -1,43 +1,57 @@
 ﻿using AutoMapper;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Execution.Model;
-using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
+using Microsoft.Extensions.Logging;
 
 namespace Jobbr.Server.ComponentServices.Execution
 {
+    /// <summary>
+    /// Service for retrieving information on job runs.
+    /// </summary>
     internal class JobRunInformationService : IJobRunInformationService
     {
-        private static readonly ILog Logger = LogProvider.For<JobRunInformationService>();
+        private readonly ILogger<JobRunInformationService> _logger;
+        private readonly IJobbrRepository _jobbrRepository;
+        private readonly IMapper _mapper;
 
-        private readonly IJobbrRepository jobbrRepository;
-        private readonly IMapper mapper;
-
-        public JobRunInformationService(IJobbrRepository jobbrRepository, IMapper mapper)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JobRunInformationService"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="jobbrRepository">Repository that contains the jobs.</param>
+        /// <param name="mapper">The mapper.</param>
+        public JobRunInformationService(ILogger<JobRunInformationService> logger, IJobbrRepository jobbrRepository, IMapper mapper)
         {
-            this.jobbrRepository = jobbrRepository;
-            this.mapper = mapper;
+            _logger = logger;
+            _jobbrRepository = jobbrRepository;
+            _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets a job by using the run ID.
+        /// </summary>
+        /// <param name="jobRunId">The run ID.</param>
+        /// <returns>A <see cref="JobRunInfo"/>.</returns>
         public JobRunInfo GetByJobRunId(long jobRunId)
         {
-            Logger.Debug($"Retrieving information regarding jobrun with id '{jobRunId}'");
+            _logger.LogDebug("Retrieving information regarding job run with ID '{jobRunId}'", jobRunId);
 
-            var jobRun = this.jobbrRepository.GetJobRunById(jobRunId);
+            var jobRun = _jobbrRepository.GetJobRunById(jobRunId);
 
             if (jobRun == null)
             {
                 return null;
             }
 
-            var trigger = this.jobbrRepository.GetTriggerById(jobRun.Job.Id, jobRun.Trigger.Id);
-            var job = this.jobbrRepository.GetJob(jobRun.Job.Id);
+            var trigger = _jobbrRepository.GetTriggerById(jobRun.Job.Id, jobRun.Trigger.Id);
+            var job = _jobbrRepository.GetJob(jobRun.Job.Id);
 
             var info = new JobRunInfo();
 
-            this.mapper.Map(job, info);
-            this.mapper.Map(trigger, info);
-            this.mapper.Map(jobRun, info);
+            _mapper.Map(job, info);
+            _mapper.Map(trigger, info);
+            _mapper.Map(jobRun, info);
 
             return info;
         }

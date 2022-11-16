@@ -18,13 +18,13 @@ namespace Jobbr.Tests.Components.JobRunService
 
         public ProgressUpdateTests()
         {
-            var autoMapperConfig = new AutoMapperConfigurationFactory().GetNew();
+            var autoMapperConfig = new AutoMapperConfigurationFactory(null).GetNew();
             
-            this.repo = new JobbrRepository(new InMemoryJobStorageProvider());
+            this.repo = new JobbrRepository(null, new InMemoryJobStorageProvider());
 
             this.messengerHub = new TinyMessengerHub();
 
-            this.service = new Server.Core.JobRunService(this.messengerHub, this.repo, null, autoMapperConfig.CreateMapper());
+            this.service = new Server.Core.JobRunService(null, this.messengerHub, this.repo, null, autoMapperConfig.CreateMapper());
         }
 
         private JobRun GivenAJobRun()
