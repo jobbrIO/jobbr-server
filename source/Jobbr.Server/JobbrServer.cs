@@ -215,7 +215,7 @@ namespace Jobbr.Server
             }
             catch (Exception e)
             {
-                _logger.LogCritical("At least one of the services couldn't be started. Reason: {e}\n\n Please see the exception for details.", e.InnerException);
+                _logger.LogCritical(e, "At least one of the services couldn't be started. Reason: {e}\n\n Please see the exception for details.", e.InnerException);
                 throw;
             }
         }
@@ -231,7 +231,7 @@ namespace Jobbr.Server
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Exception while connecting to database to get all Jobs on startup: '{e}'", ex);
+                    _logger.LogError(ex, "Exception while connecting to database to get all Jobs on startup");
                     Thread.Sleep(1000);
                 }
             }
@@ -250,7 +250,7 @@ namespace Jobbr.Server
             }
             catch (Exception e)
             {
-                _logger.LogCritical("Cannot register Jobs on startup. See Exception for details: {e}", e);
+                _logger.LogCritical(e, "Cannot register Jobs on startup. See exception for details.");
             }
         }
     }

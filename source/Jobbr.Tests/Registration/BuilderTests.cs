@@ -104,7 +104,6 @@ namespace Jobbr.Tests.Registration
             // Assert
             Assert.IsFalse(triggerForNonExistingJob.IsActive);
             Assert.IsTrue(triggerForNonExistingJob.Deleted);
-            _loggerFactory.Dispose();
         }
 
         [TestMethod]

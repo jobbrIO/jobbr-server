@@ -313,7 +313,7 @@ namespace Jobbr.Server.Scheduling
             {
                 jobRun.State = JobRunStates.Failed;
                 _jobbrRepository.Update(jobRun);
-                
+
                 _logger.LogDebug("Set JobRun with id {jobRunId} for job {jobId} to the state 'Failed'. Possible Reason: Unclean shutdown.", jobRun.Id, jobRun.Job.Id);
             }
         }
@@ -396,7 +396,7 @@ namespace Jobbr.Server.Scheduling
             }
             catch (Exception e)
             {
-                _logger.LogWarning("Unable to publish current plan to Executor. Exception: '{e}'", e);
+                _logger.LogWarning(e, "Unable to publish current plan to Executor.");
             }
         }
 
@@ -414,13 +414,14 @@ namespace Jobbr.Server.Scheduling
             // Is this value in sync with the schedule table?
             if (plannedNextRun.PlannedStartDateTimeUtc == calculatedNextRun)
             {
-                _logger.LogDebug("The previously planned start date '{nextRunStart}' is still correct for JobRun (id: {nextRunId}) triggered by trigger with id '{triggerId}' (Type: '{triggerType}', userId: '{triggerUserId}', userName: '{triggerUserName}')",
-                calculatedNextRun,
-                plannedNextRun.Id,
-                trigger.Id,
-                trigger.GetType().Name,
-                trigger.UserId, 
-                trigger.UserDisplayName);
+                _logger.LogDebug(
+                    "The previously planned start date '{nextRunStart}' is still correct for JobRun (id: {nextRunId}) triggered by trigger with id '{triggerId}' (Type: '{triggerType}', userId: '{triggerUserId}', userName: '{triggerUserName}')",
+                    calculatedNextRun,
+                    plannedNextRun.Id,
+                    trigger.Id,
+                    trigger.GetType().Name,
+                    trigger.UserId,
+                    trigger.UserDisplayName);
 
                 return;
             }
@@ -431,10 +432,10 @@ namespace Jobbr.Server.Scheduling
             if (utcNow.AddSeconds(_schedulerConfiguration.AllowChangesBeforeStartInSec) >= calculatedNextRun)
             {
                 _logger.LogWarning(
-                 "The planned start date '{startTime}' has changed to '{nextRunStart}'. This change was done too close (less than {changeWindowSecs} seconds) to the next planned run and cannot be adjusted",
-                 plannedNextRun.PlannedStartDateTimeUtc,
-                 calculatedNextRun,
-                 _schedulerConfiguration.AllowChangesBeforeStartInSec);
+                    "The planned start date '{startTime}' has changed to '{nextRunStart}'. This change was done too close (less than {changeWindowSecs} seconds) to the next planned run and cannot be adjusted", 
+                    plannedNextRun.PlannedStartDateTimeUtc, 
+                    calculatedNextRun,
+                    _schedulerConfiguration.AllowChangesBeforeStartInSec);
 
                 return;
             }

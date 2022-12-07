@@ -98,7 +98,7 @@ namespace Jobbr.Tests.Integration.Startup
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(Exception))]
         public void ValidatorForSettings_ValidationFails_PreventsStart()
         {
             var builder = new JobbrBuilder(new NullLoggerFactory());
@@ -113,7 +113,7 @@ namespace Jobbr.Tests.Integration.Startup
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(Exception))]
         public void ValidatorForSettings_ThrowsException_PreventsStart()
         {
             var builder = new JobbrBuilder(new NullLoggerFactory());

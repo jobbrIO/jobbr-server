@@ -5,8 +5,7 @@
     <AssemblyTitle>Jobber.Server</AssemblyTitle>
     <Company>Zuehlke Technology Group</Company>
     <Product>Jobbr.Server</Product>
-    <Copyright>Copyright © Zuehlke Technology Group 2015</Copyright>
-    <Version>1.0.6-pre</Version>
+    <Copyright>Copyright © Zuehlke Technology Group 2022</Copyright>
     <CodeAnalysisRuleSet>..\JobbrRuleSet.ruleset</CodeAnalysisRuleSet>
     <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
@@ -36,9 +35,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="TinyMessenger" Version="1.0.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Jobbr.ComponentModel.ArtefactStorage" Version="1.1.1" />
     <PackageReference Include="Jobbr.ComponentModel.Execution" Version="1.1.1" />
     <PackageReference Include="Jobbr.ComponentModel.JobStorage" Version="1.6.0" />

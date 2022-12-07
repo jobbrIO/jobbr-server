@@ -52,8 +52,6 @@ namespace Jobbr.Server.Builder
         {
             var config = _autoMapperConfigurationFactory.GetNew();
 
-            // RegisterInstance(config);
-            // Register(() => config.CreateMapper());
             RegisterInstance(config.CreateMapper());
         }
 

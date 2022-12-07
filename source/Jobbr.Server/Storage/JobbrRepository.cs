@@ -98,7 +98,7 @@ namespace Jobbr.Server.Storage
             }
             catch (Exception e)
             {
-                _logger.LogCritical("Cannot read active triggers from storage provider due to an exception. Returning empty list. Exception: {e}", e);
+                _logger.LogCritical(e, "Cannot read active triggers from storage provider due to an exception. Returning empty list.");
 
                 return new PagedResult<JobTriggerBase>
                 {

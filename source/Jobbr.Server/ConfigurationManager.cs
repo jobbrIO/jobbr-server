@@ -120,7 +120,7 @@ namespace Jobbr.Server
 
             if (!results.Values.All(r => r))
             {
-                throw new ArgumentNullException("Configuration failed for one or more configurations");
+                throw new Exception("Configuration failed for one or more configurations");
             }
         }
     }

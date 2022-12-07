@@ -6,7 +6,6 @@ using Jobbr.ComponentModel.JobStorage;
 using Jobbr.Server.Builder;
 using Jobbr.Tests.Infrastructure;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Startup
@@ -37,12 +36,19 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder(new NullLoggerFactory());
+                var loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    _ = builder.AddConsole();
+                });
+
+                var builder = new JobbrBuilder(loggerFactory);
 
                 builder.Create();
 
                 var allLogEntries = capture.GetLines();
                 Assert.IsTrue(allLogEntries.Any());
+
+                loggerFactory.Dispose();
             }
         }
 
