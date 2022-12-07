@@ -14,7 +14,7 @@ namespace Jobbr.Server.Core
     /// <summary>
     /// Service for managing the job states, artifacts and IDs.
     /// </summary>
-    public class JobRunService
+    public class JobRunService : IJobRunService
     {
         private readonly ILogger<JobRunService> _logger;
         private readonly ITinyMessengerHub _messengerHub;
@@ -25,30 +25,22 @@ namespace Jobbr.Server.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="JobRunService"/> class.
         /// </summary>
-        public JobRunService(ILogger<JobRunService> logger, ITinyMessengerHub messengerHub, IJobbrRepository jobbrRepository, IArtefactsStorageProvider artefactsStorageProvider, IMapper mapper)
+        public JobRunService(ILoggerFactory loggerFactory, ITinyMessengerHub messengerHub, IJobbrRepository jobbrRepository, IArtefactsStorageProvider artefactsStorageProvider, IMapper mapper)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<JobRunService>();
             _messengerHub = messengerHub;
             _jobbrRepository = jobbrRepository;
             _artefactsStorageProvider = artefactsStorageProvider;
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// Update the progress of a job.
-        /// </summary>
-        /// <param name="jobRunId">ID for the job run.</param>
-        /// <param name="progress">How far the job has progressed.</param>
+        /// <inheritdoc/>
         public void UpdateProgress(long jobRunId, double progress)
         {
             _jobbrRepository.UpdateJobRunProgress(jobRunId, progress);
         }
 
-        /// <summary>
-        /// Update the state of a job.
-        /// </summary>
-        /// <param name="jobRunId">The ID of the job run.</param>
-        /// <param name="state">The new state for the job.</param>
+        /// <inheritdoc/>
         public void UpdateState(long jobRunId, JobRunStates state)
         {
             _logger.LogInformation("[{jobRunId}] The JobRun with id: {jobRunId} has switched to the '{state}'-State", jobRunId, jobRunId, state);
@@ -74,11 +66,7 @@ namespace Jobbr.Server.Core
             }
         }
 
-        /// <summary>
-        /// Gets job artifacts.
-        /// </summary>
-        /// <param name="jobRunId">ID of the job.</param>
-        /// <returns>A list of <see cref="JobArtefactModel"/>s. List is empty if none are found or an error is thrown in the process.</returns>
+        /// <inheritdoc/>
         public List<JobArtefactModel> GetArtefactsByJobRunId(long jobRunId)
         {
             try
@@ -94,12 +82,7 @@ namespace Jobbr.Server.Core
             return new List<JobArtefactModel>();
         }
 
-        /// <summary>
-        /// Gets a <see cref="Stream"/> of artifacts for the job.
-        /// </summary>
-        /// <param name="jobRunId">ID of the job.</param>
-        /// <param name="filename">Target file to stream to.</param>
-        /// <returns>An artifact <see cref="Stream"/> pointed towards the file. Null if none are found or error is thrown in the process.</returns>
+        /// <inheritdoc/>
         public Stream GetArtefactAsStream(long jobRunId, string filename)
         {
             try
@@ -114,22 +97,13 @@ namespace Jobbr.Server.Core
             return null;
         }
 
-        /// <summary>
-        /// Adds an artifact to a job.
-        /// </summary>
-        /// <param name="jobRunId">ID of the job.</param>
-        /// <param name="fileName">Filename of the file containing an artifact.</param>
-        /// <param name="result">Result <see cref="Stream"/>.</param>
+        /// <inheritdoc/>
         public void AddArtefact(long jobRunId, string fileName, Stream result)
         {
             _artefactsStorageProvider.Save(jobRunId.ToString(), fileName, result);
         }
 
-        /// <summary>
-        /// Updates the process ID of the job.
-        /// </summary>
-        /// <param name="jobRunId">ID of the job.</param>
-        /// <param name="processId">New process ID.</param>
+        /// <inheritdoc/>
         public void UpdatePid(long jobRunId, int processId)
         {
             var jobRun = _jobbrRepository.GetJobRunById(jobRunId);
@@ -138,10 +112,7 @@ namespace Jobbr.Server.Core
             _jobbrRepository.Update(jobRun);
         }
 
-        /// <summary>
-        /// Deletes a job.
-        /// </summary>
-        /// <param name="jobRunId">ID of the job.</param>
+        /// <inheritdoc/>
         public void Delete(long jobRunId)
         {
             var jobRun = _jobbrRepository.GetJobRunById(jobRunId);

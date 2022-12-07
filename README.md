@@ -80,9 +80,6 @@ By default Jobbr runs in memory, thus all data is lost when Jobbr is restarted. 
 - [Filesystem Storage Provider](https://github.com/jobbrIO/jobbr-artefactstorage-filesystem) to store the data in a folder
 - [RavenFS Storage Provider](https://github.com/jobbrIO/jobbr-artefactstorage-ravenfs) to store the data in [RavenDB](http://ravendb.net)
 
-## Logging
-
-Jobbr uses the LibLog library to detect your Logging-Framework of the Hosting Process. When using Jobbr, you don't introduce a new dependency to an existing Logging-Framework. See https://github.com/damianh/LibLog for details.
 
 # License
 
@@ -93,7 +90,7 @@ This software is licenced under GPLv3. See [LICENSE](LICENSE), please see the re
 Jobbr Server is based on following great open source projects:
 * [AutoMapper](https://github.com/AutoMapper/AutoMapper]) [(MIT)](https://github.com/AutoMapper/AutoMapper/blob/master/LICENSE.txt)
 * [NCrontab](https://github.com/atifaziz/NCrontab) [(Apache-2.0)](https://github.com/atifaziz/NCrontab/blob/master/COPYING.txt)
-* [Ninject](https://github.com/ninject/Ninject) [(Apache-2.0)](https://github.com/ninject/ninject/blob/master/LICENSE.txt)
+* [SimpleInjector](https://github.com/simpleinjector/SimpleInjector) [(MIT)](https://github.com/simpleinjector/SimpleInjector/blob/master/LICENSE)
 * [TinyMessenger](https://github.com/grumpydev/TinyMessenger/blob/master/licence.txt) [(Ms-PL)](https://github.com/grumpydev/TinyMessenger/blob/master/licence.txt)
 
 ## Credits
@@ -106,3 +103,4 @@ This application was built by the following awesome developers:
 * [Steven Giesel](https://github.com/linkdotnet)
 * [David Fiebig](https://github.com/david-fiebig)
 * [Lukas Dürrenberger](https://github.com/eXpl0it3r)
+* [Roope Kivioja](https://github.com/RKivioja)

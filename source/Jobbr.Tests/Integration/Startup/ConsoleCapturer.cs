@@ -8,46 +8,38 @@ namespace Jobbr.Tests.Integration.Startup
 {
     public class ConsoleCapturer : TextWriter
     {
-        private readonly TextWriter consoleWriter;
-        private readonly StringBuilder capture;
+        private readonly TextWriter _consoleWriter;
+        private readonly StringBuilder _capture;
+
+        public ConsoleCapturer()
+        {
+            _consoleWriter = Console.Out;
+            _capture = new StringBuilder();
+
+            Console.SetOut(this);
+        }
 
         public IEnumerable<string> GetLines()
         {
-            return this.capture.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            return _capture.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
         }
 
         public IEnumerable<string> GetLines(params string[] needles)
         {
-            var allLines = this.GetLines();
-
-            foreach (var line in allLines)
-            {
-                if (needles.All(n => line.Contains(n)))
-                {
-                    yield return line;
-                }
-            }
-        }
-
-        public ConsoleCapturer()
-        {
-            this.consoleWriter = Console.Out;
-            this.capture = new StringBuilder();
-
-            Console.SetOut(this);
+            return GetLines().Where(l => needles.Any(l.Contains));
         }
 
         public override Encoding Encoding => Encoding.UTF8;
 
         public override void Write(char value)
         {
-            this.consoleWriter.Write(value);
-            this.capture.Append(value);
+            _consoleWriter.Write(value);
+            _capture.Append(value);
         }
 
         protected override void Dispose(bool disposing)
         {
-            Console.SetOut(this.consoleWriter);
+            Console.SetOut(_consoleWriter);
             base.Dispose(disposing);
         }
     }

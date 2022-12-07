@@ -1,28 +1,34 @@
-using System.Diagnostics.CodeAnalysis;
 using Jobbr.Server.Scheduling;
 using TinyMessenger;
 
 namespace Jobbr.Server.Core.Messaging
 {
-    [SuppressMessage("Design", "CA2213:Disposable fields should be disposed", Justification = "Cannot disopose scheduler, because it's an external dependency")]
-    public class MessageDispatcher
+    /// <summary>
+    /// Sets up message subscriptions.
+    /// </summary>
+    public class MessageDispatcher : IMessageDispatcher
     {
-        private readonly ITinyMessengerHub messengerHub;
-        private readonly IJobScheduler scheduler;
+        private readonly ITinyMessengerHub _messengerHub;
+        private readonly IJobScheduler _scheduler;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageDispatcher"/> class.
+        /// </summary>
+        /// <param name="messengerHub">The TinyMessenger message hub.</param>
+        /// <param name="scheduler">The job scheduler.</param>
         public MessageDispatcher(ITinyMessengerHub messengerHub, IJobScheduler scheduler)
         {
-            this.messengerHub = messengerHub;
-            this.scheduler = scheduler;
+            _messengerHub = messengerHub;
+            _scheduler = scheduler;
         }
 
+        /// <inheritdoc/>
         public void WireUp()
         {
-            this.messengerHub.Subscribe<TriggerAddedMessage>(m => this.scheduler.OnTriggerAdded(m.JobId, m.TriggerId));
-            this.messengerHub.Subscribe<TriggerUpdatedMessage>(m => this.scheduler.OnTriggerDefinitionUpdated(m.JobId, m.TriggerId));
-            this.messengerHub.Subscribe<TriggerStateChangedMessage>(m => this.scheduler.OnTriggerStateUpdated(m.JobId, m.TriggerId));
-
-            this.messengerHub.Subscribe<JobRunCompletedMessage>(m => this.scheduler.OnJobRunEnded(m.Id));
+            _messengerHub.Subscribe<TriggerAddedMessage>(m => _scheduler.OnTriggerAdded(m.JobId, m.TriggerId));
+            _messengerHub.Subscribe<TriggerUpdatedMessage>(m => _scheduler.OnTriggerDefinitionUpdated(m.JobId, m.TriggerId));
+            _messengerHub.Subscribe<TriggerStateChangedMessage>(m => _scheduler.OnTriggerStateUpdated(m.JobId, m.TriggerId));
+            _messengerHub.Subscribe<JobRunCompletedMessage>(m => _scheduler.OnJobRunEnded(m.Id));
         }
     }
 }

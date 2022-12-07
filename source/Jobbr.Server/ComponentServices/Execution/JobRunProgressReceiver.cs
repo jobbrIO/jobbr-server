@@ -11,7 +11,7 @@ namespace Jobbr.Server.ComponentServices.Execution
     /// </summary>
     internal class JobRunProgressReceiver : IJobRunProgressChannel
     {
-        private readonly JobRunService _jobRunService;
+        private readonly IJobRunService _jobRunService;
         private readonly IMapper _mapper;
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace Jobbr.Server.ComponentServices.Execution
         /// </summary>
         /// <param name="jobRunService">Job run service.</param>
         /// <param name="mapper">The mapper.</param>
-        public JobRunProgressReceiver(JobRunService jobRunService, IMapper mapper)
+        public JobRunProgressReceiver(IJobRunService jobRunService, IMapper mapper)
         {
             _jobRunService = jobRunService;
             _mapper = mapper;

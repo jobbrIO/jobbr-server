@@ -18,12 +18,12 @@ namespace Jobbr.Server.ComponentServices.Execution
         /// <summary>
         /// Initializes a new instance of the <see cref="JobRunInformationService"/> class.
         /// </summary>
-        /// <param name="logger">The logger.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="jobbrRepository">Repository that contains the jobs.</param>
         /// <param name="mapper">The mapper.</param>
-        public JobRunInformationService(ILogger<JobRunInformationService> logger, IJobbrRepository jobbrRepository, IMapper mapper)
+        public JobRunInformationService(ILoggerFactory loggerFactory, IJobbrRepository jobbrRepository, IMapper mapper)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<JobRunInformationService>();
             _jobbrRepository = jobbrRepository;
             _mapper = mapper;
         }

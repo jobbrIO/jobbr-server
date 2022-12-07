@@ -10,25 +10,31 @@ namespace Jobbr.Server.JobRegistry
     /// <summary>
     /// Builds a registry that contains jobs, job descriptions and their triggers.
     /// </summary>
-    public class RegistryBuilder
+    public class RegistryBuilder : IRegistryBuilder
     {
         private readonly ILogger<RegistryBuilder> _logger;
-        private readonly List<JobDefinition> _definitions = new ();
         private bool _isSingleSourceOfTruth;
-
-        internal bool HasConfiguration { get; private set; }
-
-        internal List<JobDefinition> Definitions => _definitions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RegistryBuilder"/> class.
         /// </summary>
-        /// <param name="logger">The logger.</param>
-        public RegistryBuilder(ILogger<RegistryBuilder> logger)
+        /// <param name="loggerFactory">The logger.</param>
+        public RegistryBuilder(ILoggerFactory loggerFactory)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<RegistryBuilder>();
         }
 
+        /// <summary>
+        /// If registry builder has a configuration.
+        /// </summary>
+        internal bool HasConfiguration { get; private set; }
+
+        /// <summary>
+        /// Accessor for <see cref="JobDefinition"/>s.
+        /// </summary>
+        internal List<JobDefinition> Definitions { get; } = new ();
+
+        /// <inheritdoc/>
         public RegistryBuilder RemoveAll()
         {
             HasConfiguration = true;
@@ -36,12 +42,14 @@ namespace Jobbr.Server.JobRegistry
             return this;
         }
 
+        /// <inheritdoc/>
         public RegistryBuilder AsSingleSourceOfTruth()
         {
             _isSingleSourceOfTruth = true;
             return this;
         }
 
+        /// <inheritdoc/>
         public JobDefinition Define(Type jobType, int maxConcurrentJobRuns = 0)
         {
             if (jobType == null)
@@ -52,9 +60,10 @@ namespace Jobbr.Server.JobRegistry
             return Define(jobType.Name, jobType.FullName, maxConcurrentJobRuns);
         }
 
+        /// <inheritdoc/>
         public JobDefinition Define(string uniqueName, string typeName, int maxConcurrentJobRuns = 0)
         {
-            var existing = _definitions.FirstOrDefault(d => string.Equals(d.UniqueName, uniqueName, StringComparison.OrdinalIgnoreCase));
+            var existing = Definitions.FirstOrDefault(d => string.Equals(d.UniqueName, uniqueName, StringComparison.OrdinalIgnoreCase));
 
             if (existing != null)
             {
@@ -63,14 +72,15 @@ namespace Jobbr.Server.JobRegistry
             }
 
             var definition = new JobDefinition() { UniqueName = uniqueName, ClrType = typeName, MaxConcurrentJobRuns = maxConcurrentJobRuns };
-            _definitions.Add(definition);
+            Definitions.Add(definition);
 
             HasConfiguration = true;
 
             return definition;
         }
 
-        internal int Apply(IJobStorageProvider storage)
+        /// <inheritdoc/>
+        public int Apply(IJobStorageProvider storage)
         {
             var numberOfChanges = 0;
 

@@ -11,9 +11,9 @@ namespace Jobbr.Server.Storage
         private readonly ILogger<JobbrRepository> _logger;
         private readonly IJobStorageProvider _jobStorageProvider;
 
-        public JobbrRepository(ILogger<JobbrRepository> logger, IJobStorageProvider jobStorageProvider)
+        public JobbrRepository(ILoggerFactory loggerFactory, IJobStorageProvider jobStorageProvider)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<JobbrRepository>();
             _jobStorageProvider = jobStorageProvider;
         }
 

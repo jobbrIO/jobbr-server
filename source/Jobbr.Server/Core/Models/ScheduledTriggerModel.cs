@@ -2,8 +2,14 @@
 
 namespace Jobbr.Server.Core.Models
 {
-    internal class ScheduledTriggerModel : TriggerModelBase
+    /// <summary>
+    /// Model for a scheduled trigger.
+    /// </summary>
+    public class ScheduledTriggerModel : TriggerModelBase
     {
+        /// <summary>
+        /// Start time.
+        /// </summary>
         public DateTime StartDateTimeUtc { get; set; }
     }
 }

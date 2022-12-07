@@ -5,6 +5,8 @@ using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.Server.Builder;
 using Jobbr.Tests.Infrastructure;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Startup
@@ -35,7 +37,7 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder(null);
+                var builder = new JobbrBuilder(new NullLoggerFactory());
 
                 builder.Create();
 
@@ -49,7 +51,12 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder(null);
+                var loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    _ = builder.AddConsole();
+                });
+
+                var builder = new JobbrBuilder(loggerFactory);
 
                 // Register only Artefacts and Executor
                 builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
@@ -62,6 +69,8 @@ namespace Jobbr.Tests.Integration.Startup
                 Assert.IsTrue(storageWarnLogs.Any());
 
                 Assert.AreEqual(1, storageWarnLogs.Count);
+
+                loggerFactory.Dispose();
             }
         }
 
@@ -70,7 +79,12 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder(null);
+                var loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    _ = builder.AddConsole();
+                });
+
+                var builder = new JobbrBuilder(loggerFactory);
 
                 // Register only Executor and JobStorage
                 builder.Register<IJobExecutor>(typeof(PseudoExecutor));
@@ -78,10 +92,12 @@ namespace Jobbr.Tests.Integration.Startup
 
                 builder.Create();
 
-                var artefactsWarnings = capture.GetLines("WARN", "Artefacts").ToList();
+                var artefactsWarnings = capture.GetLines("warn", "Artefacts").ToList();
 
                 Assert.IsTrue(artefactsWarnings.Any());
-                Assert.AreEqual(1, artefactsWarnings.Count);
+                Assert.AreEqual(2, artefactsWarnings.Count);
+
+                loggerFactory.Dispose();
             }
         }
 
@@ -90,7 +106,12 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder(null);
+                var loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    _ = builder.AddConsole();
+                });
+
+                var builder = new JobbrBuilder(loggerFactory);
 
                 // Register only Artefacts and JoStorage
                 builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
@@ -98,10 +119,12 @@ namespace Jobbr.Tests.Integration.Startup
 
                 builder.Create();
 
-                var artefactsWarnings = capture.GetLines("ERROR", "Executor").ToList();
+                var artefactsWarnings = capture.GetLines("error", "Executor").ToList();
 
                 Assert.IsTrue(artefactsWarnings.Any());
                 Assert.AreEqual(1, artefactsWarnings.Count);
+
+                loggerFactory.Dispose();
             }
         }
 
@@ -110,7 +133,12 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder(null);
+                var loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    _ = builder.AddConsole();
+                });
+
+                var builder = new JobbrBuilder(loggerFactory);
 
                 // Register only Artefacts and JoStorage
                 builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
@@ -124,6 +152,8 @@ namespace Jobbr.Tests.Integration.Startup
 
                 Assert.IsFalse(errors.Any());
                 Assert.IsFalse(warnings.Any());
+
+                loggerFactory.Dispose();
             }
         }
 
@@ -132,7 +162,12 @@ namespace Jobbr.Tests.Integration.Startup
         {
             using (var capture = new ConsoleCapturer())
             {
-                var builder = new JobbrBuilder(null);
+                var loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    _ = builder.AddConsole();
+                });
+
+                var builder = new JobbrBuilder(loggerFactory);
 
                 // Register only Artefacts and JoStorage
                 builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
@@ -150,6 +185,8 @@ namespace Jobbr.Tests.Integration.Startup
                 Assert.IsFalse(fatals.Any(), "Got too many fatals: \n\n * " + string.Join("\n * ", fatals));
                 Assert.IsFalse(errors.Any(), "Got too many errors: \n\n * " + string.Join("\n * ", errors));
                 Assert.IsFalse(warnings.Any(), "Got too many warnings: \n\n * " + string.Join("\n * ", warnings));
+
+                loggerFactory.Dispose();
             }
         }
     }

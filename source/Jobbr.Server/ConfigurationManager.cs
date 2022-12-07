@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Jobbr.ComponentModel.Registration;
-using Jobbr.Server.ComponentServices.Registration;
 using Microsoft.Extensions.Logging;
 
 namespace Jobbr.Server
@@ -13,31 +12,29 @@ namespace Jobbr.Server
     /// <summary>
     /// Manages configuration for the Jobbr server.
     /// </summary>
-    public class ConfigurationManager
+    public class ConfigurationManager : IConfigurationManager
     {
         private readonly ILogger<ConfigurationManager> _logger;
         private readonly Collection<IConfigurationValidator> _configurationValidators;
-        private readonly JobbrServiceProvider _jobbrServiceProvider;
+        private readonly IJobbrServiceProvider _jobbrServiceProvider;
         private readonly Collection<IFeatureConfiguration> _featureConfigurations;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationManager"/> class.
         /// </summary>
-        /// <param name="logger">The logger.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="configurationValidators">Collection of validators for the configurations.</param>
         /// <param name="jobbrServiceProvider">Jobbr dependency resolver.</param>
         /// <param name="featureConfigurations">Configurations for the Jobbr server.</param>
-        public ConfigurationManager(ILogger<ConfigurationManager> logger, Collection<IConfigurationValidator> configurationValidators, JobbrServiceProvider jobbrServiceProvider, Collection<IFeatureConfiguration> featureConfigurations)
+        public ConfigurationManager(ILoggerFactory loggerFactory, Collection<IConfigurationValidator> configurationValidators, IJobbrServiceProvider jobbrServiceProvider, Collection<IFeatureConfiguration> featureConfigurations)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<ConfigurationManager>();
             _configurationValidators = configurationValidators;
             _jobbrServiceProvider = jobbrServiceProvider;
             _featureConfigurations = featureConfigurations;
         }
 
-        /// <summary>
-        /// Logs the current configurations.
-        /// </summary>
+        /// <inheritdoc/>
         public void LogConfiguration()
         {
             if (_featureConfigurations == null || !_featureConfigurations.Any())
@@ -72,10 +69,7 @@ namespace Jobbr.Server
             }
         }
 
-        /// <summary>
-        /// Validates configurations.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">At least one of the configuration validations failed.</exception>
+        /// <inheritdoc/>
         public void ValidateConfigurationAndThrowOnErrors()
         {
             if (_configurationValidators == null || !_configurationValidators.Any())

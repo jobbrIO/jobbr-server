@@ -16,10 +16,10 @@ namespace Jobbr.Server.Builder
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoMapperConfigurationFactory"/> class.
         /// </summary>
-        /// <param name="logger">The logger.</param>
-        public AutoMapperConfigurationFactory(ILogger<AutoMapperConfigurationFactory> logger)
+        /// <param name="loggerFactory">The logger factory.</param>
+        public AutoMapperConfigurationFactory(ILoggerFactory loggerFactory)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<AutoMapperConfigurationFactory>();
         }
 
         /// <summary>

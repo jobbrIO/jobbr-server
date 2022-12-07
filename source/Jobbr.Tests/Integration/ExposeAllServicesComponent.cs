@@ -16,18 +16,18 @@ namespace Jobbr.Tests.Integration
     {
         public static ExposeAllServicesComponent Instance => instancesPerThread.Value;
 
-        private static ThreadLocal<ExposeAllServicesComponent> instancesPerThread = new ThreadLocal<ExposeAllServicesComponent>();
+        private static ThreadLocal<ExposeAllServicesComponent> instancesPerThread = new ();
 
         public ExposeAllServicesComponent(IJobbrServiceProvider serviceProvider, IArtefactsStorageProvider artefactsStorageProvider, IJobStorageProvider jobStorageProvider, IJobManagementService jobManagementService, IQueryService queryService, IServerManagementService managementService, IJobRunInformationService informationService, IJobRunProgressChannel progressChannel)
         {
-            this.ServiceProvider = serviceProvider;
-            this.ArtefactsStorageProvider = artefactsStorageProvider;
-            this.JobStorageProvider = jobStorageProvider;
-            this.JobManagementService = jobManagementService;
-            this.QueryService = queryService;
-            this.ManagementService = managementService;
-            this.InformationService = informationService;
-            this.ProgressChannel = progressChannel;
+            ServiceProvider = serviceProvider;
+            ArtefactsStorageProvider = artefactsStorageProvider;
+            JobStorageProvider = jobStorageProvider;
+            JobManagementService = jobManagementService;
+            QueryService = queryService;
+            ManagementService = managementService;
+            InformationService = informationService;
+            ProgressChannel = progressChannel;
 
             instancesPerThread.Value = this;
         }

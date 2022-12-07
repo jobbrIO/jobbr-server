@@ -7,20 +7,27 @@ using NCrontab;
 
 namespace Jobbr.Server.Scheduling.Planer
 {
-    public class RecurringJobRunPlaner
+    /// <summary>
+    /// Class for planning recurring job runs.
+    /// </summary>
+    public class RecurringJobRunPlaner : IRecurringJobRunPlaner
     {
         private readonly ILogger<RecurringJobRunPlaner> _logger;
-        private readonly JobbrRepository _jobbrRepository;
+        private readonly IJobbrRepository _jobbrRepository;
         private readonly IDateTimeProvider _dateTimeProvider;
 
-        public RecurringJobRunPlaner(ILogger<RecurringJobRunPlaner> logger, JobbrRepository jobbrRepository, IDateTimeProvider dateTimeProvider)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecurringJobRunPlaner"/> class.
+        /// </summary>
+        public RecurringJobRunPlaner(ILoggerFactory loggerFactory, IJobbrRepository jobbrRepository, IDateTimeProvider dateTimeProvider)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<RecurringJobRunPlaner>();
             _jobbrRepository = jobbrRepository;
             _dateTimeProvider = dateTimeProvider;
         }
 
-        internal PlanResult Plan(RecurringTrigger trigger)
+        /// <inheritdoc/>
+        public PlanResult Plan(RecurringTrigger trigger)
         {
             if (!trigger.IsActive)
             {

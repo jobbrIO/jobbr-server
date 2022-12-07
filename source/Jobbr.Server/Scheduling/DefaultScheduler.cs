@@ -16,18 +16,18 @@ namespace Jobbr.Server.Scheduling
         private readonly IJobExecutor _executor;
         private readonly IPeriodicTimer _periodicTimer;
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly InstantJobRunPlaner _instantJobRunPlanner;
-        private readonly ScheduledJobRunPlaner _scheduledJobRunPlanner;
-        private readonly RecurringJobRunPlaner _recurringJobRunPlanner;
+        private readonly IInstantJobRunPlaner _instantJobRunPlanner;
+        private readonly IScheduledJobRunPlaner _scheduledJobRunPlanner;
+        private readonly IRecurringJobRunPlaner _recurringJobRunPlanner;
         private readonly DefaultSchedulerConfiguration _schedulerConfiguration;
         private readonly object _evaluateTriggersLock = new ();
 
         private List<ScheduledPlanItem> _currentPlan = new ();
 
-        public DefaultScheduler(ILogger<DefaultScheduler> logger, IJobbrRepository jobbrRepository, IJobExecutor executor, InstantJobRunPlaner instantJobRunPlanner, ScheduledJobRunPlaner scheduledJobRunPlanner,
-            RecurringJobRunPlaner recurringJobRunPlanner, DefaultSchedulerConfiguration schedulerConfiguration, IPeriodicTimer periodicTimer, IDateTimeProvider dateTimeProvider)
+        public DefaultScheduler(ILoggerFactory loggerFactory, IJobbrRepository jobbrRepository, IJobExecutor executor, IInstantJobRunPlaner instantJobRunPlanner, IScheduledJobRunPlaner scheduledJobRunPlanner,
+            IRecurringJobRunPlaner recurringJobRunPlanner, DefaultSchedulerConfiguration schedulerConfiguration, IPeriodicTimer periodicTimer, IDateTimeProvider dateTimeProvider)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<DefaultScheduler>();
             _jobbrRepository = jobbrRepository;
             _executor = executor;
             _periodicTimer = periodicTimer;
@@ -285,7 +285,7 @@ namespace Jobbr.Server.Scheduling
                 _logger.LogDebug("There were no jobs found that had been planned before {dateTime}", dateTime);
                 return;
             }
-            
+
             _logger.LogInformation("There were {jobRunCount} job runs that should have been started while the JobServer was not running. Need to omit them...", scheduledJobRuns.Count);
             foreach (var jobRun in scheduledJobRuns)
             {

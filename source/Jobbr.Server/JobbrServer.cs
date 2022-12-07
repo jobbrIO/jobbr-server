@@ -26,8 +26,8 @@ namespace Jobbr.Server
         private readonly IJobExecutor _executor;
         private readonly IJobStorageProvider _jobStorageProvider;
         private readonly List<IJobbrComponent> _jobbrComponents;
-        private readonly ConfigurationManager _configurationManager;
-        private readonly RegistryBuilder _registryBuilder;
+        private readonly IConfigurationManager _configurationManager;
+        private readonly IRegistryBuilder _registryBuilder;
 
         private bool _isRunning;
 
@@ -39,9 +39,9 @@ namespace Jobbr.Server
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        public JobbrServer(ILogger<JobbrServer> logger, IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> jobbrComponents, MessageDispatcher messageDispatcher, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
+        public JobbrServer(ILoggerFactory loggerFactory, IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> jobbrComponents, IMessageDispatcher messageDispatcher, IConfigurationManager configurationManager, IRegistryBuilder registryBuilder)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<JobbrServer>();
 
             _scheduler = scheduler;
             _executor = jobExecutor;

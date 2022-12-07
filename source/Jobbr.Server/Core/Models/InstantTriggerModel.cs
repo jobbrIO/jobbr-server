@@ -1,7 +1,13 @@
 ﻿namespace Jobbr.Server.Core.Models
 {
-    internal class InstantTriggerModel : TriggerModelBase
+    /// <summary>
+    /// Model for an instant trigger.
+    /// </summary>
+    public class InstantTriggerModel : TriggerModelBase
     {
+        /// <summary>
+        /// Delay in minutes.
+        /// </summary>
         public int DelayedMinutes { get; set; }
     }
 }

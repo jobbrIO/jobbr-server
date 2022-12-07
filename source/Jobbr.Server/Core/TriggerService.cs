@@ -12,7 +12,7 @@ namespace Jobbr.Server.Core
     /// <summary>
     /// Service for managing triggers.
     /// </summary>
-    internal class TriggerService
+    internal class TriggerService : ITriggerService
     {
         private readonly ILogger<TriggerService> _logger;
         private readonly IJobbrRepository _jobbrRepository;
@@ -22,19 +22,20 @@ namespace Jobbr.Server.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="TriggerService"/> class.
         /// </summary>
-        /// <param name="logger">The logger.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="jobbrRepository">Repository for accessing job data,</param>
         /// <param name="messengerHub">SubPub messenger hub.</param>
         /// <param name="mapper">The mapper.</param>
-        public TriggerService(ILogger<TriggerService> logger, IJobbrRepository jobbrRepository, ITinyMessengerHub messengerHub, IMapper mapper)
+        public TriggerService(ILoggerFactory loggerFactory, IJobbrRepository jobbrRepository, ITinyMessengerHub messengerHub, IMapper mapper)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<TriggerService>();
             _jobbrRepository = jobbrRepository;
             _messengerHub = messengerHub;
             _mapper = mapper;
         }
 
-        internal void Add(long jobId, RecurringTriggerModel trigger)
+        /// <inheritdoc/>
+        public void Add(long jobId, RecurringTriggerModel trigger)
         {
             var triggerEntity = _mapper.Map<RecurringTrigger>(trigger);
 
@@ -45,7 +46,8 @@ namespace Jobbr.Server.Core
             _messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
         }
 
-        internal void Add(long jobId, ScheduledTriggerModel trigger)
+        /// <inheritdoc/>
+        public void Add(long jobId, ScheduledTriggerModel trigger)
         {
             var triggerEntity = _mapper.Map<ScheduledTrigger>(trigger);
 
@@ -56,7 +58,8 @@ namespace Jobbr.Server.Core
             _messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
         }
 
-        internal void Add(long jobId, InstantTriggerModel trigger)
+        /// <inheritdoc/>
+        public void Add(long jobId, InstantTriggerModel trigger)
         {
             var triggerEntity = _mapper.Map<InstantTrigger>(trigger);
 
@@ -67,27 +70,31 @@ namespace Jobbr.Server.Core
             _messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
         }
 
-        internal void Disable(long jobId, long triggerId)
+        /// <inheritdoc/>
+        public void Disable(long jobId, long triggerId)
         {
             _jobbrRepository.DisableTrigger(jobId, triggerId);
             _messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
         }
 
-        internal void Delete(long jobId, long triggerId)
+        /// <inheritdoc/>
+        public void Delete(long jobId, long triggerId)
         {
             _jobbrRepository.DeleteTrigger(jobId, triggerId);
             _messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
         }
 
-        internal void Enable(long jobId, long triggerId)
+        /// <inheritdoc/>
+        public void Enable(long jobId, long triggerId)
         {
             _jobbrRepository.EnableTrigger(jobId, triggerId);
 
             _messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
         }
 
+        /// <inheritdoc/>
         // TODO: combine update methods, too much copy-paste here
-        internal void Update(long jobId, long triggerId, string definition)
+        public void Update(long jobId, long triggerId, string definition)
         {
             var trigger = _jobbrRepository.GetTriggerById(jobId, triggerId);
 
@@ -109,7 +116,8 @@ namespace Jobbr.Server.Core
             }
         }
 
-        internal void Update(RecurringTriggerModel trigger)
+        /// <inheritdoc/>
+        public void Update(RecurringTriggerModel trigger)
         {
             var triggerEntity = _mapper.Map<RecurringTrigger>(trigger);
 
@@ -130,7 +138,8 @@ namespace Jobbr.Server.Core
             }
         }
 
-        internal void Update(ScheduledTriggerModel trigger)
+        /// <inheritdoc/>
+        public void Update(ScheduledTriggerModel trigger)
         {
             var triggerEntity = _mapper.Map<ScheduledTrigger>(trigger);
 
@@ -151,7 +160,8 @@ namespace Jobbr.Server.Core
             }
         }
 
-        internal void Update(long jobId, long triggerId, DateTime startDateTimeUtc)
+        /// <inheritdoc/>
+        public void Update(long jobId, long triggerId, DateTime startDateTimeUtc)
         {
             var trigger = _jobbrRepository.GetTriggerById(jobId, triggerId);
 
