@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
@@ -7,193 +6,139 @@ using Jobbr.Server.Builder;
 using Jobbr.Tests.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace Jobbr.Tests.Integration.Startup
 {
     /// <summary>
-    /// Tests that makes sure that the builder issues warnings if not all required components are registered
+    /// Tests that makes sure that the builder issues warnings if not all required components are registered.
     /// </summary>
     [TestClass]
     public class SetupValidationTests
     {
-        [TestMethod]
-        public void ConsoleCapturer_WhenActive_ContainsConsoleOut()
+        private Mock<ILoggerFactory> _loggerFactoryMock;
+        private Mock<ILogger<JobbrBuilder>> _loggerMock;
+
+        [TestInitialize]
+        public void Initialize()
         {
-            using (var capture = new ConsoleCapturer())
-            {
-                Console.WriteLine("Hello World");
+            _loggerMock = new Mock<ILogger<JobbrBuilder>>();
+            _loggerMock.Setup(m => m.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()));
 
-                var allLogEntries = capture.GetLines().ToList();
-
-                Assert.IsTrue(allLogEntries.Any());
-                Assert.AreEqual("Hello World", allLogEntries[0]);
-                Assert.AreEqual(2, allLogEntries.Count);
-            }
+            _loggerFactoryMock = new Mock<ILoggerFactory>();
+            _loggerFactoryMock.Setup(m => m.CreateLogger(It.IsAny<string>())).Returns(() => _loggerMock.Object);
         }
 
         [TestMethod]
-        public void CreateJobber_WithConsoleCapturer_CaptureMessagesFromConsole()
+        public void CreateJobber_LogsProcess()
         {
-            using (var capture = new ConsoleCapturer())
-            {
-                var loggerFactory = LoggerFactory.Create(builder =>
-                {
-                    _ = builder.AddConsole();
-                });
+            // Arrange
+            var builder = new JobbrBuilder(_loggerFactoryMock.Object);
 
-                var builder = new JobbrBuilder(loggerFactory);
+            // Act
+            builder.Create();
 
-                builder.Create();
-
-                var allLogEntries = capture.GetLines();
-                Assert.IsTrue(allLogEntries.Any());
-
-                loggerFactory.Dispose();
-            }
+            // Assert
+            _loggerMock.Verify(m => m.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
         }
 
         [TestMethod]
         public void CreateJobbr_WithNoStorageProvider_IssuesError()
         {
-            using (var capture = new ConsoleCapturer())
-            {
-                var loggerFactory = LoggerFactory.Create(builder =>
-                {
-                    _ = builder.AddConsole();
-                });
+            // Arrange
+            var builder = new JobbrBuilder(_loggerFactoryMock.Object);
+            builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
+            builder.Register<IJobExecutor>(typeof(PseudoExecutor));
 
-                var builder = new JobbrBuilder(loggerFactory);
+            // Act
+            builder.Create();
 
-                // Register only Artefacts and Executor
-                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
-                builder.Register<IJobExecutor>(typeof(PseudoExecutor));
-
-                builder.Create();
-
-                var storageWarnLogs = capture.GetLines("ERROR", "JobStorageProvider").ToList();
-
-                Assert.IsTrue(storageWarnLogs.Any());
-
-                Assert.AreEqual(1, storageWarnLogs.Count);
-
-                loggerFactory.Dispose();
-            }
+            // Assert
+            _loggerMock.Verify(m => m.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("There was no JobStorageProvider registered. Will continue building with an in-memory version, which does not support production scenarios.")),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
         }
 
         [TestMethod]
         public void CreateJobbr_WithNoArtefactsProvider_IssuesWarn()
         {
-            using (var capture = new ConsoleCapturer())
-            {
-                var loggerFactory = LoggerFactory.Create(builder =>
-                {
-                    _ = builder.AddConsole();
-                });
+            // Arrange
+            var builder = new JobbrBuilder(_loggerFactoryMock.Object);
+            builder.Register<IJobExecutor>(typeof(PseudoExecutor));
+            builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
 
-                var builder = new JobbrBuilder(loggerFactory);
+            // Act
+            builder.Create();
 
-                // Register only Executor and JobStorage
-                builder.Register<IJobExecutor>(typeof(PseudoExecutor));
-                builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
-
-                builder.Create();
-
-                var artefactsWarnings = capture.GetLines("warn", "Artefacts").ToList();
-
-                Assert.IsTrue(artefactsWarnings.Any());
-                Assert.AreEqual(2, artefactsWarnings.Count);
-
-                loggerFactory.Dispose();
-            }
+            // Assert
+            _loggerMock.Verify(m => m.Log(
+                    LogLevel.Warning,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("There was no ArtefactsStorageProvider registered. Adding a default InMemoryArtefactStorage, which stores artefacts in memory. Please register a proper ArtefactStorage for production use.")),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
         }
 
         [TestMethod]
         public void CreateJobbr_WithNoExecutor_IssuesError()
         {
-            using (var capture = new ConsoleCapturer())
-            {
-                var loggerFactory = LoggerFactory.Create(builder =>
-                {
-                    _ = builder.AddConsole();
-                });
+            // Arrange
+            var builder = new JobbrBuilder(_loggerFactoryMock.Object);
+            builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
+            builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
 
-                var builder = new JobbrBuilder(loggerFactory);
+            // Act
+            builder.Create();
 
-                // Register only Artefacts and JoStorage
-                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
-                builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
-
-                builder.Create();
-
-                var artefactsWarnings = capture.GetLines("error", "Executor").ToList();
-
-                Assert.IsTrue(artefactsWarnings.Any());
-                Assert.AreEqual(1, artefactsWarnings.Count);
-
-                loggerFactory.Dispose();
-            }
+            // Assert
+            _loggerMock.Verify(m => m.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("There was no JobExecutor registered. Adding a Non-Operational JobExecutor")),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
         }
 
         [TestMethod]
         public void CreateJobbr_WithAllRequiredComponents_NoErrorNoWarn()
         {
-            using (var capture = new ConsoleCapturer())
-            {
-                var loggerFactory = LoggerFactory.Create(builder =>
-                {
-                    _ = builder.AddConsole();
-                });
+            // Arrange
+            var builder = new JobbrBuilder(_loggerFactoryMock.Object);
+            builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
+            builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
+            builder.Register<IJobExecutor>(typeof(PseudoExecutor));
 
-                var builder = new JobbrBuilder(loggerFactory);
+            // Act
+            builder.Create();
 
-                // Register only Artefacts and JoStorage
-                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
-                builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
-                builder.Register<IJobExecutor>(typeof(PseudoExecutor));
-
-                builder.Create();
-
-                var errors = capture.GetLines("ERROR").ToList();
-                var warnings = capture.GetLines("WARN").ToList();
-
-                Assert.IsFalse(errors.Any());
-                Assert.IsFalse(warnings.Any());
-
-                loggerFactory.Dispose();
-            }
+            // Assert
+            _loggerMock.Verify(m => m.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Never);
+            _loggerMock.Verify(m => m.Log(LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Never);
         }
 
         [TestMethod]
         public void StartJobbr_WithAllRequiredComponents_NoErrorNoWarn()
         {
-            using (var capture = new ConsoleCapturer())
-            {
-                var loggerFactory = LoggerFactory.Create(builder =>
-                {
-                    _ = builder.AddConsole();
-                });
+            // Arrange
+            var builder = new JobbrBuilder(_loggerFactoryMock.Object);
+            builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
+            builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
+            builder.Register<IJobExecutor>(typeof(PseudoExecutor));
 
-                var builder = new JobbrBuilder(loggerFactory);
+            // Act
+            var server = builder.Create();
 
-                // Register only Artefacts and JoStorage
-                builder.Register<IArtefactsStorageProvider>(typeof(PseudoArtefactsStorageProvider));
-                builder.Register<IJobStorageProvider>(typeof(PseudoJobStorageProvider));
-                builder.Register<IJobExecutor>(typeof(PseudoExecutor));
+            server.Start(20000);
 
-                var server = builder.Create();
-
-                server.Start(20000);
-                
-                var errors = capture.GetLines("ERROR").ToList();
-                var warnings = capture.GetLines("WARN").ToList();
-                var fatals = capture.GetLines("FATAL").ToList();
-
-                Assert.IsFalse(fatals.Any(), "Got too many fatals: \n\n * " + string.Join("\n * ", fatals));
-                Assert.IsFalse(errors.Any(), "Got too many errors: \n\n * " + string.Join("\n * ", errors));
-                Assert.IsFalse(warnings.Any(), "Got too many warnings: \n\n * " + string.Join("\n * ", warnings));
-
-                loggerFactory.Dispose();
-            }
+            // Assert
+            _loggerMock.Verify(m => m.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Never);
+            _loggerMock.Verify(m => m.Log(LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Never);
         }
     }
 }
