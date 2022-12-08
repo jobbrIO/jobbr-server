@@ -1,6 +1,7 @@
 ﻿using System;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Builder;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Startup
@@ -62,12 +63,12 @@ namespace Jobbr.Tests.Integration.Startup
         [TestMethod]
         public void ValidatorForSettings_WhenRegistered_IsCalled()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(new NullLoggerFactory());
 
             builder.Add<DemoSettings>(new DemoSettings());
             var isCalled = false;
-
-            builder.Add<IConfigurationValidator>(new DemoComponentValidator(s => isCalled = true));
+            
+            builder.AppendInstanceToCollection<IConfigurationValidator>(new DemoComponentValidator(s => isCalled = true));
 
             var jobbr = builder.Create();
 
@@ -79,14 +80,14 @@ namespace Jobbr.Tests.Integration.Startup
         [TestMethod]
         public void ValidatorForSettings_WhenCalled_SettingsIsPassedThrough()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(new NullLoggerFactory());
 
             var demoSettings = new DemoSettings();
             object settingsToValidate = null;
 
             builder.Add<DemoSettings>(demoSettings);
             
-            builder.Add<IConfigurationValidator>(new DemoComponentValidator(s => settingsToValidate = s));
+            builder.AppendInstanceToCollection<IConfigurationValidator>(new DemoComponentValidator(s => settingsToValidate = s));
 
             var jobbr = builder.Create();
 
@@ -100,11 +101,11 @@ namespace Jobbr.Tests.Integration.Startup
         [ExpectedException(typeof(Exception))]
         public void ValidatorForSettings_ValidationFails_PreventsStart()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(new NullLoggerFactory());
 
             builder.Add<DemoSettings>(new DemoSettings());
-
-            builder.Add<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: true, throwException: false));
+            
+            builder.AppendInstanceToCollection<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: true, throwException: false));
 
             var jobbr = builder.Create();
 
@@ -115,11 +116,11 @@ namespace Jobbr.Tests.Integration.Startup
         [ExpectedException(typeof(Exception))]
         public void ValidatorForSettings_ThrowsException_PreventsStart()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(new NullLoggerFactory());
 
             builder.Add<DemoSettings>(new DemoSettings());
 
-            builder.Add<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: false, throwException: true));
+            builder.AppendInstanceToCollection<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: false, throwException: true));
 
             var jobbr = builder.Create();
 

@@ -2,16 +2,23 @@ using Jobbr.ComponentModel.JobStorage.Model;
 
 namespace Jobbr.Server.Scheduling.Planer
 {
-    public class ScheduledJobRunPlaner
+    /// <summary>
+    /// Class for planning scheduled job runs.
+    /// </summary>
+    public class ScheduledJobRunPlaner : IScheduledJobRunPlaner
     {
-        private readonly IDateTimeProvider dateTimeProvider;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScheduledJobRunPlaner"/> class.
+        /// </summary>
         public ScheduledJobRunPlaner(IDateTimeProvider dateTimeProvider)
         {
-            this.dateTimeProvider = dateTimeProvider;
+            _dateTimeProvider = dateTimeProvider;
         }
 
-        internal PlanResult Plan(ScheduledTrigger trigger, bool isNew)
+        /// <inheritdoc/>
+        public PlanResult Plan(ScheduledTrigger trigger, bool isNew)
         {
             if (!trigger.IsActive)
             {
@@ -20,7 +27,7 @@ namespace Jobbr.Server.Scheduling.Planer
 
             var calculatedNextRun = trigger.StartDateTimeUtc;
 
-            if (calculatedNextRun < this.dateTimeProvider.GetUtcNow() && !isNew)
+            if (calculatedNextRun < _dateTimeProvider.GetUtcNow() && !isNew)
             {
                 return PlanResult.FromAction(PlanAction.Obsolete);
             }

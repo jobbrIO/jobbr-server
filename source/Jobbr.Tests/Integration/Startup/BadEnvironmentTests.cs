@@ -5,6 +5,7 @@ using Jobbr.ComponentModel.Registration;
 using Jobbr.Server;
 using Jobbr.Server.Builder;
 using Jobbr.Tests.Infrastructure;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration.Startup
@@ -15,7 +16,7 @@ namespace Jobbr.Tests.Integration.Startup
         [TestMethod]
         public void StartingJobber_GetsRunning_WhenStorageProviderTurnsHealthy()
         {
-            var builder = new JobbrBuilder();
+            var builder = new JobbrBuilder(new NullLoggerFactory());
             builder.Register<IJobStorageProvider>(typeof(FaultyJobStorageProvider));
 
             var jobbr = builder.Create();
@@ -26,7 +27,7 @@ namespace Jobbr.Tests.Integration.Startup
 
             faultyJobStorageProvider.EnableImplementation();
 
-            this.WaitForStatusChange(() => jobbr.State, 5000);
+            WaitForStatusChange(() => jobbr.State, 5000);
 
             Assert.AreEqual(JobbrState.Running, jobbr.State);
         }
@@ -34,8 +35,9 @@ namespace Jobbr.Tests.Integration.Startup
         [TestMethod]
         public void StartingJobbr_ComponentFails_IsInErrorState()
         {
-            var builder = new JobbrBuilder();
-            builder.Register<IJobbrComponent>(typeof(FaultyComponent));
+            var nullLoggerFactory = new NullLoggerFactory();
+            var builder = new JobbrBuilder(nullLoggerFactory);
+            builder.AppendTypeToCollection<IJobbrComponent>(typeof(FaultyComponent));
 
             var jobbr = builder.Create();
 
@@ -49,14 +51,15 @@ namespace Jobbr.Tests.Integration.Startup
             }
 
             Assert.AreEqual(JobbrState.Error, jobbr.State);
+            nullLoggerFactory.Dispose();
         }
 
         [TestMethod]
         [ExpectedException(typeof(Exception))]
         public void StartingJobbr_ComponentFails_ExceptionIsThrown()
         {
-            var builder = new JobbrBuilder();
-            builder.Register<IJobbrComponent>(typeof(FaultyComponent));
+            var builder = new JobbrBuilder(new NullLoggerFactory());
+            builder.AppendTypeToCollection<IJobbrComponent>(typeof(FaultyComponent));
 
             var jobbr = builder.Create();
 

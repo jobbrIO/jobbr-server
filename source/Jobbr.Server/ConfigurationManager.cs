@@ -1,85 +1,100 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Jobbr.ComponentModel.Registration;
-using Jobbr.Server.ComponentServices.Registration;
-using Jobbr.Server.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using Microsoft.Extensions.Logging;
 
 namespace Jobbr.Server
 {
-    public class ConfigurationManager
+    /// <summary>
+    /// Manages configuration for the Jobbr server.
+    /// </summary>
+    public class ConfigurationManager : IConfigurationManager
     {
-        private static readonly ILog Logger = LogProvider.For<ConfigurationManager>();
+        private readonly ILogger<ConfigurationManager> _logger;
+        private readonly Collection<IConfigurationValidator> _configurationValidators;
+        private readonly IJobbrServiceProvider _jobbrServiceProvider;
+        private readonly Collection<IFeatureConfiguration> _featureConfigurations;
 
-        private readonly List<IConfigurationValidator> configurationValidators;
-        private readonly JobbrServiceProvider jobbrServiceProvider;
-        private readonly List<IFeatureConfiguration> featureConfigurations;
-
-        public ConfigurationManager(List<IConfigurationValidator> configurationValidators, JobbrServiceProvider jobbrServiceProvider, List<IFeatureConfiguration> featureConfigurations)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigurationManager"/> class.
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="configurationValidators">Collection of validators for the configurations.</param>
+        /// <param name="jobbrServiceProvider">Jobbr dependency resolver.</param>
+        /// <param name="featureConfigurations">Configurations for the Jobbr server.</param>
+        public ConfigurationManager(ILoggerFactory loggerFactory, Collection<IConfigurationValidator> configurationValidators, IJobbrServiceProvider jobbrServiceProvider, Collection<IFeatureConfiguration> featureConfigurations)
         {
-            this.configurationValidators = configurationValidators;
-            this.jobbrServiceProvider = jobbrServiceProvider;
-            this.featureConfigurations = featureConfigurations;
+            _logger = loggerFactory.CreateLogger<ConfigurationManager>();
+            _configurationValidators = configurationValidators;
+            _jobbrServiceProvider = jobbrServiceProvider;
+            _featureConfigurations = featureConfigurations;
         }
 
+        /// <inheritdoc/>
         public void LogConfiguration()
         {
-            if (this.featureConfigurations == null || !this.featureConfigurations.Any())
+            if (_featureConfigurations == null || !_featureConfigurations.Any())
             {
-                Logger.Debug("Skipping printing configurations because there are feature configurations available.");
+                _logger.LogDebug("Skipping printing configurations because there are feature configurations available.");
                 return;
             }
 
-            foreach (var config in this.featureConfigurations)
+            foreach (var config in _featureConfigurations)
             {
-                var jsonSettings = new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, ContractResolver = new IgnoreDelegatesFromSerializationContractResolver() };
-                var serialized = JsonConvert.SerializeObject(config, jsonSettings);
+                var jsonSettings = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                };
 
-                serialized = serialized.Replace("{", "[");
-                serialized = serialized.Replace("}", "]");
-                serialized = serialized.Replace(",\"", ", ");
-                serialized = serialized.Replace("\":", ": ");
-                serialized = serialized.Replace("[\"", "[");
+                var serialized = JsonSerializer.Serialize(config, jsonSettings);
+
+                serialized = serialized.Replace("{", "[", StringComparison.CurrentCulture);
+                serialized = serialized.Replace("}", "]", StringComparison.CurrentCulture);
+                serialized = serialized.Replace(",\"", ", ", StringComparison.CurrentCulture);
+                serialized = serialized.Replace("\":", ": ", StringComparison.CurrentCulture);
+                serialized = serialized.Replace("[\"", "[", StringComparison.CurrentCulture);
 
                 try
                 {
-                    Logger.Info($"{config.GetType().Name} = " + serialized);
+                    _logger.LogInformation("{typeName} = {serialized}", config.GetType().Name, serialized);
                 }
-                catch
+                catch (NullReferenceException)
                 {
-                    Logger.Info($"{config.GetType().Name} = " + "NOT DISPLAYABLE!");
+                    _logger.LogInformation("{typeName} = NOT DISPLAYABLE!", config.GetType().Name);
                 }
             }
         }
 
+        /// <inheritdoc/>
         public void ValidateConfigurationAndThrowOnErrors()
         {
-            if (this.configurationValidators == null || !this.configurationValidators.Any())
+            if (_configurationValidators == null || !_configurationValidators.Any())
             {
-                Logger.Debug("Skipping validating configuration because there are no validators available.");
+                _logger.LogDebug("Skipping validating configuration because there are no validators available.");
                 return;
             }
 
-            Logger.Debug("Validating the configuration...");
+            _logger.LogDebug("Validating the configuration...");
 
             var results = new Dictionary<Type, bool>();
 
-            foreach (var validator in this.configurationValidators)
+            foreach (var validator in _configurationValidators)
             {
                 var forType = validator.ConfigurationType;
 
-                var config = this.jobbrServiceProvider.GetService(forType);
+                var config = _jobbrServiceProvider.GetService(forType);
 
                 if (config == null)
                 {
-                    Logger.Warn($"Unable to use Validator '{validator.GetType().FullName}' because there are no compatible configurations (of Type '{forType.FullName}') registered.");
+                    _logger.LogWarning("Unable to use validator '{validatorName}' because there are no compatible configurations (of Type '{configurationTypeName}') registered.", validator.GetType().FullName, forType.FullName);
                     continue;
                 }
 
-                Logger.Debug($"Validating configuration of Type '{config.GetType()}'");
+                _logger.LogDebug("Validating configuration of type '{configType}'", config.GetType());
 
                 try
                 {
@@ -87,18 +102,18 @@ namespace Jobbr.Server
 
                     if (result)
                     {
-                        Logger.Info($"Configuration '{config.GetType().Name}' has been validated successfully");
+                        _logger.LogInformation("Configuration '{configName}' has been validated successfully", config.GetType().Name);
                     }
                     else
                     {
-                        Logger.Warn($"Validation for Configuration '{config.GetType().Name}' failed.");
+                        _logger.LogWarning("Validation for Configuration '{configTypeName}' failed.", config.GetType().Name);
                     }
 
                     results.Add(forType, result);
                 }
                 catch (Exception e)
                 {
-                    Logger.ErrorException($"Validator '{validator.GetType().FullName}' has failed while validation!", e);
+                    _logger.LogError(e, "Validator '{validatorName}' has failed while validation!", validator.GetType().FullName);
                     results.Add(forType, false);
                 }
             }
@@ -106,21 +121,6 @@ namespace Jobbr.Server
             if (!results.Values.All(r => r))
             {
                 throw new Exception("Configuration failed for one or more configurations");
-            }
-        }
-
-        private class IgnoreDelegatesFromSerializationContractResolver : DefaultContractResolver
-        {
-            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-            {
-                JsonProperty property = base.CreateProperty(member, memberSerialization);
-
-                if (typeof(MulticastDelegate).IsAssignableFrom(property.PropertyType.BaseType))
-                {
-                    property.ShouldSerialize = o => false;
-                }
-
-                return property;
             }
         }
     }

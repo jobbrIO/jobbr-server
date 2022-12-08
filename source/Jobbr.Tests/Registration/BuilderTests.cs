@@ -10,6 +10,7 @@ using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Builder;
 using Jobbr.Server.JobRegistry;
 using Jobbr.Tests.Integration;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -18,16 +19,33 @@ namespace Jobbr.Tests.Registration
     [TestClass]
     public class BuilderTests
     {
+        ILoggerFactory _loggerFactory;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            _loggerFactory = new LoggerFactory();
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _loggerFactory.Dispose();
+        }
+
         [TestMethod]
         public void RegisterCustomArtefactStorageProvider_AfterCreation_CorrectTypeIsActivated()
         {
-            var builder = new JobbrBuilder();
+            // Arrange
+            var builder = new JobbrBuilder(_loggerFactory);
 
             builder.Register<IArtefactsStorageProvider>(typeof(CustomArtefactStorageAdapter));
-            builder.Register<IJobbrComponent>(typeof(ExposeAllServicesComponent));
+            builder.AppendTypeToCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
 
+            // Act
             builder.Create();
 
+            // Assert
             Assert.IsNotNull(ExposeAllServicesComponent.Instance.ArtefactsStorageProvider);
             Assert.AreEqual(typeof(CustomArtefactStorageAdapter),
                 ExposeAllServicesComponent.Instance.ArtefactsStorageProvider.GetType());
@@ -36,13 +54,16 @@ namespace Jobbr.Tests.Registration
         [TestMethod]
         public void RegisterCustomJobStorageProvider_AfterCreation_CorrectTypeIsActivated()
         {
-            var builder = new JobbrBuilder();
+            // Arrange
+            var builder = new JobbrBuilder(_loggerFactory);
 
             builder.Register<IJobStorageProvider>(typeof(CustomJobStorageProvider));
-            builder.Register<IJobbrComponent>(typeof(ExposeAllServicesComponent));
+            builder.AppendTypeToCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
 
+            // Act
             builder.Create();
 
+            // Assert
             Assert.IsNotNull(ExposeAllServicesComponent.Instance.ArtefactsStorageProvider);
             Assert.AreEqual(typeof(CustomJobStorageProvider),
                 ExposeAllServicesComponent.Instance.JobStorageProvider.GetType());
@@ -51,31 +72,36 @@ namespace Jobbr.Tests.Registration
         [TestMethod]
         public void ShouldDeleteJobsAndTriggers_WhenSingleSourceOfTruthIsActivated()
         {
+            // Arrange
             const string existingJobName = "MyJobExists";
             const long existingJobId = 1;
             const long nonExistingJobId = 2;
             const long existingTriggerId = 10;
             const long nonExistingTriggerId = 20;
-            var existingJob = new Job {Id = 1, UniqueName = existingJobName};
-            var nonExistingJob = new Job {Id = 2, UniqueName = "DoIDieNow?"};
+
+            var existingJob = new Job { Id = 1, UniqueName = existingJobName };
+            var nonExistingJob = new Job { Id = 2, UniqueName = "DoIDieNow?" };
             var pagedJobs = CreatePagedResult(existingJob, nonExistingJob);
             var triggerForExistingJob = new RecurringTrigger { Id = existingTriggerId, JobId = existingJobId };
             var triggerForNonExistingJob = new RecurringTrigger { Id = nonExistingTriggerId, JobId = nonExistingJobId };
-            var storage = new Mock<IJobStorageProvider>();
-            storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(pagedJobs);
-            storage.Setup(s => s.GetTriggersByJobId(existingJobId, 1, int.MaxValue, false))
+            
+            var storageMock = new Mock<IJobStorageProvider>();
+            storageMock.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false))
+                .Returns(pagedJobs);
+            storageMock.Setup(s => s.GetTriggersByJobId(existingJobId, 1, int.MaxValue, false))
                 .Returns(CreatePagedResult<JobTriggerBase>(triggerForExistingJob));
-            storage.Setup(s => s.GetTriggersByJobId(nonExistingJobId, 1, int.MaxValue, false))
+            storageMock.Setup(s => s.GetTriggersByJobId(nonExistingJobId, 1, int.MaxValue, false))
                 .Returns(CreatePagedResult<JobTriggerBase>(triggerForNonExistingJob));
-            SetupForSuccessfulRun(storage);
-            var builder = new JobbrBuilder();
-            builder.Add<IJobStorageProvider>(storage.Object);
-            builder.AddJobs(repo =>
-                repo.AsSingleSourceOfTruth().Define(existingJobName, "CLR.Type"));
+            SetupForSuccessfulRun(storageMock);
+            
+            var builder = new JobbrBuilder(_loggerFactory);
+            builder.Add<IJobStorageProvider>(storageMock.Object);
+            builder.AddJobs(_loggerFactory, repo => repo.AsSingleSourceOfTruth().Define(existingJobName, "CLR.Type"));
 
+            // Act
             builder.Create().Start();
 
-            Assert.IsTrue(nonExistingJob.Deleted);
+            // Assert
             Assert.IsFalse(triggerForNonExistingJob.IsActive);
             Assert.IsTrue(triggerForNonExistingJob.Deleted);
         }
@@ -83,23 +109,28 @@ namespace Jobbr.Tests.Registration
         [TestMethod]
         public void ShouldDeleteOrphanedTriggers_WhenSingleSourceOfTruthIsActivated()
         {
+            // Arrange
             const string jobName = "JobName";
-            var storage = new Mock<IJobStorageProvider>();
-            var builder = new JobbrBuilder();
+            var storageMock = new Mock<IJobStorageProvider>();
+            var builder = new JobbrBuilder(_loggerFactory);
             var job = new Job { Id = 1, UniqueName = jobName };
-            var trigger = new RecurringTrigger { Definition = "0 * * * *", JobId = 1, Id = 1};
-            var toDeleteTrigger = new RecurringTrigger { Definition = "0 1 * * *", JobId = 1, Id = 10};
-            storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(CreatePagedResult(job));
-            storage.Setup(s => s.GetTriggersByJobId(1, 1, int.MaxValue, false))
+            var trigger = new RecurringTrigger { Definition = "0 * * * *", JobId = 1, Id = 1 };
+            var toDeleteTrigger = new RecurringTrigger { Definition = "0 1 * * *", JobId = 1, Id = 10 };
+
+            storageMock.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(CreatePagedResult(job));
+            storageMock.Setup(s => s.GetTriggersByJobId(1, 1, int.MaxValue, false))
                 .Returns(CreatePagedResult<JobTriggerBase>(trigger, toDeleteTrigger));
-            storage.Setup(s => s.GetJobByUniqueName(jobName)).Returns(job);
-            SetupForSuccessfulRun(storage);
-            builder.Add<IJobStorageProvider>(storage.Object);
-            builder.AddJobs(repo =>
+            storageMock.Setup(s => s.GetJobByUniqueName(jobName)).Returns(job);
+            SetupForSuccessfulRun(storageMock);
+
+            builder.Add<IJobStorageProvider>(storageMock.Object);
+            builder.AddJobs(_loggerFactory, repo =>
                 repo.AsSingleSourceOfTruth().Define(jobName, "CLR.Type").WithTrigger("0 * * * *"));
 
+            // Act
             builder.Create().Start();
 
+            // Assert
             Assert.IsFalse(job.Deleted);
             Assert.IsFalse(toDeleteTrigger.IsActive);
             Assert.IsTrue(toDeleteTrigger.Deleted);
@@ -108,42 +139,49 @@ namespace Jobbr.Tests.Registration
         [TestMethod]
         public void ShouldReActivateJob_WhenJobIsRedefined()
         {
+            // Arrange
             const string jobName = "JobName";
-            var storage = new Mock<IJobStorageProvider>();
-            var builder = new JobbrBuilder();
+            var storageMock = new Mock<IJobStorageProvider>();
+            var builder = new JobbrBuilder(_loggerFactory);
             var job = new Job { Id = 1, UniqueName = jobName };
-            storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(CreatePagedResult(job));
-            builder.AddJobs(repo =>
+            storageMock.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(CreatePagedResult(job));
+            builder.AddJobs(_loggerFactory, repo =>
                 repo.AsSingleSourceOfTruth().Define(jobName, "CLR.Type").WithTrigger("0 * * * *"));
             var jobbr = builder.Create();
+
+            // Act
             jobbr.Start();
             jobbr.Stop();
-
             jobbr.Start();
 
+            // Assert
             Assert.IsFalse(job.Deleted);
         }
 
         [TestMethod]
         public void ShouldOmitScheduledJob_WhenJobIsDeactivated()
         {
+            // Arrange
             const string existingJobName = "MyJobExists";
             const long nonExistingJobId = 2;
             var existingJob = new Job { Id = 1, UniqueName = existingJobName };
             var nonExistingJob = new Job { Id = 2, UniqueName = "DoIDieNow?" };
             var pagedJobs = CreatePagedResult(existingJob, nonExistingJob);
-            var toOmitJobRun = new JobRun {State = JobRunStates.Scheduled, Deleted = false};
-            var storage = new Mock<IJobStorageProvider>();
-            storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(pagedJobs);
-            storage.Setup(s => s.GetJobRunsByJobId((int)nonExistingJobId, 1, int.MaxValue, false))
-                .Returns(CreatePagedResult(toOmitJobRun));
-            var builder = new JobbrBuilder();
-            builder.Add<IJobStorageProvider>(storage.Object);
-            builder.AddJobs(repo =>
-                repo.AsSingleSourceOfTruth().Define(existingJobName, "CLR.Type"));
+            var toOmitJobRun = new JobRun { State = JobRunStates.Scheduled, Deleted = false };
 
+            var storageMock = new Mock<IJobStorageProvider>();
+            storageMock.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(pagedJobs);
+            storageMock.Setup(s => s.GetJobRunsByJobId((int)nonExistingJobId, 1, int.MaxValue, false))
+                .Returns(CreatePagedResult(toOmitJobRun));
+
+            var builder = new JobbrBuilder(_loggerFactory);
+            builder.Add<IJobStorageProvider>(storageMock.Object);
+            builder.AddJobs(_loggerFactory, repo => repo.AsSingleSourceOfTruth().Define(existingJobName, "CLR.Type"));
+
+            // Act
             builder.Create().Start();
 
+            // Assert
             Assert.IsTrue(toOmitJobRun.Deleted);
             Assert.AreEqual(JobRunStates.Omitted, toOmitJobRun.State);
         }
@@ -151,24 +189,29 @@ namespace Jobbr.Tests.Registration
         [TestMethod]
         public void ShouldOmitScheduledJob_WhenTriggerIsDeactivated()
         {
+            // Arrange
             const string jobName = "JobName";
-            var storage = new Mock<IJobStorageProvider>();
-            var builder = new JobbrBuilder();
+            var storageMock = new Mock<IJobStorageProvider>();
+            var builder = new JobbrBuilder(_loggerFactory);
             var job = new Job { Id = 1, UniqueName = jobName };
             var toDeleteTrigger = new RecurringTrigger { Definition = "0 1 * * *", JobId = 1, Id = 10 };
             var toOmitJobRun = new JobRun { State = JobRunStates.Scheduled, Deleted = false };
-            storage.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(CreatePagedResult(job));
-            storage.Setup(s => s.GetTriggersByJobId(1, 1, int.MaxValue, false))
+
+            storageMock.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false)).Returns(CreatePagedResult(job));
+            storageMock.Setup(s => s.GetTriggersByJobId(1, 1, int.MaxValue, false))
                 .Returns(CreatePagedResult<JobTriggerBase>(toDeleteTrigger));
-            storage.Setup(s => s.GetJobByUniqueName(jobName)).Returns(job);
-            storage.Setup(s => s.GetJobRunsByTriggerId(1, 10, 1, int.MaxValue, false))
+            storageMock.Setup(s => s.GetJobByUniqueName(jobName)).Returns(job);
+            storageMock.Setup(s => s.GetJobRunsByTriggerId(1, 10, 1, int.MaxValue, false))
                 .Returns(CreatePagedResult(toOmitJobRun));
-            builder.Add<IJobStorageProvider>(storage.Object);
-            builder.AddJobs(repo =>
+            
+            builder.Add<IJobStorageProvider>(storageMock.Object);
+            builder.AddJobs(_loggerFactory, repo =>
                 repo.AsSingleSourceOfTruth().Define(jobName, "CLR.Type").WithTrigger("* * * * *"));
 
+            // Act
             builder.Create().Start();
-
+            
+            // Assert
             Assert.IsTrue(toOmitJobRun.Deleted);
             Assert.AreEqual(JobRunStates.Omitted, toOmitJobRun.State);
         }
@@ -180,15 +223,15 @@ namespace Jobbr.Tests.Registration
             return new PagedResult<T> { Items = items };
         }
 
-        private static void SetupForSuccessfulRun(Mock<IJobStorageProvider> storage)
+        private static void SetupForSuccessfulRun(Mock<IJobStorageProvider> storageMock)
         {
-            storage.Setup(s => s.GetJobRunsByState(It.IsAny<JobRunStates>(), 1, int.MaxValue, null, null, null, false))
+            storageMock.Setup(s => s.GetJobRunsByState(It.IsAny<JobRunStates>(), 1, int.MaxValue, null, null, null, false))
                 .Returns(CreatePagedResult<JobRun>());
-            storage.Setup(s => s.GetActiveTriggers(1, int.MaxValue, null, null, null))
+            storageMock.Setup(s => s.GetActiveTriggers(1, int.MaxValue, null, null, null))
                 .Returns(CreatePagedResult<JobTriggerBase>());
             var anyId = It.IsAny<long>();
-            storage.Setup(s => s.GetJobRunsByJobId(It.IsAny<int>(), 1, int.MaxValue, false)).Returns(CreatePagedResult<JobRun>());
-            storage.Setup(s => s.GetJobRunsByTriggerId(anyId, anyId, 1, int.MaxValue, false)).Returns(CreatePagedResult<JobRun>());
+            storageMock.Setup(s => s.GetJobRunsByJobId(It.IsAny<int>(), 1, int.MaxValue, false)).Returns(CreatePagedResult<JobRun>());
+            storageMock.Setup(s => s.GetJobRunsByTriggerId(anyId, anyId, 1, int.MaxValue, false)).Returns(CreatePagedResult<JobRun>());
         }
     }
 

@@ -2,6 +2,7 @@ using System;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server;
 using Jobbr.Server.Builder;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jobbr.Tests.Integration
@@ -45,9 +46,9 @@ namespace Jobbr.Tests.Integration
 
         protected static JobbrServer GivenAServerInstance()
         {
-            var builder = new JobbrBuilder();
-
-            builder.Register<IJobbrComponent>(typeof(ExposeAllServicesComponent));
+            var builder = new JobbrBuilder(new NullLoggerFactory());
+            
+            builder.AppendTypeToCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
 
             var server = builder.Create();
             return server;

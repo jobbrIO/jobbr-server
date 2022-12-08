@@ -3,6 +3,7 @@ using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Builder;
 using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.Storage;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TinyMessenger;
 using JobRunStates = Jobbr.Server.Core.Models.JobRunStates;
@@ -18,13 +19,13 @@ namespace Jobbr.Tests.Components.JobRunService
 
         public ProgressUpdateTests()
         {
-            var autoMapperConfig = new AutoMapperConfigurationFactory().GetNew();
+            var autoMapperConfig = new AutoMapperConfigurationFactory(new NullLoggerFactory()).GetNew();
             
-            this.repo = new JobbrRepository(new InMemoryJobStorageProvider());
+            this.repo = new JobbrRepository(new NullLoggerFactory(), new InMemoryJobStorageProvider());
 
             this.messengerHub = new TinyMessengerHub();
 
-            this.service = new Server.Core.JobRunService(this.messengerHub, this.repo, null, autoMapperConfig.CreateMapper());
+            this.service = new Server.Core.JobRunService(new NullLoggerFactory(), this.messengerHub, this.repo, null, autoMapperConfig.CreateMapper());
         }
 
         private JobRun GivenAJobRun()

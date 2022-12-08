@@ -14,48 +14,48 @@ namespace Jobbr.Server.ComponentServices.Management
     /// </summary>
     internal class JobManagementService : IJobManagementService
     {
-        private readonly TriggerService triggerService;
-        private readonly JobService jobService;
-        private readonly JobRunService jobRunService;
+        private readonly ITriggerService _triggerService;
+        private readonly IJobService _jobService;
+        private readonly IJobRunService _jobRunService;
 
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
 
-        public JobManagementService(TriggerService triggerService, JobService jobService, JobRunService jobRunService, IMapper mapper)
+        public JobManagementService(ITriggerService triggerService, IJobService jobService, IJobRunService jobRunService, IMapper mapper)
         {
-            this.triggerService = triggerService;
-            this.jobService = jobService;
-            this.jobRunService = jobRunService;
-            this.mapper = mapper;
+            _triggerService = triggerService;
+            _jobService = jobService;
+            _jobRunService = jobRunService;
+            _mapper = mapper;
         }
 
         public void AddJob(Job job)
         {
-            var model = this.mapper.Map<JobModel>(job);
+            var model = _mapper.Map<JobModel>(job);
 
-            var newJOb = this.jobService.Add(model);
+            var newJOb = _jobService.Add(model);
             job.Id = newJOb.Id;
         }
 
         public void UpdateJob(Job job)
         {
-            var model = this.mapper.Map<JobModel>(job);
+            var model = _mapper.Map<JobModel>(job);
 
-            this.jobService.Update(model);
+            _jobService.Update(model);
         }
 
         public void DeleteJob(long jobId)
         {
             // TODO: implement :)
             // - terminate job if it is running
-            
+
             throw new NotImplementedException();
         }
 
         public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
-            var model = this.mapper.Map<RecurringTriggerModel>(trigger);
+            var model = _mapper.Map<RecurringTriggerModel>(trigger);
 
-            this.triggerService.Add(jobId, model);
+            _triggerService.Add(jobId, model);
 
             trigger.Id = model.Id;
             trigger.JobId = jobId;
@@ -63,9 +63,9 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public void AddTrigger(long jobId, ScheduledTrigger trigger)
         {
-            var model = this.mapper.Map<ScheduledTriggerModel>(trigger);
+            var model = _mapper.Map<ScheduledTriggerModel>(trigger);
 
-            this.triggerService.Add(jobId, model);
+            _triggerService.Add(jobId, model);
 
             trigger.Id = model.Id;
             trigger.JobId = jobId;
@@ -73,9 +73,9 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public void AddTrigger(long jobId, InstantTrigger trigger)
         {
-            var model = this.mapper.Map<InstantTriggerModel>(trigger);
+            var model = _mapper.Map<InstantTriggerModel>(trigger);
 
-            this.triggerService.Add(jobId, model);
+            _triggerService.Add(jobId, model);
 
             trigger.Id = model.Id;
             trigger.JobId = jobId;
@@ -83,58 +83,58 @@ namespace Jobbr.Server.ComponentServices.Management
 
         public void DisableTrigger(long jobId, long triggerId)
         {
-            this.triggerService.Disable(jobId, triggerId);
+            _triggerService.Disable(jobId, triggerId);
         }
 
         public void EnableTrigger(long jobId, long triggerId)
         {
-            this.triggerService.Enable(jobId, triggerId);
+            _triggerService.Enable(jobId, triggerId);
         }
 
         public void DeleteTrigger(long jobId, long triggerId)
         {
-            this.triggerService.Delete(jobId, triggerId);
+            _triggerService.Delete(jobId, triggerId);
         }
 
         public void UpdateTriggerDefinition(long jobId, long triggerId, string definition)
         {
-            this.triggerService.Update(jobId, triggerId, definition);
+            _triggerService.Update(jobId, triggerId, definition);
         }
 
         public void Update(RecurringTrigger trigger)
         {
-            var triggerModel = this.mapper.Map<RecurringTriggerModel>(trigger);
+            var triggerModel = _mapper.Map<RecurringTriggerModel>(trigger);
 
-            this.triggerService.Update(triggerModel);
+            _triggerService.Update(triggerModel);
         }
 
         public void Update(ScheduledTrigger trigger)
         {
-            var triggerModel = this.mapper.Map<ScheduledTriggerModel>(trigger);
+            var triggerModel = _mapper.Map<ScheduledTriggerModel>(trigger);
 
-            this.triggerService.Update(triggerModel);
+            _triggerService.Update(triggerModel);
         }
 
         public void UpdateTriggerStartTime(long jobId, long triggerId, DateTime startDateTimeUtc)
         {
-            this.triggerService.Update(jobId, triggerId, startDateTimeUtc);
+            _triggerService.Update(jobId, triggerId, startDateTimeUtc);
         }
 
         public void DeleteJobRun(long jobRunId)
         {
-            this.jobRunService.Delete(jobRunId);
+            _jobRunService.Delete(jobRunId);
         }
 
         public List<JobArtefact> GetArtefactForJob(long jobRunId)
         {
-            var artefacts = this.jobRunService.GetArtefactsByJobRunId(jobRunId);
+            var artefacts = _jobRunService.GetArtefactsByJobRunId(jobRunId);
 
-            return this.mapper.Map<List<JobArtefact>>(artefacts);
+            return _mapper.Map<List<JobArtefact>>(artefacts);
         }
 
         public Stream GetArtefactAsStream(long jobRunId, string filename)
         {
-            return this.jobRunService.GetArtefactAsStream(jobRunId, filename);
+            return _jobRunService.GetArtefactAsStream(jobRunId, filename);
         }
     }
 }

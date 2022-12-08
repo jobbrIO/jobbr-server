@@ -1,59 +1,60 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using Jobbr.ComponentModel.Registration;
-using Ninject;
+using SimpleInjector;
 
 namespace Jobbr.Server.ComponentServices.Registration
 {
     /// <summary>
-    /// The jobbr dependency resolver.
+    /// The Jobbr dependency resolver.
     /// </summary>
-    [SuppressMessage("Design", "CA2213:Disposable fields should be disposed", Justification = "Cannot disopose kernel, because it's an external dependency")]
     public class JobbrServiceProvider : IJobbrServiceProvider
     {
         /// <summary>
-        /// The ninject kernel.
+        /// The dependency injection container.
         /// </summary>
-        private readonly IKernel ninjectKernel;
+        private readonly Container _container;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServiceProvider"/> class.
         /// </summary>
-        /// <param name="ninjectKernel">
-        /// The ninject kernel.
+        /// <param name="container">
+        /// The dependency injection container.
         /// </param>
-        public JobbrServiceProvider(IKernel ninjectKernel)
+        public JobbrServiceProvider(Container container)
         {
-            this.ninjectKernel = ninjectKernel;
+            _container = container;
         }
 
         /// <summary>
-        /// The get service.
+        /// Gets services based on the type.
         /// </summary>
-        /// <param name="serviceType">
-        /// The service type.
-        /// </param>
-        /// <returns>
-        /// The <see cref="object"/>.
-        /// </returns>
+        /// <param name="serviceType">Target service type.</param>
+        /// <returns>An instance of the service as a generic object.</returns>
         public object GetService(Type serviceType)
         {
-            return this.ninjectKernel.TryGet(serviceType);
+            return _container.GetInstance(serviceType);
         }
 
+        /// <summary>
+        /// Gets a service wrapped inside a list.
+        /// </summary>
+        /// <param name="serviceType">Target service type.</param>
+        /// <returns>An instance of the service within a generic object list.</returns>
         public IEnumerable<object> GetServices(Type serviceType)
         {
-            return new List<object>(new[] { this.GetService(serviceType) });
+            return new List<object>(new[] { GetService(serviceType) });
         }
 
-        #pragma warning disable CA1024 // Use properties where appropriate.
+        /// <summary>
+        /// Creates a new provider.
+        /// </summary>
+        /// <returns>A new instance of <see cref="JobbrServiceProvider"/>.</returns>
         public IJobbrServiceProvider GetChild()
-        #pragma warning restore CA1024 // Use properties where appropriate.
         {
             // If you need a request scoped container, please file a issue in GitHub.
             // Because the WebAPI is not request aware, we decided to keep this implementation
-            return new JobbrServiceProvider(this.ninjectKernel);
+            return new JobbrServiceProvider(_container);
         }
     }
 }
