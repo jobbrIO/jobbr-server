@@ -17,7 +17,23 @@ namespace Jobbr.Tests
             asserter.Add(new PackageExistsInBothRule("Jobbr.ComponentModel.Management"));
             asserter.Add(new PackageExistsInBothRule("Jobbr.ComponentModel.Registration"));
 
-            asserter.Add(new VersionIsIncludedInRange("Jobbr.ComponentModel.*"));
+            asserter.Add(new PackageExistsInBothRule("AutoMapper"));
+            asserter.Add(new PackageExistsInBothRule("Microsoft.Extensions.Configuration.Abstractions"));
+            asserter.Add(new PackageExistsInBothRule("Microsoft.Extensions.DependencyInjection"));
+            asserter.Add(new PackageExistsInBothRule("Microsoft.Extensions.Logging.Abstractions"));
+            asserter.Add(new PackageExistsInBothRule("NCrontab"));
+            asserter.Add(new PackageExistsInBothRule("SimpleInjector"));
+            asserter.Add(new PackageExistsInBothRule("TinyMessenger"));
+
+            asserter.Add(new VersionIsIncludedInRange("Jobbr.ComponentModel.*")); 
+            asserter.Add(new VersionIsIncludedInRange("AutoMapper"));
+            asserter.Add(new VersionIsIncludedInRange("Microsoft.Extensions.Configuration.Abstractions"));
+            asserter.Add(new VersionIsIncludedInRange("Microsoft.Extensions.DependencyInjection"));
+            asserter.Add(new VersionIsIncludedInRange("Microsoft.Extensions.Logging.Abstractions"));
+            asserter.Add(new VersionIsIncludedInRange("NCrontab"));
+            asserter.Add(new VersionIsIncludedInRange("SimpleInjector"));
+            asserter.Add(new VersionIsIncludedInRange("TinyMessenger"));
+
             asserter.Add(new NoMajorChangesInNuSpec("Jobbr.*"));
 
             var result = asserter.Validate();
