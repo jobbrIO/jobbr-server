@@ -6,6 +6,9 @@
     <Company>Zuehlke Technology Group</Company>
     <Product>Jobbr.Server</Product>
     <Copyright>Copyright © Zuehlke Technology Group 2022</Copyright>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageIcon>images\icon.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/jobbrIO/jobbr-server</PackageProjectUrl>
     <CodeAnalysisRuleSet>..\JobbrRuleSet.ruleset</CodeAnalysisRuleSet>
     <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
