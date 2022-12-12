@@ -94,6 +94,16 @@ namespace Jobbr.Server.Builder
         }
 
         /// <summary>
+        /// Appends given type to a collection of service type registrations.
+        /// </summary>
+        /// <typeparam name="T">Service type.</typeparam>
+        /// <param name="type">Type to register.</param>
+        public void RegisterForCollection<T>(Type type)
+        {
+            _dependencyContainer.Collection.Append(typeof(T), type);
+        }
+
+        /// <summary>
         /// Registers given instance to given service type.
         /// </summary>
         /// <typeparam name="T">Service type.</typeparam>
@@ -108,19 +118,9 @@ namespace Jobbr.Server.Builder
         /// </summary>
         /// <typeparam name="T">Service type.</typeparam>
         /// <param name="instance">Instance to register.</param>
-        public void AppendInstanceToCollection<T>(object instance)
+        public void AddForCollection<T>(object instance)
         {
             _dependencyContainer.Collection.AppendInstance(typeof(T), instance);
-        }
-
-        /// <summary>
-        /// Appends given type to a collection of service type registrations.
-        /// </summary>
-        /// <typeparam name="T">Service type.</typeparam>
-        /// <param name="type">Type to register.</param>
-        public void AppendTypeToCollection<T>(Type type)
-        {
-            _dependencyContainer.Collection.Append(typeof(T), type);
         }
 
         private void RegisterLogging(ILoggerFactory loggerFactory)

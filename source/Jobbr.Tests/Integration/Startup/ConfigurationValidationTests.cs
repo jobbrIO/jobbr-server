@@ -68,7 +68,7 @@ namespace Jobbr.Tests.Integration.Startup
             builder.Add<DemoSettings>(new DemoSettings());
             var isCalled = false;
             
-            builder.AppendInstanceToCollection<IConfigurationValidator>(new DemoComponentValidator(s => isCalled = true));
+            builder.AddForCollection<IConfigurationValidator>(new DemoComponentValidator(s => isCalled = true));
 
             var jobbr = builder.Create();
 
@@ -87,7 +87,7 @@ namespace Jobbr.Tests.Integration.Startup
 
             builder.Add<DemoSettings>(demoSettings);
             
-            builder.AppendInstanceToCollection<IConfigurationValidator>(new DemoComponentValidator(s => settingsToValidate = s));
+            builder.AddForCollection<IConfigurationValidator>(new DemoComponentValidator(s => settingsToValidate = s));
 
             var jobbr = builder.Create();
 
@@ -105,7 +105,7 @@ namespace Jobbr.Tests.Integration.Startup
 
             builder.Add<DemoSettings>(new DemoSettings());
             
-            builder.AppendInstanceToCollection<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: true, throwException: false));
+            builder.AddForCollection<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: true, throwException: false));
 
             var jobbr = builder.Create();
 
@@ -120,7 +120,7 @@ namespace Jobbr.Tests.Integration.Startup
 
             builder.Add<DemoSettings>(new DemoSettings());
 
-            builder.AppendInstanceToCollection<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: false, throwException: true));
+            builder.AddForCollection<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: false, throwException: true));
 
             var jobbr = builder.Create();
 
