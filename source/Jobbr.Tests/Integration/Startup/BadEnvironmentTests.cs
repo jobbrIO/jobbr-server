@@ -37,7 +37,7 @@ namespace Jobbr.Tests.Integration.Startup
         {
             var nullLoggerFactory = new NullLoggerFactory();
             var builder = new JobbrBuilder(nullLoggerFactory);
-            builder.AppendTypeToCollection<IJobbrComponent>(typeof(FaultyComponent));
+            builder.RegisterForCollection<IJobbrComponent>(typeof(FaultyComponent));
 
             var jobbr = builder.Create();
 
@@ -59,7 +59,7 @@ namespace Jobbr.Tests.Integration.Startup
         public void StartingJobbr_ComponentFails_ExceptionIsThrown()
         {
             var builder = new JobbrBuilder(new NullLoggerFactory());
-            builder.AppendTypeToCollection<IJobbrComponent>(typeof(FaultyComponent));
+            builder.RegisterForCollection<IJobbrComponent>(typeof(FaultyComponent));
 
             var jobbr = builder.Create();
 

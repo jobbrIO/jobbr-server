@@ -40,7 +40,7 @@ namespace Jobbr.Tests.Registration
             var builder = new JobbrBuilder(_loggerFactory);
 
             builder.Register<IArtefactsStorageProvider>(typeof(CustomArtefactStorageAdapter));
-            builder.AppendTypeToCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
+            builder.RegisterForCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
 
             // Act
             builder.Create();
@@ -58,7 +58,7 @@ namespace Jobbr.Tests.Registration
             var builder = new JobbrBuilder(_loggerFactory);
 
             builder.Register<IJobStorageProvider>(typeof(CustomJobStorageProvider));
-            builder.AppendTypeToCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
+            builder.RegisterForCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
 
             // Act
             builder.Create();

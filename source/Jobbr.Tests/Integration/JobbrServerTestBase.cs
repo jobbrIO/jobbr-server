@@ -48,7 +48,7 @@ namespace Jobbr.Tests.Integration
         {
             var builder = new JobbrBuilder(new NullLoggerFactory());
             
-            builder.AppendTypeToCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
+            builder.RegisterForCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
 
             var server = builder.Create();
             return server;
