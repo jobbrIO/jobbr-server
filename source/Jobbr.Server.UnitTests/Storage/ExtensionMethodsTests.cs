@@ -56,7 +56,11 @@ namespace Jobbr.Server.UnitTests.Storage
         [TestMethod]
         public void CloneList_ShouldDeepCloneAllEntries()
         {
-            List<TestClass> data = new() { new("value-1", 1), new("value-2", 2), new("value-3", 3) };
+            var data = new List<TestClass> {
+                new TestClass("value-1", 1),
+                new TestClass("value-2", 2),
+                new TestClass("value-3", 3)
+            };
 
             // Act
             var dataClone = ExtensionMethods.Clone(data);
@@ -73,7 +77,7 @@ namespace Jobbr.Server.UnitTests.Storage
         public void CloneObject_NoSerializableFlag_ThrowsSerializationException()
         {
             // Arrange
-            object data = new { Key = "reference", Value = 2 };
+            var data = new { Key = "reference", Value = 2 };
 
             // Act & Arrange
             Should.Throw<SerializationException>(() => ExtensionMethods.Clone(data));
