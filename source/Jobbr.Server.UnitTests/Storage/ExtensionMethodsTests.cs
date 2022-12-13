@@ -1,11 +1,10 @@
 ﻿using Jobbr.Server.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
-namespace Jobbr.Tests.UnitTests.Tests.Storage
+namespace Jobbr.Server.UnitTests.Storage
 {
     [TestClass]
     public class ExtensionMethodsTests

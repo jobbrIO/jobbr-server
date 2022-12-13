@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Shouldly;
 
-namespace Jobbr.Tests.UnitTests.Tests.Core
+namespace Jobbr.Server.UnitTests.Core
 {
     [TestClass]
     public class JobServiceTests

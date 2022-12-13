@@ -46,6 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Jobbr.Tests"/>
-    <InternalsVisibleTo Include="Jobbr.Tests.UnitTests"/>
+    <InternalsVisibleTo Include="Jobbr.Server.UnitTests"/>
   </ItemGroup>
 </Project>
