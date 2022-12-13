@@ -7,9 +7,9 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <AssemblyTitle>Jobbr.Tests</AssemblyTitle>
+    <AssemblyTitle>Jobbr.Server.IntegrationTests</AssemblyTitle>
     <Company>Zuehlke Technology Group</Company>
-    <Product>Jobbr.Tests</Product>
+    <Product>Jobbr.Server.IntegrationTests</Product>
     <Copyright>Copyright © Zuehlke Technology Group 2015</Copyright>
     <Version>1.0.0.0-pre</Version>
     <OutputPath>bin\$(Configuration)\</OutputPath>

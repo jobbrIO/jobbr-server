@@ -3,6 +3,17 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyTitle>Jobbr.Server.UnitTests</AssemblyTitle>
+    <Company>Zuehlke Technology Group</Company>
+    <Copyright>Copyright © Zuehlke Technology Group 2015</Copyright>
+    <Product>Jobbr.Server.UnitTests</Product>
+    <Version>1.0.0.0-pre</Version>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
