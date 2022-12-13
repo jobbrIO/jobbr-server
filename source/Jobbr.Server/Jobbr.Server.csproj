@@ -45,7 +45,7 @@
     <PackageReference Include="Jobbr.ComponentModel.Registration" Version="3.0.0-rc.2" />
   </ItemGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="Jobbr.Tests"/>
+    <InternalsVisibleTo Include="Jobbr.Server.IntegrationTests"/>
     <InternalsVisibleTo Include="Jobbr.Server.UnitTests"/>
   </ItemGroup>
 </Project>

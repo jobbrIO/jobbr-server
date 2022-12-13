@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jobbr.Server", "Jobbr.Server\Jobbr.Server.csproj", "{A45F729D-8629-4C7A-96B8-29EAA8D52919}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jobbr.Tests", "Jobbr.Tests\Jobbr.Tests.csproj", "{304D07A5-D6D1-4F48-819E-5D28ED8755AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jobbr.Server.IntegrationTests", "Jobbr.Server.IntegrationTests\Jobbr.Server.IntegrationTests.csproj", "{304D07A5-D6D1-4F48-819E-5D28ED8755AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{13B2F939-2E3C-4145-A00B-6B6D42680598}"
 	ProjectSection(SolutionItems) = preProject
@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobbr.Server.UnitTests", "Jobbr.Server.UnitTests\Jobbr.Server.UnitTests.csproj", "{73B0ED2D-F2BE-4EF2-B10E-BA16CCF392EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jobbr.Server.UnitTests", "Jobbr.Server.UnitTests\Jobbr.Server.UnitTests.csproj", "{73B0ED2D-F2BE-4EF2-B10E-BA16CCF392EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
