@@ -5,6 +5,7 @@ using Jobbr.Server.Core.Models;
 using Jobbr.Server.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Shouldly;
 
 namespace Jobbr.Tests.UnitTests.Tests.Core
 {
@@ -29,7 +30,7 @@ namespace Jobbr.Tests.UnitTests.Tests.Core
         public void Add_ShouldAddOrUpdateModelId()
         {
             // Arrange
-            var model = new JobModel() { Title = "Test" };
+            var model = new JobModel { Title = "Test" };
             var jobId = 155L;
             repositoryMock.Setup(rep => rep.AddJob(It.IsAny<Job>())).Callback<Job>(job => job.Id = jobId);
 
@@ -37,10 +38,9 @@ namespace Jobbr.Tests.UnitTests.Tests.Core
             var result = service.Add(model);
 
             // Assert
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual("Test", result.Title);
-            Assert.AreEqual(jobId, result.Id);
+            result.ShouldNotBeNull();
+            result.Title.ShouldBe("Test");
+            result.Id.ShouldBe(jobId);
         }
     }
 }

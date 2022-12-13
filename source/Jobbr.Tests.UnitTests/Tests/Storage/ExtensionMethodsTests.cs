@@ -1,6 +1,8 @@
 ﻿using Jobbr.Server.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Shouldly;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 namespace Jobbr.Tests.UnitTests.Tests.Storage
@@ -12,13 +14,13 @@ namespace Jobbr.Tests.UnitTests.Tests.Storage
         public void CloneNullObject_ShouldNotThrow()
         {
             // Arrange
-            object data = null;
+            object? data = null;
 
             // Act
             var dataClone = ExtensionMethods.Clone(data);
 
             // Assert
-            Assert.IsNull(dataClone);
+            dataClone.ShouldBeNull();
         }
 
         [TestMethod]
@@ -31,13 +33,10 @@ namespace Jobbr.Tests.UnitTests.Tests.Storage
             var dataClone = ExtensionMethods.Clone(data);
 
             // Assert
-            Assert.IsNotNull(dataClone);
-
-            Assert.AreEqual(data.Key, dataClone.Key);
-
-            Assert.AreEqual(data.Value, dataClone.Value);
-
-            Assert.AreNotEqual(data, dataClone);
+            dataClone.ShouldNotBeNull();
+            dataClone.Key.ShouldBe(data.Key);
+            dataClone.Value.ShouldBe(data.Value);
+            dataClone.ShouldNotBe(data);
         }
 
         [TestMethod]
@@ -52,7 +51,7 @@ namespace Jobbr.Tests.UnitTests.Tests.Storage
             var clone = ExtensionMethods.Clone(value);
 
             // Assert
-            Assert.AreEqual(clone, value);
+            clone.ShouldBe(value);
         }
 
         [TestMethod]
@@ -64,15 +63,11 @@ namespace Jobbr.Tests.UnitTests.Tests.Storage
             var dataClone = ExtensionMethods.Clone(data);
 
             // Assert
-            Assert.IsNotNull(dataClone);
-
-            Assert.AreEqual(data.Count, dataClone.Count);
-
-            CollectionAssert.AllItemsAreNotNull(dataClone);
-
-            CollectionAssert.AreNotEqual(data, dataClone);
-
-            CollectionAssert.AreEqual(data, dataClone, comparer: new TestClassValueComparer());
+            dataClone.ShouldNotBeNull();
+            dataClone.Count.ShouldBe(data.Count);
+            dataClone.ShouldNotBeEmpty();
+            dataClone.ShouldNotBe(data);
+            dataClone.ShouldBe(data, comparer: new TestClassValueComparer());
         }
 
         [TestMethod]
@@ -82,7 +77,7 @@ namespace Jobbr.Tests.UnitTests.Tests.Storage
             object data = new { Key = "reference", Value = 2 };
 
             // Act & Arrange
-            Assert.ThrowsException<SerializationException>(() => ExtensionMethods.Clone(data));
+            Should.Throw<SerializationException>(() => ExtensionMethods.Clone(data));
         }
 
         [Serializable]
@@ -98,32 +93,16 @@ namespace Jobbr.Tests.UnitTests.Tests.Storage
             }
         }
 
-        private class TestClassValueComparer : IComparer, IComparer<TestClass>
+        private class TestClassValueComparer : IEqualityComparer<TestClass>
         {
-            public int Compare(object x, object y)
+            public bool Equals(TestClass? x, TestClass? y)
             {
-                if (x is not TestClass left || y is not TestClass right)
-                {
-                    throw new InvalidOperationException();
-                }
-
-                return Compare(left, right);
+                return x is not null && y is not null && x.Value == y.Value && x.Key == y.Key;
             }
 
-            public int Compare(TestClass x, TestClass y)
+            public int GetHashCode([DisallowNull] TestClass obj)
             {
-                if (x.Value == y.Value && x.Key == y.Key)
-                {
-                    return 0;
-                }
-                else if (x.Value < y.Value) // Ignore any value comparision for now
-                {
-                    return -1;
-                }
-                else
-                {
-                    return 1;
-                }
+                return HashCode.Combine(obj.Key, obj.Value);
             }
         }
     }
