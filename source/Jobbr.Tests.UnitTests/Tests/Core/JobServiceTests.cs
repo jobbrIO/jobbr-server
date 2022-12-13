@@ -6,7 +6,7 @@ using Jobbr.Server.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace Jobbr.Tests.UnitTests.Core
+namespace Jobbr.Tests.UnitTests.Tests.Core
 {
     [TestClass]
     public class JobServiceTests
@@ -37,6 +37,7 @@ namespace Jobbr.Tests.UnitTests.Core
             var result = service.Add(model);
 
             // Assert
+
             Assert.IsNotNull(result);
             Assert.AreEqual("Test", result.Title);
             Assert.AreEqual(jobId, result.Id);

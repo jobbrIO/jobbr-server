@@ -1,11 +1,9 @@
 ﻿using Jobbr.Server.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Jobbr.Tests.UnitTests.Storage
+namespace Jobbr.Tests.UnitTests.Tests.Storage
 {
     [TestClass]
     public class ExtensionMethodsTests
