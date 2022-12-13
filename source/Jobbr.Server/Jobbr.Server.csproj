@@ -44,4 +44,9 @@
     <PackageReference Include="Jobbr.ComponentModel.Management" Version="3.0.0-rc.1" />
     <PackageReference Include="Jobbr.ComponentModel.Registration" Version="3.0.0-rc.2" />
   </ItemGroup>
+		<ItemGroup>
+		<AssemblyAttribute  Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>Jobbr.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 </Project>
