@@ -8,6 +8,7 @@
     <Copyright>Copyright © Zuehlke Technology Group 2015</Copyright>
     <Product>Jobbr.Server.UnitTests</Product>
     <Version>1.0.0.0-pre</Version>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
