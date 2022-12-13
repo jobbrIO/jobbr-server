@@ -11,7 +11,7 @@ namespace Jobbr.Tests.UnitTests.Storage
     public class ExtensionMethodsTests
     {
         [TestMethod]
-        public void CloneNullObject()
+        public void CloneNullObject_ShouldNotThrow()
         {
             // Arrange
             object data = null;
@@ -24,7 +24,7 @@ namespace Jobbr.Tests.UnitTests.Storage
         }
 
         [TestMethod]
-        public void CloneObject()
+        public void CloneObject_ShouldCreateDeepClone()
         {
             // Arrange
             var data = new TestClass("reference", 5);
@@ -46,7 +46,7 @@ namespace Jobbr.Tests.UnitTests.Storage
         [DataRow(1)]
         [DataRow(1.45)]
         [DataRow("test")]
-        public void CloneValueTypes(object value)
+        public void CloneValueTypes_ShouldReturnCopy(object value)
         {
             // Arrange
 
@@ -58,7 +58,7 @@ namespace Jobbr.Tests.UnitTests.Storage
         }
 
         [TestMethod]
-        public void CloneList()
+        public void CloneList_ShouldDeepCloneAllEntries()
         {
             List<TestClass> data = new() { new("value-1", 1), new("value-2", 2), new("value-3", 3) };
 
@@ -78,7 +78,7 @@ namespace Jobbr.Tests.UnitTests.Storage
         }
 
         [TestMethod]
-        public void CloneThrowsSerializationException()
+        public void CloneObject_NoSerializableFlag_ThrowsSerializationException()
         {
             // Arrange
             object data = new { Key = "reference", Value = 2 };
