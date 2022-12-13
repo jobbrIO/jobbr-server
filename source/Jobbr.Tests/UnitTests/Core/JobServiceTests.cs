@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Core;
 using Jobbr.Server.Core.Models;
-using Jobbr.Tests.Infrastructure.Storage;
+using Jobbr.Server.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace Jobbr.Tests.UnitTests.Core
 {
@@ -10,28 +12,34 @@ namespace Jobbr.Tests.UnitTests.Core
     public class JobServiceTests
     {
         private readonly IJobService service;
+        private readonly Mock<IJobbrRepository> repositoryMock;
 
         public JobServiceTests()
         {
             var config = new MapperConfiguration(cfg => cfg.AddProfile<ModelToStorageMappingProfile>());
+
             var mapper = config.CreateMapper();
 
-            service = new JobService(new JobbrRepositoryMock(), mapper);
+            repositoryMock = new Mock<IJobbrRepository>();
+
+            service = new JobService(repositoryMock.Object, mapper);
         }
 
         [TestMethod]
-        public void Add_ShouldReturnModelWithId()
+        public void Add_ShouldAddOrUpdateModelId()
         {
             // Arrange
             var model = new JobModel() { Title = "Test" };
+            var jobId = 155L;
+            repositoryMock.Setup(rep => rep.AddJob(It.IsAny<Job>())).Callback<Job>(job => job.Id = jobId);
 
             // Act
             var result = service.Add(model);
 
-            // AssertGVt
+            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("Test", result.Title);
-            Assert.AreEqual(JobbrRepositoryMock.JobId, result.Id);
+            Assert.AreEqual(jobId, result.Id);
         }
     }
 }
