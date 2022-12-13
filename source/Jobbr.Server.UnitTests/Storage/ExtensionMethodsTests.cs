@@ -1,8 +1,8 @@
-﻿using Jobbr.Server.Storage;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
+using Jobbr.Server.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.Serialization;
 
 namespace Jobbr.Server.UnitTests.Storage
 {
@@ -44,8 +44,6 @@ namespace Jobbr.Server.UnitTests.Storage
         [DataRow("test")]
         public void CloneValueTypes_ShouldReturnCopy(object value)
         {
-            // Arrange
-
             // Act
             var clone = ExtensionMethods.Clone(value);
 
@@ -56,10 +54,11 @@ namespace Jobbr.Server.UnitTests.Storage
         [TestMethod]
         public void CloneList_ShouldDeepCloneAllEntries()
         {
-            var data = new List<TestClass> {
+            var data = new List<TestClass>
+            {
                 new TestClass("value-1", 1),
                 new TestClass("value-2", 2),
-                new TestClass("value-3", 3)
+                new TestClass("value-3", 3),
             };
 
             // Act
@@ -86,14 +85,15 @@ namespace Jobbr.Server.UnitTests.Storage
         [Serializable]
         private class TestClass
         {
-            public string Key { get; set; }
-            public int Value { get; set; }
-
             public TestClass(string key, int value)
             {
                 Key = key;
                 Value = value;
             }
+
+            public string Key { get; set; }
+
+            public int Value { get; set; }
         }
 
         private class TestClassValueComparer : IEqualityComparer<TestClass>

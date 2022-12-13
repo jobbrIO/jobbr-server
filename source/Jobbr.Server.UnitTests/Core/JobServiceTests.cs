@@ -12,8 +12,8 @@ namespace Jobbr.Server.UnitTests.Core
     [TestClass]
     public class JobServiceTests
     {
-        private readonly IJobService service;
-        private readonly Mock<IJobbrRepository> repositoryMock;
+        private readonly IJobService _service;
+        private readonly Mock<IJobbrRepository> _repositoryMock;
 
         public JobServiceTests()
         {
@@ -21,21 +21,21 @@ namespace Jobbr.Server.UnitTests.Core
 
             var mapper = config.CreateMapper();
 
-            repositoryMock = new Mock<IJobbrRepository>();
+            _repositoryMock = new Mock<IJobbrRepository>();
 
-            service = new JobService(repositoryMock.Object, mapper);
+            _service = new JobService(_repositoryMock.Object, mapper);
         }
 
         [TestMethod]
         public void Add_ShouldAddOrUpdateModelId()
         {
             // Arrange
-            var model = new JobModel { Title = "Test" };
+            JobModel model = new JobModel { Title = "Test" };
             var jobId = 155L;
-            repositoryMock.Setup(rep => rep.AddJob(It.IsAny<Job>())).Callback<Job>(job => job.Id = jobId);
+            _repositoryMock.Setup(rep => rep.AddJob(It.IsAny<Job>())).Callback<Job>(job => job.Id = jobId);
 
             // Act
-            var result = service.Add(model);
+            var result = _service.Add(model);
 
             // Assert
             result.ShouldNotBeNull();
