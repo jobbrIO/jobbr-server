@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using AutoMapper;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.Server.Core;
 using Jobbr.Server.Core.Messaging;
@@ -8,10 +12,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using TinyMessenger;
 
 namespace Jobbr.Server.UnitTests.Core
