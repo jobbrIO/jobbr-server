@@ -42,5 +42,21 @@ namespace Jobbr.Server.UnitTests.Core
             result.Title.ShouldBe("Test");
             result.Id.ShouldBe(jobId);
         }
+
+        [TestMethod]
+        public void Delete_ShouldSetDeletedFlag()
+        {
+            // Arrange
+            var jobId = 2L;
+            var job = new Job { Id = jobId, Deleted = false };
+            _repositoryMock.Setup(rep => rep.GetJob(It.IsAny<long>())).Returns(job);
+
+            // Act
+            _service.Delete(jobId);
+
+            // Assert
+            job.Id.ShouldBe(jobId);
+            job.Deleted.ShouldBeTrue();
+        }
     }
 }
