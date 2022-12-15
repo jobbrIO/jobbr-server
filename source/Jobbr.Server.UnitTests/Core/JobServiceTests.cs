@@ -27,10 +27,10 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        public void Add_ShouldAddOrUpdateModelId()
+        public void Add_NewJob_ShouldAddOrUpdateId()
         {
             // Arrange
-            JobModel model = new JobModel { Title = "Test" };
+            var model = new JobModel { Title = "Test" };
             var jobId = 155L;
             _repositoryMock.Setup(rep => rep.AddJob(It.IsAny<Job>())).Callback<Job>(job => job.Id = jobId);
 
@@ -44,7 +44,7 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        public void Delete_ShouldSetDeletedFlag()
+        public void Delete_ExistingJob_ShouldSetDeleted()
         {
             // Arrange
             var jobId = 2L;

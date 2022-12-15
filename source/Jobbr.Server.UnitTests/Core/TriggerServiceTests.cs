@@ -137,7 +137,7 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        public void Disable_ShouldCallRepository()
+        public void Disable_AnyTrigger_ShouldCallRepository()
         {
             // Arrange
             var jobId = 1L;
@@ -152,7 +152,7 @@ namespace Jobbr.Server.UnitTests.Core
 
 
         [TestMethod]
-        public void Disable_ShouldCallMessengerHubPublish()
+        public void Disable_AnyTrigger_ShouldCallMessengerHubPublish()
         {
             // Arrange
             var jobId = 1L;
@@ -166,7 +166,7 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        public void Enable_ShouldCallRepository()
+        public void Enable_AnyTrigger_ShouldCallRepository()
         {
             // Arrange
             var jobId = 1L;
@@ -180,7 +180,7 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        public void Enable_ShouldCallMessengerHubPublish()
+        public void Enable_AnyTrigger_ShouldCallMessengerHubPublish()
         {
             // Arrange
             var jobId = 1L;
@@ -194,7 +194,7 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        public void Delete_ShouldCallRepository()
+        public void Delete_AnyTrigger_ShouldCallRepository()
         {
             // Arrange
             var jobId = 1L;
@@ -208,7 +208,7 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        public void Delete_ShouldCallMessengerHubPublish()
+        public void Delete_AnyTrigger_ShouldCallMessengerHubPublish()
         {
             // Arrange
             var jobId = 1L;

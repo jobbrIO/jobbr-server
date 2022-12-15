@@ -52,7 +52,7 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        public void UpdateState_SetStarted_ShouldSetActualStartDateTimeUtc()
+        public void UpdateState_Started_ShouldSetActualStartDateTimeUtc()
         {
             // Arrange
             var state = JobRunStates.Started;
@@ -72,7 +72,7 @@ namespace Jobbr.Server.UnitTests.Core
         [DataRow(JobRunStates.Scheduled)]
         [DataRow(JobRunStates.Collecting)]
         [DataRow(JobRunStates.Completed)]
-        public void UpdateState_ShouldNotChangeActualStartDateTimeUtc(JobRunStates state)
+        public void UpdateState_AllExceptStarted_ShouldNotChangeActualStartDateTimeUtc(JobRunStates state)
         {
             // Arrange
             var actualStartDateTimeUtc = new DateTime(2022, 12, 14, 1, 0, 15);
@@ -89,7 +89,7 @@ namespace Jobbr.Server.UnitTests.Core
         [TestMethod]
         [DataRow(JobRunStates.Completed, true)]
         [DataRow(JobRunStates.Failed, false)]
-        public void UpdateState_ShouldCallMessengerHubPublish(JobRunStates state, bool isSuccessful)
+        public void UpdateState_AnyEnd_ShouldCallMessengerHubPublish(JobRunStates state, bool isSuccessful)
         {
             // Arrange
             var jobRunId = 1;
@@ -105,7 +105,7 @@ namespace Jobbr.Server.UnitTests.Core
         [TestMethod]
         [DataRow(JobRunStates.Completed)]
         [DataRow(JobRunStates.Failed)]
-        public void UpdateState_ShoudSetActualEndDateTimeUtc(JobRunStates state)
+        public void UpdateState_AnyEndState_ShoudSetActualEndDateTimeUtc(JobRunStates state)
         {
             // Arrange
             var jobRun = new ComponentModel.JobStorage.Model.JobRun();
@@ -179,7 +179,7 @@ namespace Jobbr.Server.UnitTests.Core
 
 
         [TestMethod]
-        public void UpdatePid_ShouldSetToProccessId()
+        public void UpdatePid_ExistingJobRun_ShouldSetToProccessId()
         {
             // Arrange
             var proccessId = 2;
@@ -195,7 +195,7 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        public void Delete_ShouldSetDeleted()
+        public void Delete_ExistingJobRun_ShouldSetDeleted()
         {
             // Arrange
             var jobRun = new ComponentModel.JobStorage.Model.JobRun();
