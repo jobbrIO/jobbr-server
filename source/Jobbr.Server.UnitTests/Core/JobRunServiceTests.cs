@@ -52,10 +52,10 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        [DataRow(JobRunStates.Started)]
-        public void UpdateState_ShouldSetActualStartDateTimeUtc(JobRunStates state)
+        public void UpdateState_SetStarted_ShouldSetActualStartDateTimeUtc()
         {
             // Arrange
+            var state = JobRunStates.Started;
             var jobRun = new ComponentModel.JobStorage.Model.JobRun();
             _repositoryMock.Setup(rep => rep.GetJobRunById(It.IsAny<long>())).Returns(jobRun);
 
