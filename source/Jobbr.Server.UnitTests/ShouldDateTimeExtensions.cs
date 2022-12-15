@@ -7,12 +7,12 @@ namespace Jobbr.Server.UnitTests
     {
         private static readonly TimeSpan DefaultOffsetTolerance = TimeSpan.FromSeconds(1);
 
-        public static DateTime ShouldBeUtcNow(this DateTime actual, string customMessage = null)
+        public static DateTime ShouldBeUtcNowWithTolerance(this DateTime actual, string customMessage = null)
         {
-            return actual.ShouldBeUtcNow(DefaultOffsetTolerance, customMessage);
+            return actual.ShouldBeUtcNowWithTolerance(DefaultOffsetTolerance, customMessage);
         }
 
-        public static DateTime ShouldBeUtcNow(this DateTime actual, TimeSpan tolerance, string customMessage = null)
+        public static DateTime ShouldBeUtcNowWithTolerance(this DateTime actual, TimeSpan tolerance, string customMessage = null)
         {
             var offset = DateTime.UtcNow - actual;
             offset.ShouldBeLessThanOrEqualTo(tolerance, customMessage);
