@@ -257,5 +257,6 @@
     <Rule Id="CA1309" Action="Warning" />
     <Rule Id="CA1820" Action="Warning" />
     <Rule Id="SA1600" Action="None" />
+    <Rule Id="SA1615" Action="None" />
   </Rules>
 </RuleSet>
