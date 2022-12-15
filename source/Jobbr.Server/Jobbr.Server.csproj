@@ -31,7 +31,7 @@
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="NCrontab" Version="3.3.1" />
     <PackageReference Include="SimpleInjector" Version="5.4.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
@@ -45,7 +45,7 @@
     <PackageReference Include="Jobbr.ComponentModel.Registration" Version="3.0.0-rc.2" />
   </ItemGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="Jobbr.Server.IntegrationTests"/>
-    <InternalsVisibleTo Include="Jobbr.Server.UnitTests"/>
+    <InternalsVisibleTo Include="Jobbr.Server.IntegrationTests" />
+    <InternalsVisibleTo Include="Jobbr.Server.UnitTests" />
   </ItemGroup>
 </Project>
