@@ -33,6 +33,10 @@ namespace Jobbr.Server.UnitTests.Core
         [TestMethod]
         public void Add_RecurringTrigger_ShouldSetModelKeys()
         {
+            long x = 1, y = 2;
+
+            var z = x + y;
+
             // Arrange
             var triggerModel = new RecurringTriggerModel { Id = 1, JobId = 2 };
             _repositoryMock
