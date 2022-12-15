@@ -27,10 +27,10 @@ namespace Jobbr.Server.UnitTests.Core
         }
 
         [TestMethod]
-        public void Add_ShouldAddOrUpdateModelId()
+        public void Add_NewJob_ShouldAddOrUpdateId()
         {
             // Arrange
-            JobModel model = new JobModel { Title = "Test" };
+            var model = new JobModel { Title = "Test" };
             var jobId = 155L;
             _repositoryMock.Setup(rep => rep.AddJob(It.IsAny<Job>())).Callback<Job>(job => job.Id = jobId);
 
@@ -41,6 +41,22 @@ namespace Jobbr.Server.UnitTests.Core
             result.ShouldNotBeNull();
             result.Title.ShouldBe("Test");
             result.Id.ShouldBe(jobId);
+        }
+
+        [TestMethod]
+        public void Delete_ExistingJob_ShouldSetDeleted()
+        {
+            // Arrange
+            var jobId = 2L;
+            var job = new Job { Id = jobId, Deleted = false };
+            _repositoryMock.Setup(rep => rep.GetJob(It.IsAny<long>())).Returns(job);
+
+            // Act
+            _service.Delete(jobId);
+
+            // Assert
+            job.Id.ShouldBe(jobId);
+            job.Deleted.ShouldBeTrue();
         }
     }
 }
