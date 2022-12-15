@@ -64,6 +64,7 @@ namespace Jobbr.Server.UnitTests.Core
 
             // Assert
             jobRun.ActualStartDateTimeUtc.ShouldNotBeNull();
+            jobRun.ActualStartDateTimeUtc.Value.ShouldBeUtcNow();
         }
 
         [TestMethod]
@@ -115,6 +116,7 @@ namespace Jobbr.Server.UnitTests.Core
 
             // Assert
             jobRun.ActualEndDateTimeUtc.ShouldNotBeNull();
+            jobRun.ActualEndDateTimeUtc.Value.ShouldBeUtcNow();
         }
 
         [TestMethod]
