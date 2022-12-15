@@ -136,7 +136,8 @@ namespace Jobbr.Server.UnitTests.Core
         public void Disable_ShouldCallRepository()
         {
             // Arrange
-            long jobId = 1L, triggerId = 2L;
+            var jobId = 1L;
+            var triggerId = 2L;
 
             // Act
             _service.Disable(jobId, triggerId);
@@ -150,7 +151,8 @@ namespace Jobbr.Server.UnitTests.Core
         public void Disable_ShouldCallMessengerHubPublish()
         {
             // Arrange
-            long jobId = 1L, triggerId = 2L;
+            var jobId = 1L;
+            var triggerId = 2L;
 
             // Act
             _service.Disable(jobId, triggerId);
@@ -163,7 +165,8 @@ namespace Jobbr.Server.UnitTests.Core
         public void Enable_ShouldCallRepository()
         {
             // Arrange
-            long jobId = 1L, triggerId = 2L;
+            var jobId = 1L;
+            var triggerId = 2L;
 
             // Act
             _service.Enable(jobId, triggerId);
@@ -176,7 +179,8 @@ namespace Jobbr.Server.UnitTests.Core
         public void Enable_ShouldCallMessengerHubPublish()
         {
             // Arrange
-            long jobId = 1L, triggerId = 2L;
+            var jobId = 1L;
+            var triggerId = 2L;
 
             // Act
             _service.Enable(jobId, triggerId);
@@ -189,7 +193,8 @@ namespace Jobbr.Server.UnitTests.Core
         public void Delete_ShouldCallRepository()
         {
             // Arrange
-            long jobId = 1L, triggerId = 2L;
+            var jobId = 1L;
+            var triggerId = 2L;
 
             // Act
             _service.Delete(jobId, triggerId);
@@ -202,7 +207,8 @@ namespace Jobbr.Server.UnitTests.Core
         public void Delete_ShouldCallMessengerHubPublish()
         {
             // Arrange
-            long jobId = 1L, triggerId = 2L;
+            var jobId = 1L;
+            var triggerId = 2L;
 
             // Act
             _service.Delete(jobId, triggerId);
