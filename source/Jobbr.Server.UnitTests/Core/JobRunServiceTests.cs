@@ -131,7 +131,8 @@ namespace Jobbr.Server.UnitTests.Core
             var result = _service.GetArtefactsByJobRunId(1);
 
             // Assert
-            result.ShouldNotBeNull().ShouldNotBeEmpty();
+            result.ShouldNotBeNull();
+            result.ShouldNotBeEmpty();
             result.Count.ShouldBe(numberOfArtefacts);
         }
 
@@ -145,7 +146,8 @@ namespace Jobbr.Server.UnitTests.Core
             var result = _service.GetArtefactsByJobRunId(1);
 
             // Assert
-            result.ShouldNotBeNull().ShouldBeEmpty();
+            result.ShouldNotBeNull();
+            result.ShouldBeEmpty();
         }
 
         [TestMethod]
@@ -188,7 +190,8 @@ namespace Jobbr.Server.UnitTests.Core
             _service.UpdatePid(1, proccessId);
 
             // Assert
-            jobRun.Pid.ShouldNotBeNull().ShouldBe(proccessId);
+            jobRun.Pid.ShouldNotBeNull();
+            jobRun.Pid.ShouldBe(proccessId);
         }
 
         [TestMethod]
