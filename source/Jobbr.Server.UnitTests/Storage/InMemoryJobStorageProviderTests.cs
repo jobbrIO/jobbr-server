@@ -257,7 +257,7 @@ namespace Jobbr.Server.UnitTests.Storage
             _provider.Update(job);
 
             // Assert
-            job.Id.ShouldBe(1);
+            job.Id.ShouldBe(1); // or throw...
         }
 
         [TestMethod]
