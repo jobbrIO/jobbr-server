@@ -146,7 +146,6 @@ namespace Jobbr.Server.UnitTests.Core
             _repositoryMock.Verify(rep => rep.DisableTrigger(It.Is<long>(x => x == jobId), It.Is<long>(x => x == triggerId)), Times.Once());
         }
 
-
         [TestMethod]
         public void Disable_AnyTrigger_ShouldCallMessengerHubPublish()
         {

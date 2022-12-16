@@ -124,7 +124,7 @@ namespace Jobbr.Server.UnitTests.Core
         {
             // Arrange
             var numberOfArtefacts = 3;
-            var artefacts = Enumerable.Repeat(new ComponentModel.ArtefactStorage.Model.JobbrArtefact(), numberOfArtefacts).ToList();
+            var artefacts = Enumerable.Range(0, numberOfArtefacts).Select(_ => new ComponentModel.ArtefactStorage.Model.JobbrArtefact()).ToList();
             _storageProviderMock.Setup(provider => provider.GetArtefacts(It.IsAny<string>())).Returns(artefacts);
 
             // Act
@@ -176,7 +176,6 @@ namespace Jobbr.Server.UnitTests.Core
             // Assert
             result.ShouldBeNull();
         }
-
 
         [TestMethod]
         public void UpdatePid_ExistingJobRun_ShouldSetToProccessId()
