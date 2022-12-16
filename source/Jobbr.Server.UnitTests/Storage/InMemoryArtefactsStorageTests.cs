@@ -57,7 +57,8 @@ namespace Jobbr.Server.UnitTests.Storage
             outputString.ShouldBe(content);
         }
 
-        [Ignore]
+        [Ignore("Save() initiates that the complete stream is saved.\n" +
+            "However, the passed stream may have already been read up to a certain point and was not reset which may lead to unwanted behavior.")]
         [TestMethod]
         public void Save_StreamWithOffset_ShouldSaveAllByteArray()
         {

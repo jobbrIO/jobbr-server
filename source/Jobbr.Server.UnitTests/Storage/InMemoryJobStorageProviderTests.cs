@@ -35,7 +35,7 @@ namespace Jobbr.Server.UnitTests.Storage
             _provider.GetJobsCount().ShouldBe(jobs.Count);
         }
 
-        [Ignore]
+        [Ignore("Job.UniqueName initiates that the name must be unique. However, this is currently not enforced in any way.")]
         [TestMethod]
         public void AddJob_NonUniqueName_ShouldThrow()
         {
@@ -246,7 +246,8 @@ namespace Jobbr.Server.UnitTests.Storage
             job.UniqueName.ShouldBe(jobUpdate.UniqueName);
         }
 
-        [Ignore]
+        [Ignore("The AddJob() method generates the Job.Id values.\nThe Update() method behaves like an upsert but does not generate any Job.Id values.\n" +
+            "Therefore, adding a Job with a custom Job.Id can cause unknown behavior.\nHowever, the Update() method neither provides a valid Job.Id nor throws an acording error")]
         [TestMethod]
         public void Update_NewJob_ShouldSetIdOrThrow()
         {
@@ -279,7 +280,9 @@ namespace Jobbr.Server.UnitTests.Storage
             jobRun.JobParameters.ShouldBe(jobRunUpdate.JobParameters);
         }
 
-        [Ignore]
+
+        [Ignore("The AddJobRun() method generates the JobRun.Id values.\nThe Update() method behaves like an upsert but does not generate any JobRun.Id values.\n" +
+            "Therefore, adding a JobRun with a custom JobRun.Id can cause unknown behavior.\nHowever, the Update() method neither provides a valid JobRun.Id nor throws an acording error")]
         [TestMethod]
         public void Update_NewJobRun_ShouldSetIdOrThrow()
         {
