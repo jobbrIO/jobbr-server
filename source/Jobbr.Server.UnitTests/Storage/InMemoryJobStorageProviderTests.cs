@@ -328,7 +328,7 @@ namespace Jobbr.Server.UnitTests.Storage
         public void GetJobsCount_ShouldReturnCount()
         {
             // Arrange
-            var jobs = Enumerable.Range(0, 4).Select(x => new Job()).ToList();
+            var jobs = Enumerable.Range(0, 4).Select(_ => new Job()).ToList();
             jobs.ForEach(job => _provider.AddJob(job));
 
             _provider.Update(new Job { Id = 2 }); // Update an existing job -> count remains the same
@@ -345,7 +345,7 @@ namespace Jobbr.Server.UnitTests.Storage
         public void GetJobs_DefaultSearch_ShouldReturnsPagedList()
         {
             // Arrange
-            var jobs = Enumerable.Range(0, 127).Select(x => new Job()).ToList();
+            var jobs = Enumerable.Range(0, 127).Select(_ => new Job()).ToList();
             jobs.ForEach(job => _provider.AddJob(job));
 
             // Act
@@ -377,8 +377,8 @@ namespace Jobbr.Server.UnitTests.Storage
         {
             // Arrange
             var userId = "Test User";
-            var jobRuns = Enumerable.Range(0, 127).Select(x => new JobRun { Trigger = new InstantTrigger { UserId = userId } }).ToList();
-            var otherJobRuns = Enumerable.Range(0, 127).Select(x => new JobRun { Trigger = new RecurringTrigger() }).ToList();
+            var jobRuns = Enumerable.Range(0, 127).Select(_ => new JobRun { Trigger = new InstantTrigger { UserId = userId } }).ToList();
+            var otherJobRuns = Enumerable.Range(0, 127).Select(_ => new JobRun { Trigger = new RecurringTrigger() }).ToList();
             jobRuns.ForEach(jobRun => _provider.AddJobRun(jobRun));
             otherJobRuns.ForEach(jobRun => _provider.AddJobRun(jobRun));
 
