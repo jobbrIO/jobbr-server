@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Jobbr.ComponentModel.JobStorage;
@@ -23,13 +24,14 @@ namespace Jobbr.Server.UnitTests.Storage
         public void AddJob_ShouldSetId()
         {
             // Arrange
-            var jobs = Enumerable.Repeat(new Job(), 4).ToList();
+            var jobs = Enumerable.Range(0, 4).Select(_ => new Job()).ToList();
 
             // Act
             jobs.ForEach(job => _provider.AddJob(job));
 
             // Assert
             jobs.ShouldAllBe(job => job.Id != 0);
+            jobs.Select(job => job.Id).ShouldBeUnique();
             _provider.GetJobsCount().ShouldBe(jobs.Count);
         }
 
@@ -39,8 +41,8 @@ namespace Jobbr.Server.UnitTests.Storage
         {
             // Arrange
             var identifier = "my-unique-identifier";
-            var job = new Job { UniqueName = identifier };
             _provider.AddJob(new Job { UniqueName = identifier });
+            var job = new Job { UniqueName = identifier };
 
             // Act & Assert
             Should.Throw<DuplicateNameException>(() => _provider.AddJob(job));
@@ -141,7 +143,8 @@ namespace Jobbr.Server.UnitTests.Storage
         public void GetTriggerById_ShouldReturnClone()
         {
             // Arrange
-            long jobId = 1, searchJobId = 2;
+            var jobId = 1;
+            var searchJobId = 2;
             var trigger = new RecurringTrigger();
             _provider.AddTrigger(jobId, trigger);
 
@@ -187,7 +190,7 @@ namespace Jobbr.Server.UnitTests.Storage
         public void DisableTrigger_BadId_ShouldThrow()
         {
             // Arrange
-            var jobId = 1; ;
+            var jobId = 1;
             var trigger = new RecurringTrigger { IsActive = true };
             _provider.AddTrigger(jobId, trigger);
 
@@ -214,7 +217,7 @@ namespace Jobbr.Server.UnitTests.Storage
         public void EnableTrigger_BadId_ShouldThrow()
         {
             // Arrange
-            var jobId = 1; ;
+            var jobId = 1;
             var trigger = new RecurringTrigger { IsActive = false };
             _provider.AddTrigger(jobId, trigger);
 

@@ -72,7 +72,6 @@ namespace Jobbr.Server.UnitTests.Storage
             _storageProviderMock.Verify(provider => provider.Update(It.IsAny<long>(), It.IsAny<InstantTrigger>()), Times.Once());
         }
 
-
         [TestMethod]
         public void SaveUpdateTrigger_InstantTriggerNoChanges_ShouldNotSetValuesAndPropagate()
         {
@@ -223,7 +222,6 @@ namespace Jobbr.Server.UnitTests.Storage
             // Act && Assert
             Should.Throw<ArgumentOutOfRangeException>(() => _repository.GetJobRunsByStateRange(minState, maxState).ToList());
         }
-
 
         private void SetupStorageProviderGetTriggerById<T>(T trigger)
             where T : JobTriggerBase

@@ -15,7 +15,7 @@ namespace Jobbr.Server.UnitTests.Storage
         public void CloneNullObject_ShouldNotThrow()
         {
             // Arrange
-            object? data = null;
+            object data = null;
 
             // Act
             var dataClone = ExtensionMethods.Clone(data);
@@ -100,7 +100,7 @@ namespace Jobbr.Server.UnitTests.Storage
 
         private class TestClassValueComparer : IEqualityComparer<TestClass>
         {
-            public bool Equals(TestClass? x, TestClass? y)
+            public bool Equals(TestClass x, TestClass y)
             {
                 return x is not null && y is not null && x.Value == y.Value && x.Key == y.Key;
             }
