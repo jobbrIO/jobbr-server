@@ -92,7 +92,7 @@ namespace Jobbr.Server.UnitTests.Storage
         }
 
         [TestMethod]
-        public void GetArtefacts_ShouldReturnListOfArtefacts()
+        public void GetArtefacts_WithMultipleContainers_ShouldReturnListOfContainerArtefacts()
         {
             // Arrange
             var container = "container";
@@ -104,6 +104,7 @@ namespace Jobbr.Server.UnitTests.Storage
             // Act
             var result = _provider.GetArtefacts(container);
 
+            // Assert
             result.ShouldNotBeNull();
             result.Count.ShouldBe(1);
             result.ShouldContain(file => file.FileName == fileName);
@@ -117,7 +118,7 @@ namespace Jobbr.Server.UnitTests.Storage
         }
 
         [TestMethod]
-        public void Load_ShouldReturnStream()
+        public void Load_ExistingFile_ShouldReturnStream()
         {
             // Arrange
             var container = "container";

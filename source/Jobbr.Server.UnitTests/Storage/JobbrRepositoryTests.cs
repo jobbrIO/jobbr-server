@@ -64,7 +64,7 @@ namespace Jobbr.Server.UnitTests.Storage
             SetupStorageProviderGetTriggerById(trigger);
 
             // Act
-            _repository.SaveUpdateTrigger(1, triggerUpdate, out bool hasChanges);
+            _repository.SaveUpdateTrigger(1, triggerUpdate, out var hasChanges);
 
             // Assert
             hasChanges.ShouldBeTrue();
@@ -83,7 +83,7 @@ namespace Jobbr.Server.UnitTests.Storage
             SetupStorageProviderGetTriggerById(trigger);
 
             // Act
-            var result = _repository.SaveUpdateTrigger(1, triggerUpdate, out bool hasChanges);
+            var result = _repository.SaveUpdateTrigger(1, triggerUpdate, out var hasChanges);
 
             // Assert
             hasChanges.ShouldBeFalse();
@@ -108,7 +108,7 @@ namespace Jobbr.Server.UnitTests.Storage
             SetupStorageProviderGetTriggerById(trigger);
 
             // Act
-            var result = _repository.SaveUpdateTrigger(1, triggerUpdate, out bool hasChanges);
+            var result = _repository.SaveUpdateTrigger(1, triggerUpdate, out var hasChanges);
 
             // Assert
             hasChanges.ShouldBeTrue();
@@ -133,7 +133,7 @@ namespace Jobbr.Server.UnitTests.Storage
             SetupStorageProviderGetTriggerById(trigger);
 
             // Act
-            var result = _repository.SaveUpdateTrigger(1, triggerUpdate, out bool hasChanges);
+            var result = _repository.SaveUpdateTrigger(1, triggerUpdate, out var hasChanges);
 
             // Assert
             hasChanges.ShouldBeTrue();
@@ -154,7 +154,7 @@ namespace Jobbr.Server.UnitTests.Storage
             SetupStorageProviderGetTriggerById(trigger);
 
             // Act
-            var result = _repository.SaveUpdateTrigger(1, triggerUpdate, out bool hasChanges);
+            var result = _repository.SaveUpdateTrigger(1, triggerUpdate, out var hasChanges);
 
             // Assert
             hasChanges.ShouldBeFalse();
