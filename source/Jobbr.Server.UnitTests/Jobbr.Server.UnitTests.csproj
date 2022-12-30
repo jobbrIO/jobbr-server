@@ -7,13 +7,15 @@
         <Product>Jobbr.Server.UnitTests</Product>
         <Version>1.0.0.0-pre</Version>
         <OutputPath>bin\$(Configuration)\</OutputPath>
-        <CodeAnalysisRuleSet>Jobbr.Server.UnitTests.ruleset</CodeAnalysisRuleSet>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DebugType>full</DebugType>
+        <NoWarn>1701;1702;1591;SA1600</NoWarn>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DebugType>full</DebugType>
+        <NoWarn>1701;1702;1591;SA1600</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -32,5 +34,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Jobbr.Server\Jobbr.Server.csproj" />
     </ItemGroup>
-
+    <ImportGroup>
+      <Import Project="..\submodules\devsupport\src\Jobbr.DevSupport.StyleCopAnalyzer\Jobbr.DevSupport.StyleCopAnalyzer.targets" />
+    </ImportGroup>
 </Project>
