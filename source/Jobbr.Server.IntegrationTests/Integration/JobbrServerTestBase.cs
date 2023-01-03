@@ -13,21 +13,21 @@ namespace Jobbr.Server.IntegrationTests.Integration
 
         protected JobbrServerTestBase(Func<JobbrServer> creator)
         {
-            this.jobbrServer = creator();
+            jobbrServer = creator();
         }
 
         protected ExposeAllServicesComponent Services => ExposeAllServicesComponent.Instance;
 
         protected JobbrServer JobbrServer
         {
-            get { return this.jobbrServer; }
+            get { return jobbrServer; }
         }
 
         [TestCleanup]
         public void CleanUp()
         {
-            this.jobbrServer?.Stop();
-            this.jobbrServer?.Dispose();
+            jobbrServer?.Stop();
+            jobbrServer?.Dispose();
         }
 
         [TestMethod]
@@ -47,7 +47,7 @@ namespace Jobbr.Server.IntegrationTests.Integration
         protected static JobbrServer GivenAServerInstance()
         {
             var builder = new JobbrBuilder(new NullLoggerFactory());
-            
+
             builder.RegisterForCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
 
             var server = builder.Create();

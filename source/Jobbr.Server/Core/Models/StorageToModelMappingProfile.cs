@@ -7,7 +7,7 @@ namespace Jobbr.Server.Core.Models
     {
         public StorageToModelMappingProfile()
         {
-            this.CreateMap<JobbrArtefact, JobArtefactModel>();
+            CreateMap<JobbrArtefact, JobArtefactModel>();
         }
     }
 }

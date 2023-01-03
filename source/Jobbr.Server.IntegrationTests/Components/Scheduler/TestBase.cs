@@ -21,23 +21,23 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
 
         public TestBase()
         {
-            this.repository = new JobbrRepository(new NullLoggerFactory(), new InMemoryJobStorageProvider());
+            repository = new JobbrRepository(new NullLoggerFactory(), new InMemoryJobStorageProvider());
 
             var executorMock = new Mock<IJobExecutor>();
-            executorMock.Setup(e => e.OnPlanChanged(It.IsNotNull<List<PlannedJobRun>>())).Callback<List<PlannedJobRun>>(p => this.lastIssuedPlan = p);
+            executorMock.Setup(e => e.OnPlanChanged(It.IsNotNull<List<PlannedJobRun>>())).Callback<List<PlannedJobRun>>(p => lastIssuedPlan = p);
 
-            this.periodicTimer = new PeriodicTimerMock();
+            periodicTimer = new PeriodicTimerMock();
 
-            this.currentTimeProvider = new ManualTimeProvider();
+            currentTimeProvider = new ManualTimeProvider();
 
             var job = new Job();
-            this.repository.AddJob(job);
-            this.demoJob1Id = job.Id;
+            repository.AddJob(job);
+            demoJob1Id = job.Id;
 
-            this.scheduler = new DefaultScheduler(new NullLoggerFactory(), this.repository, executorMock.Object,
-                new InstantJobRunPlaner(this.currentTimeProvider), new ScheduledJobRunPlaner(this.currentTimeProvider),
-                new RecurringJobRunPlaner(new NullLoggerFactory(), this.repository, this.currentTimeProvider), new DefaultSchedulerConfiguration(),
-                this.periodicTimer, this.currentTimeProvider);
+            scheduler = new DefaultScheduler(new NullLoggerFactory(), repository, executorMock.Object,
+                new InstantJobRunPlaner(currentTimeProvider), new ScheduledJobRunPlaner(currentTimeProvider),
+                new RecurringJobRunPlaner(new NullLoggerFactory(), repository, currentTimeProvider), new DefaultSchedulerConfiguration(),
+                periodicTimer, currentTimeProvider);
         }
     }
 }

@@ -46,11 +46,11 @@ namespace Jobbr.Server.JobRegistry
             switch (left)
             {
                 case RecurringTrigger leftRecurringTrigger:
-                    return IsSame(leftRecurringTrigger, (RecurringTrigger) right);
+                    return IsSame(leftRecurringTrigger, (RecurringTrigger)right);
                 case ScheduledTrigger leftSchedulingTrigger:
-                    return IsSame(leftSchedulingTrigger, (ScheduledTrigger) right);
+                    return IsSame(leftSchedulingTrigger, (ScheduledTrigger)right);
                 case InstantTrigger leftInstantTrigger:
-                    return IsSame(leftInstantTrigger, (InstantTrigger) right);
+                    return IsSame(leftInstantTrigger, (InstantTrigger)right);
                 default:
                     return false;
             }

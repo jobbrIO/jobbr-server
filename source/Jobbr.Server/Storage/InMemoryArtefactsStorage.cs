@@ -13,12 +13,12 @@ namespace Jobbr.Server.Storage
 
         public void Save(string container, string fileName, Stream content)
         {
-            if (this.files.ContainsKey(container) == false)
+            if (files.ContainsKey(container) == false)
             {
-                this.files.Add(container, new List<InMemoryFile>());
+                files.Add(container, new List<InMemoryFile>());
             }
 
-            var list = this.files[container];
+            var list = files[container];
 
             var memoryStream = new MemoryStream();
 
@@ -37,7 +37,7 @@ namespace Jobbr.Server.Storage
 
         public Stream Load(string container, string fileName)
         {
-            var filesInContainer = this.GetFilesFromContainer(container);
+            var filesInContainer = GetFilesFromContainer(container);
 
             var file = filesInContainer.FirstOrDefault(p => string.Equals(p.Name, fileName, StringComparison.OrdinalIgnoreCase));
 
@@ -51,19 +51,19 @@ namespace Jobbr.Server.Storage
 
         public List<JobbrArtefact> GetArtefacts(string container)
         {
-            var filesInContainer = this.GetFilesFromContainer(container);
+            var filesInContainer = GetFilesFromContainer(container);
 
             return filesInContainer.Select(s => new JobbrArtefact { FileName = s.Name }).ToList();
         }
 
         private IEnumerable<InMemoryFile> GetFilesFromContainer(string container)
         {
-            if (this.files.ContainsKey(container) == false)
+            if (files.ContainsKey(container) == false)
             {
                 throw new ArgumentException("Container not found");
             }
 
-            return this.files[container];
+            return files[container];
         }
 
         private class InMemoryFile

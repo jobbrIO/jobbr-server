@@ -9,8 +9,8 @@ namespace Jobbr.Server.Core.Messaging
         {
         }
 
-        public long JobId => this.Content.JobId;
+        public long JobId => Content.JobId;
 
-        public long TriggerId => this.Content.TriggerId;
+        public long TriggerId => Content.TriggerId;
     }
 }

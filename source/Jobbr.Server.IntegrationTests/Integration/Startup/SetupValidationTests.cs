@@ -54,7 +54,8 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
             builder.Create();
 
             // Assert
-            _loggerMock.Verify(m => m.Log(
+            _loggerMock.Verify(
+                m => m.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("There was no JobStorageProvider registered. Will continue building with an in-memory version, which does not support production scenarios.")),
@@ -75,7 +76,8 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
             builder.Create();
 
             // Assert
-            _loggerMock.Verify(m => m.Log(
+            _loggerMock.Verify(
+                m => m.Log(
                     LogLevel.Warning,
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("There was no ArtefactsStorageProvider registered. Adding a default InMemoryArtefactStorage, which stores artefacts in memory. Please register a proper ArtefactStorage for production use.")),
@@ -96,7 +98,8 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
             builder.Create();
 
             // Assert
-            _loggerMock.Verify(m => m.Log(
+            _loggerMock.Verify(
+                m => m.Log(
                     LogLevel.Error,
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("There was no JobExecutor registered. Adding a Non-Operational JobExecutor")),

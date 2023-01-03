@@ -30,33 +30,33 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
 
         public class DemoComponentValidator : IConfigurationValidator
         {
-            private readonly Action<DemoSettings> func;
-            private readonly bool validationShouldFail;
-            private readonly bool throwException;
+            private readonly Action<DemoSettings> _func;
+            private readonly bool _validationShouldFail;
+            private readonly bool _throwException;
 
             public Type ConfigurationType { get; set; } = typeof(DemoSettings);
 
             public DemoComponentValidator(bool validationShouldFail, bool throwException)
             {
-                this.validationShouldFail = validationShouldFail;
-                this.throwException = throwException;
+                _validationShouldFail = validationShouldFail;
+                _throwException = throwException;
             }
 
             public DemoComponentValidator(Action<DemoSettings> func)
             {
-                this.func = func;
+                _func = func;
             }
 
             public bool Validate(object configuration)
             {
-                if (this.throwException)
+                if (_throwException)
                 {
                     throw new Exception("Exception from here");
                 }
 
-                this.func?.Invoke((DemoSettings)configuration);
+                _func?.Invoke((DemoSettings)configuration);
 
-                return !this.validationShouldFail;
+                return !_validationShouldFail;
             }
         }
 
@@ -67,7 +67,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
 
             builder.Add<DemoSettings>(new DemoSettings());
             var isCalled = false;
-            
+
             builder.AddForCollection<IConfigurationValidator>(new DemoComponentValidator(s => isCalled = true));
 
             var jobbr = builder.Create();
@@ -86,7 +86,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
             object settingsToValidate = null;
 
             builder.Add<DemoSettings>(demoSettings);
-            
+
             builder.AddForCollection<IConfigurationValidator>(new DemoComponentValidator(s => settingsToValidate = s));
 
             var jobbr = builder.Create();
@@ -104,7 +104,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
             var builder = new JobbrBuilder(new NullLoggerFactory());
 
             builder.Add<DemoSettings>(new DemoSettings());
-            
+
             builder.AddForCollection<IConfigurationValidator>(new DemoComponentValidator(validationShouldFail: true, throwException: false));
 
             var jobbr = builder.Create();

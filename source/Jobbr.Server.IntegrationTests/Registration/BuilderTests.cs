@@ -19,7 +19,7 @@ namespace Jobbr.Server.IntegrationTests.Registration
     [TestClass]
     public class BuilderTests
     {
-        ILoggerFactory _loggerFactory;
+        private ILoggerFactory _loggerFactory;
 
         [TestInitialize]
         public void Initialize()
@@ -47,7 +47,8 @@ namespace Jobbr.Server.IntegrationTests.Registration
 
             // Assert
             Assert.IsNotNull(ExposeAllServicesComponent.Instance.ArtefactsStorageProvider);
-            Assert.AreEqual(typeof(CustomArtefactStorageAdapter),
+            Assert.AreEqual(
+                typeof(CustomArtefactStorageAdapter),
                 ExposeAllServicesComponent.Instance.ArtefactsStorageProvider.GetType());
         }
 
@@ -65,7 +66,8 @@ namespace Jobbr.Server.IntegrationTests.Registration
 
             // Assert
             Assert.IsNotNull(ExposeAllServicesComponent.Instance.ArtefactsStorageProvider);
-            Assert.AreEqual(typeof(CustomJobStorageProvider),
+            Assert.AreEqual(
+                typeof(CustomJobStorageProvider),
                 ExposeAllServicesComponent.Instance.JobStorageProvider.GetType());
         }
 
@@ -84,7 +86,7 @@ namespace Jobbr.Server.IntegrationTests.Registration
             var pagedJobs = CreatePagedResult(existingJob, nonExistingJob);
             var triggerForExistingJob = new RecurringTrigger { Id = existingTriggerId, JobId = existingJobId };
             var triggerForNonExistingJob = new RecurringTrigger { Id = nonExistingTriggerId, JobId = nonExistingJobId };
-            
+
             var storageMock = new Mock<IJobStorageProvider>();
             storageMock.Setup(s => s.GetJobs(1, int.MaxValue, null, null, null, false))
                 .Returns(pagedJobs);
@@ -93,7 +95,7 @@ namespace Jobbr.Server.IntegrationTests.Registration
             storageMock.Setup(s => s.GetTriggersByJobId(nonExistingJobId, 1, int.MaxValue, false))
                 .Returns(CreatePagedResult<JobTriggerBase>(triggerForNonExistingJob));
             SetupForSuccessfulRun(storageMock);
-            
+
             var builder = new JobbrBuilder(_loggerFactory);
             builder.Add<IJobStorageProvider>(storageMock.Object);
             builder.AddJobs(_loggerFactory, repo => repo.AsSingleSourceOfTruth().Define(existingJobName, "CLR.Type"));
@@ -203,14 +205,14 @@ namespace Jobbr.Server.IntegrationTests.Registration
             storageMock.Setup(s => s.GetJobByUniqueName(jobName)).Returns(job);
             storageMock.Setup(s => s.GetJobRunsByTriggerId(1, 10, 1, int.MaxValue, false))
                 .Returns(CreatePagedResult(toOmitJobRun));
-            
+
             builder.Add<IJobStorageProvider>(storageMock.Object);
             builder.AddJobs(_loggerFactory, repo =>
                 repo.AsSingleSourceOfTruth().Define(jobName, "CLR.Type").WithTrigger("* * * * *"));
 
             // Act
             builder.Create().Start();
-            
+
             // Assert
             Assert.IsTrue(toOmitJobRun.Deleted);
             Assert.AreEqual(JobRunStates.Omitted, toOmitJobRun.State);
@@ -235,12 +237,9 @@ namespace Jobbr.Server.IntegrationTests.Registration
         }
     }
 
-    public interface IPrioritizationStrategy: IComparable<JobRun>
+    public interface IPrioritizationStrategy : IComparable<JobRun>
     {
-        
     }
-
-    #region Fake Implementations
 
     public class CustomArtefactStorageAdapter : IArtefactsStorageProvider
     {
@@ -431,7 +430,4 @@ namespace Jobbr.Server.IntegrationTests.Registration
             throw new NotImplementedException();
         }
     }
-
 }
-
-#endregion

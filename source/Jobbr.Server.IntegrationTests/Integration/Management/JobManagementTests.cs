@@ -12,7 +12,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Management
         public void JobService_ExistingScheduledTriggerIsUpdated_UpdateIsPersisted()
         {
             var demoJob = new Job();
-            var storageProvider = this.Services.JobStorageProvider;
+            var storageProvider = Services.JobStorageProvider;
             storageProvider.AddJob(demoJob);
 
             var futureDate1 = DateTime.UtcNow.AddHours(2);
@@ -23,7 +23,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Management
 
             var updatedTrigger = new ScheduledTrigger { Id = initialTrigger.Id, JobId = demoJob.Id, StartDateTimeUtc = futureDate2, IsActive = true };
 
-            this.Services.JobManagementService.UpdateTriggerStartTime(demoJob.Id, updatedTrigger.Id, updatedTrigger.StartDateTimeUtc);
+            Services.JobManagementService.UpdateTriggerStartTime(demoJob.Id, updatedTrigger.Id, updatedTrigger.StartDateTimeUtc);
 
             var assertTrigger = (ScheduledTrigger)storageProvider.GetTriggerById(demoJob.Id, initialTrigger.Id);
 
@@ -34,7 +34,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Management
         public void JobService_ExistingRecurringTriggerIsUpdated_UpdateIsPersisted()
         {
             var demoJob = new Job();
-            var storageProvider = this.Services.JobStorageProvider;
+            var storageProvider = Services.JobStorageProvider;
             storageProvider.AddJob(demoJob);
 
             var definition1 = "1 1 1 1 1";
@@ -45,7 +45,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Management
 
             var updatedTrigger = new RecurringTrigger { Id = initialTrigger.Id, JobId = demoJob.Id, Definition = definition2, IsActive = true };
 
-            this.Services.JobManagementService.UpdateTriggerDefinition(demoJob.Id, updatedTrigger.Id, updatedTrigger.Definition);
+            Services.JobManagementService.UpdateTriggerDefinition(demoJob.Id, updatedTrigger.Id, updatedTrigger.Definition);
 
             var assertTrigger = (RecurringTrigger)storageProvider.GetTriggerById(demoJob.Id, initialTrigger.Id);
 
@@ -57,12 +57,12 @@ namespace Jobbr.Server.IntegrationTests.Integration.Management
         {
             // Arrange
             var jobRun = new JobRun();
-            this.Services.JobStorageProvider.AddJobRun(jobRun);
-            this.Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file1.txt", new MemoryStream());
-            this.Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file3.txt", new MemoryStream());
+            Services.JobStorageProvider.AddJobRun(jobRun);
+            Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file1.txt", new MemoryStream());
+            Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file3.txt", new MemoryStream());
 
             // Act
-            var artefacts = this.Services.JobManagementService.GetArtefactForJob(1);
+            var artefacts = Services.JobManagementService.GetArtefactForJob(1);
 
             Assert.IsNotNull(artefacts);
             Assert.AreEqual(2, artefacts.Count);
@@ -73,10 +73,10 @@ namespace Jobbr.Server.IntegrationTests.Integration.Management
         {
             // Arrange
             var jobRun = new JobRun();
-            this.Services.JobStorageProvider.AddJobRun(jobRun);
+            Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
-            var artefacts = this.Services.JobManagementService.GetArtefactForJob(jobRun.Id);
+            var artefacts = Services.JobManagementService.GetArtefactForJob(jobRun.Id);
 
             Assert.IsNotNull(artefacts);
             Assert.AreEqual(0, artefacts.Count);
@@ -87,12 +87,12 @@ namespace Jobbr.Server.IntegrationTests.Integration.Management
         {
             // Arrange
             var jobRun = new JobRun();
-            this.Services.JobStorageProvider.AddJobRun(jobRun);
-            this.Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file1.txt", new MemoryStream());
-            this.Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file3.txt", new MemoryStream());
+            Services.JobStorageProvider.AddJobRun(jobRun);
+            Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file1.txt", new MemoryStream());
+            Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file3.txt", new MemoryStream());
 
             // Act
-            var artefact = this.Services.JobManagementService.GetArtefactAsStream(jobRun.Id, "file3.txt");
+            var artefact = Services.JobManagementService.GetArtefactAsStream(jobRun.Id, "file3.txt");
 
             Assert.IsNotNull(artefact);
         }
@@ -102,10 +102,10 @@ namespace Jobbr.Server.IntegrationTests.Integration.Management
         {
             // Arrange
             var jobRun = new JobRun();
-            this.Services.JobStorageProvider.AddJobRun(jobRun);
+            Services.JobStorageProvider.AddJobRun(jobRun);
 
             // Act
-            var artefact = this.Services.JobManagementService.GetArtefactAsStream(jobRun.Id, "file162z7.txt");
+            var artefact = Services.JobManagementService.GetArtefactAsStream(jobRun.Id, "file162z7.txt");
 
             Assert.IsNull(artefact);
         }
@@ -115,12 +115,12 @@ namespace Jobbr.Server.IntegrationTests.Integration.Management
         {
             // Arrange
             var jobRun = new JobRun();
-            this.Services.JobStorageProvider.AddJobRun(jobRun);
-            this.Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file1.txt", new MemoryStream());
-            this.Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file3.txt", new MemoryStream());
+            Services.JobStorageProvider.AddJobRun(jobRun);
+            Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file1.txt", new MemoryStream());
+            Services.ArtefactsStorageProvider.Save(jobRun.Id.ToString(), "file3.txt", new MemoryStream());
 
             // Act
-            var artefact = this.Services.JobManagementService.GetArtefactAsStream(jobRun.Id, "file162z7.txt");
+            var artefact = Services.JobManagementService.GetArtefactAsStream(jobRun.Id, "file162z7.txt");
 
             Assert.IsNull(artefact);
         }

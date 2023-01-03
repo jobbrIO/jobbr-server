@@ -47,7 +47,6 @@ namespace Jobbr.Server.ComponentServices.Management
         {
             // TODO: implement :)
             // - terminate job if it is running
-
             throw new NotImplementedException();
         }
 

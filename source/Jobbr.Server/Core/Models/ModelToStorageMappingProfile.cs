@@ -7,11 +7,11 @@ namespace Jobbr.Server.Core.Models
     {
         public ModelToStorageMappingProfile()
         {
-            this.CreateMap<RecurringTriggerModel, RecurringTrigger>();
-            this.CreateMap<ScheduledTriggerModel, ScheduledTrigger>();
-            this.CreateMap<InstantTriggerModel, InstantTrigger>();
+            CreateMap<RecurringTriggerModel, RecurringTrigger>();
+            CreateMap<ScheduledTriggerModel, ScheduledTrigger>();
+            CreateMap<InstantTriggerModel, InstantTrigger>();
 
-            this.CreateMap<JobModel, Job>();
+            CreateMap<JobModel, Job>();
         }
     }
 }

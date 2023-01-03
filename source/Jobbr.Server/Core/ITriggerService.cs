@@ -39,7 +39,7 @@ namespace Jobbr.Server.Core
         /// <summary>
         /// Deletes a trigger.
         /// </summary>
-        /// <param name="jobId">Job ID</param>
+        /// <param name="jobId">Job ID.</param>
         /// <param name="triggerId">Trigger ID.</param>
         void Delete(long jobId, long triggerId);
 

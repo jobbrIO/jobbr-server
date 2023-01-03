@@ -9,27 +9,27 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
 
         public ManualTimeProvider()
         {
-            this.currentTime = DateTime.UtcNow;
+            currentTime = DateTime.UtcNow;
         }
 
         public DateTime GetUtcNow()
         {
-            return this.currentTime;
+            return currentTime;
         }
 
         public void AddMinute()
         {
-            this.currentTime = this.currentTime.AddMinutes(1);
+            currentTime = currentTime.AddMinutes(1);
         }
 
         public void AddSecond()
         {
-            this.currentTime = this.currentTime.AddSeconds(1);
+            currentTime = currentTime.AddSeconds(1);
         }
 
         public void Set(DateTime dateTimeUtc)
         {
-            this.currentTime = dateTimeUtc;
+            currentTime = dateTimeUtc;
         }
     }
 }
