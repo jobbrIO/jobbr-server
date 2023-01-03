@@ -25,7 +25,7 @@ namespace Jobbr.Server.IntegrationTests
             asserter.Add(new PackageExistsInBothRule("SimpleInjector"));
             asserter.Add(new PackageExistsInBothRule("TinyMessenger"));
 
-            asserter.Add(new VersionIsIncludedInRange("Jobbr.ComponentModel.*")); 
+            asserter.Add(new VersionIsIncludedInRange("Jobbr.ComponentModel.*"));
             asserter.Add(new VersionIsIncludedInRange("AutoMapper"));
             asserter.Add(new VersionIsIncludedInRange("Microsoft.Extensions.Configuration.Abstractions"));
             asserter.Add(new VersionIsIncludedInRange("Microsoft.Extensions.DependencyInjection"));

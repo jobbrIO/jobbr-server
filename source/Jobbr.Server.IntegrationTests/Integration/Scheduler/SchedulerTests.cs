@@ -13,8 +13,8 @@ namespace Jobbr.Server.IntegrationTests.Integration.Scheduler
         [TestMethod]
         public void JobRunIsScheduled_RecurringTriggerGetsUpdated_JobRunScheduleIsAdjusted()
         {
-            var jobManagementService = this.Services.JobManagementService;
-            var storageProvider = this.Services.JobStorageProvider;
+            var jobManagementService = Services.JobManagementService;
+            var storageProvider = Services.JobStorageProvider;
 
             var demoJob = new Job();
             storageProvider.AddJob(demoJob);
@@ -49,8 +49,8 @@ namespace Jobbr.Server.IntegrationTests.Integration.Scheduler
         [TestMethod]
         public void JobRunIsScheduled_ScheduledTriggerGetsUpdated_JobRunScheduleIsAdjusted()
         {
-            var jobManagementService = this.Services.JobManagementService;
-            var storageProvider = this.Services.JobStorageProvider;
+            var jobManagementService = Services.JobManagementService;
+            var storageProvider = Services.JobStorageProvider;
 
             var demoJob = new Job();
             storageProvider.AddJob(demoJob);
@@ -84,8 +84,8 @@ namespace Jobbr.Server.IntegrationTests.Integration.Scheduler
         [TestMethod]
         public void JobRunIsScheduler_WhenTriggerGetsDisabled_JobRunWillBeRemoved()
         {
-            var jobManagementService = this.Services.JobManagementService;
-            var storageProvider = this.Services.JobStorageProvider;
+            var jobManagementService = Services.JobManagementService;
+            var storageProvider = Services.JobStorageProvider;
 
             var demoJob = new Job();
             storageProvider.AddJob(demoJob);
@@ -116,8 +116,8 @@ namespace Jobbr.Server.IntegrationTests.Integration.Scheduler
         [TestMethod]
         public void JobRunIsScheduler_WhenTriggerIsEnabled_JobRunWillBeScheduled()
         {
-            var jobManagementService = this.Services.JobManagementService;
-            var storageProvider = this.Services.JobStorageProvider;
+            var jobManagementService = Services.JobManagementService;
+            var storageProvider = Services.JobStorageProvider;
 
             var demoJob = new Job();
             storageProvider.AddJob(demoJob);

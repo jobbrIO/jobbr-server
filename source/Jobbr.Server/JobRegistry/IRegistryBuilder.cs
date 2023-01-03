@@ -1,5 +1,5 @@
-using Jobbr.ComponentModel.JobStorage;
 using System;
+using Jobbr.ComponentModel.JobStorage;
 
 namespace Jobbr.Server.JobRegistry
 {

@@ -9,14 +9,13 @@ namespace Jobbr.Server.IntegrationTests.Integration
 {
     /// <summary>
     /// This component consumes all services provided by a standard JobbrServer instance and makes them available by separate properties
-    /// 
     /// To use this class, register it as a component in the JobbrBuilder.
     /// </summary>
     public class ExposeAllServicesComponent : IJobbrComponent
     {
         public static ExposeAllServicesComponent Instance => instancesPerThread.Value;
 
-        private static ThreadLocal<ExposeAllServicesComponent> instancesPerThread = new ();
+        private static ThreadLocal<ExposeAllServicesComponent> instancesPerThread = new ThreadLocal<ExposeAllServicesComponent>();
 
         public ExposeAllServicesComponent(IJobbrServiceProvider serviceProvider, IArtefactsStorageProvider artefactsStorageProvider, IJobStorageProvider jobStorageProvider, IJobManagementService jobManagementService, IQueryService queryService, IServerManagementService managementService, IJobRunInformationService informationService, IJobRunProgressChannel progressChannel)
         {
@@ -45,7 +44,9 @@ namespace Jobbr.Server.IntegrationTests.Integration
         public IServerManagementService ManagementService { get; }
 
         public IJobRunInformationService InformationService { get; }
+
         public IJobRunProgressChannel ProgressChannel { get; }
+
         public void Dispose()
         {
             instancesPerThread.Value = null;

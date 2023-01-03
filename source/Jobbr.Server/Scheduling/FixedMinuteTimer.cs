@@ -11,27 +11,27 @@ namespace Jobbr.Server.Scheduling
 
         public FixedMinuteTimer()
         {
-            this.timer = new Timer(state => this.callback());
+            timer = new Timer(state => callback());
         }
 
         public void Setup(Action value)
         {
-            this.callback = value;
+            callback = value;
         }
 
         public void Start()
         {
-            this.timer.Change(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+            timer.Change(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
         }
 
         public void Stop()
         {
-            this.timer.Change(int.MaxValue, int.MaxValue);
+            timer.Change(int.MaxValue, int.MaxValue);
         }
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -39,10 +39,10 @@ namespace Jobbr.Server.Scheduling
         {
             if (isDisposing)
             {
-                if (this.timer != null)
+                if (timer != null)
                 {
-                    this.timer.Dispose();
-                    this.timer = null;
+                    timer.Dispose();
+                    timer = null;
                 }
             }
         }

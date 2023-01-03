@@ -8,7 +8,7 @@ namespace Jobbr.Server.ComponentServices.Execution
     {
         public MappingProfile()
         {
-            this.CreateMap<Job, JobRunInfo>()
+            CreateMap<Job, JobRunInfo>()
                 .ForMember(d => d.JobId, c => c.MapFrom(s => s.Id))
                 .ForMember(d => d.JobParameters, c => c.MapFrom(s => s.Parameters))
 
@@ -21,7 +21,7 @@ namespace Jobbr.Server.ComponentServices.Execution
                 // Mapped from trigger
                 .ForMember(d => d.UserId, c => c.Ignore());
 
-            this.CreateMap<JobRun, JobRunInfo>()
+            CreateMap<JobRun, JobRunInfo>()
                 .ForMember(d => d.InstanceParameters, c => c.MapFrom(s => s.InstanceParameters))
 
                 // Mapped from the Job
@@ -32,7 +32,7 @@ namespace Jobbr.Server.ComponentServices.Execution
                 .ForMember(d => d.UserDisplayName, c => c.Ignore())
                 ;
 
-            this.CreateMap<JobTriggerBase, JobRunInfo>()
+            CreateMap<JobTriggerBase, JobRunInfo>()
 
                 .ForMember(d => d.TriggerId, c => c.MapFrom(s => s.Id))
 

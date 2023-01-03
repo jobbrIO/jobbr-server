@@ -12,26 +12,26 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
 
         public ProgressChannelTests()
         {
-            var job = this.CreateTestJob();
+            var job = CreateTestJob();
             var trigger = CreateInstantTrigger(job);
 
-            this.currentRun = this.TriggerNewJobRun(trigger);
+            currentRun = TriggerNewJobRun(trigger);
         }
 
         [TestMethod]
         public void Infrastructure_TriggeredJobIsReady()
         {
-            Assert.IsNotNull(this.currentRun);
+            Assert.IsNotNull(currentRun);
         }
 
         [TestMethod]
         public void ProgressUpdate_With50Percent_IsStored()
         {
-            var progressService = this.Services.ProgressChannel;
+            var progressService = Services.ProgressChannel;
 
-            progressService.PublishProgressUpdate(this.currentRun.Id, 50);
+            progressService.PublishProgressUpdate(currentRun.Id, 50);
 
-            var jobRunFromDb = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Items.Single();
+            var jobRunFromDb = Services.JobStorageProvider.GetJobRunsByTriggerId(currentRun.Job.Id, currentRun.Trigger.Id).Items.Single();
 
             Assert.AreEqual(50, jobRunFromDb.Progress);
         }
@@ -39,11 +39,11 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void PublishPid_WithRandomInt_IsStored()
         {
-            var progressService = this.Services.ProgressChannel;
+            var progressService = Services.ProgressChannel;
 
-            progressService.PublishPid(this.currentRun.Id, 42373, "host01");
+            progressService.PublishPid(currentRun.Id, 42373, "host01");
 
-            var jobRunFromDb = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Items.Single();
+            var jobRunFromDb = Services.JobStorageProvider.GetJobRunsByTriggerId(currentRun.Job.Id, currentRun.Trigger.Id).Items.Single();
 
             Assert.AreEqual(42373, jobRunFromDb.Pid);
         }
@@ -51,9 +51,9 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsPreparing_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Preparing);
+            SimulateStateUpdate(JobRunStates.Preparing);
 
-            var actualState = this.GetActualStoredJobRunState();
+            var actualState = GetActualStoredJobRunState();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Preparing, actualState);
         }
@@ -61,9 +61,9 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsStarting_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Starting);
+            SimulateStateUpdate(JobRunStates.Starting);
 
-            var actualState = this.GetActualStoredJobRunState();
+            var actualState = GetActualStoredJobRunState();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Starting, actualState);
         }
@@ -71,9 +71,9 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsStarted_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Started);
+            SimulateStateUpdate(JobRunStates.Started);
 
-            var actualState = this.GetActualStoredJobRunState();
+            var actualState = GetActualStoredJobRunState();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Started, actualState);
         }
@@ -81,22 +81,22 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsStarted_StartDateIsUpdated()
         {
-            this.SimulateStateUpdate(JobRunStates.Started);
+            SimulateStateUpdate(JobRunStates.Started);
 
-            var actualJobRun = this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Items.Single();
+            var actualJobRun = Services.JobStorageProvider.GetJobRunsByTriggerId(currentRun.Job.Id, currentRun.Trigger.Id).Items.Single();
 
             Assert.IsNotNull(actualJobRun.ActualStartDateTimeUtc);
         }
 
         /// <summary>
-        /// The connected state is usually needed if a forked executor signalizes the connection back to the server
+        /// The connected state is usually needed if a forked executor signalizes the connection back to the server.
         /// </summary>
         [TestMethod]
         public void StateUpdate_GetsConnected_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Connected);
+            SimulateStateUpdate(JobRunStates.Connected);
 
-            var actualState = this.GetActualStoredJobRunState();
+            var actualState = GetActualStoredJobRunState();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Connected, actualState);
         }
@@ -104,9 +104,9 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsInitializing_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Initializing);
+            SimulateStateUpdate(JobRunStates.Initializing);
 
-            var actualState = this.GetActualStoredJobRunState();
+            var actualState = GetActualStoredJobRunState();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Initializing, actualState);
         }
@@ -114,9 +114,9 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsProcessing_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Processing);
+            SimulateStateUpdate(JobRunStates.Processing);
 
-            var actualState = this.GetActualStoredJobRunState();
+            var actualState = GetActualStoredJobRunState();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Processing, actualState);
         }
@@ -124,20 +124,19 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsFinishing_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Finishing);
+            SimulateStateUpdate(JobRunStates.Finishing);
 
-            var actualState = this.GetActualStoredJobRunState();
+            var actualState = GetActualStoredJobRunState();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Finishing, actualState);
         }
 
-
         [TestMethod]
         public void StateUpdate_GetsCollecting_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Collecting);
+            SimulateStateUpdate(JobRunStates.Collecting);
 
-            var actualState = this.GetActualStoredJobRunState();
+            var actualState = GetActualStoredJobRunState();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Collecting, actualState);
         }
@@ -145,9 +144,9 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsCompleted_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Completed);
+            SimulateStateUpdate(JobRunStates.Completed);
 
-            var actualState = this.GetActualStoredJobRunState();
+            var actualState = GetActualStoredJobRunState();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Completed, actualState);
         }
@@ -155,23 +154,23 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void StateUpdate_GetsFailed_IsStored()
         {
-            this.SimulateStateUpdate(JobRunStates.Failed);
+            SimulateStateUpdate(JobRunStates.Failed);
 
-            var actualState = this.GetActualStoredJobRunState();
+            var actualState = GetActualStoredJobRunState();
 
             Assert.AreEqual(ComponentModel.JobStorage.Model.JobRunStates.Failed, actualState);
         }
 
         private ComponentModel.JobStorage.Model.JobRunStates GetActualStoredJobRunState()
         {
-            return this.Services.JobStorageProvider.GetJobRunsByTriggerId(this.currentRun.Job.Id, this.currentRun.Trigger.Id).Items.Single().State;
+            return Services.JobStorageProvider.GetJobRunsByTriggerId(currentRun.Job.Id, currentRun.Trigger.Id).Items.Single().State;
         }
 
         private void SimulateStateUpdate(JobRunStates state)
         {
-            var progressService = this.Services.ProgressChannel;
+            var progressService = Services.ProgressChannel;
 
-            progressService.PublishStatusUpdate(this.currentRun.Id, state);
+            progressService.PublishStatusUpdate(currentRun.Id, state);
         }
     }
 }

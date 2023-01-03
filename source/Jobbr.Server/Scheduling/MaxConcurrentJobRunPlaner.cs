@@ -15,7 +15,7 @@ namespace Jobbr.Server.Scheduling
 
             return runningJobs;
         }
-        
+
         private static Dictionary<long, int> GetPossibleRunsPerJob(IEnumerable<ScheduledPlanItem> currentPlan,
             IJobbrRepository repository)
         {

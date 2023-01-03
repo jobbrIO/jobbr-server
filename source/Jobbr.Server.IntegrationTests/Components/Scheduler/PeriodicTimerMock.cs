@@ -9,7 +9,7 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
 
         public void Setup(Action value)
         {
-            this.callback = value;
+            callback = value;
         }
 
         public void Start()
@@ -22,7 +22,7 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
 
         public void CallbackOnce()
         {
-            this.callback();
+            callback();
         }
     }
 }

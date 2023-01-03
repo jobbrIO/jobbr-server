@@ -305,7 +305,6 @@ namespace Jobbr.Server.Scheduling
                 return;
             }
 
-
             _logger.LogWarning("{runningCount} JobRuns are still in the 'Running'-State. They which may have crashed after an unhealthy shutdown.", runningJobRuns.Count);
             _logger.LogInformation("Need to manually set {runningCount} JobRuns to the state 'Failed'...", runningJobRuns.Count);
 
@@ -432,8 +431,8 @@ namespace Jobbr.Server.Scheduling
             if (utcNow.AddSeconds(_schedulerConfiguration.AllowChangesBeforeStartInSec) >= calculatedNextRun)
             {
                 _logger.LogWarning(
-                    "The planned start date '{startTime}' has changed to '{nextRunStart}'. This change was done too close (less than {changeWindowSecs} seconds) to the next planned run and cannot be adjusted", 
-                    plannedNextRun.PlannedStartDateTimeUtc, 
+                    "The planned start date '{startTime}' has changed to '{nextRunStart}'. This change was done too close (less than {changeWindowSecs} seconds) to the next planned run and cannot be adjusted",
+                    plannedNextRun.PlannedStartDateTimeUtc,
                     calculatedNextRun,
                     _schedulerConfiguration.AllowChangesBeforeStartInSec);
 

@@ -27,7 +27,7 @@ namespace Jobbr.Server.IntegrationTests.Registration
 
             Assert.IsFalse(isTriggerEqual);
 
-            isTriggerEqual = ((InstantTrigger) null).IsTriggerEqual(trigger);
+            isTriggerEqual = ((InstantTrigger)null).IsTriggerEqual(trigger);
 
             Assert.IsFalse(isTriggerEqual);
         }
@@ -90,8 +90,8 @@ namespace Jobbr.Server.IntegrationTests.Registration
             const int delay = 100;
             const int otherDelay = 120;
             var firstTrigger = new InstantTrigger { DelayedMinutes = delay };
-            var secondTrigger = new InstantTrigger {DelayedMinutes = delay};
-            var thirdTrigger = new InstantTrigger {DelayedMinutes = otherDelay};
+            var secondTrigger = new InstantTrigger { DelayedMinutes = delay };
+            var thirdTrigger = new InstantTrigger { DelayedMinutes = otherDelay };
 
             var firstAndSecondEqual = firstTrigger.IsTriggerEqual(secondTrigger);
             var secondAndThirdEqual = secondTrigger.IsTriggerEqual(thirdTrigger);
@@ -105,9 +105,9 @@ namespace Jobbr.Server.IntegrationTests.Registration
         {
             var startTime = new DateTime(2000, 1, 1);
             var anotherStarTime = new DateTime(1999, 12, 12);
-            var firstTrigger = new ScheduledTrigger {StartDateTimeUtc = startTime};
-            var secondTrigger = new ScheduledTrigger {StartDateTimeUtc = startTime};
-            var thirdTrigger = new ScheduledTrigger {StartDateTimeUtc = anotherStarTime};
+            var firstTrigger = new ScheduledTrigger { StartDateTimeUtc = startTime };
+            var secondTrigger = new ScheduledTrigger { StartDateTimeUtc = startTime };
+            var thirdTrigger = new ScheduledTrigger { StartDateTimeUtc = anotherStarTime };
 
             var firstAndSecondEqual = firstTrigger.IsTriggerEqual(secondTrigger);
             var secondAndThirdEqual = secondTrigger.IsTriggerEqual(thirdTrigger);
@@ -120,8 +120,8 @@ namespace Jobbr.Server.IntegrationTests.Registration
         public void RecurringTriggerShouldBeEqual_WhenDefinitionIsEqual()
         {
             const string definition = "0 * * * *";
-            var firstTrigger = new RecurringTrigger {Definition = definition };
-            var secondTrigger = new RecurringTrigger {Definition = definition };
+            var firstTrigger = new RecurringTrigger { Definition = definition };
+            var secondTrigger = new RecurringTrigger { Definition = definition };
             var thirdTrigger = new RecurringTrigger();
 
             var firstAndSecondEqual = firstTrigger.IsTriggerEqual(secondTrigger);

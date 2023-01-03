@@ -9,11 +9,11 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
     {
         protected JobRun TriggerNewJobRun(InstantTrigger trigger)
         {
-            this.Services.JobManagementService.AddTrigger(trigger.JobId, trigger);
+            Services.JobManagementService.AddTrigger(trigger.JobId, trigger);
 
-            WaitFor.HasElements(this.Services.JobStorageProvider.GetJobRuns().Items.Where(jr => jr.Trigger.Id == trigger.Id).ToList, 1500);
+            WaitFor.HasElements(Services.JobStorageProvider.GetJobRuns().Items.Where(jr => jr.Trigger.Id == trigger.Id).ToList, 1500);
 
-            var createdJobRun = this.Services.JobStorageProvider.GetJobRuns().Items.First(jr => jr.Trigger.Id == trigger.Id);
+            var createdJobRun = Services.JobStorageProvider.GetJobRuns().Items.First(jr => jr.Trigger.Id == trigger.Id);
             return createdJobRun;
         }
 
@@ -40,7 +40,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
                 UniqueName = "UniqueTestJobName"
             };
 
-            this.Services.JobManagementService.AddJob(job);
+            Services.JobManagementService.AddJob(job);
 
             return job;
         }

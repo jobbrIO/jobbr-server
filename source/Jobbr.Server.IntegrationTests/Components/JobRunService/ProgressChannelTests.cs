@@ -20,18 +20,18 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
         public ProgressUpdateTests()
         {
             var autoMapperConfig = new AutoMapperConfigurationFactory(new NullLoggerFactory()).GetNew();
-            
-            this.repo = new JobbrRepository(new NullLoggerFactory(), new InMemoryJobStorageProvider());
 
-            this.messengerHub = new TinyMessengerHub();
+            repo = new JobbrRepository(new NullLoggerFactory(), new InMemoryJobStorageProvider());
 
-            this.service = new Server.Core.JobRunService(new NullLoggerFactory(), this.messengerHub, this.repo, null, autoMapperConfig.CreateMapper());
+            messengerHub = new TinyMessengerHub();
+
+            service = new Server.Core.JobRunService(new NullLoggerFactory(), messengerHub, repo, null, autoMapperConfig.CreateMapper());
         }
 
         private JobRun GivenAJobRun()
         {
             var job1 = new Job();
-            this.repo.AddJob(job1);
+            repo.AddJob(job1);
 
             var trigger = new InstantTrigger
             {
@@ -39,18 +39,18 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
                 IsActive = true
             };
 
-            var jobrun = this.repo.SaveNewJobRun(job1, trigger, DateTime.UtcNow);
+            var jobrun = repo.SaveNewJobRun(job1, trigger, DateTime.UtcNow);
             return jobrun;
         }
 
         [TestMethod]
         public void JobRun_HasStarted_StartDateTimeIsStored()
         {
-            var jobrun = this.GivenAJobRun();
+            var jobrun = GivenAJobRun();
 
-            this.service.UpdateState(jobrun.Id, JobRunStates.Started);
+            service.UpdateState(jobrun.Id, JobRunStates.Started);
 
-            var fromRepo = this.repo.GetJobRunById(jobrun.Id);
+            var fromRepo = repo.GetJobRunById(jobrun.Id);
 
             Assert.IsNotNull(fromRepo.ActualStartDateTimeUtc);
         }
@@ -58,10 +58,10 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
         [TestMethod]
         public void JobRun_HasCompleted_EndDateTimeIsStored()
         {
-            var jobrun = this.GivenAJobRun();
+            var jobrun = GivenAJobRun();
 
-            this.service.UpdateState(jobrun.Id, JobRunStates.Completed);
-            var fromRepo = this.repo.GetJobRunById(jobrun.Id);
+            service.UpdateState(jobrun.Id, JobRunStates.Completed);
+            var fromRepo = repo.GetJobRunById(jobrun.Id);
 
             Assert.IsNotNull(fromRepo.ActualEndDateTimeUtc);
         }
@@ -69,10 +69,10 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
         [TestMethod]
         public void JobRun_HasFailed_EndDateTimeIsStored()
         {
-            var jobrun = this.GivenAJobRun();
+            var jobrun = GivenAJobRun();
 
-            this.service.UpdateState(jobrun.Id, JobRunStates.Failed);
-            var fromRepo = this.repo.GetJobRunById(jobrun.Id);
+            service.UpdateState(jobrun.Id, JobRunStates.Failed);
+            var fromRepo = repo.GetJobRunById(jobrun.Id);
 
             Assert.IsNotNull(fromRepo.ActualEndDateTimeUtc);
         }
@@ -80,13 +80,13 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
         [TestMethod]
         public void JobRun_HasCompleted_MessageIsIssued()
         {
-            var jobrun = this.GivenAJobRun();
+            var jobrun = GivenAJobRun();
             JobRunCompletedMessage message = null;
 
             // Register for message
-            this.messengerHub.Subscribe<JobRunCompletedMessage>(m => message = m);
+            messengerHub.Subscribe<JobRunCompletedMessage>(m => message = m);
 
-            this.service.UpdateState(jobrun.Id, JobRunStates.Completed);
+            service.UpdateState(jobrun.Id, JobRunStates.Completed);
 
             Assert.IsNotNull(message);
         }
@@ -94,13 +94,13 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
         [TestMethod]
         public void JobRun_HasFailed_MessageIsIssued()
         {
-            var jobrun = this.GivenAJobRun();
+            var jobrun = GivenAJobRun();
             JobRunCompletedMessage message = null;
 
             // Register for message
-            this.messengerHub.Subscribe<JobRunCompletedMessage>(m => message = m);
+            messengerHub.Subscribe<JobRunCompletedMessage>(m => message = m);
 
-            this.service.UpdateState(jobrun.Id, JobRunStates.Failed);
+            service.UpdateState(jobrun.Id, JobRunStates.Failed);
 
             Assert.IsNotNull(message);
         }

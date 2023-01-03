@@ -10,7 +10,7 @@ namespace Jobbr.Server.JobRegistry
     /// </summary>
     public class JobDefinition
     {
-        private readonly List<JobTriggerBase> _triggers = new ();
+        private readonly List<JobTriggerBase> _triggers = new List<JobTriggerBase>();
         private bool _hasTriggerDefinition;
 
         /// <summary>

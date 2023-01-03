@@ -8,7 +8,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void RunningServer_GetInfoByRandomId_ReturnsNull()
         {
-            var result = this.Services.InformationService.GetByJobRunId(-12);
+            var result = Services.InformationService.GetByJobRunId(-12);
 
             Assert.IsNull(result);
         }
@@ -16,13 +16,13 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void ExistingJobWithFirstRun_GetInfoById_MatchesConfiguration()
         {
-            var job = this.CreateTestJob();
+            var job = CreateTestJob();
 
             var trigger = CreateInstantTrigger(job);
 
-            var createdJobRun = this.TriggerNewJobRun(trigger);
+            var createdJobRun = TriggerNewJobRun(trigger);
 
-            var result = this.Services.InformationService.GetByJobRunId(createdJobRun.Id);
+            var result = Services.InformationService.GetByJobRunId(createdJobRun.Id);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(job.Id, result.JobId);
@@ -40,17 +40,17 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         [TestMethod]
         public void ExistingJobWithSecondRun_GetInfoById_MatchesConfiguration()
         {
-            var job = this.CreateTestJob();
+            var job = CreateTestJob();
 
             // First run
-            this.TriggerNewJobRun(CreateInstantTrigger(job));
+            TriggerNewJobRun(CreateInstantTrigger(job));
 
             // Second run
             var secondTrigger = CreateInstantTrigger(job);
 
-            var secondJobRun = this.TriggerNewJobRun(secondTrigger);
+            var secondJobRun = TriggerNewJobRun(secondTrigger);
 
-            var result = this.Services.InformationService.GetByJobRunId(secondJobRun.Id);
+            var result = Services.InformationService.GetByJobRunId(secondJobRun.Id);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(job.Id, result.JobId);
@@ -64,6 +64,5 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
             Assert.AreEqual(job.Parameters, result.JobParameters);
             Assert.AreEqual(secondJobRun.InstanceParameters, result.InstanceParameters);
         }
-
     }
 }

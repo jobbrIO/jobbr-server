@@ -18,7 +18,7 @@
         Preparing = 2,
 
         /// <summary>
-        /// The JobStarted has started a new executable 
+        /// The JobStarted has started a new executable
         /// </summary>
         Starting = 3,
 

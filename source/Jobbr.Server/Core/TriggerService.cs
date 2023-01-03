@@ -23,7 +23,7 @@ namespace Jobbr.Server.Core
         /// Initializes a new instance of the <see cref="TriggerService"/> class.
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
-        /// <param name="jobbrRepository">Repository for accessing job data,</param>
+        /// <param name="jobbrRepository">Repository for accessing job data.</param>
         /// <param name="messengerHub">SubPub messenger hub.</param>
         /// <param name="mapper">The mapper.</param>
         public TriggerService(ILoggerFactory loggerFactory, IJobbrRepository jobbrRepository, ITinyMessengerHub messengerHub, IMapper mapper)
