@@ -9,25 +9,25 @@ namespace Jobbr.Server.IntegrationTests.Integration
 {
     public abstract class JobbrServerTestBase
     {
-        private readonly JobbrServer jobbrServer;
+        private readonly JobbrServer _jobbrServer;
 
         protected JobbrServerTestBase(Func<JobbrServer> creator)
         {
-            jobbrServer = creator();
+            _jobbrServer = creator();
         }
 
         protected ExposeAllServicesComponent Services => ExposeAllServicesComponent.Instance;
 
         protected JobbrServer JobbrServer
         {
-            get { return jobbrServer; }
+            get { return _jobbrServer; }
         }
 
         [TestCleanup]
         public void CleanUp()
         {
-            jobbrServer?.Stop();
-            jobbrServer?.Dispose();
+            _jobbrServer?.Stop();
+            _jobbrServer?.Dispose();
         }
 
         [TestMethod]

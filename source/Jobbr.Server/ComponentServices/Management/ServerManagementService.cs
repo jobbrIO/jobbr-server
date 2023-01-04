@@ -6,12 +6,12 @@ namespace Jobbr.Server.ComponentServices.Management
 {
     public class ServerManagementService : IServerManagementService
     {
-        public void Shutdown()
-        {
-        }
-
         public int MaxConcurrentJobs { get; set; }
 
         public DateTime StartTime => Process.GetCurrentProcess().StartTime.ToUniversalTime();
+
+        public void Shutdown()
+        {
+        }
     }
 }
