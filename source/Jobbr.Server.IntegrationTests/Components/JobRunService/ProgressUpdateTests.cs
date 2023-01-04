@@ -13,34 +13,19 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
     [TestClass]
     public class ProgressUpdateTests
     {
-        private readonly Server.Core.JobRunService service;
-        private readonly JobbrRepository repo;
-        private readonly TinyMessengerHub messengerHub;
+        private readonly Server.Core.JobRunService _service;
+        private readonly JobbrRepository _repo;
+        private readonly TinyMessengerHub _messengerHub;
 
         public ProgressUpdateTests()
         {
             var autoMapperConfig = new AutoMapperConfigurationFactory(new NullLoggerFactory()).GetNew();
 
-            repo = new JobbrRepository(new NullLoggerFactory(), new InMemoryJobStorageProvider());
+            _repo = new JobbrRepository(new NullLoggerFactory(), new InMemoryJobStorageProvider());
 
-            messengerHub = new TinyMessengerHub();
+            _messengerHub = new TinyMessengerHub();
 
-            service = new Server.Core.JobRunService(new NullLoggerFactory(), messengerHub, repo, null, autoMapperConfig.CreateMapper());
-        }
-
-        private JobRun GivenAJobRun()
-        {
-            var job1 = new Job();
-            repo.AddJob(job1);
-
-            var trigger = new InstantTrigger
-            {
-                JobId = job1.Id,
-                IsActive = true
-            };
-
-            var jobrun = repo.SaveNewJobRun(job1, trigger, DateTime.UtcNow);
-            return jobrun;
+            _service = new Server.Core.JobRunService(new NullLoggerFactory(), _messengerHub, _repo, null, autoMapperConfig.CreateMapper());
         }
 
         [TestMethod]
@@ -48,9 +33,9 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
         {
             var jobrun = GivenAJobRun();
 
-            service.UpdateState(jobrun.Id, JobRunStates.Started);
+            _service.UpdateState(jobrun.Id, JobRunStates.Started);
 
-            var fromRepo = repo.GetJobRunById(jobrun.Id);
+            var fromRepo = _repo.GetJobRunById(jobrun.Id);
 
             Assert.IsNotNull(fromRepo.ActualStartDateTimeUtc);
         }
@@ -60,8 +45,8 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
         {
             var jobrun = GivenAJobRun();
 
-            service.UpdateState(jobrun.Id, JobRunStates.Completed);
-            var fromRepo = repo.GetJobRunById(jobrun.Id);
+            _service.UpdateState(jobrun.Id, JobRunStates.Completed);
+            var fromRepo = _repo.GetJobRunById(jobrun.Id);
 
             Assert.IsNotNull(fromRepo.ActualEndDateTimeUtc);
         }
@@ -71,8 +56,8 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
         {
             var jobrun = GivenAJobRun();
 
-            service.UpdateState(jobrun.Id, JobRunStates.Failed);
-            var fromRepo = repo.GetJobRunById(jobrun.Id);
+            _service.UpdateState(jobrun.Id, JobRunStates.Failed);
+            var fromRepo = _repo.GetJobRunById(jobrun.Id);
 
             Assert.IsNotNull(fromRepo.ActualEndDateTimeUtc);
         }
@@ -84,9 +69,9 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
             JobRunCompletedMessage message = null;
 
             // Register for message
-            messengerHub.Subscribe<JobRunCompletedMessage>(m => message = m);
+            _messengerHub.Subscribe<JobRunCompletedMessage>(m => message = m);
 
-            service.UpdateState(jobrun.Id, JobRunStates.Completed);
+            _service.UpdateState(jobrun.Id, JobRunStates.Completed);
 
             Assert.IsNotNull(message);
         }
@@ -98,11 +83,26 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
             JobRunCompletedMessage message = null;
 
             // Register for message
-            messengerHub.Subscribe<JobRunCompletedMessage>(m => message = m);
+            _messengerHub.Subscribe<JobRunCompletedMessage>(m => message = m);
 
-            service.UpdateState(jobrun.Id, JobRunStates.Failed);
+            _service.UpdateState(jobrun.Id, JobRunStates.Failed);
 
             Assert.IsNotNull(message);
+        }
+
+        private JobRun GivenAJobRun()
+        {
+            var job1 = new Job();
+            _repo.AddJob(job1);
+
+            var trigger = new InstantTrigger
+            {
+                JobId = job1.Id,
+                IsActive = true
+            };
+
+            var jobrun = _repo.SaveNewJobRun(job1, trigger, DateTime.UtcNow);
+            return jobrun;
         }
     }
 }

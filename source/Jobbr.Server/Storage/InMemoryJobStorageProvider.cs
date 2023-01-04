@@ -9,7 +9,7 @@ namespace Jobbr.Server.Storage
 {
     public class InMemoryJobStorageProvider : IJobStorageProvider
     {
-        private readonly IDictionary<string, Expression<Func<JobTriggerBase, object>>> TriggerOrderByMapping = new Dictionary<string, Expression<Func<JobTriggerBase, object>>>
+        private readonly IDictionary<string, Expression<Func<JobTriggerBase, object>>> _triggerOrderByMapping = new Dictionary<string, Expression<Func<JobTriggerBase, object>>>
         {
             { nameof(JobTriggerBase.UserDisplayName), e => e.UserDisplayName },
             { nameof(JobTriggerBase.UserId), e => e.UserId },
@@ -20,7 +20,7 @@ namespace Jobbr.Server.Storage
             { nameof(JobTriggerBase.CreatedDateTimeUtc), e => e.CreatedDateTimeUtc }
         };
 
-        private readonly IDictionary<string, Expression<Func<Job, object>>> JobOrderByMapping = new Dictionary<string, Expression<Func<Job, object>>>
+        private readonly IDictionary<string, Expression<Func<Job, object>>> _jobOrderByMapping = new Dictionary<string, Expression<Func<Job, object>>>
         {
             { nameof(Job.Id), e => e.Id },
             { nameof(Job.Title), e => e.Title },
@@ -30,7 +30,7 @@ namespace Jobbr.Server.Storage
             { nameof(Job.UpdatedDateTimeUtc), e => e.UpdatedDateTimeUtc }
         };
 
-        private readonly IDictionary<string, Expression<Func<JobRun, object>>> JobRunOrderByMapping = new Dictionary<string, Expression<Func<JobRun, object>>>
+        private readonly IDictionary<string, Expression<Func<JobRun, object>>> _jobRunOrderByMapping = new Dictionary<string, Expression<Func<JobRun, object>>>
         {
             { nameof(JobRun.Id), e => e.Id },
             { nameof(JobRun.ActualStartDateTimeUtc), e => e.ActualStartDateTimeUtc },
@@ -41,15 +41,15 @@ namespace Jobbr.Server.Storage
             { nameof(JobRun.EstimatedEndDateTimeUtc), e => e.EstimatedEndDateTimeUtc }
         };
 
-        private readonly List<JobTriggerBase> localTriggers = new List<JobTriggerBase>();
+        private readonly List<JobTriggerBase> _localTriggers = new List<JobTriggerBase>();
 
-        private readonly List<Job> localJobs = new List<Job>();
+        private readonly List<Job> _localJobs = new List<Job>();
 
-        private readonly List<JobRun> localJobRuns = new List<JobRun>();
+        private readonly List<JobRun> _localJobRuns = new List<JobRun>();
 
         public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50, bool showDeleted = false)
         {
-            var enumerable = localTriggers.Where(t => t.JobId == jobId);
+            var enumerable = _localTriggers.Where(t => t.JobId == jobId);
 
             int totalItems;
 
@@ -68,7 +68,7 @@ namespace Jobbr.Server.Storage
 
         public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
-            var enumerable = localTriggers.Where(t => t.IsActive);
+            var enumerable = _localTriggers.Where(t => t.IsActive);
 
             int totalItems;
 
@@ -80,7 +80,7 @@ namespace Jobbr.Server.Storage
             }
             else
             {
-                enumerable = ApplySorting(sort, enumerable, TriggerOrderByMapping);
+                enumerable = ApplySorting(sort, enumerable, _triggerOrderByMapping);
             }
 
             var list = enumerable.ToList().Clone();
@@ -98,7 +98,7 @@ namespace Jobbr.Server.Storage
         {
             int totalItems;
 
-            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, localJobRuns, out totalItems);
+            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, _localJobRuns, out totalItems);
 
             if (sort == null || sort.Length == 0)
             {
@@ -106,7 +106,7 @@ namespace Jobbr.Server.Storage
             }
             else
             {
-                enumerable = ApplySorting(sort, enumerable, JobRunOrderByMapping);
+                enumerable = ApplySorting(sort, enumerable, _jobRunOrderByMapping);
             }
 
             return new PagedResult<JobRun>
@@ -122,7 +122,7 @@ namespace Jobbr.Server.Storage
         {
             int totalItems;
 
-            var enumerable = ApplyFiltersAndPaging(page, pageSize, null, null, null, localJobRuns, out totalItems);
+            var enumerable = ApplyFiltersAndPaging(page, pageSize, null, null, null, _localJobRuns, out totalItems);
 
             if (sort == null || sort.Length == 0)
             {
@@ -130,7 +130,7 @@ namespace Jobbr.Server.Storage
             }
             else
             {
-                enumerable = ApplySorting(sort, enumerable, JobRunOrderByMapping);
+                enumerable = ApplySorting(sort, enumerable, _jobRunOrderByMapping);
             }
 
             return new PagedResult<JobRun>
@@ -146,7 +146,7 @@ namespace Jobbr.Server.Storage
         {
             int totalItems;
 
-            var enumerable = ApplyFiltersAndPaging(page, pageSize, null, null, null, localJobRuns.Where(p => p.Trigger.Id == triggerId), out totalItems);
+            var enumerable = ApplyFiltersAndPaging(page, pageSize, null, null, null, _localJobRuns.Where(p => p.Trigger.Id == triggerId), out totalItems);
 
             if (sort == null || sort.Length == 0)
             {
@@ -154,7 +154,7 @@ namespace Jobbr.Server.Storage
             }
             else
             {
-                enumerable = ApplySorting(sort, enumerable, JobRunOrderByMapping);
+                enumerable = ApplySorting(sort, enumerable, _jobRunOrderByMapping);
             }
 
             return new PagedResult<JobRun>
@@ -168,24 +168,24 @@ namespace Jobbr.Server.Storage
 
         public JobTriggerBase GetTriggerById(long jobId, long triggerId)
         {
-            return localTriggers.FirstOrDefault(t => t.Id == triggerId).Clone();
+            return _localTriggers.FirstOrDefault(t => t.Id == triggerId).Clone();
         }
 
         public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
-            return localJobRuns.FirstOrDefault(jr => jr.Trigger.Id == triggerId && jr.ActualEndDateTimeUtc < utcNow).Clone();
+            return _localJobRuns.FirstOrDefault(jr => jr.Trigger.Id == triggerId && jr.ActualEndDateTimeUtc < utcNow).Clone();
         }
 
         public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
-            return localJobRuns.FirstOrDefault(jr => jr.Trigger.Id == triggerId && jr.PlannedStartDateTimeUtc >= utcNow).Clone();
+            return _localJobRuns.FirstOrDefault(jr => jr.Trigger.Id == triggerId && jr.PlannedStartDateTimeUtc >= utcNow).Clone();
         }
 
         public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             int totalItems;
 
-            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, localJobRuns.Where(p => p.State == state), out totalItems);
+            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, _localJobRuns.Where(p => p.State == state), out totalItems);
 
             if (sort == null || sort.Length == 0)
             {
@@ -193,7 +193,7 @@ namespace Jobbr.Server.Storage
             }
             else
             {
-                enumerable = ApplySorting(sort, enumerable, JobRunOrderByMapping);
+                enumerable = ApplySorting(sort, enumerable, _jobRunOrderByMapping);
             }
 
             return new PagedResult<JobRun>
@@ -209,7 +209,7 @@ namespace Jobbr.Server.Storage
         {
             int totalItems;
 
-            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, localJobRuns.Where(p => states.Contains(p.State)), out totalItems);
+            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, _localJobRuns.Where(p => states.Contains(p.State)), out totalItems);
 
             if (sort == null || sort.Length == 0)
             {
@@ -217,7 +217,7 @@ namespace Jobbr.Server.Storage
             }
             else
             {
-                enumerable = ApplySorting(sort, enumerable, JobRunOrderByMapping);
+                enumerable = ApplySorting(sort, enumerable, _jobRunOrderByMapping);
             }
 
             return new PagedResult<JobRun>
@@ -233,7 +233,7 @@ namespace Jobbr.Server.Storage
         {
             int totalItems;
 
-            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, localJobRuns.Where(p => string.Equals(p.Trigger.UserId, userId, StringComparison.OrdinalIgnoreCase)), out totalItems);
+            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, _localJobRuns.Where(p => string.Equals(p.Trigger.UserId, userId, StringComparison.OrdinalIgnoreCase)), out totalItems);
 
             if (sort == null || sort.Length == 0)
             {
@@ -241,7 +241,7 @@ namespace Jobbr.Server.Storage
             }
             else
             {
-                enumerable = ApplySorting(sort, enumerable, JobRunOrderByMapping);
+                enumerable = ApplySorting(sort, enumerable, _jobRunOrderByMapping);
             }
 
             return new PagedResult<JobRun>
@@ -257,7 +257,7 @@ namespace Jobbr.Server.Storage
         {
             int totalItems;
 
-            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, localJobRuns.Where(p => string.Equals(p.Trigger.UserDisplayName, userDisplayName, StringComparison.OrdinalIgnoreCase)), out totalItems);
+            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, null, _localJobRuns.Where(p => string.Equals(p.Trigger.UserDisplayName, userDisplayName, StringComparison.OrdinalIgnoreCase)), out totalItems);
 
             if (sort == null || sort.Length == 0)
             {
@@ -265,7 +265,7 @@ namespace Jobbr.Server.Storage
             }
             else
             {
-                enumerable = ApplySorting(sort, enumerable, JobRunOrderByMapping);
+                enumerable = ApplySorting(sort, enumerable, _jobRunOrderByMapping);
             }
 
             return new PagedResult<JobRun>
@@ -281,7 +281,7 @@ namespace Jobbr.Server.Storage
         {
             int totalItems;
 
-            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, localJobs, out totalItems);
+            var enumerable = ApplyFiltersAndPaging(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, _localJobs, out totalItems);
 
             if (sort == null || sort.Length == 0)
             {
@@ -289,7 +289,7 @@ namespace Jobbr.Server.Storage
             }
             else
             {
-                enumerable = ApplySorting(sort, enumerable, JobOrderByMapping);
+                enumerable = ApplySorting(sort, enumerable, _jobOrderByMapping);
             }
 
             return new PagedResult<Job>
@@ -303,68 +303,68 @@ namespace Jobbr.Server.Storage
 
         public Job GetJobById(long id)
         {
-            return localJobs.FirstOrDefault(j => j.Id == id).Clone();
+            return _localJobs.FirstOrDefault(j => j.Id == id).Clone();
         }
 
         public Job GetJobByUniqueName(string identifier)
         {
-            return localJobs.FirstOrDefault(j => string.Equals(j.UniqueName, identifier, StringComparison.OrdinalIgnoreCase)).Clone();
+            return _localJobs.FirstOrDefault(j => string.Equals(j.UniqueName, identifier, StringComparison.OrdinalIgnoreCase)).Clone();
         }
 
         public JobRun GetJobRunById(long id)
         {
-            return localJobRuns.FirstOrDefault(j => j.Id == id).Clone();
+            return _localJobRuns.FirstOrDefault(j => j.Id == id).Clone();
         }
 
         public void AddJob(Job job)
         {
-            var maxJobId = localJobs.Count + 1;
+            var maxJobId = _localJobs.Count + 1;
             job.Id = maxJobId;
-            localJobs.Add(job);
+            _localJobs.Add(job);
         }
 
         public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
-            var newTriggerId = localTriggers.Count + 1;
+            var newTriggerId = _localTriggers.Count + 1;
             trigger.Id = newTriggerId;
             trigger.JobId = jobId;
-            localTriggers.Add(trigger);
+            _localTriggers.Add(trigger);
         }
 
         public void AddTrigger(long jobId, InstantTrigger trigger)
         {
-            var newTriggerId = localTriggers.Count + 1;
+            var newTriggerId = _localTriggers.Count + 1;
             trigger.Id = newTriggerId;
             trigger.JobId = jobId;
-            localTriggers.Add(trigger);
+            _localTriggers.Add(trigger);
         }
 
         public void AddTrigger(long jobId, ScheduledTrigger trigger)
         {
-            var newTriggerId = localTriggers.Count + 1;
+            var newTriggerId = _localTriggers.Count + 1;
             trigger.Id = newTriggerId;
             trigger.JobId = jobId;
-            localTriggers.Add(trigger);
+            _localTriggers.Add(trigger);
         }
 
         public void AddJobRun(JobRun jobRun)
         {
-            var maxJobRunId = localJobRuns.Count + 1;
+            var maxJobRunId = _localJobRuns.Count + 1;
 
             jobRun.Id = maxJobRunId;
 
-            localJobRuns.Add(jobRun);
+            _localJobRuns.Add(jobRun);
         }
 
         public void DisableTrigger(long jobId, long triggerId)
         {
-            var trigger = localTriggers.Single(t => t.Id == triggerId);
+            var trigger = _localTriggers.Single(t => t.Id == triggerId);
             trigger.IsActive = false;
         }
 
         public void EnableTrigger(long jobId, long triggerId)
         {
-            var trigger = localTriggers.Single(t => t.Id == triggerId);
+            var trigger = _localTriggers.Single(t => t.Id == triggerId);
             trigger.IsActive = true;
         }
 
@@ -380,13 +380,13 @@ namespace Jobbr.Server.Storage
 
         public void Update(JobRun jobRun)
         {
-            localJobRuns.Remove(localJobRuns.FirstOrDefault(jr => jr.Id == jobRun.Id));
-            localJobRuns.Add(jobRun);
+            _localJobRuns.Remove(_localJobRuns.FirstOrDefault(jr => jr.Id == jobRun.Id));
+            _localJobRuns.Add(jobRun);
         }
 
         public void UpdateProgress(long jobRunId, double? progress)
         {
-            var jobRun = localJobRuns.First(p => p.Id == jobRunId);
+            var jobRun = _localJobRuns.First(p => p.Id == jobRunId);
             jobRun.Progress = progress;
         }
 
@@ -397,26 +397,26 @@ namespace Jobbr.Server.Storage
 
         public void Update(Job job)
         {
-            localJobs.Remove(localJobs.FirstOrDefault(j => j.Id == job.Id));
-            localJobs.Add(job);
+            _localJobs.Remove(_localJobs.FirstOrDefault(j => j.Id == job.Id));
+            _localJobs.Add(job);
         }
 
         public void Update(long jobId, InstantTrigger trigger)
         {
-            localTriggers.Remove(localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
-            localTriggers.Add(trigger);
+            _localTriggers.Remove(_localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
+            _localTriggers.Add(trigger);
         }
 
         public void Update(long jobId, ScheduledTrigger trigger)
         {
-            localTriggers.Remove(localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
-            localTriggers.Add(trigger);
+            _localTriggers.Remove(_localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
+            _localTriggers.Add(trigger);
         }
 
         public void Update(long jobId, RecurringTrigger trigger)
         {
-            localTriggers.Remove(localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
-            localTriggers.Add(trigger);
+            _localTriggers.Remove(_localTriggers.FirstOrDefault(j => j.Id == trigger.Id));
+            _localTriggers.Add(trigger);
         }
 
         public bool IsAvailable()
@@ -428,14 +428,14 @@ namespace Jobbr.Server.Storage
         public long GetJobsCount()
 #pragma warning restore CA1024 // Use properties where appropriate.
         {
-            return localJobs.Count;
+            return _localJobs.Count;
         }
 
         private IEnumerable<JobTriggerBase> ApplyFiltersAndPaging(int page, int pageSize, string jobTypeFilter, string jobUniqueNameFilter, string query, IEnumerable<JobTriggerBase> enumerable, out int totalItems)
         {
             if (string.IsNullOrWhiteSpace(jobTypeFilter) == false)
             {
-                var jobs = localJobs.Where(p => string.Equals(p.Type, jobTypeFilter, StringComparison.OrdinalIgnoreCase));
+                var jobs = _localJobs.Where(p => string.Equals(p.Type, jobTypeFilter, StringComparison.OrdinalIgnoreCase));
                 var jobIds = jobs.Select(s => s.Id).ToList();
 
                 enumerable = enumerable.Where(p => jobIds.Contains(p.JobId));
@@ -443,7 +443,7 @@ namespace Jobbr.Server.Storage
 
             if (string.IsNullOrWhiteSpace(jobUniqueNameFilter) == false)
             {
-                var jobs = localJobs.Where(p => string.Equals(p.UniqueName, jobTypeFilter, StringComparison.OrdinalIgnoreCase));
+                var jobs = _localJobs.Where(p => string.Equals(p.UniqueName, jobTypeFilter, StringComparison.OrdinalIgnoreCase));
                 var jobIds = jobs.Select(s => s.Id).ToList();
 
                 enumerable = enumerable.Where(p => jobIds.Contains(p.JobId));

@@ -8,16 +8,16 @@ namespace Jobbr.Server.IntegrationTests.Infrastructure
 {
     public class FaultyJobStorageProvider : IJobStorageProvider
     {
-        public static FaultyJobStorageProvider Instance { get; private set; }
+        private readonly IJobStorageProvider _inMemoryVersion = new InMemoryJobStorageProvider();
 
-        private readonly IJobStorageProvider inMemoryVersion = new InMemoryJobStorageProvider();
-
-        private bool failAll;
+        private bool _failAll;
 
         public FaultyJobStorageProvider()
         {
             Instance = this;
         }
+
+        public static FaultyJobStorageProvider Instance { get; private set; }
 
         public void DeleteJob(long jobId)
         {
@@ -27,139 +27,139 @@ namespace Jobbr.Server.IntegrationTests.Infrastructure
         public long GetJobsCount()
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobsCount();
+            return _inMemoryVersion.GetJobsCount();
         }
 
         public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
+            return _inMemoryVersion.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
         public void AddJob(Job job)
         {
             CheckFailAll();
-            inMemoryVersion.AddJob(job);
+            _inMemoryVersion.AddJob(job);
         }
 
         public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50, bool showDeleted = false)
         {
             CheckFailAll();
-            return inMemoryVersion.GetTriggersByJobId(jobId);
+            return _inMemoryVersion.GetTriggersByJobId(jobId);
         }
 
         public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             CheckFailAll();
-            return inMemoryVersion.GetActiveTriggers(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
+            return _inMemoryVersion.GetActiveTriggers(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, sort);
         }
 
         public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
             CheckFailAll();
-            inMemoryVersion.AddTrigger(jobId, trigger);
+            _inMemoryVersion.AddTrigger(jobId, trigger);
         }
 
         public void AddTrigger(long jobId, InstantTrigger trigger)
         {
             CheckFailAll();
-            inMemoryVersion.AddTrigger(jobId, trigger);
+            _inMemoryVersion.AddTrigger(jobId, trigger);
         }
 
         public void AddTrigger(long jobId, ScheduledTrigger trigger)
         {
             CheckFailAll();
-            inMemoryVersion.AddTrigger(jobId, trigger);
+            _inMemoryVersion.AddTrigger(jobId, trigger);
         }
 
         public void DisableTrigger(long jobId, long triggerId)
         {
             CheckFailAll();
-            inMemoryVersion.DisableTrigger(jobId, triggerId);
+            _inMemoryVersion.DisableTrigger(jobId, triggerId);
         }
 
         public void EnableTrigger(long jobId, long triggerId)
         {
             CheckFailAll();
-            inMemoryVersion.EnableTrigger(jobId, triggerId);
+            _inMemoryVersion.EnableTrigger(jobId, triggerId);
         }
 
         public void DeleteTrigger(long jobId, long triggerId)
         {
             CheckFailAll();
-            inMemoryVersion.DeleteTrigger(jobId, triggerId);
+            _inMemoryVersion.DeleteTrigger(jobId, triggerId);
         }
 
         public JobTriggerBase GetTriggerById(long jobId, long triggerId)
         {
             CheckFailAll();
-            return inMemoryVersion.GetTriggerById(jobId, triggerId);
+            return _inMemoryVersion.GetTriggerById(jobId, triggerId);
         }
 
         public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             CheckFailAll();
-            return inMemoryVersion.GetLastJobRunByTriggerId(jobId, triggerId, utcNow);
+            return _inMemoryVersion.GetLastJobRunByTriggerId(jobId, triggerId, utcNow);
         }
 
         public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             CheckFailAll();
-            return inMemoryVersion.GetNextJobRunByTriggerId(jobId, triggerId, utcNow);
+            return _inMemoryVersion.GetNextJobRunByTriggerId(jobId, triggerId, utcNow);
         }
 
         public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, showDeleted, sort);
+            return _inMemoryVersion.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, showDeleted, sort);
         }
 
         public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobRunsByState(state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
+            return _inMemoryVersion.GetJobRunsByState(state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
         public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobRunsByStates(states, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
+            return _inMemoryVersion.GetJobRunsByStates(states, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
         public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobRunsByJobId(jobId, page, pageSize, showDeleted, sort);
+            return _inMemoryVersion.GetJobRunsByJobId(jobId, page, pageSize, showDeleted, sort);
         }
 
         public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
+            return _inMemoryVersion.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
         }
 
         public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
+            return _inMemoryVersion.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
         }
 
         public void AddJobRun(JobRun jobRun)
         {
             CheckFailAll();
-            inMemoryVersion.AddJobRun(jobRun);
+            _inMemoryVersion.AddJobRun(jobRun);
         }
 
         public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobRuns();
+            return _inMemoryVersion.GetJobRuns();
         }
 
         public void UpdateProgress(long jobRunId, double? progress)
         {
             CheckFailAll();
-            inMemoryVersion.UpdateProgress(jobRunId, progress);
+            _inMemoryVersion.UpdateProgress(jobRunId, progress);
         }
 
         public void ApplyRetention(DateTimeOffset date)
@@ -170,64 +170,64 @@ namespace Jobbr.Server.IntegrationTests.Infrastructure
         public void Update(JobRun jobRun)
         {
             CheckFailAll();
-            inMemoryVersion.Update(jobRun);
+            _inMemoryVersion.Update(jobRun);
         }
 
         public Job GetJobById(long id)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobById(id);
+            return _inMemoryVersion.GetJobById(id);
         }
 
         public Job GetJobByUniqueName(string identifier)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobByUniqueName(identifier);
+            return _inMemoryVersion.GetJobByUniqueName(identifier);
         }
 
         public JobRun GetJobRunById(long id)
         {
             CheckFailAll();
-            return inMemoryVersion.GetJobRunById(id);
+            return _inMemoryVersion.GetJobRunById(id);
         }
 
         public void Update(Job job)
         {
             CheckFailAll();
-            inMemoryVersion.Update(job);
+            _inMemoryVersion.Update(job);
         }
 
         public void Update(long jobId, InstantTrigger trigger)
         {
             CheckFailAll();
-            inMemoryVersion.Update(jobId, trigger);
+            _inMemoryVersion.Update(jobId, trigger);
         }
 
         public void Update(long jobId, ScheduledTrigger trigger)
         {
             CheckFailAll();
-            inMemoryVersion.Update(jobId, trigger);
+            _inMemoryVersion.Update(jobId, trigger);
         }
 
         public void Update(long jobId, RecurringTrigger trigger)
         {
             CheckFailAll();
-            inMemoryVersion.Update(jobId, trigger);
+            _inMemoryVersion.Update(jobId, trigger);
         }
 
         public void DisableImplementation()
         {
-            failAll = true;
+            _failAll = true;
         }
 
         public void EnableImplementation()
         {
-            failAll = false;
+            _failAll = false;
         }
 
         private void CheckFailAll()
         {
-            if (failAll)
+            if (_failAll)
             {
                 throw new TargetException("This JobStorageProvider is currently not healthy!");
             }

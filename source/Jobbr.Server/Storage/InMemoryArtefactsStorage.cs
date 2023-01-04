@@ -9,16 +9,16 @@ namespace Jobbr.Server.Storage
 {
     public class InMemoryArtefactsStorage : IArtefactsStorageProvider
     {
-        private readonly IDictionary<string, IList<InMemoryFile>> files = new Dictionary<string, IList<InMemoryFile>>();
+        private readonly IDictionary<string, IList<InMemoryFile>> _files = new Dictionary<string, IList<InMemoryFile>>();
 
         public void Save(string container, string fileName, Stream content)
         {
-            if (files.ContainsKey(container) == false)
+            if (_files.ContainsKey(container) == false)
             {
-                files.Add(container, new List<InMemoryFile>());
+                _files.Add(container, new List<InMemoryFile>());
             }
 
-            var list = files[container];
+            var list = _files[container];
 
             var memoryStream = new MemoryStream();
 
@@ -58,12 +58,12 @@ namespace Jobbr.Server.Storage
 
         private IEnumerable<InMemoryFile> GetFilesFromContainer(string container)
         {
-            if (files.ContainsKey(container) == false)
+            if (_files.ContainsKey(container) == false)
             {
                 throw new ArgumentException("Container not found");
             }
 
-            return files[container];
+            return _files[container];
         }
 
         private class InMemoryFile

@@ -14,24 +14,6 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
             scheduler.Start();
         }
 
-        private void AddAndSignalNewTrigger(long jobId, InstantTrigger trigger)
-        {
-            repository.SaveAddTrigger(jobId, trigger);
-            scheduler.OnTriggerAdded(jobId, trigger.Id);
-        }
-
-        private void AddAndSignalNewTrigger(long jobId, ScheduledTrigger trigger)
-        {
-            repository.SaveAddTrigger(jobId, trigger);
-            scheduler.OnTriggerAdded(jobId, trigger.Id);
-        }
-
-        private void AddAndSignalNewTrigger(long jobId, RecurringTrigger trigger)
-        {
-            repository.SaveAddTrigger(jobId, trigger);
-            scheduler.OnTriggerAdded(jobId, trigger.Id);
-        }
-
         [TestMethod]
         public void NewScheduledTrigger_IsAdded_WillBePlanned()
         {
@@ -398,6 +380,24 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
             var jobRuns = repository.GetJobRuns();
 
             Assert.AreEqual(1, jobRuns.Items.Count, "The trigger should cause a job run because its valid right now");
+        }
+
+        private void AddAndSignalNewTrigger(long jobId, InstantTrigger trigger)
+        {
+            repository.SaveAddTrigger(jobId, trigger);
+            scheduler.OnTriggerAdded(jobId, trigger.Id);
+        }
+
+        private void AddAndSignalNewTrigger(long jobId, ScheduledTrigger trigger)
+        {
+            repository.SaveAddTrigger(jobId, trigger);
+            scheduler.OnTriggerAdded(jobId, trigger.Id);
+        }
+
+        private void AddAndSignalNewTrigger(long jobId, RecurringTrigger trigger)
+        {
+            repository.SaveAddTrigger(jobId, trigger);
+            scheduler.OnTriggerAdded(jobId, trigger.Id);
         }
     }
 }

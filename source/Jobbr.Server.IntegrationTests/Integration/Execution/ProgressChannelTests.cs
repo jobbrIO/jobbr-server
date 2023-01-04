@@ -8,20 +8,20 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
     [TestClass]
     public class ProgressChannelTests : JobRunExecutionTestBase
     {
-        private readonly JobRun currentRun;
+        private readonly JobRun _currentRun;
 
         public ProgressChannelTests()
         {
             var job = CreateTestJob();
             var trigger = CreateInstantTrigger(job);
 
-            currentRun = TriggerNewJobRun(trigger);
+            _currentRun = TriggerNewJobRun(trigger);
         }
 
         [TestMethod]
         public void Infrastructure_TriggeredJobIsReady()
         {
-            Assert.IsNotNull(currentRun);
+            Assert.IsNotNull(_currentRun);
         }
 
         [TestMethod]
@@ -29,9 +29,9 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         {
             var progressService = Services.ProgressChannel;
 
-            progressService.PublishProgressUpdate(currentRun.Id, 50);
+            progressService.PublishProgressUpdate(_currentRun.Id, 50);
 
-            var jobRunFromDb = Services.JobStorageProvider.GetJobRunsByTriggerId(currentRun.Job.Id, currentRun.Trigger.Id).Items.Single();
+            var jobRunFromDb = Services.JobStorageProvider.GetJobRunsByTriggerId(_currentRun.Job.Id, _currentRun.Trigger.Id).Items.Single();
 
             Assert.AreEqual(50, jobRunFromDb.Progress);
         }
@@ -41,9 +41,9 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         {
             var progressService = Services.ProgressChannel;
 
-            progressService.PublishPid(currentRun.Id, 42373, "host01");
+            progressService.PublishPid(_currentRun.Id, 42373, "host01");
 
-            var jobRunFromDb = Services.JobStorageProvider.GetJobRunsByTriggerId(currentRun.Job.Id, currentRun.Trigger.Id).Items.Single();
+            var jobRunFromDb = Services.JobStorageProvider.GetJobRunsByTriggerId(_currentRun.Job.Id, _currentRun.Trigger.Id).Items.Single();
 
             Assert.AreEqual(42373, jobRunFromDb.Pid);
         }
@@ -83,7 +83,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
         {
             SimulateStateUpdate(JobRunStates.Started);
 
-            var actualJobRun = Services.JobStorageProvider.GetJobRunsByTriggerId(currentRun.Job.Id, currentRun.Trigger.Id).Items.Single();
+            var actualJobRun = Services.JobStorageProvider.GetJobRunsByTriggerId(_currentRun.Job.Id, _currentRun.Trigger.Id).Items.Single();
 
             Assert.IsNotNull(actualJobRun.ActualStartDateTimeUtc);
         }
@@ -163,14 +163,14 @@ namespace Jobbr.Server.IntegrationTests.Integration.Execution
 
         private ComponentModel.JobStorage.Model.JobRunStates GetActualStoredJobRunState()
         {
-            return Services.JobStorageProvider.GetJobRunsByTriggerId(currentRun.Job.Id, currentRun.Trigger.Id).Items.Single().State;
+            return Services.JobStorageProvider.GetJobRunsByTriggerId(_currentRun.Job.Id, _currentRun.Trigger.Id).Items.Single().State;
         }
 
         private void SimulateStateUpdate(JobRunStates state)
         {
             var progressService = Services.ProgressChannel;
 
-            progressService.PublishStatusUpdate(currentRun.Id, state);
+            progressService.PublishStatusUpdate(_currentRun.Id, state);
         }
     }
 }

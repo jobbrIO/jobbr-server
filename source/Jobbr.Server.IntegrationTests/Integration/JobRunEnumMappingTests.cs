@@ -13,10 +13,9 @@ namespace Jobbr.Server.IntegrationTests.Integration
     [TestClass]
     public class JobRunEnumMappingTests
     {
-        private readonly IEnumerable<Type> allComponentModelJobRunEnumTypes;
-        private readonly Type coreType;
-
-        private readonly Func<Type, bool> enumTypeMatcher = t => t.Namespace != null && t.IsEnum && t.Namespace.Contains("ComponentModel") && t.Name.Contains("JobRun");
+        private readonly IEnumerable<Type> _allComponentModelJobRunEnumTypes;
+        private readonly Type _coreType;
+        private readonly Func<Type, bool> _enumTypeMatcher = t => t.Namespace != null && t.IsEnum && t.Namespace.Contains("ComponentModel") && t.Name.Contains("JobRun");
 
         public JobRunEnumMappingTests()
         {
@@ -26,14 +25,14 @@ namespace Jobbr.Server.IntegrationTests.Integration
                 Assembly.Load(assemblyName);
             }
 
-            allComponentModelJobRunEnumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(asm => asm.GetTypes().Where(enumTypeMatcher));
-            coreType = typeof(Server.Core.Models.JobRunStates);
+            _allComponentModelJobRunEnumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(asm => asm.GetTypes().Where(_enumTypeMatcher));
+            _coreType = typeof(Server.Core.Models.JobRunStates);
         }
 
         [TestMethod]
         public void InfrastructureTest_GetComponentModelJobRunEnumTypes_HasSome()
         {
-            Assert.IsTrue(allComponentModelJobRunEnumTypes.Any(), "There should be some JobRun Enum Types in the Component Models");
+            Assert.IsTrue(_allComponentModelJobRunEnumTypes.Any(), "There should be some JobRun Enum Types in the Component Models");
         }
 
         [TestMethod]
@@ -41,14 +40,14 @@ namespace Jobbr.Server.IntegrationTests.Integration
         {
             var errors = new List<string>();
 
-            foreach (var componentModelEnumType in allComponentModelJobRunEnumTypes)
+            foreach (var componentModelEnumType in _allComponentModelJobRunEnumTypes)
             {
-                var differences = FindDifferentValues(coreType, componentModelEnumType);
+                var differences = FindDifferentValues(_coreType, componentModelEnumType);
 
                 errors.AddRange(differences);
             }
 
-            Assert.AreEqual(0, errors.Count, $"Found different values while comparing core model enum '{coreType}' with component models\n\n" + string.Join("\n", errors));
+            Assert.AreEqual(0, errors.Count, $"Found different values while comparing core model enum '{_coreType}' with component models\n\n" + string.Join("\n", errors));
         }
 
         [TestMethod]
@@ -56,14 +55,14 @@ namespace Jobbr.Server.IntegrationTests.Integration
         {
             var errors = new List<string>();
 
-            foreach (var componentModelEnumType in allComponentModelJobRunEnumTypes)
+            foreach (var componentModelEnumType in _allComponentModelJobRunEnumTypes)
             {
-                var differences = FindDifferentValues(componentModelEnumType, coreType);
+                var differences = FindDifferentValues(componentModelEnumType, _coreType);
 
                 errors.AddRange(differences);
             }
 
-            Assert.AreEqual(0, errors.Count, $"Found different values for same enum names while comparing all component model with '{coreType}'\n\n" + string.Join("\n", errors));
+            Assert.AreEqual(0, errors.Count, $"Found different values for same enum names while comparing all component model with '{_coreType}'\n\n" + string.Join("\n", errors));
         }
 
         [TestMethod]
@@ -71,9 +70,9 @@ namespace Jobbr.Server.IntegrationTests.Integration
         {
             var errors = new List<string>();
 
-            foreach (var master in allComponentModelJobRunEnumTypes)
+            foreach (var master in _allComponentModelJobRunEnumTypes)
             {
-                foreach (var target in allComponentModelJobRunEnumTypes)
+                foreach (var target in _allComponentModelJobRunEnumTypes)
                 {
                     var differences = FindDifferentValues(master, target);
                     errors.AddRange(differences);
@@ -86,11 +85,11 @@ namespace Jobbr.Server.IntegrationTests.Integration
         [TestMethod]
         public void CoreRunStateNames_ForAllComponentModel_ShouldBeKnown()
         {
-            var masterMembers = Enum.GetNames(coreType);
+            var masterMembers = Enum.GetNames(_coreType);
 
             var errors = new List<string>();
 
-            foreach (var cmEnumType in allComponentModelJobRunEnumTypes)
+            foreach (var cmEnumType in _allComponentModelJobRunEnumTypes)
             {
                 var notFound = masterMembers.Except(Enum.GetNames(cmEnumType));
 
@@ -103,11 +102,11 @@ namespace Jobbr.Server.IntegrationTests.Integration
         [TestMethod]
         public void ComponentModelStateNames_ComparedToCore_ShouldBeKnown()
         {
-            var masterMembers = Enum.GetNames(coreType);
+            var masterMembers = Enum.GetNames(_coreType);
 
             var errors = new List<string>();
 
-            foreach (var cmEnumType in allComponentModelJobRunEnumTypes)
+            foreach (var cmEnumType in _allComponentModelJobRunEnumTypes)
             {
                 var notFound = Enum.GetNames(cmEnumType).Except(masterMembers);
 

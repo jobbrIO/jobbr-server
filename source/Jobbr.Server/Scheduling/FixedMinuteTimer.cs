@@ -5,13 +5,13 @@ namespace Jobbr.Server.Scheduling
 {
     internal class FixedMinuteTimer : IPeriodicTimer, IDisposable
     {
-        private Timer timer;
+        private Timer _timer;
 
         private Action callback;
 
         public FixedMinuteTimer()
         {
-            timer = new Timer(state => callback());
+            _timer = new Timer(state => callback());
         }
 
         public void Setup(Action value)
@@ -21,12 +21,12 @@ namespace Jobbr.Server.Scheduling
 
         public void Start()
         {
-            timer.Change(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+            _timer.Change(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
         }
 
         public void Stop()
         {
-            timer.Change(int.MaxValue, int.MaxValue);
+            _timer.Change(int.MaxValue, int.MaxValue);
         }
 
         public void Dispose()
@@ -39,10 +39,10 @@ namespace Jobbr.Server.Scheduling
         {
             if (isDisposing)
             {
-                if (timer != null)
+                if (_timer != null)
                 {
-                    timer.Dispose();
-                    timer = null;
+                    _timer.Dispose();
+                    _timer = null;
                 }
             }
         }

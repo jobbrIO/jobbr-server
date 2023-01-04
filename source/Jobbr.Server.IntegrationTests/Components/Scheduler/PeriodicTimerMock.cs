@@ -5,11 +5,11 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
 {
     public class PeriodicTimerMock : IPeriodicTimer
     {
-        private Action callback;
+        private Action _callback;
 
         public void Setup(Action value)
         {
-            callback = value;
+            _callback = value;
         }
 
         public void Start()
@@ -22,7 +22,7 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
 
         public void CallbackOnce()
         {
-            callback();
+            _callback();
         }
     }
 }
