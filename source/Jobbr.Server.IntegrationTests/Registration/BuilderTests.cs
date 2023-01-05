@@ -11,6 +11,7 @@ using Jobbr.Server.Builder;
 using Jobbr.Server.IntegrationTests.Integration;
 using Jobbr.Server.JobRegistry;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -24,7 +25,7 @@ namespace Jobbr.Server.IntegrationTests.Registration
         [TestInitialize]
         public void Initialize()
         {
-            _loggerFactory = new LoggerFactory();
+            _loggerFactory = new NullLoggerFactory();
         }
 
         [TestCleanup]

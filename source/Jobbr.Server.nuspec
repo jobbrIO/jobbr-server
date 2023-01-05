@@ -11,20 +11,21 @@
     <description>Jobbr is a non-invasive .NET JobServer</description>
     <copyright>Copyright 2022</copyright>
     <icon>images\icon.png</icon>
-	<dependencies>
-		<dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[2.9,3.1)" />
-		<dependency id="Jobbr.ComponentModel.Execution" version="[2.9,3.1)" />
-		<dependency id="Jobbr.ComponentModel.JobStorage" version="[2.9,3.1)" />
-		<dependency id="Jobbr.ComponentModel.Management" version="[2.9,3.1)" />
-		<dependency id="Jobbr.ComponentModel.Registration" version="[2.9,3.1)" />
-		<dependency id="AutoMapper" version="[12.0,12.1)" />
-		<dependency id="Microsoft.Extensions.Configuration.Abstractions" version="[7.0,7.1)" />
-		<dependency id="Microsoft.Extensions.DependencyInjection" version="[7.0,7.1)" />
-		<dependency id="Microsoft.Extensions.Logging.Abstractions" version="[7.0,7.1)" />
-		<dependency id="NCrontab" version="[3.3,3.4)" />
-		<dependency id="SimpleInjector" version="[5.4,5.5)" />
-		<dependency id="TinyMessenger" version="[1.0,1.1)" />
-	</dependencies>
+    <dependencies>
+        <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[2.9,3.1)" />
+        <dependency id="Jobbr.ComponentModel.Execution" version="[2.9,3.1)" />
+        <dependency id="Jobbr.ComponentModel.JobStorage" version="[2.9,3.1)" />
+        <dependency id="Jobbr.ComponentModel.Management" version="[2.9,3.1)" />
+        <dependency id="Jobbr.ComponentModel.Registration" version="[2.9,3.1)" />
+        <dependency id="AutoMapper" version="[12.0,12.1)" />
+        <dependency id="Microsoft.Extensions.Configuration.Abstractions" version="[7.0,7.1)" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="[7.0,7.1)" />
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="[7.0,7.1)" />
+        <dependency id="NCrontab" version="[3.3,3.4)" />
+        <dependency id="SimpleInjector" version="[5.4,5.5)" />
+        <dependency id="System.Text.Json" version="[7.0,7.1)" />
+        <dependency id="TinyMessenger" version="[1.0,1.1)" />
+    </dependencies>
   </metadata>
   <files>
     <file src="Jobbr.Server\bin\$target$\net6.0\Jobbr.Server.dll" target="lib\net6.0"/>
