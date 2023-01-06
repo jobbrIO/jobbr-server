@@ -225,17 +225,17 @@ namespace Jobbr.Server.IntegrationTests.Infrastructure
             _failAll = false;
         }
 
+        public bool IsAvailable()
+        {
+            return true;
+        }
+
         private void CheckFailAll()
         {
             if (_failAll)
             {
                 throw new TargetException("This JobStorageProvider is currently not healthy!");
             }
-        }
-
-        public bool IsAvailable()
-        {
-            return true;
         }
     }
 }

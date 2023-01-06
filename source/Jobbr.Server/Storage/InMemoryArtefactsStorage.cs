@@ -7,10 +7,19 @@ using Jobbr.ComponentModel.ArtefactStorage.Model;
 
 namespace Jobbr.Server.Storage
 {
+    /// <summary>
+    /// In-memory artifact storage. Intended for backup use.
+    /// </summary>
     public class InMemoryArtefactsStorage : IArtefactsStorageProvider
     {
         private readonly IDictionary<string, IList<InMemoryFile>> _files = new Dictionary<string, IList<InMemoryFile>>();
 
+        /// <summary>
+        /// Save artifact.
+        /// </summary>
+        /// <param name="container">Container name.</param>
+        /// <param name="fileName">File name.</param>
+        /// <param name="content">Artifact content to save.</param>
         public void Save(string container, string fileName, Stream content)
         {
             if (_files.ContainsKey(container) == false)
@@ -35,6 +44,13 @@ namespace Jobbr.Server.Storage
             list.Add(item);
         }
 
+        /// <summary>
+        /// Load artifact.
+        /// </summary>
+        /// <param name="container">Container name.</param>
+        /// <param name="fileName">File name.</param>
+        /// <returns>Artifact as a stream.</returns>
+        /// <exception cref="FileNotFoundException">File not found.</exception>
         public Stream Load(string container, string fileName)
         {
             var filesInContainer = GetFilesFromContainer(container);
@@ -49,6 +65,11 @@ namespace Jobbr.Server.Storage
             return new MemoryStream(file.Data);
         }
 
+        /// <summary>
+        /// Get all container artifacts.
+        /// </summary>
+        /// <param name="container">Container name.</param>
+        /// <returns>List of artifacts.</returns>
         public List<JobbrArtefact> GetArtefacts(string container)
         {
             var filesInContainer = GetFilesFromContainer(container);

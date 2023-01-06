@@ -5,8 +5,17 @@ using Jobbr.Server.Storage;
 
 namespace Jobbr.Server.Scheduling
 {
+    /// <summary>
+    /// Maximum concurrent job runs planner.
+    /// </summary>
     internal static class MaxConcurrentJobRunPlaner
     {
+        /// <summary>
+        /// Get all the possible planned job runs.
+        /// </summary>
+        /// <param name="currentPlan">Current plan.</param>
+        /// <param name="repository">Jobbr repository.</param>
+        /// <returns>List of all the possible planned job runs.</returns>
         public static List<PlannedJobRun> GetPossiblePlannedJobRuns(IList<ScheduledPlanItem> currentPlan, IJobbrRepository repository)
         {
             var possibleRunsPerJob = GetPossibleRunsPerJob(currentPlan, repository);
@@ -16,8 +25,7 @@ namespace Jobbr.Server.Scheduling
             return runningJobs;
         }
 
-        private static Dictionary<long, int> GetPossibleRunsPerJob(IEnumerable<ScheduledPlanItem> currentPlan,
-            IJobbrRepository repository)
+        private static Dictionary<long, int> GetPossibleRunsPerJob(IEnumerable<ScheduledPlanItem> currentPlan, IJobbrRepository repository)
         {
             var allRunningJobIds = repository.GetRunningJobs().Select(j => j.Job.Id).ToList();
             var allPlannedJobIds = currentPlan.Select(c => c.JobId).ToList();
@@ -40,8 +48,7 @@ namespace Jobbr.Server.Scheduling
             return possibleRunsPerJob;
         }
 
-        private static Dictionary<long, List<ScheduledPlanItem>> GetOrderedScheduledPlanItems(
-            IEnumerable<ScheduledPlanItem> currentPlan)
+        private static Dictionary<long, List<ScheduledPlanItem>> GetOrderedScheduledPlanItems(IEnumerable<ScheduledPlanItem> currentPlan)
         {
             return (from item in currentPlan
                 orderby item.PlannedStartDateTimeUtc

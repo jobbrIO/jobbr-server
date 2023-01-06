@@ -2,6 +2,9 @@
 
 namespace Jobbr.Server.Scheduling
 {
+    /// <summary>
+    /// Configuration for <see cref="DefaultScheduler"/>.
+    /// </summary>
     public class DefaultSchedulerConfiguration : IFeatureConfiguration
     {
         /// <summary>

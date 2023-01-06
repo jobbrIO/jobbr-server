@@ -32,11 +32,6 @@ namespace Jobbr.Server
         private bool _isRunning;
 
         /// <summary>
-        /// The state of the Jobbr server.
-        /// </summary>
-        public JobbrState State { get; private set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
         public JobbrServer(ILoggerFactory loggerFactory, IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> jobbrComponents, IMessageDispatcher messageDispatcher, IConfigurationManager configurationManager, IRegistryBuilder registryBuilder)
@@ -54,6 +49,11 @@ namespace Jobbr.Server
 
             messageDispatcher.WireUp();
         }
+
+        /// <summary>
+        /// The state of the Jobbr server.
+        /// </summary>
+        public JobbrState State { get; private set; }
 
         /// <summary>
         /// Start the Jobbr server synchronously.

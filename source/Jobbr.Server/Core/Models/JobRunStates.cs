@@ -1,5 +1,8 @@
 ﻿namespace Jobbr.Server.Core.Models
 {
+    /// <summary>
+    /// Run states for the job run.
+    /// </summary>
     public enum JobRunStates
     {
         /// <summary>

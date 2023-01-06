@@ -4,8 +4,14 @@ using Jobbr.ComponentModel.JobStorage.Model;
 
 namespace Jobbr.Server.ComponentServices.Execution
 {
+    /// <summary>
+    /// AutoMapper mapping profile.
+    /// </summary>
     internal class MappingProfile : Profile
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MappingProfile"/> class.
+        /// </summary>
         public MappingProfile()
         {
             CreateMap<Job, JobRunInfo>()
