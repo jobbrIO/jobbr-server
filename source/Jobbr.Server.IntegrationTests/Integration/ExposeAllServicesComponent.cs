@@ -13,9 +13,7 @@ namespace Jobbr.Server.IntegrationTests.Integration
     /// </summary>
     public class ExposeAllServicesComponent : IJobbrComponent
     {
-        public static ExposeAllServicesComponent Instance => instancesPerThread.Value;
-
-        private static ThreadLocal<ExposeAllServicesComponent> instancesPerThread = new ThreadLocal<ExposeAllServicesComponent>();
+        private static readonly ThreadLocal<ExposeAllServicesComponent> InstancesPerThread = new ();
 
         public ExposeAllServicesComponent(IJobbrServiceProvider serviceProvider, IArtefactsStorageProvider artefactsStorageProvider, IJobStorageProvider jobStorageProvider, IJobManagementService jobManagementService, IQueryService queryService, IServerManagementService managementService, IJobRunInformationService informationService, IJobRunProgressChannel progressChannel)
         {
@@ -28,8 +26,10 @@ namespace Jobbr.Server.IntegrationTests.Integration
             InformationService = informationService;
             ProgressChannel = progressChannel;
 
-            instancesPerThread.Value = this;
+            InstancesPerThread.Value = this;
         }
+
+        public static ExposeAllServicesComponent Instance => InstancesPerThread.Value;
 
         public IJobbrServiceProvider ServiceProvider { get; }
 
@@ -49,7 +49,7 @@ namespace Jobbr.Server.IntegrationTests.Integration
 
         public void Dispose()
         {
-            instancesPerThread.Value = null;
+            InstancesPerThread.Value = null;
         }
 
         public void Start()

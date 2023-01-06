@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Jobbr.Server.Scheduling
 {
+    /// <summary>
+    /// Default job scheduler.
+    /// </summary>
     public class DefaultScheduler : IJobScheduler
     {
         private readonly ILogger<DefaultScheduler> _logger;
@@ -24,6 +27,18 @@ namespace Jobbr.Server.Scheduling
 
         private List<ScheduledPlanItem> _currentPlan = new ();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultScheduler"/> class.
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="jobbrRepository">Jobbr repository.</param>
+        /// <param name="executor">Job executor.</param>
+        /// <param name="instantJobRunPlanner">Instant job run planner.</param>
+        /// <param name="scheduledJobRunPlanner">Scheduled job run planner.</param>
+        /// <param name="recurringJobRunPlanner">Recurring job run planner.</param>
+        /// <param name="schedulerConfiguration">Scheduler configuration.</param>
+        /// <param name="periodicTimer">Periodic timer.</param>
+        /// <param name="dateTimeProvider">DateTime provider.</param>
         public DefaultScheduler(ILoggerFactory loggerFactory, IJobbrRepository jobbrRepository, IJobExecutor executor, IInstantJobRunPlaner instantJobRunPlanner, IScheduledJobRunPlaner scheduledJobRunPlanner,
             IRecurringJobRunPlaner recurringJobRunPlanner, DefaultSchedulerConfiguration schedulerConfiguration, IPeriodicTimer periodicTimer, IDateTimeProvider dateTimeProvider)
         {
@@ -40,10 +55,12 @@ namespace Jobbr.Server.Scheduling
             _periodicTimer.Setup(EvaluateRecurringTriggers);
         }
 
+        /// <inheritdoc/>
         public void Dispose()
         {
         }
 
+        /// <inheritdoc/>
         public void Start()
         {
             SetScheduledJobRunsFromPastToOmitted();
@@ -55,11 +72,13 @@ namespace Jobbr.Server.Scheduling
             _periodicTimer.Start();
         }
 
+        /// <inheritdoc/>
         public void Stop()
         {
             _periodicTimer.Stop();
         }
 
+        /// <inheritdoc/>
         public void OnTriggerDefinitionUpdated(long jobId, long triggerId)
         {
             lock (_evaluateTriggersLock)
@@ -96,6 +115,7 @@ namespace Jobbr.Server.Scheduling
             }
         }
 
+        /// <inheritdoc/>
         public void OnTriggerStateUpdated(long jobId, long triggerId)
         {
             lock (_evaluateTriggersLock)
@@ -138,6 +158,7 @@ namespace Jobbr.Server.Scheduling
             }
         }
 
+        /// <inheritdoc/>
         public void OnTriggerAdded(long jobId, long triggerId)
         {
             lock (_evaluateTriggersLock)
@@ -168,6 +189,7 @@ namespace Jobbr.Server.Scheduling
             }
         }
 
+        /// <inheritdoc/>
         public void OnJobRunEnded(long id)
         {
             lock (_evaluateTriggersLock)

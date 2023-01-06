@@ -6,32 +6,44 @@ using Microsoft.Extensions.Logging;
 
 namespace Jobbr.Server.Storage
 {
+    /// <summary>
+    /// Jobbr repository implementation.
+    /// </summary>
     public class JobbrRepository : IJobbrRepository
     {
         private readonly ILogger<JobbrRepository> _logger;
         private readonly IJobStorageProvider _jobStorageProvider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JobbrRepository"/> class.
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="jobStorageProvider">Job storage provider.</param>
         public JobbrRepository(ILoggerFactory loggerFactory, IJobStorageProvider jobStorageProvider)
         {
             _logger = loggerFactory.CreateLogger<JobbrRepository>();
             _jobStorageProvider = jobStorageProvider;
         }
 
+        /// <inheritdoc/>
         public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             return _jobStorageProvider.GetJobs(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
+        /// <inheritdoc/>
         public Job GetJob(long id)
         {
             return _jobStorageProvider.GetJobById(id);
         }
 
+        /// <inheritdoc/>
         public void UpdateJobRunProgress(long jobRunId, double progress)
         {
             _jobStorageProvider.UpdateProgress(jobRunId, progress);
         }
 
+        /// <inheritdoc/>
         public void SetPidForJobRun(JobRun jobRun, int id)
         {
             jobRun.Pid = id;
@@ -39,16 +51,19 @@ namespace Jobbr.Server.Storage
             _jobStorageProvider.Update(jobRun);
         }
 
+        /// <inheritdoc/>
         public JobRun GetJobRun(long id)
         {
             return _jobStorageProvider.GetJobRunById(id);
         }
 
+        /// <inheritdoc/>
         public void SaveAddTrigger(long jobId, RecurringTrigger trigger)
         {
             _jobStorageProvider.AddTrigger(jobId, trigger);
         }
 
+        /// <inheritdoc/>
         public void UpdatePlannedStartDateTimeUtc(long jobRunId, DateTime plannedStartDateTimeUtc)
         {
             var jobRun = _jobStorageProvider.GetJobRunById(jobRunId);
@@ -57,31 +72,37 @@ namespace Jobbr.Server.Storage
             Update(jobRun);
         }
 
+        /// <inheritdoc/>
         public void SaveAddTrigger(long jobId, ScheduledTrigger trigger)
         {
             _jobStorageProvider.AddTrigger(jobId, trigger);
         }
 
+        /// <inheritdoc/>
         public void SaveAddTrigger(long jobId, InstantTrigger trigger)
         {
             _jobStorageProvider.AddTrigger(jobId, trigger);
         }
 
+        /// <inheritdoc/>
         public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             return _jobStorageProvider.GetJobRunsByStates(states, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
+        /// <inheritdoc/>
         public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             return _jobStorageProvider.GetLastJobRunByTriggerId(jobId, triggerId, utcNow);
         }
 
+        /// <inheritdoc/>
         public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
         {
             return _jobStorageProvider.GetNextJobRunByTriggerId(jobId, triggerId, utcNow);
         }
 
+        /// <inheritdoc/>
         public void EnableTrigger(long jobId, long triggerId)
         {
             // TODO: Move this logic to the storage adapter which can implement this more efficient
@@ -90,6 +111,7 @@ namespace Jobbr.Server.Storage
             _jobStorageProvider.EnableTrigger(jobId, triggerId);
         }
 
+        /// <inheritdoc/>
         public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
         {
             try
@@ -110,6 +132,7 @@ namespace Jobbr.Server.Storage
             }
         }
 
+        /// <inheritdoc/>
         public JobTriggerBase SaveUpdateTrigger(long jobId, JobTriggerBase trigger, out bool hadChanges)
         {
             var triggerFromDb = _jobStorageProvider.GetTriggerById(jobId, trigger.Id);
@@ -148,16 +171,19 @@ namespace Jobbr.Server.Storage
             return triggerFromDb;
         }
 
+        /// <inheritdoc/>
         public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             return _jobStorageProvider.GetJobRunsByState(state, page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
+        /// <inheritdoc/>
         public void AddJob(Job job)
         {
             _jobStorageProvider.AddJob(job);
         }
 
+        /// <inheritdoc/>
         public JobRun SaveNewJobRun(Job job, JobTriggerBase trigger, DateTime plannedStartDateTimeUtc)
         {
             var jobRun = new JobRun
@@ -175,66 +201,79 @@ namespace Jobbr.Server.Storage
             return jobRun;
         }
 
+        /// <inheritdoc/>
         public void DisableTrigger(long jobId, long triggerId)
         {
             _jobStorageProvider.DisableTrigger(jobId, triggerId);
         }
 
+        /// <inheritdoc/>
         public void DeleteTrigger(long jobId, long triggerId)
         {
             _jobStorageProvider.DeleteTrigger(jobId, triggerId);
         }
 
+        /// <inheritdoc/>
         public void Update(JobRun jobRun)
         {
             _jobStorageProvider.Update(jobRun);
         }
 
+        /// <inheritdoc/>
         public JobRun GetJobRunById(long jobRunId)
         {
             return _jobStorageProvider.GetJobRunById(jobRunId);
         }
 
+        /// <inheritdoc/>
         public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
             return _jobStorageProvider.GetJobRunsByJobId(jobId, page, pageSize, showDeleted, sort);
         }
 
+        /// <inheritdoc/>
         public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
         {
             return _jobStorageProvider.GetJobRunsByTriggerId(jobId, triggerId, page, pageSize, showDeleted, sort);
         }
 
+        /// <inheritdoc/>
         public JobTriggerBase GetTriggerById(long jobId, long triggerId)
         {
             return _jobStorageProvider.GetTriggerById(jobId, triggerId);
         }
 
+        /// <inheritdoc/>
         public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50, bool showDeleted = false)
         {
             return _jobStorageProvider.GetTriggersByJobId(jobId, page, pageSize, showDeleted);
         }
 
+        /// <inheritdoc/>
         public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
         {
             return _jobStorageProvider.GetJobRuns(page, pageSize, jobTypeFilter, jobUniqueNameFilter, query, showDeleted, sort);
         }
 
+        /// <inheritdoc/>
         public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
             return _jobStorageProvider.GetJobRunsByUserId(userId, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
         }
 
+        /// <inheritdoc/>
         public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
         {
             return _jobStorageProvider.GetJobRunsByUserDisplayName(userDisplayName, page, pageSize, jobTypeFilter, jobUniqueNameFilter, showDeleted, sort);
         }
 
+        /// <inheritdoc/>
         public Job GetJobByUniqueName(string identifier)
         {
             return _jobStorageProvider.GetJobByUniqueName(identifier);
         }
 
+        /// <inheritdoc/>
         public void Delete(JobRun jobRun)
         {
             var jobRunFromStorage = _jobStorageProvider.GetJobRunById(jobRun.Id);
@@ -243,6 +282,7 @@ namespace Jobbr.Server.Storage
             _jobStorageProvider.Update(jobRunFromStorage);
         }
 
+        /// <inheritdoc/>
         public IEnumerable<JobRun> GetRunningJobs()
         {
             var minState = (int)JobRunStates.Scheduled + 1;
@@ -256,6 +296,7 @@ namespace Jobbr.Server.Storage
             }
         }
 
+        /// <inheritdoc/>
         public IEnumerable<JobRun> GetRunningJobs(long triggerJobId, long triggerId)
         {
             var runningJobs = GetRunningJobs();
@@ -269,6 +310,7 @@ namespace Jobbr.Server.Storage
             }
         }
 
+        /// <inheritdoc/>
         public IEnumerable<JobRun> GetJobRunsByStateRange(JobRunStates minState, JobRunStates maxState)
         {
             if (maxState < minState)

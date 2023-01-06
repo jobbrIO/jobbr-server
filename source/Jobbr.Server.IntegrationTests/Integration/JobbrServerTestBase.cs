@@ -1,6 +1,5 @@
 using System;
 using Jobbr.ComponentModel.Registration;
-using Jobbr.Server;
 using Jobbr.Server.Builder;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,25 +8,20 @@ namespace Jobbr.Server.IntegrationTests.Integration
 {
     public abstract class JobbrServerTestBase
     {
-        private readonly JobbrServer _jobbrServer;
-
         protected JobbrServerTestBase(Func<JobbrServer> creator)
         {
-            _jobbrServer = creator();
+            JobbrServer = creator();
         }
 
         protected ExposeAllServicesComponent Services => ExposeAllServicesComponent.Instance;
 
-        protected JobbrServer JobbrServer
-        {
-            get { return _jobbrServer; }
-        }
+        protected JobbrServer JobbrServer { get; }
 
         [TestCleanup]
         public void CleanUp()
         {
-            _jobbrServer?.Stop();
-            _jobbrServer?.Dispose();
+            JobbrServer?.Stop();
+            JobbrServer?.Dispose();
         }
 
         [TestMethod]
@@ -52,20 +46,6 @@ namespace Jobbr.Server.IntegrationTests.Integration
 
             var server = builder.Create();
             return server;
-        }
-    }
-
-    public class RunningJobbrServerTestBase : JobbrServerTestBase
-    {
-        public RunningJobbrServerTestBase() : base(GivenAStartedServer)
-        {
-        }
-    }
-
-    public class InitializedJobbrServerTestBase : JobbrServerTestBase
-    {
-        public InitializedJobbrServerTestBase() : base(GivenAServerInstance)
-        {
         }
     }
 }

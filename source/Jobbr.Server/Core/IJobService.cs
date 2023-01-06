@@ -2,6 +2,9 @@ using Jobbr.Server.Core.Models;
 
 namespace Jobbr.Server.Core
 {
+    /// <summary>
+    /// Interface for <see cref="JobModel"/> services.
+    /// </summary>
     public interface IJobService
     {
         /// <summary>
