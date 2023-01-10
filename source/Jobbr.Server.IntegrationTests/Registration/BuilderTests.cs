@@ -25,7 +25,7 @@ namespace Jobbr.Server.IntegrationTests.Registration
         [TestInitialize]
         public void Initialize()
         {
-            _loggerFactory = new NullLoggerFactory();
+            _loggerFactory = NullLoggerFactory.Instance;
         }
 
         [TestCleanup]

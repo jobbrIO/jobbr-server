@@ -19,13 +19,13 @@ namespace Jobbr.Server.IntegrationTests.Components.JobRunService
 
         public ProgressUpdateTests()
         {
-            var autoMapperConfig = new AutoMapperConfigurationFactory(new NullLoggerFactory()).GetNew();
+            var autoMapperConfig = new AutoMapperConfigurationFactory(NullLoggerFactory.Instance).GetNew();
 
-            _repo = new JobbrRepository(new NullLoggerFactory(), new InMemoryJobStorageProvider());
+            _repo = new JobbrRepository(NullLoggerFactory.Instance, new InMemoryJobStorageProvider());
 
             _messengerHub = new TinyMessengerHub();
 
-            _service = new Server.Core.JobRunService(new NullLoggerFactory(), _messengerHub, _repo, null, autoMapperConfig.CreateMapper());
+            _service = new Server.Core.JobRunService(NullLoggerFactory.Instance, _messengerHub, _repo, null, autoMapperConfig.CreateMapper());
         }
 
         [TestMethod]

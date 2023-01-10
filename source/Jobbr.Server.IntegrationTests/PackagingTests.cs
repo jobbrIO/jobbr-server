@@ -23,6 +23,7 @@ namespace Jobbr.Server.IntegrationTests
             asserter.Add(new PackageExistsInBothRule("Microsoft.Extensions.Logging.Abstractions"));
             asserter.Add(new PackageExistsInBothRule("NCrontab"));
             asserter.Add(new PackageExistsInBothRule("SimpleInjector"));
+            asserter.Add(new PackageExistsInBothRule("System.Text.Json"));
             asserter.Add(new PackageExistsInBothRule("TinyMessenger"));
 
             asserter.Add(new VersionIsIncludedInRange("Jobbr.ComponentModel.*"));
@@ -32,6 +33,7 @@ namespace Jobbr.Server.IntegrationTests
             asserter.Add(new VersionIsIncludedInRange("Microsoft.Extensions.Logging.Abstractions"));
             asserter.Add(new VersionIsIncludedInRange("NCrontab"));
             asserter.Add(new VersionIsIncludedInRange("SimpleInjector"));
+            asserter.Add(new VersionIsIncludedInRange("System.Text.Json"));
             asserter.Add(new VersionIsIncludedInRange("TinyMessenger"));
 
             asserter.Add(new NoMajorChangesInNuSpec("Jobbr.*"));

@@ -12,6 +12,7 @@
     <copyright>Copyright 2022</copyright>
     <icon>images\icon.png</icon>
     <dependencies>
+      <group targetFramework="net6.0">
         <dependency id="Jobbr.ComponentModel.ArtefactStorage" version="[2.9,3.1)" />
         <dependency id="Jobbr.ComponentModel.Execution" version="[2.9,3.1)" />
         <dependency id="Jobbr.ComponentModel.JobStorage" version="[2.9,3.1)" />
@@ -25,6 +26,7 @@
         <dependency id="SimpleInjector" version="[5.4,5.5)" />
         <dependency id="System.Text.Json" version="[7.0,7.1)" />
         <dependency id="TinyMessenger" version="[1.0,1.1)" />
+      </group>
     </dependencies>
   </metadata>
   <files>

@@ -40,7 +40,7 @@ namespace Jobbr.Server.IntegrationTests.Integration
 
         protected static JobbrServer GivenAServerInstance()
         {
-            var builder = new JobbrBuilder(new NullLoggerFactory());
+            var builder = new JobbrBuilder(NullLoggerFactory.Instance);
 
             builder.RegisterForCollection<IJobbrComponent>(typeof(ExposeAllServicesComponent));
 

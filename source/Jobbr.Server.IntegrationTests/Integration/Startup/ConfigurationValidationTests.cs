@@ -63,7 +63,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
         [TestMethod]
         public void ValidatorForSettings_WhenRegistered_IsCalled()
         {
-            var builder = new JobbrBuilder(new NullLoggerFactory());
+            var builder = new JobbrBuilder(NullLoggerFactory.Instance);
 
             builder.Add<DemoSettings>(new DemoSettings());
             var isCalled = false;
@@ -80,7 +80,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
         [TestMethod]
         public void ValidatorForSettings_WhenCalled_SettingsIsPassedThrough()
         {
-            var builder = new JobbrBuilder(new NullLoggerFactory());
+            var builder = new JobbrBuilder(NullLoggerFactory.Instance);
 
             var demoSettings = new DemoSettings();
             object settingsToValidate = null;
@@ -101,7 +101,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
         [ExpectedException(typeof(Exception))]
         public void ValidatorForSettings_ValidationFails_PreventsStart()
         {
-            var builder = new JobbrBuilder(new NullLoggerFactory());
+            var builder = new JobbrBuilder(NullLoggerFactory.Instance);
 
             builder.Add<DemoSettings>(new DemoSettings());
 
@@ -116,7 +116,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
         [ExpectedException(typeof(Exception))]
         public void ValidatorForSettings_ThrowsException_PreventsStart()
         {
-            var builder = new JobbrBuilder(new NullLoggerFactory());
+            var builder = new JobbrBuilder(NullLoggerFactory.Instance);
 
             builder.Add<DemoSettings>(new DemoSettings());
 

@@ -21,7 +21,7 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
 
         public TestBase()
         {
-            repository = new JobbrRepository(new NullLoggerFactory(), new InMemoryJobStorageProvider());
+            repository = new JobbrRepository(NullLoggerFactory.Instance, new InMemoryJobStorageProvider());
 
             var executorMock = new Mock<IJobExecutor>();
             executorMock.Setup(e => e.OnPlanChanged(It.IsNotNull<List<PlannedJobRun>>())).Callback<List<PlannedJobRun>>(p => lastIssuedPlan = p);
@@ -34,9 +34,9 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
             repository.AddJob(job);
             demoJob1Id = job.Id;
 
-            scheduler = new DefaultScheduler(new NullLoggerFactory(), repository, executorMock.Object,
+            scheduler = new DefaultScheduler(NullLoggerFactory.Instance, repository, executorMock.Object,
                 new InstantJobRunPlaner(currentTimeProvider), new ScheduledJobRunPlaner(currentTimeProvider),
-                new RecurringJobRunPlaner(new NullLoggerFactory(), repository, currentTimeProvider), new DefaultSchedulerConfiguration(),
+                new RecurringJobRunPlaner(NullLoggerFactory.Instance, repository, currentTimeProvider), new DefaultSchedulerConfiguration(),
                 periodicTimer, currentTimeProvider);
         }
     }
