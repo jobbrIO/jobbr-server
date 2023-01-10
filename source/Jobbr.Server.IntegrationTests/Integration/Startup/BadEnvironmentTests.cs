@@ -15,7 +15,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
         [TestMethod]
         public void StartingJobber_GetsRunning_WhenStorageProviderTurnsHealthy()
         {
-            var builder = new JobbrBuilder(new NullLoggerFactory());
+            var builder = new JobbrBuilder(NullLoggerFactory.Instance);
             builder.Register<IJobStorageProvider>(typeof(FaultyJobStorageProvider));
 
             var jobbr = builder.Create();
@@ -34,7 +34,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
         [TestMethod]
         public void StartingJobbr_ComponentFails_IsInErrorState()
         {
-            var nullLoggerFactory = new NullLoggerFactory();
+            var nullLoggerFactory = NullLoggerFactory.Instance;
             var builder = new JobbrBuilder(nullLoggerFactory);
             builder.RegisterForCollection<IJobbrComponent>(typeof(FaultyComponent));
 
@@ -57,7 +57,7 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
         [ExpectedException(typeof(Exception))]
         public void StartingJobbr_ComponentFails_ExceptionIsThrown()
         {
-            var builder = new JobbrBuilder(new NullLoggerFactory());
+            var builder = new JobbrBuilder(NullLoggerFactory.Instance);
             builder.RegisterForCollection<IJobbrComponent>(typeof(FaultyComponent));
 
             var jobbr = builder.Create();
