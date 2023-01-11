@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
+        <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <AssemblyTitle>Jobbr.Server.UnitTests</AssemblyTitle>
         <Company>Zuehlke Technology Group</Company>
         <Copyright>Copyright © Zuehlke Technology Group 2022</Copyright>
