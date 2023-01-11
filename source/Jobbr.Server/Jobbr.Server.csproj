@@ -2,6 +2,9 @@
   <PropertyGroup>
     <ProjectGuid>{A45F729D-8629-4C7A-96B8-29EAA8D52919}</ProjectGuid>
     <TargetFramework>net6.0</TargetFramework>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <AssemblyTitle>Jobber.Server</AssemblyTitle>
     <Company>Zuehlke Technology Group</Company>
     <Product>Jobbr.Server</Product>
