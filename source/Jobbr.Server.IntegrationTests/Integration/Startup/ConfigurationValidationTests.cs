@@ -9,57 +9,6 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
     [TestClass]
     public class ConfigurationValidationTests
     {
-        public class DemoComponent : IJobbrComponent
-        {
-            public void Dispose()
-            {
-            }
-
-            public void Start()
-            {
-            }
-
-            public void Stop()
-            {
-            }
-        }
-
-        public class DemoSettings
-        {
-        }
-
-        public class DemoComponentValidator : IConfigurationValidator
-        {
-            private readonly Action<DemoSettings> _func;
-            private readonly bool _validationShouldFail;
-            private readonly bool _throwException;
-
-            public Type ConfigurationType { get; set; } = typeof(DemoSettings);
-
-            public DemoComponentValidator(bool validationShouldFail, bool throwException)
-            {
-                _validationShouldFail = validationShouldFail;
-                _throwException = throwException;
-            }
-
-            public DemoComponentValidator(Action<DemoSettings> func)
-            {
-                _func = func;
-            }
-
-            public bool Validate(object configuration)
-            {
-                if (_throwException)
-                {
-                    throw new Exception("Exception from here");
-                }
-
-                _func?.Invoke((DemoSettings)configuration);
-
-                return !_validationShouldFail;
-            }
-        }
-
         [TestMethod]
         public void ValidatorForSettings_WhenRegistered_IsCalled()
         {
@@ -125,6 +74,57 @@ namespace Jobbr.Server.IntegrationTests.Integration.Startup
             var jobbr = builder.Create();
 
             jobbr.Start();
+        }
+
+        public class DemoComponent : IJobbrComponent
+        {
+            public void Dispose()
+            {
+            }
+
+            public void Start()
+            {
+            }
+
+            public void Stop()
+            {
+            }
+        }
+
+        private class DemoSettings
+        {
+        }
+
+        private class DemoComponentValidator : IConfigurationValidator
+        {
+            private readonly Action<DemoSettings> _func;
+            private readonly bool _validationShouldFail;
+            private readonly bool _throwException;
+
+            public DemoComponentValidator(bool validationShouldFail, bool throwException)
+            {
+                _validationShouldFail = validationShouldFail;
+                _throwException = throwException;
+            }
+
+            public DemoComponentValidator(Action<DemoSettings> func)
+            {
+                _func = func;
+            }
+
+            public Type ConfigurationType { get; set; } = typeof(DemoSettings);
+
+            public bool Validate(object configuration)
+            {
+                if (_throwException)
+                {
+                    throw new Exception("Exception from here");
+                }
+
+                _func?.Invoke((DemoSettings)configuration);
+
+                return !_validationShouldFail;
+            }
         }
     }
 }

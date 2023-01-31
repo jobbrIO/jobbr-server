@@ -39,8 +39,16 @@ namespace Jobbr.Server.Scheduling
         /// <param name="schedulerConfiguration">Scheduler configuration.</param>
         /// <param name="periodicTimer">Periodic timer.</param>
         /// <param name="dateTimeProvider">DateTime provider.</param>
-        public DefaultScheduler(ILoggerFactory loggerFactory, IJobbrRepository jobbrRepository, IJobExecutor executor, IInstantJobRunPlaner instantJobRunPlanner, IScheduledJobRunPlaner scheduledJobRunPlanner,
-            IRecurringJobRunPlaner recurringJobRunPlanner, DefaultSchedulerConfiguration schedulerConfiguration, IPeriodicTimer periodicTimer, IDateTimeProvider dateTimeProvider)
+        public DefaultScheduler(
+            ILoggerFactory loggerFactory,
+            IJobbrRepository jobbrRepository,
+            IJobExecutor executor,
+            IInstantJobRunPlaner instantJobRunPlanner,
+            IScheduledJobRunPlaner scheduledJobRunPlanner,
+            IRecurringJobRunPlaner recurringJobRunPlanner,
+            DefaultSchedulerConfiguration schedulerConfiguration,
+            IPeriodicTimer periodicTimer,
+            IDateTimeProvider dateTimeProvider)
         {
             _logger = loggerFactory.CreateLogger<DefaultScheduler>();
             _jobbrRepository = jobbrRepository;

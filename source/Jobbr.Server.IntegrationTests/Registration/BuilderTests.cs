@@ -236,199 +236,195 @@ namespace Jobbr.Server.IntegrationTests.Registration
             storageMock.Setup(s => s.GetJobRunsByJobId(It.IsAny<int>(), 1, int.MaxValue, false)).Returns(CreatePagedResult<JobRun>());
             storageMock.Setup(s => s.GetJobRunsByTriggerId(anyId, anyId, 1, int.MaxValue, false)).Returns(CreatePagedResult<JobRun>());
         }
-    }
 
-    public interface IPrioritizationStrategy : IComparable<JobRun>
-    {
-    }
-
-    public class CustomArtefactStorageAdapter : IArtefactsStorageProvider
-    {
-        public void Save(string container, string fileName, Stream content)
+        private class CustomArtefactStorageAdapter : IArtefactsStorageProvider
         {
+            public void Save(string container, string fileName, Stream content)
+            {
+            }
+
+            public Stream Load(string container, string fileName)
+            {
+                return null;
+            }
+
+            public List<JobbrArtefact> GetArtefacts(string container)
+            {
+                return null;
+            }
         }
 
-        public Stream Load(string container, string fileName)
+        private class CustomJobStorageProvider : IJobStorageProvider
         {
-            return null;
-        }
+            public void AddJob(Job job)
+            {
+                throw new NotImplementedException();
+            }
 
-        public List<JobbrArtefact> GetArtefacts(string container)
-        {
-            return null;
-        }
-    }
+            public void DeleteJob(long jobId)
+            {
+                throw new NotImplementedException();
+            }
 
-    public class CustomJobStorageProvider : IJobStorageProvider
-    {
-        public void AddJob(Job job)
-        {
-            throw new NotImplementedException();
-        }
+            public long GetJobsCount()
+            {
+                throw new NotImplementedException();
+            }
 
-        public void DeleteJob(long jobId)
-        {
-            throw new NotImplementedException();
-        }
+            public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
+            {
+                throw new NotImplementedException();
+            }
 
-        public long GetJobsCount()
-        {
-            throw new NotImplementedException();
-        }
+            public Job GetJobById(long id)
+            {
+                throw new NotImplementedException();
+            }
 
-        public PagedResult<Job> GetJobs(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
+            public Job GetJobByUniqueName(string identifier)
+            {
+                throw new NotImplementedException();
+            }
 
-        public Job GetJobById(long id)
-        {
-            throw new NotImplementedException();
-        }
+            public void Update(Job job)
+            {
+                throw new NotImplementedException();
+            }
 
-        public Job GetJobByUniqueName(string identifier)
-        {
-            throw new NotImplementedException();
-        }
+            public void AddTrigger(long jobId, RecurringTrigger trigger)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void Update(Job job)
-        {
-            throw new NotImplementedException();
-        }
+            public void AddTrigger(long jobId, InstantTrigger trigger)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void AddTrigger(long jobId, RecurringTrigger trigger)
-        {
-            throw new NotImplementedException();
-        }
+            public void AddTrigger(long jobId, ScheduledTrigger trigger)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void AddTrigger(long jobId, InstantTrigger trigger)
-        {
-            throw new NotImplementedException();
-        }
+            public JobTriggerBase GetTriggerById(long jobId, long triggerId)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void AddTrigger(long jobId, ScheduledTrigger trigger)
-        {
-            throw new NotImplementedException();
-        }
+            public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50, bool showDeleted = false)
+            {
+                throw new NotImplementedException();
+            }
 
-        public JobTriggerBase GetTriggerById(long jobId, long triggerId)
-        {
-            throw new NotImplementedException();
-        }
+            public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
+            {
+                throw new NotImplementedException();
+            }
 
-        public PagedResult<JobTriggerBase> GetTriggersByJobId(long jobId, int page = 1, int pageSize = 50, bool showDeleted = false)
-        {
-            throw new NotImplementedException();
-        }
+            public void DisableTrigger(long jobId, long triggerId)
+            {
+                throw new NotImplementedException();
+            }
 
-        public PagedResult<JobTriggerBase> GetActiveTriggers(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
+            public void EnableTrigger(long jobId, long triggerId)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void DisableTrigger(long jobId, long triggerId)
-        {
-            throw new NotImplementedException();
-        }
+            public void DeleteTrigger(long jobId, long triggerId)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void EnableTrigger(long jobId, long triggerId)
-        {
-            throw new NotImplementedException();
-        }
+            public void Update(long jobId, InstantTrigger trigger)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void DeleteTrigger(long jobId, long triggerId)
-        {
-            throw new NotImplementedException();
-        }
+            public void Update(long jobId, ScheduledTrigger trigger)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void Update(long jobId, InstantTrigger trigger)
-        {
-            throw new NotImplementedException();
-        }
+            public void Update(long jobId, RecurringTrigger trigger)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void Update(long jobId, ScheduledTrigger trigger)
-        {
-            throw new NotImplementedException();
-        }
+            public void AddJobRun(JobRun jobRun)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void Update(long jobId, RecurringTrigger trigger)
-        {
-            throw new NotImplementedException();
-        }
+            public JobRun GetJobRunById(long id)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void AddJobRun(JobRun jobRun)
-        {
-            throw new NotImplementedException();
-        }
+            public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
+            {
+                throw new NotImplementedException();
+            }
 
-        public JobRun GetJobRunById(long id)
-        {
-            throw new NotImplementedException();
-        }
+            public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
+            {
+                throw new NotImplementedException();
+            }
 
-        public JobRun GetLastJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
-        {
-            throw new NotImplementedException();
-        }
+            public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
+            {
+                throw new NotImplementedException();
+            }
 
-        public JobRun GetNextJobRunByTriggerId(long jobId, long triggerId, DateTime utcNow)
-        {
-            throw new NotImplementedException();
-        }
+            public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
+            {
+                throw new NotImplementedException();
+            }
 
-        public PagedResult<JobRun> GetJobRuns(int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
+            public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
+            {
+                throw new NotImplementedException();
+            }
 
-        public PagedResult<JobRun> GetJobRunsByJobId(int jobId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
+            public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
+            {
+                throw new NotImplementedException();
+            }
 
-        public PagedResult<JobRun> GetJobRunsByUserId(string userId, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
+            public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
+            {
+                throw new NotImplementedException();
+            }
 
-        public PagedResult<JobRun> GetJobRunsByTriggerId(long jobId, long triggerId, int page = 1, int pageSize = 50, bool showDeleted = false, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
+            public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
+            {
+                throw new NotImplementedException();
+            }
 
-        public PagedResult<JobRun> GetJobRunsByUserDisplayName(string userDisplayName, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, bool showDeleted = false, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
+            public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
+            {
+                throw new NotImplementedException();
+            }
 
-        public PagedResult<JobRun> GetJobRunsByState(JobRunStates state, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
+            public void Update(JobRun jobRun)
+            {
+                throw new NotImplementedException();
+            }
 
-        public PagedResult<JobRun> GetJobRunsByStates(JobRunStates[] states, int page = 1, int pageSize = 50, string jobTypeFilter = null, string jobUniqueNameFilter = null, string query = null, bool showDeleted = false, params string[] sort)
-        {
-            throw new NotImplementedException();
-        }
+            public void UpdateProgress(long jobRunId, double? progress)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void Update(JobRun jobRun)
-        {
-            throw new NotImplementedException();
-        }
+            public void ApplyRetention(DateTimeOffset date)
+            {
+                throw new NotImplementedException();
+            }
 
-        public void UpdateProgress(long jobRunId, double? progress)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ApplyRetention(DateTimeOffset date)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsAvailable()
-        {
-            throw new NotImplementedException();
+            public bool IsAvailable()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

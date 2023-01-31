@@ -12,7 +12,7 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
         public void SchedulerStarts_HasScheduledJobsFromPast_WillSetToOmitted()
         {
             var currentTime = new DateTime(2017, 04, 06, 0, 0, 0);
-            currentTimeProvider.Set(currentTime);
+            CurrentTimeProvider.Set(currentTime);
 
             // Add a couple of jobruns
             AddJobRun(currentTime.AddDays(-1), JobRunStates.Scheduled);
@@ -21,10 +21,10 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
             AddJobRun(currentTime.AddDays(-1), JobRunStates.Finishing);
             AddJobRun(currentTime.AddDays(-1), JobRunStates.Failed);
 
-            scheduler.Start();
+            Scheduler.Start();
 
-            var schedulerJobRuns = repository.GetJobRunsByState(JobRunStates.Scheduled);
-            var omittedJobRuns = repository.GetJobRunsByState(JobRunStates.Omitted);
+            var schedulerJobRuns = Repository.GetJobRunsByState(JobRunStates.Scheduled);
+            var omittedJobRuns = Repository.GetJobRunsByState(JobRunStates.Omitted);
 
             Assert.AreEqual(0, schedulerJobRuns.Items.Count, "The only past scheduled jobrun should have been set to omitted");
             Assert.AreEqual(1, omittedJobRuns.Items.Count, "It's assumed that the previous scheduled jobrun is now omitted");
@@ -34,14 +34,14 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
         public void SchedulerStarts_HasScheduledJobsInFuture_WillNotTouch()
         {
             var currentTime = new DateTime(2017, 04, 06, 0, 0, 0);
-            currentTimeProvider.Set(currentTime);
+            CurrentTimeProvider.Set(currentTime);
 
             // Add a couple of jobruns
             AddJobRun(currentTime.AddDays(1), JobRunStates.Scheduled);
 
-            scheduler.Start();
+            Scheduler.Start();
 
-            var schedulerJobRuns = repository.GetJobRunsByState(JobRunStates.Scheduled);
+            var schedulerJobRuns = Repository.GetJobRunsByState(JobRunStates.Scheduled);
 
             Assert.AreEqual(1, schedulerJobRuns.Items.Count, "A future scheduled jobrun should not be omitted");
         }
@@ -50,7 +50,7 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
         public void SchedulerStarts_HasSRunningJobsFromPast_WillSetToFailed()
         {
             var currentTime = new DateTime(2017, 04, 06, 0, 0, 0);
-            currentTimeProvider.Set(currentTime);
+            CurrentTimeProvider.Set(currentTime);
 
             // Add a couple of jobruns
             AddJobRun(currentTime.AddDays(-1), JobRunStates.Preparing);
@@ -65,17 +65,17 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
 
             AddJobRun(currentTime.AddDays(-1), JobRunStates.Completed);
 
-            scheduler.Start();
+            Scheduler.Start();
 
-            var failedJobRuns = repository.GetJobRunsByState(JobRunStates.Failed);
+            var failedJobRuns = Repository.GetJobRunsByState(JobRunStates.Failed);
 
-            Assert.AreEqual(9, failedJobRuns.Items.Count, $"Still have jobruns with the following states:\n {string.Join(", ", repository.GetJobRuns().Items.Select(jr => jr.State))}");
+            Assert.AreEqual(9, failedJobRuns.Items.Count, $"Still have jobruns with the following states:\n {string.Join(", ", Repository.GetJobRuns().Items.Select(jr => jr.State))}");
         }
 
         [TestMethod]
         public void GivenMultipleScheduledJobRuns_WhenLimitingAmountOfParallelRuns_ThenNewestShouldBeExecuted()
         {
-            scheduler.Start();
+            Scheduler.Start();
             var jobId = AddAndSaveJob(1);
             var dateFrom2091 = new DateTime(2091, 5, 17);
             var dateFrom2092 = new DateTime(2092, 7, 12);
@@ -83,71 +83,71 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
             var firstTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = dateFrom2091 };
             var secondTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = dateFrom2092 };
             var thirdTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = dateFrom2093 };
-            repository.SaveAddTrigger(jobId, firstTrigger);
-            repository.SaveAddTrigger(jobId, secondTrigger);
-            repository.SaveAddTrigger(jobId, thirdTrigger);
+            Repository.SaveAddTrigger(jobId, firstTrigger);
+            Repository.SaveAddTrigger(jobId, secondTrigger);
+            Repository.SaveAddTrigger(jobId, thirdTrigger);
 
-            scheduler.OnTriggerAdded(jobId, firstTrigger.Id);
-            scheduler.OnTriggerAdded(jobId, secondTrigger.Id);
+            Scheduler.OnTriggerAdded(jobId, firstTrigger.Id);
+            Scheduler.OnTriggerAdded(jobId, secondTrigger.Id);
 
-            Assert.AreEqual(1, lastIssuedPlan.Count);
-            Assert.AreEqual(dateFrom2091, lastIssuedPlan.Single().PlannedStartDateTimeUtc);
+            Assert.AreEqual(1, LastIssuedPlan.Count);
+            Assert.AreEqual(dateFrom2091, LastIssuedPlan.Single().PlannedStartDateTimeUtc);
 
-            scheduler.OnTriggerAdded(jobId, thirdTrigger.Id);
+            Scheduler.OnTriggerAdded(jobId, thirdTrigger.Id);
 
-            Assert.AreEqual(1, lastIssuedPlan.Count);
-            Assert.AreEqual(dateFrom2091, lastIssuedPlan.Single().PlannedStartDateTimeUtc);
+            Assert.AreEqual(1, LastIssuedPlan.Count);
+            Assert.AreEqual(dateFrom2091, LastIssuedPlan.Single().PlannedStartDateTimeUtc);
         }
 
         [TestMethod]
         public void GivenMultipleScheduledJobRuns_WhenLimitingAmountOfParallelRuns_ThenLatestShouldNotBeExecuted()
         {
-            scheduler.Start();
+            Scheduler.Start();
             var jobId = AddAndSaveJob(2);
             var startTimeTrigger1 = new DateTime(2100, 1, 1);
             var startTimeTrigger2 = new DateTime(2200, 1, 1);
             var firstTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = startTimeTrigger1 };
             var secondTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = startTimeTrigger2 };
-            repository.SaveAddTrigger(jobId, firstTrigger);
-            repository.SaveAddTrigger(jobId, secondTrigger);
+            Repository.SaveAddTrigger(jobId, firstTrigger);
+            Repository.SaveAddTrigger(jobId, secondTrigger);
             AddJobRun(new DateTime(2050, 1, 1), JobRunStates.Started, jobId);
-            scheduler.OnTriggerAdded(jobId, firstTrigger.Id);
+            Scheduler.OnTriggerAdded(jobId, firstTrigger.Id);
 
-            scheduler.OnTriggerAdded(jobId, secondTrigger.Id);
+            Scheduler.OnTriggerAdded(jobId, secondTrigger.Id);
 
-            Assert.AreEqual(1, lastIssuedPlan.Count);
-            Assert.AreEqual(startTimeTrigger1, lastIssuedPlan.Single().PlannedStartDateTimeUtc);
+            Assert.AreEqual(1, LastIssuedPlan.Count);
+            Assert.AreEqual(startTimeTrigger1, LastIssuedPlan.Single().PlannedStartDateTimeUtc);
         }
 
         [TestMethod]
         public void ShouldQueueJobWhenJobRunEnded()
         {
-            scheduler.Start();
+            Scheduler.Start();
             var jobId = AddAndSaveJob(1);
             var startTimeTrigger1 = new DateTime(2100, 1, 1);
             var startTimeTrigger2 = new DateTime(2200, 1, 1);
             var firstTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = startTimeTrigger1 };
             var secondTrigger = new ScheduledTrigger { JobId = jobId, IsActive = true, StartDateTimeUtc = startTimeTrigger2 };
-            repository.SaveAddTrigger(jobId, firstTrigger);
-            repository.SaveAddTrigger(jobId, secondTrigger);
-            scheduler.OnTriggerAdded(jobId, firstTrigger.Id);
-            var jobRunId = lastIssuedPlan.Single().Id;
+            Repository.SaveAddTrigger(jobId, firstTrigger);
+            Repository.SaveAddTrigger(jobId, secondTrigger);
+            Scheduler.OnTriggerAdded(jobId, firstTrigger.Id);
+            var jobRunId = LastIssuedPlan.Single().Id;
 
-            scheduler.OnJobRunEnded(jobRunId);
+            Scheduler.OnJobRunEnded(jobRunId);
 
-            Assert.AreEqual(1, lastIssuedPlan.Count);
-            Assert.AreEqual(startTimeTrigger1, lastIssuedPlan.Single().PlannedStartDateTimeUtc);
+            Assert.AreEqual(1, LastIssuedPlan.Count);
+            Assert.AreEqual(startTimeTrigger1, LastIssuedPlan.Single().PlannedStartDateTimeUtc);
         }
 
         private void AddJobRun(DateTime plannedStartDateTimeUtc, JobRunStates state, long jobId = 0)
         {
-            var accordingJobId = jobId != 0 ? jobId : demoJob1Id;
-            var scheduledTrigger = new InstantTrigger() { JobId = accordingJobId, IsActive = true };
-            var demoJob = repository.GetJob(accordingJobId);
+            var accordingJobId = jobId != 0 ? jobId : DemoJob1Id;
+            var scheduledTrigger = new InstantTrigger { JobId = accordingJobId, IsActive = true };
+            var demoJob = Repository.GetJob(accordingJobId);
 
-            var jobRun = repository.SaveNewJobRun(demoJob, scheduledTrigger, plannedStartDateTimeUtc);
+            var jobRun = Repository.SaveNewJobRun(demoJob, scheduledTrigger, plannedStartDateTimeUtc);
             jobRun.State = state;
-            repository.Update(jobRun);
+            Repository.Update(jobRun);
         }
 
         private long AddAndSaveJob(int maxConcurrentJobRuns)
@@ -156,7 +156,7 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
             {
                 MaxConcurrentJobRuns = maxConcurrentJobRuns
             };
-            repository.AddJob(job);
+            Repository.AddJob(job);
             return job.Id;
         }
     }

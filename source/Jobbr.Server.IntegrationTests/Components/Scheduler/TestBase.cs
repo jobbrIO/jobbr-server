@@ -12,32 +12,43 @@ namespace Jobbr.Server.IntegrationTests.Components.Scheduler
 {
     public class TestBase
     {
-        protected long demoJob1Id = 1;
-        protected JobbrRepository repository;
-        protected DefaultScheduler scheduler;
-        protected List<PlannedJobRun> lastIssuedPlan;
-        protected PeriodicTimerMock periodicTimer;
-        protected ManualTimeProvider currentTimeProvider;
-
-        public TestBase()
+        protected TestBase()
         {
-            repository = new JobbrRepository(NullLoggerFactory.Instance, new InMemoryJobStorageProvider());
+            Repository = new JobbrRepository(NullLoggerFactory.Instance, new InMemoryJobStorageProvider());
 
             var executorMock = new Mock<IJobExecutor>();
-            executorMock.Setup(e => e.OnPlanChanged(It.IsNotNull<List<PlannedJobRun>>())).Callback<List<PlannedJobRun>>(p => lastIssuedPlan = p);
+            executorMock.Setup(e => e.OnPlanChanged(It.IsNotNull<List<PlannedJobRun>>())).Callback<List<PlannedJobRun>>(p => LastIssuedPlan = p);
 
-            periodicTimer = new PeriodicTimerMock();
+            PeriodicTimer = new PeriodicTimerMock();
 
-            currentTimeProvider = new ManualTimeProvider();
+            CurrentTimeProvider = new ManualTimeProvider();
 
             var job = new Job();
-            repository.AddJob(job);
-            demoJob1Id = job.Id;
+            Repository.AddJob(job);
+            DemoJob1Id = job.Id;
 
-            scheduler = new DefaultScheduler(NullLoggerFactory.Instance, repository, executorMock.Object,
-                new InstantJobRunPlaner(currentTimeProvider), new ScheduledJobRunPlaner(currentTimeProvider),
-                new RecurringJobRunPlaner(NullLoggerFactory.Instance, repository, currentTimeProvider), new DefaultSchedulerConfiguration(),
-                periodicTimer, currentTimeProvider);
+            Scheduler = new DefaultScheduler(
+                NullLoggerFactory.Instance,
+                Repository,
+                executorMock.Object,
+                new InstantJobRunPlaner(CurrentTimeProvider),
+                new ScheduledJobRunPlaner(CurrentTimeProvider),
+                new RecurringJobRunPlaner(NullLoggerFactory.Instance, Repository, CurrentTimeProvider),
+                new DefaultSchedulerConfiguration(),
+                PeriodicTimer,
+                CurrentTimeProvider);
         }
+
+        protected long DemoJob1Id { get; }
+
+        protected JobbrRepository Repository { get; }
+
+        protected DefaultScheduler Scheduler { get; }
+
+        protected List<PlannedJobRun> LastIssuedPlan { get; private set; }
+
+        protected PeriodicTimerMock PeriodicTimer { get; }
+
+        protected ManualTimeProvider CurrentTimeProvider { get; }
     }
 }

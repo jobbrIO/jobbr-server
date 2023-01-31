@@ -12,9 +12,9 @@ namespace Jobbr.Server.UnitTests
         /// </summary>
         /// <param name="actual">The value to check against.</param>
         /// <param name="customMessage">Custom error message to display when an error occurs.</param>
-        public static DateTime ShouldBeUtcNowWithTolerance(this DateTime actual, string customMessage = null)
+        public static void ShouldBeUtcNowWithTolerance(this DateTime actual, string customMessage = null)
         {
-            return actual.ShouldBeUtcNowWithTolerance(DefaultOffsetTolerance, customMessage);
+            actual.ShouldBeUtcNowWithTolerance(DefaultOffsetTolerance, customMessage);
         }
 
         /// <summary>
@@ -23,11 +23,10 @@ namespace Jobbr.Server.UnitTests
         /// <param name="actual">The value to check against.</param>
         /// <param name="tolerance">The allowed tolerance for the equality to be checked.</param>
         /// <param name="customMessage">Custom error message to display when an error occurs.</param>
-        public static DateTime ShouldBeUtcNowWithTolerance(this DateTime actual, TimeSpan tolerance, string customMessage = null)
+        private static void ShouldBeUtcNowWithTolerance(this DateTime actual, TimeSpan tolerance, string customMessage = null)
         {
             var offset = DateTime.UtcNow - actual;
             offset.ShouldBeLessThanOrEqualTo(tolerance, customMessage);
-            return actual;
         }
     }
 }
