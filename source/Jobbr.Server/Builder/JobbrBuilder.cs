@@ -38,7 +38,7 @@ namespace Jobbr.Server.Builder
         /// <returns>A new <see cref="JobbrServer"/>.</returns>
         public JobbrServer Create(int maxConcurrentJobs = 4)
         {
-            _dependencyContainer.Register<JobbrServer>();
+            _dependencyContainer.Register<JobbrServer>(Lifestyle.Transient);
 
             // Register default implementations if user did not specify any separate
             if (_dependencyContainer.GetRegistration(typeof(IJobStorageProvider)) == null)

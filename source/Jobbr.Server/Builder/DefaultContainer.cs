@@ -80,7 +80,7 @@ namespace Jobbr.Server.Builder
             Register<IJobService, JobService>(Lifestyle.Singleton);
             Register<IJobRunService, JobRunService>(Lifestyle.Singleton);
 
-            Register<IMessageDispatcher, MessageDispatcher>(Lifestyle.Transient);
+            Register<IMessageDispatcher, MessageDispatcher>(Lifestyle.Singleton);
             Register<IConfigurationManager, ConfigurationManager>(Lifestyle.Singleton);
             Register<IRegistryBuilder, RegistryBuilder>(Lifestyle.Singleton);
 
