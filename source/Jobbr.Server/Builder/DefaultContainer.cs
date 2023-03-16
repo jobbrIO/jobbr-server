@@ -13,6 +13,7 @@ using Jobbr.Server.Scheduling.Planer;
 using Jobbr.Server.Storage;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
 using TinyMessenger;
 
 namespace Jobbr.Server.Builder
@@ -79,7 +80,7 @@ namespace Jobbr.Server.Builder
             Register<IJobService, JobService>(Lifestyle.Singleton);
             Register<IJobRunService, JobRunService>(Lifestyle.Singleton);
 
-            Register<IMessageDispatcher, MessageDispatcher>(Lifestyle.Singleton);
+            Register<IMessageDispatcher, MessageDispatcher>(Lifestyle.Transient);
             Register<IConfigurationManager, ConfigurationManager>(Lifestyle.Singleton);
             Register<IRegistryBuilder, RegistryBuilder>(Lifestyle.Singleton);
 
