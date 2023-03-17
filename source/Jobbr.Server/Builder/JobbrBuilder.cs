@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using Jobbr.ComponentModel.ArtefactStorage;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.JobStorage;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Registration;
+using Jobbr.Server.Core.Messaging;
+using Jobbr.Server.JobRegistry;
 using Jobbr.Server.Scheduling;
 using Jobbr.Server.Storage;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using SimpleInjector;
 
 namespace Jobbr.Server.Builder
@@ -38,8 +42,6 @@ namespace Jobbr.Server.Builder
         /// <returns>A new <see cref="JobbrServer"/>.</returns>
         public JobbrServer Create(int maxConcurrentJobs = 4)
         {
-            _dependencyContainer.Register<JobbrServer>(Lifestyle.Transient);
-
             // Register default implementations if user did not specify any separate
             if (_dependencyContainer.GetRegistration(typeof(IJobStorageProvider)) == null)
             {
@@ -80,7 +82,14 @@ namespace Jobbr.Server.Builder
                 _logger.LogError("No Server Management Service found.");
             }
 
-            return _dependencyContainer.GetInstance<JobbrServer>();
+            return new JobbrServer(_dependencyContainer.GetInstance<ILoggerFactory>(),
+                _dependencyContainer.GetInstance<IJobScheduler>(),
+                _dependencyContainer.GetInstance<IJobExecutor>(),
+                _dependencyContainer.GetInstance<IJobStorageProvider>(),
+                _dependencyContainer.GetInstance<List<IJobbrComponent>>(),
+                _dependencyContainer.GetInstance<IMessageDispatcher>(),
+                _dependencyContainer.GetInstance<IConfigurationManager>(),
+                _dependencyContainer.GetInstance<IRegistryBuilder>());
         }
 
         /// <summary>
