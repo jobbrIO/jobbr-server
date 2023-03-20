@@ -1,0 +1,60 @@
+name: CI
+
+on: [push, pull_request]
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  IGNORE_NORMALISATION_GIT_HEAD_MOVE: 1
+
+jobs:
+  build:
+    name: ${{ matrix.platform.name }} ${{ matrix.dotnet.name }}
+    runs-on: ${{ matrix.platform.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+        - { name: Windows VS2022, os: windows-2022 }
+        - { name: Linux, os: ubuntu-20.04 }
+        - { name: MacOS, os: macos-12 }
+        dotnet:
+        - { name: .NET 6, version: '6.0.x' }
+        - { name: .NET 7, version: '7.0.x' }
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup .NET ${{ matrix.dotnet.version }} SDK
+        id: setup-dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet.version }}
+      - name: Enforce SDK Version
+        run: dotnet new globaljson --sdk-version ${{ steps.setup-dotnet.outputs.dotnet-version }} --force
+      - name: Verify SDK Installation
+        run: dotnet --info
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0
+        with:
+          versionSpec: '5.x'
+      - name: Determine Version
+        uses: gittools/actions/gitversion/execute@v0
+        with:
+          useConfigFile: true
+          updateAssemblyInfo: true
+          additionalArguments: '/l console'
+
+      - name: Install Dependencies
+        run: dotnet restore source/Jobbr.Server.sln
+      - name: Build
+        run: dotnet build --configuration Release --no-restore source/Jobbr.Server.sln
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal source/Jobbr.Server.sln
+
+      - name: NuGet Pack
+        run: nuget pack source/Jobbr.Server.nuspec -version "${{ env.GitVersion_SemVer }}" -prop "target=Release"
