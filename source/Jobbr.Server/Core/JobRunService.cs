@@ -53,7 +53,12 @@ namespace Jobbr.Server.Core
                 jobRun.ActualStartDateTimeUtc = DateTime.UtcNow;
             }
 
-            if (state is JobRunStates.Completed or JobRunStates.Failed)
+            if (state == JobRunStates.Failed)
+            {
+                jobRun.ActualEndDateTimeUtc = DateTime.UtcNow;
+            }
+
+            if (state == JobRunStates.Completed)
             {
                 jobRun.ActualEndDateTimeUtc = DateTime.UtcNow;
             }

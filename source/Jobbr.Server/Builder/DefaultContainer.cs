@@ -13,6 +13,7 @@ using Jobbr.Server.Scheduling.Planer;
 using Jobbr.Server.Storage;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
 using TinyMessenger;
 
 namespace Jobbr.Server.Builder

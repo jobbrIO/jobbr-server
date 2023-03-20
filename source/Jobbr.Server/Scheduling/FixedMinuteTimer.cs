@@ -3,46 +3,59 @@ using System.Threading;
 
 namespace Jobbr.Server.Scheduling
 {
+    /// <summary>
+    /// Fixed minute timer.
+    /// </summary>
     internal class FixedMinuteTimer : IPeriodicTimer, IDisposable
     {
-        private Timer timer;
+        private Timer _timer;
+        private Action _callback;
 
-        private Action callback;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FixedMinuteTimer"/> class.
+        /// </summary>
         public FixedMinuteTimer()
         {
-            this.timer = new Timer(state => this.callback());
+            _timer = new Timer(_ => _callback());
         }
 
+        /// <inheritdoc/>
         public void Setup(Action value)
         {
-            this.callback = value;
+            _callback = value;
         }
 
+        /// <inheritdoc/>
         public void Start()
         {
-            this.timer.Change(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+            _timer.Change(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
         }
 
+        /// <inheritdoc/>
         public void Stop()
         {
-            this.timer.Change(int.MaxValue, int.MaxValue);
+            _timer.Change(int.MaxValue, int.MaxValue);
         }
 
+        /// <inheritdoc/>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Conditional dispose.
+        /// </summary>
+        /// <param name="isDisposing">Dispose condition.</param>
         protected virtual void Dispose(bool isDisposing)
         {
             if (isDisposing)
             {
-                if (this.timer != null)
+                if (_timer != null)
                 {
-                    this.timer.Dispose();
-                    this.timer = null;
+                    _timer.Dispose();
+                    _timer = null;
                 }
             }
         }

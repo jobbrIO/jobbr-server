@@ -32,7 +32,7 @@ namespace Jobbr.Server.JobRegistry
         /// <summary>
         /// Accessor for <see cref="JobDefinition"/>s.
         /// </summary>
-        internal List<JobDefinition> Definitions { get; } = new ();
+        internal List<JobDefinition> Definitions { get; } = new List<JobDefinition>();
 
         /// <inheritdoc/>
         public RegistryBuilder RemoveAll()

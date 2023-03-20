@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{A45F729D-8629-4C7A-96B8-29EAA8D52919}</ProjectGuid>
-	<TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <AssemblyTitle>Jobber.Server</AssemblyTitle>
     <Company>Zuehlke Technology Group</Company>
     <Product>Jobbr.Server</Product>
@@ -9,8 +12,8 @@
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <PackageIcon>images\icon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/jobbrIO/jobbr-server</PackageProjectUrl>
-    <CodeAnalysisRuleSet>..\JobbrRuleSet.ruleset</CodeAnalysisRuleSet>
     <OutputPath>bin\$(Configuration)\</OutputPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -20,28 +23,30 @@
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-  <ItemGroup>
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.3" />
     <PackageReference Include="NCrontab" Version="3.3.1" />
     <PackageReference Include="SimpleInjector" Version="5.4.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="System.Text.Json" Version="6.0.7" />
     <PackageReference Include="TinyMessenger" Version="1.0.0" />
-    <PackageReference Include="Jobbr.ComponentModel.ArtefactStorage" Version="1.1.1" />
-    <PackageReference Include="Jobbr.ComponentModel.Execution" Version="1.1.1" />
-    <PackageReference Include="Jobbr.ComponentModel.JobStorage" Version="1.6.0" />
-    <PackageReference Include="Jobbr.ComponentModel.Management" Version="1.6.3" />
-    <PackageReference Include="Jobbr.ComponentModel.Registration" Version="1.0.3" />
+    <PackageReference Include="Jobbr.ComponentModel.ArtefactStorage" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.Execution" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.JobStorage" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.Management" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.Registration" Version="3.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Jobbr.Server.IntegrationTests" />
+    <InternalsVisibleTo Include="Jobbr.Server.UnitTests" />
+  </ItemGroup>
+  <ImportGroup>
+    <Import Project="..\submodules\devsupport\src\Jobbr.DevSupport.StyleCopAnalyzer\Jobbr.DevSupport.StyleCopAnalyzer.targets" />
+  </ImportGroup>
 </Project>
