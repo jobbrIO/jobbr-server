@@ -36,11 +36,11 @@
     <PackageReference Include="SimpleInjector" Version="5.4.1" />
     <PackageReference Include="System.Text.Json" Version="6.0.7" />
     <PackageReference Include="TinyMessenger" Version="1.0.0" />
-    <PackageReference Include="Jobbr.ComponentModel.ArtefactStorage" Version="3.0.0-rc.1" />
-    <PackageReference Include="Jobbr.ComponentModel.Execution" Version="3.0.0-rc.1" />
-    <PackageReference Include="Jobbr.ComponentModel.JobStorage" Version="3.0.0-rc.2" />
-    <PackageReference Include="Jobbr.ComponentModel.Management" Version="3.0.0-rc.1" />
-    <PackageReference Include="Jobbr.ComponentModel.Registration" Version="3.0.0-rc.2" />
+    <PackageReference Include="Jobbr.ComponentModel.ArtefactStorage" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.Execution" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.JobStorage" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.Management" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.Registration" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Jobbr.Server.IntegrationTests" />
