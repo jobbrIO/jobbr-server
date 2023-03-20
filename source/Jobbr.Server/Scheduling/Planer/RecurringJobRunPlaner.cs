@@ -1,54 +1,62 @@
 using System;
 using System.Linq;
 using Jobbr.ComponentModel.JobStorage.Model;
-using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
+using Microsoft.Extensions.Logging;
 using NCrontab;
 
 namespace Jobbr.Server.Scheduling.Planer
 {
-    public class RecurringJobRunPlaner
+    /// <summary>
+    /// Class for planning recurring job runs.
+    /// </summary>
+    public class RecurringJobRunPlaner : IRecurringJobRunPlaner
     {
-        private static readonly ILog Logger = LogProvider.For<DefaultScheduler>();
-        private readonly JobbrRepository jobbrRepository;
-        private readonly IDateTimeProvider dateTimeProvider;
+        private readonly ILogger<RecurringJobRunPlaner> _logger;
+        private readonly IJobbrRepository _jobbrRepository;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
-        public RecurringJobRunPlaner(JobbrRepository repository, IDateTimeProvider dateTimeProvider)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecurringJobRunPlaner"/> class.
+        /// </summary>
+        public RecurringJobRunPlaner(ILoggerFactory loggerFactory, IJobbrRepository jobbrRepository, IDateTimeProvider dateTimeProvider)
         {
-            this.jobbrRepository = repository;
-            this.dateTimeProvider = dateTimeProvider;
+            _logger = loggerFactory.CreateLogger<RecurringJobRunPlaner>();
+            _jobbrRepository = jobbrRepository;
+            _dateTimeProvider = dateTimeProvider;
         }
 
-        internal PlanResult Plan(RecurringTrigger trigger)
+        /// <inheritdoc/>
+        public PlanResult Plan(RecurringTrigger trigger)
         {
             if (!trigger.IsActive)
             {
                 return PlanResult.FromAction(PlanAction.Obsolete);
             }
 
-            if (trigger.EndDateTimeUtc.HasValue && trigger.EndDateTimeUtc.Value < this.dateTimeProvider.GetUtcNow())
+            if (trigger.EndDateTimeUtc.HasValue && trigger.EndDateTimeUtc.Value < _dateTimeProvider.GetUtcNow())
             {
-                // This jobrun is not valid anymore
+                // This job run is not valid anymore
                 return PlanResult.FromAction(PlanAction.Obsolete);
             }
 
             if (trigger.NoParallelExecution)
             {
                 // find jobs that are running right now based on this trigger
-                var hasRunningJob = this.jobbrRepository.GetRunningJobs(trigger.JobId, trigger.Id).Any();
+                var hasRunningJob = _jobbrRepository.GetRunningJobs(trigger.JobId, trigger.Id).Any();
 
                 if (hasRunningJob)
                 {
-                    var job = this.jobbrRepository.GetJob(trigger.JobId);
+                    var job = _jobbrRepository.GetJob(trigger.JobId);
 
-                    Logger.InfoFormat(
-                        "No Parallel Execution: prevented planning of new JobRun for Job '{0}' (JobId: {1}). Caused by trigger with id '{2}' (Type: '{3}', userId: '{4}', userName: '{5}')",
-                        job.UniqueName,
-                        job.Id,
-                        trigger.Id,
-                        trigger.GetType().Name,
-                        trigger.UserId,
-                        trigger.UserDisplayName);
+                    _logger.LogInformation(
+                     "No Parallel Execution: prevented planning of new job run for Job '{jobName}' (JobId: {jobId}). Caused by trigger with id '{triggerId}' (Type: '{triggerType}', userId: '{userId}', userName: '{userName}')",
+                     job.UniqueName,
+                     job.Id,
+                     trigger.Id,
+                     trigger.GetType().Name,
+                     trigger.UserId,
+                     trigger.UserDisplayName);
 
                     return PlanResult.FromAction(PlanAction.Blocked);
                 }
@@ -57,13 +65,13 @@ namespace Jobbr.Server.Scheduling.Planer
             DateTime baseTime;
 
             // Calculate the next occurrence based on current time or possible future startdate
-            if (trigger.StartDateTimeUtc.HasValue && trigger.StartDateTimeUtc.Value > this.dateTimeProvider.GetUtcNow())
+            if (trigger.StartDateTimeUtc.HasValue && trigger.StartDateTimeUtc.Value > _dateTimeProvider.GetUtcNow())
             {
                 baseTime = trigger.StartDateTimeUtc.Value;
             }
             else
             {
-                baseTime = this.dateTimeProvider.GetUtcNow();
+                baseTime = _dateTimeProvider.GetUtcNow();
             }
 
             var schedule = CrontabSchedule.Parse(trigger.Definition);
@@ -71,7 +79,7 @@ namespace Jobbr.Server.Scheduling.Planer
             return new PlanResult
             {
                 Action = PlanAction.Possible,
-                ExpectedStartDateUtc = schedule.GetNextOccurrence(baseTime)
+                ExpectedStartDateUtc = schedule.GetNextOccurrence(baseTime),
             };
         }
     }

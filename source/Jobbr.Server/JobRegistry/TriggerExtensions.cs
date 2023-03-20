@@ -3,8 +3,17 @@ using Jobbr.ComponentModel.JobStorage.Model;
 
 namespace Jobbr.Server.JobRegistry
 {
+    /// <summary>
+    /// Extension methods for job triggers.
+    /// </summary>
     public static class TriggerExtensions
     {
+        /// <summary>
+        /// Checks if two trigger instances are actually the same instance.
+        /// </summary>
+        /// <param name="trigger">Target trigger.</param>
+        /// <param name="other">Comparison trigger.</param>
+        /// <returns>Returns true if the instances are same and false if not.</returns>
         public static bool IsTriggerEqual(this JobTriggerBase trigger, JobTriggerBase other)
         {
             if (ReferenceEquals(trigger, other))
@@ -46,11 +55,11 @@ namespace Jobbr.Server.JobRegistry
             switch (left)
             {
                 case RecurringTrigger leftRecurringTrigger:
-                    return IsSame(leftRecurringTrigger, (RecurringTrigger) right);
+                    return IsSame(leftRecurringTrigger, (RecurringTrigger)right);
                 case ScheduledTrigger leftSchedulingTrigger:
-                    return IsSame(leftSchedulingTrigger, (ScheduledTrigger) right);
+                    return IsSame(leftSchedulingTrigger, (ScheduledTrigger)right);
                 case InstantTrigger leftInstantTrigger:
-                    return IsSame(leftInstantTrigger, (InstantTrigger) right);
+                    return IsSame(leftInstantTrigger, (InstantTrigger)right);
                 default:
                     return false;
             }

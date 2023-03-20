@@ -3,163 +3,184 @@ using AutoMapper;
 using Jobbr.ComponentModel.JobStorage.Model;
 using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.Core.Models;
-using Jobbr.Server.Logging;
 using Jobbr.Server.Storage;
+using Microsoft.Extensions.Logging;
 using TinyMessenger;
 
 namespace Jobbr.Server.Core
 {
-    internal class TriggerService
+    /// <summary>
+    /// Service for managing triggers.
+    /// </summary>
+    internal class TriggerService : ITriggerService
     {
-        private static readonly ILog Logger = LogProvider.For<TriggerService>();
+        private readonly ILogger<TriggerService> _logger;
+        private readonly IJobbrRepository _jobbrRepository;
+        private readonly ITinyMessengerHub _messengerHub;
+        private readonly IMapper _mapper;
 
-        private readonly IJobbrRepository jobbrRepository;
-        private readonly ITinyMessengerHub messengerHub;
-        private readonly IMapper mapper;
-
-        public TriggerService(IJobbrRepository jobbrRepository, ITinyMessengerHub messengerHub, IMapper mapper)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TriggerService"/> class.
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="jobbrRepository">Repository for accessing job data.</param>
+        /// <param name="messengerHub">SubPub messenger hub.</param>
+        /// <param name="mapper">The mapper.</param>
+        public TriggerService(ILoggerFactory loggerFactory, IJobbrRepository jobbrRepository, ITinyMessengerHub messengerHub, IMapper mapper)
         {
-            this.jobbrRepository = jobbrRepository;
-            this.messengerHub = messengerHub;
-            this.mapper = mapper;
+            _logger = loggerFactory.CreateLogger<TriggerService>();
+            _jobbrRepository = jobbrRepository;
+            _messengerHub = messengerHub;
+            _mapper = mapper;
         }
 
-        internal void Add(long jobId, RecurringTriggerModel trigger)
+        /// <inheritdoc/>
+        public void Add(long jobId, RecurringTriggerModel trigger)
         {
-            var triggerEntity = this.mapper.Map<RecurringTrigger>(trigger);
+            var triggerEntity = _mapper.Map<RecurringTrigger>(trigger);
 
-            this.jobbrRepository.SaveAddTrigger(jobId, triggerEntity);
+            _jobbrRepository.SaveAddTrigger(jobId, triggerEntity);
             trigger.Id = triggerEntity.Id;
             trigger.JobId = triggerEntity.JobId;
 
-            this.messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
+            _messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
         }
 
-        internal void Add(long jobId, ScheduledTriggerModel trigger)
+        /// <inheritdoc/>
+        public void Add(long jobId, ScheduledTriggerModel trigger)
         {
-            var triggerEntity = this.mapper.Map<ScheduledTrigger>(trigger);
+            var triggerEntity = _mapper.Map<ScheduledTrigger>(trigger);
 
-            this.jobbrRepository.SaveAddTrigger(jobId, triggerEntity);
+            _jobbrRepository.SaveAddTrigger(jobId, triggerEntity);
             trigger.Id = triggerEntity.Id;
             trigger.JobId = triggerEntity.JobId;
 
-            this.messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
+            _messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
         }
 
-        internal void Add(long jobId, InstantTriggerModel trigger)
+        /// <inheritdoc/>
+        public void Add(long jobId, InstantTriggerModel trigger)
         {
-            var triggerEntity = this.mapper.Map<InstantTrigger>(trigger);
+            var triggerEntity = _mapper.Map<InstantTrigger>(trigger);
 
-            this.jobbrRepository.SaveAddTrigger(jobId, triggerEntity);
+            _jobbrRepository.SaveAddTrigger(jobId, triggerEntity);
             trigger.Id = triggerEntity.Id;
             trigger.JobId = triggerEntity.JobId;
 
-            this.messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
+            _messengerHub.PublishAsync(new TriggerAddedMessage(this, new TriggerKey { JobId = triggerEntity.JobId, TriggerId = triggerEntity.Id }));
         }
 
-        internal void Disable(long jobId, long triggerId)
+        /// <inheritdoc/>
+        public void Disable(long jobId, long triggerId)
         {
-            this.jobbrRepository.DisableTrigger(jobId, triggerId);
-            this.messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
+            _jobbrRepository.DisableTrigger(jobId, triggerId);
+            _messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
         }
 
-        internal void Delete(long jobId, long triggerId)
+        /// <inheritdoc/>
+        public void Delete(long jobId, long triggerId)
         {
-            this.jobbrRepository.DeleteTrigger(jobId, triggerId);
-            this.messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
+            _jobbrRepository.DeleteTrigger(jobId, triggerId);
+            _messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
         }
 
-        internal void Enable(long jobId, long triggerId)
+        /// <inheritdoc/>
+        public void Enable(long jobId, long triggerId)
         {
-            this.jobbrRepository.EnableTrigger(jobId, triggerId);
+            _jobbrRepository.EnableTrigger(jobId, triggerId);
 
-            this.messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
+            _messengerHub.PublishAsync(new TriggerStateChangedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
         }
 
-        internal void Update(long jobId, long triggerId, string definition)
+        /// <inheritdoc/>
+        // TODO: combine update methods, too much copy-paste here
+        public void Update(long jobId, long triggerId, string definition)
         {
-            var trigger = this.jobbrRepository.GetTriggerById(jobId, triggerId);
+            var trigger = _jobbrRepository.GetTriggerById(jobId, triggerId);
 
             var recurringTrigger = trigger as RecurringTrigger;
 
             if (recurringTrigger == null)
             {
-                Logger.Warn($"Unable to update RecurringTrigger with id '{triggerId}': Trigger not found!");
+                _logger.LogWarning("Unable to update RecurringTrigger with id '{triggerId}': Trigger not found!", triggerId);
                 return;
             }
 
             recurringTrigger.Definition = definition;
 
-            this.jobbrRepository.SaveUpdateTrigger(jobId, trigger, out var hadChanges);
+            _jobbrRepository.SaveUpdateTrigger(jobId, trigger, out var hadChanges);
 
             if (hadChanges)
             {
-                this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
+                _messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
             }
         }
 
-        internal void Update(RecurringTriggerModel trigger)
+        /// <inheritdoc/>
+        public void Update(RecurringTriggerModel trigger)
         {
-            var triggerEntity = this.mapper.Map<RecurringTrigger>(trigger);
+            var triggerEntity = _mapper.Map<RecurringTrigger>(trigger);
 
             // ReSharper disable once UsePatternMatching
-            var fromDb = this.jobbrRepository.GetTriggerById(trigger.JobId, trigger.Id) as RecurringTrigger;
+            var fromDb = _jobbrRepository.GetTriggerById(trigger.JobId, trigger.Id) as RecurringTrigger;
 
             if (fromDb == null)
             {
-                Logger.Warn($"Unable to update RecurringTrigger with id '{trigger.Id}' (JobId '{trigger.JobId}'): Trigger not found!");
+                _logger.LogWarning("Unable to update RecurringTrigger with id '{triggerId}' (JobId '{jobId}'): Trigger not found!", trigger.Id, trigger.JobId);
                 return;
             }
 
-            this.jobbrRepository.SaveUpdateTrigger(trigger.JobId, triggerEntity, out var hadChanges);
+            _jobbrRepository.SaveUpdateTrigger(trigger.JobId, triggerEntity, out var hadChanges);
 
             if (hadChanges)
             {
-                this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = trigger.JobId, TriggerId = trigger.Id }));
+                _messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = trigger.JobId, TriggerId = trigger.Id }));
             }
         }
 
-        internal void Update(ScheduledTriggerModel trigger)
+        /// <inheritdoc/>
+        public void Update(ScheduledTriggerModel trigger)
         {
-            var triggerEntity = this.mapper.Map<ScheduledTrigger>(trigger);
+            var triggerEntity = _mapper.Map<ScheduledTrigger>(trigger);
 
             // ReSharper disable once UsePatternMatching
-            var fromDb = this.jobbrRepository.GetTriggerById(trigger.JobId, trigger.Id) as ScheduledTrigger;
+            var fromDb = _jobbrRepository.GetTriggerById(trigger.JobId, trigger.Id) as ScheduledTrigger;
 
             if (fromDb == null)
             {
-                Logger.Warn($"Unable to update ScheduledTrigger with id '{trigger.Id}' (JobId '{trigger.JobId}'): Trigger not found!");
+                _logger.LogWarning("Unable to update ScheduledTrigger with id '{triggerId}' (JobId '{jobId}'): Trigger not found!", trigger.Id, trigger.JobId);
                 return;
             }
 
-            this.jobbrRepository.SaveUpdateTrigger(trigger.JobId, triggerEntity, out var hadChanges);
+            _jobbrRepository.SaveUpdateTrigger(trigger.JobId, triggerEntity, out var hadChanges);
 
             if (hadChanges)
             {
-                this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = trigger.JobId, TriggerId = trigger.Id }));
+                _messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = trigger.JobId, TriggerId = trigger.Id }));
             }
         }
 
-        internal void Update(long jobId, long triggerId, DateTime startDateTimeUtc)
+        /// <inheritdoc/>
+        public void Update(long jobId, long triggerId, DateTime startDateTimeUtc)
         {
-            var trigger = this.jobbrRepository.GetTriggerById(jobId, triggerId);
+            var trigger = _jobbrRepository.GetTriggerById(jobId, triggerId);
 
             // ReSharper disable once UsePatternMatching
             var recurringTrigger = trigger as ScheduledTrigger;
 
             if (recurringTrigger == null)
             {
-                Logger.Warn($"Unable to update ScheduledTrigger with id '{triggerId}': Trigger not found!");
+                _logger.LogWarning("Unable to update ScheduledTrigger with id '{triggerId}': Trigger not found!", trigger.Id);
                 return;
             }
 
             recurringTrigger.StartDateTimeUtc = startDateTimeUtc;
 
-            this.jobbrRepository.SaveUpdateTrigger(jobId, trigger, out var hadChanges);
+            _jobbrRepository.SaveUpdateTrigger(jobId, trigger, out var hadChanges);
 
             if (hadChanges)
             {
-                this.messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
+                _messengerHub.PublishAsync(new TriggerUpdatedMessage(this, new TriggerKey { JobId = jobId, TriggerId = triggerId }));
             }
         }
     }

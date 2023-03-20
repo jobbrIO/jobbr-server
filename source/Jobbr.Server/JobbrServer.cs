@@ -11,65 +11,58 @@ using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.Core.Messaging;
 using Jobbr.Server.Extensions;
 using Jobbr.Server.JobRegistry;
-using Jobbr.Server.Logging;
 using Jobbr.Server.Scheduling;
+using Microsoft.Extensions.Logging;
 
 namespace Jobbr.Server
 {
     /// <summary>
-    /// The jobber job server.
+    /// The Jobbr job server.
     /// </summary>
     public class JobbrServer : IDisposable
     {
-        /// <summary>
-        /// The logger.
-        /// </summary>
-        private static readonly ILog Logger = LogProvider.For<JobbrServer>();
+        private readonly ILogger<JobbrServer> _logger;
+        private readonly IJobScheduler _scheduler;
+        private readonly IJobExecutor _executor;
+        private readonly IJobStorageProvider _jobStorageProvider;
+        private readonly List<IJobbrComponent> _jobbrComponents;
+        private readonly IConfigurationManager _configurationManager;
+        private readonly IRegistryBuilder _registryBuilder;
 
-        /// <summary>
-        /// The scheduler.
-        /// </summary>
-        private readonly IJobScheduler scheduler;
-
-        /// <summary>
-        /// The executor.
-        /// </summary>
-        private readonly IJobExecutor executor;
-
-        private readonly IJobStorageProvider jobStorageProvider;
-
-        private readonly List<IJobbrComponent> components;
-
-        private readonly ConfigurationManager configurationManager;
-        private readonly RegistryBuilder registryBuilder;
-
-        private bool isRunning;
+        private bool _isRunning;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobbrServer"/> class.
         /// </summary>
-        public JobbrServer(IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> components, MessageDispatcher messageDispatcher, ConfigurationManager configurationManager, RegistryBuilder registryBuilder)
+        public JobbrServer(ILoggerFactory loggerFactory, IJobScheduler scheduler, IJobExecutor jobExecutor, IJobStorageProvider jobStorageProvider, List<IJobbrComponent> jobbrComponents, IMessageDispatcher messageDispatcher, IConfigurationManager configurationManager, IRegistryBuilder registryBuilder)
         {
-            Logger.Debug("A new instance of a a JobbrServer has been created.");
+            _logger = loggerFactory.CreateLogger<JobbrServer>();
 
-            this.scheduler = scheduler;
-            this.executor = jobExecutor;
+            _scheduler = scheduler;
+            _executor = jobExecutor;
+            _jobbrComponents = jobbrComponents;
+            _configurationManager = configurationManager;
+            _registryBuilder = registryBuilder;
+            _jobStorageProvider = jobStorageProvider;
 
-            this.components = components;
-            this.configurationManager = configurationManager;
-            this.registryBuilder = registryBuilder;
-            this.jobStorageProvider = jobStorageProvider;
+            _logger.LogDebug("A new instance of a JobbrServer has been created.");
 
             messageDispatcher.WireUp();
         }
 
-        public bool IsRunning => this.isRunning;
-
+        /// <summary>
+        /// The state of the Jobbr server.
+        /// </summary>
         public JobbrState State { get; private set; }
 
+        /// <summary>
+        /// Start the Jobbr server synchronously.
+        /// </summary>
+        /// <param name="waitForStartupTimeout">The timeout for the start in milliseconds.</param>
+        /// <returns>True if start was a success, false if not.</returns>
         public bool Start(int waitForStartupTimeout = 2000)
         {
-            var startupTask = this.StartAsync(CancellationToken.None);
+            var startupTask = StartAsync(CancellationToken.None);
 
             try
             {
@@ -77,55 +70,60 @@ namespace Jobbr.Server
             }
             catch (AggregateException e)
             {
-                this.State = JobbrState.Error;
+                State = JobbrState.Error;
                 throw e.InnerExceptions[0];
             }
 
             if (!startupTask.IsCompleted)
             {
-                Logger.FatalFormat("Jobbr was unable to start within {0}ms. Keep starting but returning now from Start()", waitForStartupTimeout);
+                _logger.LogCritical("Jobbr was unable to start within {wait}ms. Keep starting but returning now from Start()", waitForStartupTimeout);
                 return false;
             }
 
             return true;
         }
 
+        /// <summary>
+        /// Start the Jobbr server asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken">Token for cancelling the async call.</param>
+        /// <returns>A task that will return true if start was a success and false if not.</returns>
         public async Task<bool> StartAsync(CancellationToken cancellationToken)
         {
-            this.State = JobbrState.Initializing;
+            State = JobbrState.Initializing;
 
-            this.LogVersions();
+            LogVersions();
 
-            Logger.InfoFormat("The JobServer has been set-up by the following configurations");
-            this.configurationManager.LogConfiguration();
+            _logger.LogInformation("The JobServer has been set-up by the following configurations");
+            _configurationManager.LogConfiguration();
 
-            this.State = JobbrState.Validating;
+            State = JobbrState.Validating;
 
             try
             {
-                this.configurationManager.ValidateConfigurationAndThrowOnErrors();
-                Logger.Info("The configuration was validated and seems ok. Final configuration below:");
+                _configurationManager.ValidateConfigurationAndThrowOnErrors();
+                _logger.LogInformation("The configuration was validated and seems ok. Final configuration below:");
 
-                this.configurationManager.LogConfiguration();
+                _configurationManager.LogConfiguration();
             }
             catch (Exception)
             {
-                this.State = JobbrState.Error;
+                State = JobbrState.Error;
                 throw;
             }
 
-            this.State = JobbrState.Starting;
+            State = JobbrState.Starting;
 
-            var waitForDbTask = new Task(this.WaitForDb, cancellationToken);
+            var waitForDbTask = new Task(WaitForDb, cancellationToken);
 
             var startComponents = waitForDbTask.ContinueWith(
                 t =>
                     {
-                        this.RegisterJobsFromRepository();
-                        this.StartInternalComponents();
-                        this.StartOptionalComponents();
+                        RegisterJobsFromRepository();
+                        StartInternalComponents();
+                        StartOptionalComponents();
 
-                        this.isRunning = true;
+                        _isRunning = true;
                     },
                 cancellationToken);
 
@@ -133,9 +131,35 @@ namespace Jobbr.Server
 
             await Task.WhenAll(waitForDbTask, startComponents);
 
-            this.State = JobbrState.Running;
+            State = JobbrState.Running;
 
             return true;
+        }
+
+        /// <summary>
+        /// Stop the server and it's components.
+        /// </summary>
+        public void Stop()
+        {
+            _logger.LogInformation("Attempting to shut down JobbrServer...");
+
+            _jobbrComponents.ForEach(component => component.Stop());
+
+            _scheduler.Stop();
+            _executor.Stop();
+
+            _logger.LogInformation("All components stopped.");
+        }
+
+        /// <summary>
+        /// Stop the server if it is running.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_isRunning)
+            {
+                Stop();
+            }
         }
 
         private void LogVersions()
@@ -143,81 +167,55 @@ namespace Jobbr.Server
             var sb = new StringBuilder();
             sb.AppendLine("Version Information:");
 
-            var assemblies = new List<Assembly> { this.GetType().Assembly };
-            assemblies.AddRange(this.components.Select(component => component.GetType().Assembly));
+            var assemblies = new List<Assembly> { GetType().Assembly };
+            assemblies.AddRange(_jobbrComponents.Select(component => component.GetType().Assembly));
 
             assemblies.Distinct().ToList().ForEach(assembly => { sb.AppendLine($"{assembly.ManifestModule.Name} {assembly.GetVersion()}"); });
 
-            Logger.Info(sb.ToString().TrimEnd());
-        }
-
-        /// <summary>
-        /// The stop.
-        /// </summary>
-        public void Stop()
-        {
-            Logger.Info("Attempt to shut down JobbrServer...");
-
-            this.components.ForEach(component => component.Stop());
-
-            this.scheduler.Stop();
-            this.executor.Stop();
-
-            Logger.Info("All components stopped.");
-        }
-
-        /// <summary>
-        /// The dispose.
-        /// </summary>
-        public void Dispose()
-        {
-            if (this.isRunning)
-            {
-                this.Stop();
-            }
+            _logger.LogInformation("{assemblies}", sb.ToString().TrimEnd());
         }
 
         private void StartInternalComponents()
         {
             try
             {
-                Logger.DebugFormat("Starting Scheduler ({0})...", this.scheduler.GetType().Name);
-                this.scheduler.Start();
+                _logger.LogDebug("Starting Scheduler ({0})...", _scheduler.GetType().Name);
+                _scheduler.Start();
 
-                Logger.DebugFormat("Starting Executor ({0})...", this.executor.GetType().Name);
-                this.executor.Start();
+                _logger.LogDebug("Starting Executor ({0})...", _executor.GetType().Name);
+                _executor.Start();
 
-                Logger.Info("All services (Scheduler, Executor) have been started successfully.");
+                _logger.LogInformation("All services (Scheduler, Executor) have been started successfully.");
             }
             catch (Exception e)
             {
-                Logger.FatalException("A least one service couldn't be started. Please see the exception for details.", e);
+                _logger.LogCritical("A least one service couldn't be started. Please see the exception for details. '{exception}'", e);
             }
         }
 
         private void StartOptionalComponents()
         {
-            if (this.components == null)
+            if (_jobbrComponents == null)
             {
                 return;
             }
 
             try
             {
-                foreach (var jobbrComponent in this.components)
+                foreach (var jobbrComponent in _jobbrComponents)
                 {
                     var type = jobbrComponent.GetType();
-                    Logger.DebugFormat($"Starting JobbrComponent '{type.FullName}' ...");
+                    _logger.LogDebug("Starting JobbrComponent '{fullName}' ...", type.FullName);
                     jobbrComponent.Start();
                 }
 
-                Logger.Info("All Optional Services have been started successfully.");
+                _logger.LogInformation("All Optional Services have been started successfully.");
 
-                this.isRunning = true;
+                _isRunning = true;
             }
             catch (Exception e)
             {
-                Logger.FatalException($"A least one service couldn't be started. Reason: {e}\n\n Please see the exception for details.", e.InnerException);
+                _logger.LogCritical(e, "At least one of the services couldn't be started. Reason: {e}\n\n Please see the exception for details.", e.InnerException);
                 throw;
             }
         }
@@ -228,12 +226,12 @@ namespace Jobbr.Server
             {
                 try
                 {
-                    this.jobStorageProvider.IsAvailable();
+                    _jobStorageProvider.IsAvailable();
                     return;
                 }
                 catch (Exception ex)
                 {
-                    Logger.ErrorException("Exception while connecting to database to get all Jobs on startup.", ex);
+                    _logger.LogError(ex, "Exception while connecting to database to get all Jobs on startup");
                     Thread.Sleep(1000);
                 }
             }
@@ -241,18 +239,18 @@ namespace Jobbr.Server
 
         private void RegisterJobsFromRepository()
         {
-            Logger.Info("Adding jobs from the registry");
+            _logger.LogInformation("Adding jobs from the registry");
 
             try
             {
-                var numberOfChanges = this.registryBuilder.Apply(this.jobStorageProvider);
-                var numberOfJobs = this.jobStorageProvider.GetJobs(pageSize: int.MaxValue).Items.Count;
+                var numberOfChanges = _registryBuilder.Apply(_jobStorageProvider);
+                var numberOfJobs = _jobStorageProvider.GetJobs(pageSize: int.MaxValue).Items.Count;
 
-                Logger.InfoFormat("There were {0} changes by the JobRegistry. There are now {1} known jobs right available.", numberOfChanges, numberOfJobs);
+                _logger.LogInformation("There were {changeCount} changes by the JobRegistry. There are now {jobCount} known jobs right available.", numberOfChanges, numberOfJobs);
             }
             catch (Exception e)
             {
-                Logger.FatalException("Cannot register Jobs on startup. See Exception for details", e);
+                _logger.LogCritical(e, "Cannot register Jobs on startup. See exception for details.");
             }
         }
     }

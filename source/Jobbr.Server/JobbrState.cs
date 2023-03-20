@@ -1,5 +1,8 @@
 ﻿namespace Jobbr.Server
 {
+    /// <summary>
+    /// Jobbr execution state.
+    /// </summary>
     public enum JobbrState
     {
         Unknown = 0,

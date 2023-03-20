@@ -1,59 +1,92 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
 using Jobbr.ComponentModel.Execution;
 using Jobbr.ComponentModel.Management;
 using Jobbr.ComponentModel.Registration;
 using Jobbr.Server.ComponentServices.Execution;
 using Jobbr.Server.ComponentServices.Management;
 using Jobbr.Server.ComponentServices.Registration;
+using Jobbr.Server.Core;
+using Jobbr.Server.Core.Messaging;
+using Jobbr.Server.JobRegistry;
+using Jobbr.Server.Scheduling.Planer;
 using Jobbr.Server.Storage;
-using Ninject;
+using Microsoft.Extensions.Logging;
+using SimpleInjector;
+using SimpleInjector.Lifestyles;
 using TinyMessenger;
 
 namespace Jobbr.Server.Builder
 {
     /// <summary>
-    /// The kernel.
+    /// The default dependency injection container for Jobbr.
     /// </summary>
-    internal class DefaultContainer : StandardKernel
+    internal class DefaultContainer : Container
     {
-        private readonly AutoMapperConfigurationFactory autoMapperConfigurationFactory = new AutoMapperConfigurationFactory();
+        private readonly AutoMapperConfigurationFactory _autoMapperConfigurationFactory;
 
-        public DefaultContainer()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultContainer"/> class.
+        /// </summary>
+        public DefaultContainer(ILoggerFactory loggerFactory)
         {
-            this.AddCoreServices();
+            // This is done so we can manually check for the services in the container and use in-memory ones if something is missing.
+            // SimpleInjector will throw an error if this is enabled.
+            Options.EnableAutoVerification = false;
 
-            this.AddAutoMapper();
+            // This is allowed to provide overriding the defaults set in this class.
+            Options.AllowOverridingRegistrations = true;
 
-            this.AddComponentModelImplementations();
+            _autoMapperConfigurationFactory = new AutoMapperConfigurationFactory(loggerFactory);
+            AddCoreServices();
+            AddAutoMapper();
+            AddComponentModelImplementations();
         }
 
         private void AddCoreServices()
         {
-            this.Bind<IJobbrRepository>().To<JobbrRepository>().InSingletonScope();
-            this.Bind<ITinyMessengerHub>().To<TinyMessengerHub>().InSingletonScope();
+            Register<IJobbrRepository, JobbrRepository>(Lifestyle.Singleton);
+            Register<ITinyMessengerHub, TinyMessengerHub>(Lifestyle.Singleton);
         }
 
         private void AddAutoMapper()
         {
-            var config = this.autoMapperConfigurationFactory.GetNew();
+            var config = _autoMapperConfigurationFactory.GetNew();
 
-            this.Bind<MapperConfiguration>().ToConstant(config);
-            this.Bind<IMapper>().ToProvider<AutoMapperProvider>();
+            RegisterInstance(config.CreateMapper());
         }
 
         private void AddComponentModelImplementations()
         {
             // Registration
-            this.Bind<IJobbrServiceProvider>().ToConstant(new JobbrServiceProvider(this));
+            RegisterInstance<IJobbrServiceProvider>(new JobbrServiceProvider(this));
 
             // Management related services
-            this.Bind<IJobManagementService>().To<JobManagementService>().InSingletonScope();
-            this.Bind<IQueryService>().To<JobQueryService>().InSingletonScope();
-            this.Bind<IServerManagementService>().To<ServerManagementService>().InSingletonScope();
+            Register<IJobManagementService, JobManagementService>(Lifestyle.Singleton);
+            Register<IQueryService, JobQueryService>(Lifestyle.Singleton);
+            Register<IServerManagementService, ServerManagementService>(Lifestyle.Singleton);
 
             // Execution related services
-            this.Bind<IJobRunInformationService>().To<JobRunInformationService>().InSingletonScope();
-            this.Bind<IJobRunProgressChannel>().To<JobRunProgressReceiver>().InSingletonScope();
+            Register<IJobRunInformationService, JobRunInformationService>(Lifestyle.Singleton);
+            Register<IJobRunProgressChannel, JobRunProgressReceiver>(Lifestyle.Singleton);
+
+            // Job run planners
+            Register<IInstantJobRunPlaner, InstantJobRunPlaner>(Lifestyle.Singleton);
+            Register<IScheduledJobRunPlaner, ScheduledJobRunPlaner>(Lifestyle.Singleton);
+            Register<IRecurringJobRunPlaner, RecurringJobRunPlaner>(Lifestyle.Singleton);
+
+            // Services
+            Register<ITriggerService, TriggerService>(Lifestyle.Singleton);
+            Register<IJobService, JobService>(Lifestyle.Singleton);
+            Register<IJobRunService, JobRunService>(Lifestyle.Singleton);
+
+            Register<IMessageDispatcher, MessageDispatcher>(Lifestyle.Singleton);
+            Register<IConfigurationManager, ConfigurationManager>(Lifestyle.Singleton);
+            Register<IRegistryBuilder, RegistryBuilder>(Lifestyle.Singleton);
+
+            Collection.Register(typeof(IConfigurationValidator), new List<Type>());
+            Collection.Register(typeof(IFeatureConfiguration), new List<Type>());
+            Collection.Register(typeof(IJobbrComponent), new List<Type>());
         }
     }
 }

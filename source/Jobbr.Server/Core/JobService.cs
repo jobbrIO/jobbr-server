@@ -6,32 +6,42 @@ using Jobbr.Server.Storage;
 
 namespace Jobbr.Server.Core
 {
-    public class JobService
+    /// <summary>
+    /// Service for jobs.
+    /// </summary>
+    public class JobService : IJobService
     {
-        private readonly IJobbrRepository repository;
-        private readonly IMapper mapper;
+        private readonly IJobbrRepository _repository;
+        private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JobService"/> class.
+        /// </summary>
+        /// <param name="repository">The Jobbr repository.</param>
+        /// <param name="mapper">The mapper.</param>
         public JobService(IJobbrRepository repository, IMapper mapper)
         {
-            this.repository = repository;
-            this.mapper = mapper;
+            _repository = repository;
+            _mapper = mapper;
         }
 
+        /// <inheritdoc/>
         public JobModel Add(JobModel model)
         {
-            var entity = this.mapper.Map<Job>(model);
+            var entity = _mapper.Map<Job>(model);
 
-            this.repository.AddJob(entity);
+            _repository.AddJob(entity);
             model.Id = entity.Id;
 
             return model;
         }
 
+        /// <inheritdoc/>
         public void Update(JobModel model)
         {
-            var entity = this.mapper.Map<Job>(model);
+            var entity = _mapper.Map<Job>(model);
 
-            var fromDb = this.repository.GetJob(model.Id);
+            var fromDb = _repository.GetJob(model.Id);
 
             fromDb.Parameters = entity.Parameters;
             fromDb.Title = entity.Title;
@@ -40,9 +50,10 @@ namespace Jobbr.Server.Core
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public void Delete(long id)
         {
-            var job = this.repository.GetJob(id);
+            var job = _repository.GetJob(id);
             job.Deleted = true;
         }
     }

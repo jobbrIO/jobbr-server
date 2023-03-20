@@ -1,4 +1,4 @@
-image: Visual Studio 2017
+image: Visual Studio 2022
 
 branches:
   only:
@@ -7,20 +7,24 @@ branches:
     - /release/.*/
     - /hotfix/.*/
     - /feature/.*/
+    - /bugfix/.*/
 skip_commits:
   files:
     - docs/*
 
+environment:
+  IGNORE_NORMALISATION_GIT_HEAD_MOVE: 1
+
 install:
   - git submodule update --init --recursive
-  - choco install gitversion.portable --version 4.0.0
+  - choco install gitversion.portable --version 5.10.3 -y
 
 assembly_info:
   patch: false
 
 before_build:
   - nuget restore source/Jobbr.Server.sln
-  - ps: C:\ProgramData\chocolatey\lib\GitVersion.Portable\tools\GitVersion.exe /l console /output buildserver /updateAssemblyInfo
+  - ps: C:\ProgramData\chocolatey\lib\GitVersion.Portable\tools\GitVersion.exe /l console /output buildserver /updateprojectfiles
 
 platform: Any CPU
 configuration: Release

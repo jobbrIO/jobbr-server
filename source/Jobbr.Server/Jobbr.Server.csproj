@@ -1,186 +1,52 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Costura.Fody.3.3.3\build\Costura.Fody.props" Condition="Exists('..\packages\Costura.Fody.3.3.3\build\Costura.Fody.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A45F729D-8629-4C7A-96B8-29EAA8D52919}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Jobbr.Server</RootNamespace>
-    <AssemblyName>Jobbr.Server</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <TargetFramework>net6.0</TargetFramework>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <AssemblyTitle>Jobber.Server</AssemblyTitle>
+    <Company>Zuehlke Technology Group</Company>
+    <Product>Jobbr.Server</Product>
+    <Copyright>Copyright © Zuehlke Technology Group 2022</Copyright>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageIcon>images\icon.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/jobbrIO/jobbr-server</PackageProjectUrl>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\JobbrRuleSet.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\JobbrRuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.7.0.1\lib\net45\AutoMapper.dll</HintPath>
-    </Reference>
-    <Reference Include="Costura, Version=3.3.3.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
-      <HintPath>..\packages\Costura.Fody.3.3.3\lib\net40\Costura.dll</HintPath>
-    </Reference>
-    <Reference Include="Jobbr.ComponentModel.ArtefactStorage, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.ArtefactStorage.1.0.1\lib\net462\Jobbr.ComponentModel.ArtefactStorage.dll</HintPath>
-    </Reference>
-    <Reference Include="Jobbr.ComponentModel.Execution, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Execution.1.0.1\lib\net462\Jobbr.ComponentModel.Execution.dll</HintPath>
-    </Reference>
-    <Reference Include="Jobbr.ComponentModel.JobStorage, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.JobStorage.1.4.0\lib\net462\Jobbr.ComponentModel.JobStorage.dll</HintPath>
-    </Reference>
-    <Reference Include="Jobbr.ComponentModel.Management, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Management.1.6.0\lib\net462\Jobbr.ComponentModel.Management.dll</HintPath>
-    </Reference>
-    <Reference Include="Jobbr.ComponentModel.Registration, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jobbr.ComponentModel.Registration.1.0.1\lib\net462\Jobbr.ComponentModel.Registration.dll</HintPath>
-    </Reference>
-    <Reference Include="NCrontab, Version=3.3.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NCrontab.3.3.1\lib\net35\NCrontab.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="App_Packages\LibLog.3.1\LibLog.cs" />
-    <Compile Include="Builder\AutoMapperConfigurationFactory.cs" />
-    <Compile Include="Builder\AutoMapperProvider.cs" />
-    <Compile Include="Builder\DefaultContainer.cs" />
-    <Compile Include="ComponentServices\Execution\JobRunProgressReceiver.cs" />
-    <Compile Include="ComponentServices\Execution\JobRunInformationService.cs" />
-    <Compile Include="Builder\NoExecutor.cs" />
-    <Compile Include="ComponentServices\Execution\MappingProfile.cs" />
-    <Compile Include="Core\Messaging\JobRunCompletedMessage.cs" />
-    <Compile Include="Core\JobRunService.cs" />
-    <Compile Include="ComponentServices\Management\MappingProfile.cs" />
-    <Compile Include="Core\Messaging\TriggerKey.cs" />
-    <Compile Include="Core\Models\JobArtefactModel.cs" />
-    <Compile Include="Core\Models\JobModel.cs" />
-    <Compile Include="Core\Models\InstantTriggerModel.cs" />
-    <Compile Include="Core\JobService.cs" />
-    <Compile Include="Core\Models\JobRunStates.cs" />
-    <Compile Include="Core\Models\ModelToStorageMappingProfile.cs" />
-    <Compile Include="ComponentServices\Management\ServerManagementService.cs" />
-    <Compile Include="ConfigurationManager.cs" />
-    <Compile Include="Core\Messaging\TriggerAddedMessage.cs" />
-    <Compile Include="Core\Models\RecurringTriggerModel.cs" />
-    <Compile Include="Core\Models\ScheduledTriggerModel.cs" />
-    <Compile Include="Core\Models\StorageToModelMappingProfile.cs" />
-    <Compile Include="Core\Models\TriggerModelBase.cs" />
-    <Compile Include="Core\TriggerService.cs" />
-    <Compile Include="Core\Messaging\TriggerStateChangedMessage.cs" />
-    <Compile Include="Core\Messaging\TriggerUpdatedMessage.cs" />
-    <Compile Include="Extensions\AssemblyExtensions.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="JobRegistry\JobbrBuilderExtension.cs" />
-    <Compile Include="Core\Messaging\MessageDispatcher.cs" />
-    <Compile Include="JobRegistry\TriggerExtensions.cs" />
-    <Compile Include="Scheduling\BuilderExtension.cs" />
-    <Compile Include="Scheduling\DefaultSchedulerConfiguration.cs" />
-    <Compile Include="JobbrState.cs" />
-    <Compile Include="Scheduling\FixedMinuteTimer.cs" />
-    <Compile Include="Scheduling\IDateTimeProvider.cs" />
-    <Compile Include="Scheduling\IJobScheduler.cs" />
-    <Compile Include="Scheduling\IPeriodicTimer.cs" />
-    <Compile Include="Scheduling\MaxConcurrentJobRunPlaner.cs" />
-    <Compile Include="Scheduling\Planer\InstantJobRunPlaner.cs" />
-    <Compile Include="Scheduling\Planer\PlanAction.cs" />
-    <Compile Include="Scheduling\Planer\PlanResult.cs" />
-    <Compile Include="Scheduling\Planer\RecurringJobRunPlaner.cs" />
-    <Compile Include="Scheduling\Planer\ScheduledJobRunPlaner.cs" />
-    <Compile Include="Scheduling\ScheduledPlanItem.cs" />
-    <Compile Include="Scheduling\UtcNowTimeProvider.cs" />
-    <Compile Include="Storage\IJobbrRepository.cs" />
-    <Compile Include="Storage\InMemoryArtefactsStorage.cs" />
-    <Compile Include="Scheduling\DefaultScheduler.cs" />
-    <Compile Include="Storage\InMemoryJobStorageProvider.cs" />
-    <Compile Include="Builder\JobbrBuilder.cs" />
-    <Compile Include="Storage\ExtensionMethods.cs" />
-    <Compile Include="ComponentServices\Management\JobManagementService.cs" />
-    <Compile Include="ComponentServices\Management\JobQueryService.cs" />
-    <Compile Include="JobRegistry\JobDefinition.cs" />
-    <Compile Include="JobRegistry\RegistryBuilder.cs" />
-    <Compile Include="Storage\JobbrRepository.cs" />
-    <Compile Include="ComponentServices\Registration\JobbrServiceProvider.cs" />
-    <Compile Include="JobbrServer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TinyMessenger.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Desktop.Analyzers.1.1.0\analyzers\dotnet\cs\Desktop.Analyzers.dll" />
-    <Analyzer Include="..\packages\Desktop.Analyzers.1.1.0\analyzers\dotnet\cs\Desktop.CSharp.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.AnalyzerPowerPack.1.1.0\analyzers\dotnet\cs\Microsoft.AnalyzerPowerPack.Common.dll" />
-    <Analyzer Include="..\packages\Microsoft.AnalyzerPowerPack.1.1.0\analyzers\dotnet\cs\Microsoft.AnalyzerPowerPack.CSharp.dll" />
-    <Analyzer Include="..\packages\System.Runtime.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.Analyzers.dll" />
-    <Analyzer Include="..\packages\System.Runtime.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.CSharp.Analyzers.dll" />
-    <Analyzer Include="..\packages\System.Runtime.InteropServices.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.InteropServices.Analyzers.dll" />
-    <Analyzer Include="..\packages\System.Runtime.InteropServices.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.InteropServices.CSharp.Analyzers.dll" />
-    <Analyzer Include="..\packages\System.Security.Cryptography.Hashing.Algorithms.Analyzers.1.1.0\analyzers\dotnet\cs\System.Security.Cryptography.Hashing.Algorithms.Analyzers.dll" />
-    <Analyzer Include="..\packages\System.Security.Cryptography.Hashing.Algorithms.Analyzers.1.1.0\analyzers\dotnet\cs\System.Security.Cryptography.Hashing.Algorithms.CSharp.Analyzers.dll" />
-  </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FodyWeavers.xml" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.3" />
+    <PackageReference Include="NCrontab" Version="3.3.1" />
+    <PackageReference Include="SimpleInjector" Version="5.4.1" />
+    <PackageReference Include="System.Text.Json" Version="6.0.7" />
+    <PackageReference Include="TinyMessenger" Version="1.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.ArtefactStorage" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.Execution" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.JobStorage" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.Management" Version="3.0.0" />
+    <PackageReference Include="Jobbr.ComponentModel.Registration" Version="3.0.0" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Fody.4.2.1\build\Fody.targets" Condition="Exists('..\packages\Fody.4.2.1\build\Fody.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.4.2.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.4.2.1\build\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\Costura.Fody.3.3.3\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.3.3.3\build\Costura.Fody.props'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Jobbr.Server.IntegrationTests" />
+    <InternalsVisibleTo Include="Jobbr.Server.UnitTests" />
+  </ItemGroup>
+  <ImportGroup>
+    <Import Project="..\submodules\devsupport\src\Jobbr.DevSupport.StyleCopAnalyzer\Jobbr.DevSupport.StyleCopAnalyzer.targets" />
+  </ImportGroup>
 </Project>

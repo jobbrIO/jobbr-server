@@ -14,127 +14,211 @@ namespace Jobbr.Server.ComponentServices.Management
     /// </summary>
     internal class JobManagementService : IJobManagementService
     {
-        private readonly TriggerService triggerService;
-        private readonly JobService jobService;
-        private readonly JobRunService jobRunService;
+        private readonly ITriggerService _triggerService;
+        private readonly IJobService _jobService;
+        private readonly IJobRunService _jobRunService;
 
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
 
-        public JobManagementService(TriggerService triggerService, JobService jobService, JobRunService jobRunService, IMapper mapper)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JobManagementService"/> class.
+        /// </summary>
+        /// <param name="triggerService">Job trigger service.</param>
+        /// <param name="jobService">Job service.</param>
+        /// <param name="jobRunService">Job run service.</param>
+        /// <param name="mapper">The mapper.</param>
+        public JobManagementService(ITriggerService triggerService, IJobService jobService, IJobRunService jobRunService, IMapper mapper)
         {
-            this.triggerService = triggerService;
-            this.jobService = jobService;
-            this.jobRunService = jobRunService;
-            this.mapper = mapper;
+            _triggerService = triggerService;
+            _jobService = jobService;
+            _jobRunService = jobRunService;
+            _mapper = mapper;
         }
 
+        /// <summary>
+        /// Add new <see cref="Job"/>.
+        /// </summary>
+        /// <param name="job"><see cref="Job"/> to add.</param>
         public void AddJob(Job job)
         {
-            var model = this.mapper.Map<JobModel>(job);
+            var model = _mapper.Map<JobModel>(job);
 
-            var newJOb = this.jobService.Add(model);
+            var newJOb = _jobService.Add(model);
             job.Id = newJOb.Id;
         }
 
+        /// <summary>
+        /// Update <see cref="Job"/>.
+        /// </summary>
+        /// <param name="job"><see cref="Job"/> to update.</param>
         public void UpdateJob(Job job)
         {
-            var model = this.mapper.Map<JobModel>(job);
+            var model = _mapper.Map<JobModel>(job);
 
-            this.jobService.Update(model);
+            _jobService.Update(model);
         }
 
+        /// <summary>
+        /// Delete <see cref="Job"/>. Unimplemented.
+        /// </summary>
+        /// <param name="jobId">Target <see cref="Job"/> ID.</param>
+        /// <exception cref="NotImplementedException">Throws always.</exception>
         public void DeleteJob(long jobId)
         {
             // TODO: implement :)
             // - terminate job if it is running
-            
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Add a recurring job trigger.
+        /// </summary>
+        /// <param name="jobId">Target <see cref="Job"/> ID.</param>
+        /// <param name="trigger">The <see cref="RecurringTrigger"/>.</param>
         public void AddTrigger(long jobId, RecurringTrigger trigger)
         {
-            var model = this.mapper.Map<RecurringTriggerModel>(trigger);
+            var model = _mapper.Map<RecurringTriggerModel>(trigger);
 
-            this.triggerService.Add(jobId, model);
+            _triggerService.Add(jobId, model);
 
             trigger.Id = model.Id;
             trigger.JobId = jobId;
         }
 
+        /// <summary>
+        /// Add a scheduled job trigger.
+        /// </summary>
+        /// <param name="jobId">Target <see cref="Job"/> ID.</param>
+        /// <param name="trigger">The <see cref="ScheduledTrigger"/>.</param>
         public void AddTrigger(long jobId, ScheduledTrigger trigger)
         {
-            var model = this.mapper.Map<ScheduledTriggerModel>(trigger);
+            var model = _mapper.Map<ScheduledTriggerModel>(trigger);
 
-            this.triggerService.Add(jobId, model);
+            _triggerService.Add(jobId, model);
 
             trigger.Id = model.Id;
             trigger.JobId = jobId;
         }
 
+        /// <summary>
+        /// Add an instant job trigger.
+        /// </summary>
+        /// <param name="jobId">Target <see cref="Job"/> ID.</param>
+        /// <param name="trigger">The <see cref="InstantTrigger"/>.</param>
         public void AddTrigger(long jobId, InstantTrigger trigger)
         {
-            var model = this.mapper.Map<InstantTriggerModel>(trigger);
+            var model = _mapper.Map<InstantTriggerModel>(trigger);
 
-            this.triggerService.Add(jobId, model);
+            _triggerService.Add(jobId, model);
 
             trigger.Id = model.Id;
             trigger.JobId = jobId;
         }
 
+        /// <summary>
+        /// Disable job trigger.
+        /// </summary>
+        /// <param name="jobId">Target <see cref="Job"/> ID.</param>
+        /// <param name="triggerId">The trigger ID.</param>
         public void DisableTrigger(long jobId, long triggerId)
         {
-            this.triggerService.Disable(jobId, triggerId);
+            _triggerService.Disable(jobId, triggerId);
         }
 
+        /// <summary>
+        /// Enable job trigger.
+        /// </summary>
+        /// <param name="jobId">Target <see cref="Job"/> ID.</param>
+        /// <param name="triggerId">The trigger ID.</param>
         public void EnableTrigger(long jobId, long triggerId)
         {
-            this.triggerService.Enable(jobId, triggerId);
+            _triggerService.Enable(jobId, triggerId);
         }
 
+        /// <summary>
+        /// Delete job trigger.
+        /// </summary>
+        /// <param name="jobId">Target <see cref="Job"/> ID.</param>
+        /// <param name="triggerId">The trigger ID.</param>
         public void DeleteTrigger(long jobId, long triggerId)
         {
-            this.triggerService.Delete(jobId, triggerId);
+            _triggerService.Delete(jobId, triggerId);
         }
 
+        /// <summary>
+        /// Update trigger definition.
+        /// </summary>
+        /// <param name="jobId">Target <see cref="Job"/> ID.</param>
+        /// <param name="triggerId">The trigger ID.</param>
+        /// <param name="definition">New definition.</param>
         public void UpdateTriggerDefinition(long jobId, long triggerId, string definition)
         {
-            this.triggerService.Update(jobId, triggerId, definition);
+            _triggerService.Update(jobId, triggerId, definition);
         }
 
+        /// <summary>
+        /// Update <see cref="RecurringTrigger"/>.
+        /// </summary>
+        /// <param name="trigger">The target trigger.</param>
         public void Update(RecurringTrigger trigger)
         {
-            var triggerModel = this.mapper.Map<RecurringTriggerModel>(trigger);
+            var triggerModel = _mapper.Map<RecurringTriggerModel>(trigger);
 
-            this.triggerService.Update(triggerModel);
+            _triggerService.Update(triggerModel);
         }
 
+        /// <summary>
+        /// Update <see cref="ScheduledTrigger"/>.
+        /// </summary>
+        /// <param name="trigger">The target trigger.</param>
         public void Update(ScheduledTrigger trigger)
         {
-            var triggerModel = this.mapper.Map<ScheduledTriggerModel>(trigger);
+            var triggerModel = _mapper.Map<ScheduledTriggerModel>(trigger);
 
-            this.triggerService.Update(triggerModel);
+            _triggerService.Update(triggerModel);
         }
 
+        /// <summary>
+        /// Update trigger start time.
+        /// </summary>
+        /// <param name="jobId">The target job ID.</param>
+        /// <param name="triggerId">Target trigger ID.</param>
+        /// <param name="startDateTimeUtc">The new start time in UTC.</param>
         public void UpdateTriggerStartTime(long jobId, long triggerId, DateTime startDateTimeUtc)
         {
-            this.triggerService.Update(jobId, triggerId, startDateTimeUtc);
+            _triggerService.Update(jobId, triggerId, startDateTimeUtc);
         }
 
+        /// <summary>
+        /// Delete job run.
+        /// </summary>
+        /// <param name="jobRunId">Target job run ID.</param>
         public void DeleteJobRun(long jobRunId)
         {
-            this.jobRunService.Delete(jobRunId);
+            _jobRunService.Delete(jobRunId);
         }
 
+        /// <summary>
+        /// Get <see cref="JobArtefact"/>.
+        /// </summary>
+        /// <param name="jobRunId">Target job run ID.</param>
+        /// <returns>List of <see cref="JobArtefact"/>s.</returns>
         public List<JobArtefact> GetArtefactForJob(long jobRunId)
         {
-            var artefacts = this.jobRunService.GetArtefactsByJobRunId(jobRunId);
+            var artefacts = _jobRunService.GetArtefactsByJobRunId(jobRunId);
 
-            return this.mapper.Map<List<JobArtefact>>(artefacts);
+            return _mapper.Map<List<JobArtefact>>(artefacts);
         }
 
+        /// <summary>
+        /// Get job artifact as a stream.
+        /// </summary>
+        /// <param name="jobRunId">Target job run ID.</param>
+        /// <param name="filename">Filename.</param>
+        /// <returns>A <see cref="Stream"/> of the artifact.</returns>
         public Stream GetArtefactAsStream(long jobRunId, string filename)
         {
-            return this.jobRunService.GetArtefactAsStream(jobRunId, filename);
+            return _jobRunService.GetArtefactAsStream(jobRunId, filename);
         }
     }
 }
