@@ -247,34 +247,42 @@ namespace Jobbr.Server.Scheduling
         {
             lock (_evaluateTriggersLock)
             {
-                // Re-evaluate recurring triggers every n seconds
-                var activeTriggers = _jobbrRepository.GetActiveTriggers(pageSize: int.MaxValue).Items.Where(t => t.GetType() == typeof(RecurringTrigger));
-
-                var additionalItems = new List<ScheduledPlanItem>();
-
-                foreach (var trigger in activeTriggers.Cast<RecurringTrigger>())
+                try
                 {
-                    var planResult = GetPlanResult(trigger, false);
+                    // Re-evaluate recurring triggers every n seconds
+                    var activeTriggers = _jobbrRepository.GetActiveTriggers(pageSize: int.MaxValue).Items.Where(t => t.GetType() == typeof(RecurringTrigger));
 
-                    if (planResult.Action == PlanAction.Possible)
+                    var additionalItems = new List<ScheduledPlanItem>();
+
+                    foreach (var trigger in activeTriggers.Cast<RecurringTrigger>())
                     {
-                        // Check if there is already a run planned at this time
-                        var nextRunForTrigger = _jobbrRepository.GetNextJobRunByTriggerId(trigger.JobId, trigger.Id, _dateTimeProvider.GetUtcNow());
+                        var planResult = GetPlanResult(trigger, false);
 
-                        if (nextRunForTrigger == null || !nextRunForTrigger.PlannedStartDateTimeUtc.Equals(planResult.ExpectedStartDateUtc))
+                        if (planResult.Action == PlanAction.Possible)
                         {
-                            var scheduledItem = CreateNew(planResult, trigger);
-                            additionalItems.Add(scheduledItem);
+                            // Check if there is already a run planned at this time
+                            var nextRunForTrigger = _jobbrRepository.GetNextJobRunByTriggerId(trigger.JobId, trigger.Id, _dateTimeProvider.GetUtcNow());
+
+                            if (nextRunForTrigger == null || !nextRunForTrigger.PlannedStartDateTimeUtc.Equals(planResult.ExpectedStartDateUtc))
+                            {
+                                var scheduledItem = CreateNew(planResult, trigger);
+                                additionalItems.Add(scheduledItem);
+                            }
                         }
                     }
+
+                    if (additionalItems.Any())
+                    {
+                        _logger.LogInformation("The re-evaluation of recurring triggers caused the addition of {itemCount} scheduled items", additionalItems.Count);
+                        _currentPlan.AddRange(additionalItems);
+
+                        PublishCurrentPlan();
+                    }
                 }
-
-                if (additionalItems.Any())
+                catch (Exception e)
                 {
-                    _logger.LogInformation("The re-evaluation of recurring triggers caused the addition of {itemCount} scheduled items", additionalItems.Count);
-                    _currentPlan.AddRange(additionalItems);
-
-                    PublishCurrentPlan();
+                    // Internal error (e.g. DB access failure) in recurring trigger execution should not tear down Jobbr
+                    _logger.LogError(e, "Gathering information or executing of the recurring trigger failed");
                 }
             }
         }
