@@ -30,7 +30,7 @@ platform: Any CPU
 configuration: Release
 
 build:
-  parallel: true 
+  parallel: true
   project: source/Jobbr.Server.sln
 
 after_build:
@@ -38,9 +38,9 @@ after_build:
   - cmd: appveyor PushArtifact "Jobbr.Server.%GitVersion_SemVer%.nupkg"
 
 deploy:
-- provider: NuGet
-  server: https://nuget.org
-  api_key:
-    secure: anKLNUxe1pn63rrNVCigoQVfA/fWML9gEpE1UHRLK/LDmQX4SM9WwzDx0kliHKWC
-  on:
-    appveyor_repo_tag: true
+  - provider: NuGet
+    server: https://nuget.org
+    api_key:
+      secure: 60SMVZkhtzWAeH6Mp7DT1YZlZGGG8jwOEXMH0oRhX1iQLBejg1TpaDxgN6i0RisX
+    on:
+      appveyor_repo_tag: true
