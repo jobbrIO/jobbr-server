@@ -1,3 +1,7 @@
+> [!IMPORTANT]  
+> This repository is obsolete.  
+> Development of Jobbr has been moved to the [jobbr mono-repo](https://github.com/jobbrIO/jobbr).
+
 # Jobbr [![Build status](https://img.shields.io/appveyor/build/jobbr/jobbr-server/develop.svg?label=develop)](https://ci.appveyor.com/project/Jobbr/jobbr-server)
 
 Jobbr is a .NET job server. It is designed to reduce artifical complexity when a job server is needed in a project. Jobbr tries to get out of your way as much as possible so that you can focus on business logic. Job implementations have no dependency to Jobbr which makes it easy to integrate Jobbr in any .NET project.
